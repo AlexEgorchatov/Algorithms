@@ -1,9 +1,30 @@
+/**@jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import React from 'react';
 import { ModuleList } from './ModuleList';
 import { modules } from './ModuleData';
 
 export const HomePage = () => (
-  <div>
-    <ModuleList data={modules} />
-  </div>
+  <React.Fragment>
+    <div
+      css={css`
+        color: #f5c81a;
+        font-size: 48px;
+        text-align: center;
+      `}
+    >
+      Welcome to the Algorithms project!
+    </div>
+    <div
+      css={css`
+        margin: 20px 10px 0px 10px;
+        background-color: #444444;
+        display: block;
+        overflow: auto;
+        min-height: 87vh;
+      `}
+    >
+      <ModuleList data={modules} />
+    </div>
+  </React.Fragment>
 );

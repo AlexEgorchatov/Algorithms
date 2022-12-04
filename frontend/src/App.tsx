@@ -1,13 +1,27 @@
+/**@jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import React from 'react';
-import './App.css';
 import { HomePage } from './HomePage';
 
 function App() {
   return (
-    <div className="App">
-      <div>Welcome to the Algorithms project!</div>
+    <div
+      css={css`
+        margin: 0px;
+        background-color: #222222;
+        min-height: 100vh;
+      `}
+    >
       <HomePage />
-      <div>Made by Alex Egorchatov</div>
+      <div
+        css={css`
+          margin: 10px;
+          color: #f5c81a;
+          text-align: end;
+        `}
+      >
+        Made by Alex Egorchatov, 2022
+      </div>
     </div>
   );
 }

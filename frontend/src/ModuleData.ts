@@ -18,4 +18,8 @@ export const modules: ModuleData[] = [
     moduleType: ModuleEnumeration.PathFinding,
     title: 'Path Finding',
   },
+  {
+    moduleType: ModuleEnumeration.PathFinding,
+    title: 'Path Finding',
+  },
 ];

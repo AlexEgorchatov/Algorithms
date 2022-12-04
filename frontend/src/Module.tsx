@@ -1,3 +1,5 @@
+/**@jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import React from 'react';
 import { ModuleData } from './ModuleData';
 import { ModuleEnumeration } from './ModuleEnumeration';
@@ -24,9 +26,30 @@ export const Module = ({ data }: Props) => {
   };
 
   return (
-    <div>
-      <div>{data.title}</div>
-      {module()}
+    <div
+      css={css`
+        margin: 20px;
+        width: 300px;
+        height: 300px;
+      `}
+    >
+      <div
+        css={css`
+          background-color: #777777;
+          height: 270px;
+        `}
+      >
+        {module()}
+      </div>
+      <div
+        css={css`
+          font-size: 24px;
+          color: #ffffff;
+          text-align: center;
+        `}
+      >
+        {data.title}
+      </div>
     </div>
   );
 };
