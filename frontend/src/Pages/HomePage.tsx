@@ -1,8 +1,8 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
-import { ModuleList } from './ModuleList';
-import { modules } from './ModuleData';
+import { ModuleList } from '../Module Resources/ModuleList';
+import { modules } from '../Module Resources/ModuleData';
 
 export const HomePage = () => (
   <React.Fragment>

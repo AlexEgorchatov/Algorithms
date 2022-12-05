@@ -1,7 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
-import { HomePage } from './HomePage';
+import { HomePage } from './Pages/HomePage';
 
 function App() {
   return (

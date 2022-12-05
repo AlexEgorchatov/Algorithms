@@ -20,7 +20,7 @@ export const ModuleList = ({ data }: Props) => (
     `}
   >
     {data.map((module) => (
-      <Module data={module} />
+      <Module key={module.moduleType} data={module} />
     ))}
   </div>
 );

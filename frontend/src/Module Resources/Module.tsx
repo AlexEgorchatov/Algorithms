@@ -12,6 +12,8 @@ interface Props {
 }
 
 export const Module = ({ data }: Props) => {
+  const [isMouseOver, setIsMouseOver] = React.useState(false);
+
   const module = () => {
     switch (data.moduleType) {
       case ModuleEnumeration.Sorting:
@@ -25,18 +27,34 @@ export const Module = ({ data }: Props) => {
     }
   };
 
+  const handleModuleMouseEnter = () => {
+    setIsMouseOver(true);
+    data.startAnimation({});
+  };
+  const handleModuleMouseLeave = () => {
+    setIsMouseOver(false);
+    data.stopAnimation();
+  };
+
   return (
     <div
       css={css`
-        margin: 20px;
-        width: 300px;
-        height: 300px;
+        margin: 10px;
+        padding: ${isMouseOver ? `8px` : `10px`};
+        width: 240px;
+        height: 240px;
+        border-style: solid;
+        border-color: #e8610e;
+        border-width: ${isMouseOver ? `2px` : `0px`};
+        cursor: pointer;
       `}
+      onMouseEnter={handleModuleMouseEnter}
+      onMouseLeave={handleModuleMouseLeave}
     >
       <div
         css={css`
           background-color: #777777;
-          height: 270px;
+          height: 210px;
         `}
       >
         {module()}
