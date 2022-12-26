@@ -3,6 +3,7 @@ import { ModuleEnumeration } from './ModuleEnumeration';
 import { SortingModule } from './Modules/SortingModule';
 import { StringMatchingModule } from './Modules/StringMatchingModule';
 import { PathFindingModule } from './Modules/PathFindingModule';
+import React from 'react';
 
 interface Props {
   data: ModuleData;
@@ -22,5 +23,5 @@ export const Module = ({ data }: Props) => {
     }
   };
 
-  return <div>{GetCurrentModule()}</div>;
+  return <React.Fragment>{GetCurrentModule()}</React.Fragment>;
 };

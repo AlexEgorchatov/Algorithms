@@ -3,12 +3,8 @@ import { IModule } from '../IModule';
 import { ModulePlaceholder } from '../ModulePlaceHolder';
 
 export const PathFindingModule = ({ title }: IModule) => {
-  const handleModuleMouseEnter = () => {
-    console.log('Entered Path Finding module');
-  };
-  const handleModuleMouseLeave = () => {
-    console.log('Left Path Finding module');
-  };
+  const handleModuleMouseEnter = () => {};
+  const handleModuleMouseLeave = () => {};
 
   return (
     <div onMouseEnter={handleModuleMouseEnter} onMouseLeave={handleModuleMouseLeave}>

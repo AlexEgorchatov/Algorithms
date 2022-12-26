@@ -3,12 +3,8 @@ import { IModule } from '../IModule';
 import { ModulePlaceholder } from '../ModulePlaceHolder';
 
 export const StringMatchingModule = ({ title }: IModule) => {
-  const handleModuleMouseEnter = () => {
-    console.log('Entered String Matching module');
-  };
-  const handleModuleMouseLeave = () => {
-    console.log('Left String Matching module');
-  };
+  const handleModuleMouseEnter = () => {};
+  const handleModuleMouseLeave = () => {};
 
   return (
     <div onMouseEnter={handleModuleMouseEnter} onMouseLeave={handleModuleMouseLeave}>
