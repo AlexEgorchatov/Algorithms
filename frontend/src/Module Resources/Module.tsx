@@ -5,6 +5,9 @@ import { StringMatchingModule } from './Modules/StringMatchingModule';
 import { PathFindingModule } from './Modules/PathFindingModule';
 import React from 'react';
 
+export interface IModule {
+  title: string;
+}
 interface Props {
   data: ModuleData;
 }

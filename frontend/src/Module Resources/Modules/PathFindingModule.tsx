@@ -1,5 +1,5 @@
 import React from 'react';
-import { IModule } from '../IModule';
+import { IModule } from '../Module';
 import { ModulePlaceholder } from '../ModulePlaceHolder';
 
 export const PathFindingModule = ({ title }: IModule) => {
