@@ -1,7 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React, { useEffect } from 'react';
-import { IModule } from '../IModule';
+import React from 'react';
+import { IModule } from '../Module';
 import { ModulePlaceholder } from '../ModulePlaceHolder';
 
 interface Props {
@@ -9,9 +9,6 @@ interface Props {
 }
 
 const SortingBar = ({ height }: Props) => {
-  useEffect(() => {
-    console.log(`height ${height}`);
-  }, [height]);
   return (
     <div
       css={css`
@@ -25,11 +22,23 @@ const SortingBar = ({ height }: Props) => {
 };
 
 export const SortingModule = ({ title }: IModule) => {
-  const [heights, setHeights] = React.useState<number[]>([180, 120, 100, 140, 160]);
+  const initialState: number[] = [180, 120, 100, 140, 160];
+  const [heights, setHeights] = React.useState<number[]>(initialState);
+  const isMouseOver = React.useRef(false);
+  const timeoutID = React.useRef(-1);
+
+  const resetState = () => {
+    setHeights(initialState);
+  };
+
+  const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {
+    timeoutID.current = window.setTimeout(resolve, awaitTime);
+  };
 
   const handleModuleMouseEnter = async () => {
     let length = heights.length;
     let heightsCopy = [...heights];
+    isMouseOver.current = true;
 
     for (let i = 0; i < length - 1; i++) {
       let isSwapped: boolean = false;
@@ -41,15 +50,31 @@ export const SortingModule = ({ title }: IModule) => {
         heightsCopy[j] = heightsCopy[j + 1];
         heightsCopy[j + 1] = tempHeight;
         setHeights(heightsCopy);
-        await new Promise((r) => setTimeout(r, 1000));
+        await new Promise((resolve) => awaitCancellation(resolve, 500));
+
+        if (!isMouseOver.current) {
+          resetState();
+          return;
+        }
 
         heightsCopy = [...heightsCopy]; //TODO improve property updating
         isSwapped = true;
       }
-      if (!isSwapped) break;
+
+      if (!isSwapped) {
+        resetState();
+        i = -1;
+        await new Promise((resolve) => awaitCancellation(resolve, 1000));
+        heightsCopy = [...heights];
+      }
     }
   };
-  const handleModuleMouseLeave = () => {};
+
+  const handleModuleMouseLeave = () => {
+    isMouseOver.current = false;
+    clearTimeout(timeoutID.current);
+    resetState();
+  };
 
   return (
     <div onMouseEnter={handleModuleMouseEnter} onMouseLeave={handleModuleMouseLeave}>
