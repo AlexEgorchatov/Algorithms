@@ -1,16 +1,50 @@
+/**@jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import React from 'react';
-import { ModuleContent, ModuleComponent, ModuleTitle } from '../Styles';
 
 interface Props {
   title: string;
   children?: React.ReactNode;
+  isGrid?: boolean;
 }
 
-export const ModulePlaceholder = ({ children, title }: Props) => {
+export const ModulePlaceholder = ({ title, children, isGrid = false }: Props) => {
   return (
-    <ModuleComponent>
-      <ModuleContent>{children}</ModuleContent>
-      <ModuleTitle>{title}</ModuleTitle>
-    </ModuleComponent>
+    <div
+      css={css`
+        margin: 10px;
+        padding: 10px;
+        width: 240px;
+        height: 240px;
+        border-style: solid;
+        border-color: #e8610e;
+        border-width: 0px;
+        position: relative;
+        cursor: pointer;
+        :hover {
+          padding: 8px;
+          border-width: 2px;
+        }
+      `}
+    >
+      <div
+        css={css`
+          background-color: #777777;
+          height: 210px;
+          ${isGrid === true && `display: grid`}
+        `}
+      >
+        {children}
+      </div>
+      <div
+        css={css`
+          font-size: 24px;
+          color: #ffffff;
+          text-align: center;
+        `}
+      >
+        {title}
+      </div>
+    </div>
   );
 };
