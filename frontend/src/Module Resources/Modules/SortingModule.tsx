@@ -22,10 +22,12 @@ const SortingBar = ({ height }: Props) => {
 };
 
 export const SortingModule = ({ title }: IModule) => {
-  const initialState: number[] = [180, 120, 100, 140, 160];
+  const initialState: number[] = [100, 140, 180, 120, 160];
   const [heights, setHeights] = React.useState<number[]>(initialState);
   const isMouseOver = React.useRef(false);
   const timeoutID = React.useRef(-1);
+  const stepTime: number = 200;
+  const animationCompleteTime: number = 600;
 
   const resetState = () => {
     setHeights(initialState);
@@ -50,7 +52,7 @@ export const SortingModule = ({ title }: IModule) => {
         heightsCopy[j] = heightsCopy[j + 1];
         heightsCopy[j + 1] = tempHeight;
         setHeights(heightsCopy);
-        await new Promise((resolve) => awaitCancellation(resolve, 500));
+        await new Promise((resolve) => awaitCancellation(resolve, stepTime));
 
         if (!isMouseOver.current) {
           resetState();
@@ -62,9 +64,10 @@ export const SortingModule = ({ title }: IModule) => {
       }
 
       if (!isSwapped) {
+        await new Promise((resolve) => awaitCancellation(resolve, animationCompleteTime));
         resetState();
         i = -1;
-        await new Promise((resolve) => awaitCancellation(resolve, 1000));
+        await new Promise((resolve) => awaitCancellation(resolve, stepTime));
         heightsCopy = [...heights];
       }
     }
