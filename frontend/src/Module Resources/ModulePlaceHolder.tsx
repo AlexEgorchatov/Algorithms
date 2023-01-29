@@ -12,7 +12,6 @@ export const ModulePlaceholder = ({ title, children, isGrid = false }: Props) =>
   return (
     <div
       css={css`
-        margin: 10px;
         padding: 10px;
         width: 240px;
         height: 240px;

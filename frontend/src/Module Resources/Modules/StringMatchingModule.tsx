@@ -72,23 +72,23 @@ export const StringMatchingModule = ({ title }: IModule) => {
   const handleModuleMouseEnter = async () => {
     let inputLength = input.length;
     let searchLength = search.length;
-    let patternCopy = [...input];
+    let inputCopy = [...input];
     isMouseOver.current = true;
 
-    for (let i = 0; i <= inputLength - searchLength; i++) {
-      for (let j = 0; j < searchLength; j++) {}
-    }
-
-    // for (let i = 0; i < length; i++) {
-    //   patternCopy[i].state = CharacterState.Selected;
-    //   setPattern(patternCopy);
-    //   await new Promise((resolve) => awaitCancellation(resolve, stepTime));
-    //   patternCopy = [...patternCopy];
-
-    //   patternCopy[i].state = CharacterState.Unselected;
-    //   setPattern(patternCopy);
-    //   patternCopy = [...patternCopy];
+    // for (let i = 0; i <= inputLength - searchLength; i++) {
+    //   for (let j = 0; j < searchLength; j++) {}
     // }
+
+    for (let i = 0; i < inputLength; i++) {
+      inputCopy[i].state = CharacterState.Selected;
+      setInput(inputCopy);
+      await new Promise((resolve) => awaitCancellation(resolve, stepTime));
+      inputCopy = [...inputCopy];
+
+      inputCopy[i].state = CharacterState.Unselected;
+      setInput(inputCopy);
+      inputCopy = [...inputCopy];
+    }
   };
   const handleModuleMouseLeave = () => {
     isMouseOver.current = false;
