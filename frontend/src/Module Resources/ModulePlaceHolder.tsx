@@ -31,7 +31,6 @@ export const ModulePlaceholder = ({ title, children, isGrid = false }: Props) =>
         css={css`
           background-color: #777777;
           height: 210px;
-          ${isGrid === true && `display: grid`}
         `}
       >
         {children}
