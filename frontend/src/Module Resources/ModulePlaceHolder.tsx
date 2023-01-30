@@ -5,10 +5,9 @@ import React from 'react';
 interface Props {
   title: string;
   children?: React.ReactNode;
-  isGrid?: boolean;
 }
 
-export const ModulePlaceholder = ({ title, children, isGrid = false }: Props) => {
+export const ModulePlaceholder = ({ title, children }: Props) => {
   return (
     <div
       css={css`

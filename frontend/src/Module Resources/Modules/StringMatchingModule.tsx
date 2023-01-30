@@ -98,7 +98,7 @@ export const StringMatchingModule = ({ title }: IModule) => {
 
   return (
     <div onMouseEnter={handleModuleMouseEnter} onMouseLeave={handleModuleMouseLeave}>
-      <ModulePlaceholder title={title} isGrid={true}>
+      <ModulePlaceholder title={title}>
         <div
           css={css`
             align-items: center;
