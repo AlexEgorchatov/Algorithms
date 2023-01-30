@@ -54,13 +54,7 @@ export const StringMatchingModule = ({ title }: IModule) => {
     CharacterState.Unselected,
     CharacterState.Unselected,
   ];
-
   const [input, setInput] = React.useState(initialState);
-  const search = 'ab';
-  const isMouseOver = React.useRef(false);
-  const timeoutID = React.useRef(-1);
-  const stepTime: number = 50;
-  const animationCompleteTime: number = 500;
   const inputRender = [
     <SearchableCharacter key={0} character={'b'} state={input[0]} />,
     <SearchableCharacter key={1} character={'a'} state={input[1]} />,
@@ -70,6 +64,11 @@ export const StringMatchingModule = ({ title }: IModule) => {
     <SearchableCharacter key={5} character={'b'} state={input[5]} />,
     <SearchableCharacter key={6} character={'b'} state={input[6]} />,
   ];
+  const search = 'ab';
+  const isMouseOver = React.useRef(false);
+  const timeoutID = React.useRef(-1);
+  const stepTime: number = 50;
+  const animationCompleteTime: number = 500;
 
   const resetComponentState = () => {
     setInput(initialState);
@@ -103,6 +102,7 @@ export const StringMatchingModule = ({ title }: IModule) => {
       }
     }
   };
+
   const handleModuleMouseLeave = () => {
     isMouseOver.current = false;
     clearTimeout(timeoutID.current);
