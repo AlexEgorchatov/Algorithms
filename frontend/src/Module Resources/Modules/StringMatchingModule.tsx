@@ -45,21 +45,31 @@ const SearchableCharacter = ({ character, state = CharacterState.Unselected }: P
 };
 
 export const StringMatchingModule = ({ title }: IModule) => {
-  const initialState = [
-    { key: 0, character: 'b', state: CharacterState.Unselected },
-    { key: 1, character: 'a', state: CharacterState.Unselected },
-    { key: 2, character: 'b', state: CharacterState.Unselected },
-    { key: 3, character: 'b', state: CharacterState.Unselected },
-    { key: 4, character: 'a', state: CharacterState.Unselected },
-    { key: 5, character: 'b', state: CharacterState.Unselected },
-    { key: 6, character: 'b', state: CharacterState.Unselected },
+  const initialState: CharacterState[] = [
+    CharacterState.Unselected,
+    CharacterState.Unselected,
+    CharacterState.Unselected,
+    CharacterState.Unselected,
+    CharacterState.Unselected,
+    CharacterState.Unselected,
+    CharacterState.Unselected,
   ];
+
   const [input, setInput] = React.useState(initialState);
   const search = 'ab';
   const isMouseOver = React.useRef(false);
   const timeoutID = React.useRef(-1);
   const stepTime: number = 50;
-  const animationCompleteTime: number = 600;
+  const animationCompleteTime: number = 500;
+  const inputRender = [
+    <SearchableCharacter key={0} character={'b'} state={input[0]} />,
+    <SearchableCharacter key={1} character={'a'} state={input[1]} />,
+    <SearchableCharacter key={2} character={'b'} state={input[2]} />,
+    <SearchableCharacter key={3} character={'b'} state={input[3]} />,
+    <SearchableCharacter key={4} character={'a'} state={input[4]} />,
+    <SearchableCharacter key={5} character={'b'} state={input[5]} />,
+    <SearchableCharacter key={6} character={'b'} state={input[6]} />,
+  ];
 
   const resetComponentState = () => {
     setInput(initialState);
@@ -71,23 +81,26 @@ export const StringMatchingModule = ({ title }: IModule) => {
 
   const handleModuleMouseEnter = async () => {
     let inputLength = input.length;
-    let searchLength = search.length;
     let inputCopy = [...input];
     isMouseOver.current = true;
 
-    // for (let i = 0; i <= inputLength - searchLength; i++) {
-    //   for (let j = 0; j < searchLength; j++) {}
-    // }
-
     for (let i = 0; i < inputLength; i++) {
-      inputCopy[i].state = CharacterState.Selected;
+      inputCopy[i] = CharacterState.Selected;
       setInput(inputCopy);
       await new Promise((resolve) => awaitCancellation(resolve, stepTime));
       inputCopy = [...inputCopy];
 
-      inputCopy[i].state = CharacterState.Unselected;
+      inputCopy[i] = i === 1 || i === 2 || i === 4 || i === 5 ? CharacterState.Found : CharacterState.Unselected;
       setInput(inputCopy);
       inputCopy = [...inputCopy];
+
+      if (i === inputLength - 1) {
+        await new Promise((resolve) => awaitCancellation(resolve, animationCompleteTime));
+        resetComponentState();
+        i = -1;
+        await new Promise((resolve) => awaitCancellation(resolve, stepTime * 3));
+        inputCopy = [...input];
+      }
     }
   };
   const handleModuleMouseLeave = () => {
@@ -116,9 +129,7 @@ export const StringMatchingModule = ({ title }: IModule) => {
               display: flex;
             `}
           >
-            {input.map((parameters) => (
-              <SearchableCharacter key={parameters.key} character={parameters.character} state={parameters.state} />
-            ))}
+            {inputRender}
           </div>
         </div>
         <div

@@ -26,8 +26,8 @@ export const SortingModule = ({ title }: IModule) => {
   const [heights, setHeights] = React.useState<number[]>(initialState);
   const isMouseOver = React.useRef(false);
   const timeoutID = React.useRef(-1);
-  const stepTime: number = 100;
-  const animationCompleteTime: number = 600;
+  const stepTime: number = 80;
+  const animationCompleteTime: number = 500;
 
   const resetComponentState = () => {
     setHeights(initialState);
@@ -54,12 +54,7 @@ export const SortingModule = ({ title }: IModule) => {
         setHeights(heightsCopy);
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
 
-        if (!isMouseOver.current) {
-          resetComponentState();
-          return;
-        }
-
-        heightsCopy = [...heightsCopy]; //TODO improve property updating
+        heightsCopy = [...heightsCopy];
         isSwapped = true;
       }
 
@@ -67,7 +62,7 @@ export const SortingModule = ({ title }: IModule) => {
         await new Promise((resolve) => awaitCancellation(resolve, animationCompleteTime));
         resetComponentState();
         i = -1;
-        await new Promise((resolve) => awaitCancellation(resolve, stepTime));
+        await new Promise((resolve) => awaitCancellation(resolve, stepTime * 2));
         heightsCopy = [...heights];
       }
     }
