@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { IModule } from '../Module';
 import { ModulePlaceholder } from '../ModulePlaceHolder';
 
-export enum CharacterState {
+const enum CharacterState {
   Unselected = 0,
   Selected = 1,
   Found = 2,
@@ -12,7 +12,7 @@ export enum CharacterState {
 
 interface Props {
   character: string;
-  state?: CharacterState;
+  state: CharacterState;
 }
 
 const SearchableCharacter = ({ character, state = CharacterState.Unselected }: Props) => {
