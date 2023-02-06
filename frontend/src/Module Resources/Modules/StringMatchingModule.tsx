@@ -65,7 +65,6 @@ export const StringMatchingModule = ({ title }: IModule) => {
     <SearchableCharacter key={6} character={'b'} state={input[6]} />,
   ];
   const search = 'ab';
-  const isMouseOver = React.useRef(false);
   const timeoutID = React.useRef(-1);
   const stepTime: number = 50;
   const animationCompleteTime: number = 500;
@@ -81,7 +80,6 @@ export const StringMatchingModule = ({ title }: IModule) => {
   const handleModuleMouseEnter = async () => {
     let inputLength = input.length;
     let inputCopy = [...input];
-    isMouseOver.current = true;
 
     for (let i = 0; i < inputLength; i++) {
       inputCopy[i] = CharacterState.Selected;
@@ -104,7 +102,6 @@ export const StringMatchingModule = ({ title }: IModule) => {
   };
 
   const handleModuleMouseLeave = () => {
-    isMouseOver.current = false;
     clearTimeout(timeoutID.current);
     resetComponentState();
   };

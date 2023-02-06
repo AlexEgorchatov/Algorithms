@@ -56,36 +56,17 @@ const GridCell = ({ state = CellState.Unselected }: Props) => {
 };
 
 export const PathFindingModule = ({ title }: IModule) => {
-  // let initialState: CellState[][] = [[], []];
   let initialState: CellState[] = [];
-  const rowNumber: number = 7;
   const columnNumber: number = 8;
-  // for (let i = 0; i < rowNumber; i++) {
-  //   initialState.push([]);
-  //   for (let j = 0; j < columnNumber; j++) {
-  //     initialState[i].push(CellState.Unselected);
-  //   }
-  // }
   for (let i = 0; i < 56; i++) {
     initialState.push(CellState.Unselected);
   }
-  // initialState[5][1] = CellState.Source;
-  // initialState[0][7] = CellState.Destination;
-  // initialState[4][4] = CellState.Wall;
-  // initialState[5][4] = CellState.Wall;
-  // initialState[6][4] = CellState.Wall;
   initialState[5 * 8 + 1] = CellState.Source;
   initialState[0 * 8 + 7] = CellState.Destination;
   initialState[4 * 8 + 4] = CellState.Wall;
   initialState[5 * 8 + 4] = CellState.Wall;
   initialState[6 * 8 + 4] = CellState.Wall;
-
   const [grid, setGrid] = React.useState(initialState);
-  const gridRender = [];
-  for (let i = 0; i < grid.length; i++) {
-    gridRender.push(<GridCell key={i} state={grid[i]} />);
-  }
-  const isMouseOver = React.useRef(false);
   const timeoutID = React.useRef(-1);
   const stepTime: number = 35;
   const animationCompleteTime: number = 500;
@@ -100,22 +81,17 @@ export const PathFindingModule = ({ title }: IModule) => {
 
   const handleModuleMouseEnter = async () => {
     let gridCopy = [...grid];
-    isMouseOver.current = true;
     let rowSource: number = 5;
     let columnSource: number = 2;
     let rowDestination: number = 0;
 
     while (rowSource !== rowDestination) {
       while (true) {
-        // gridCopy[rowSource][columnSource] = CellState.Selected;
         gridCopy[rowSource * 8 + columnSource] = CellState.Selected;
         setGrid(gridCopy);
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
         gridCopy = [...gridCopy];
 
-        console.log(`set cell ${rowSource} ${columnSource}`);
-
-        // if (columnSource + 1 >= columnNumber || grid[rowSource][columnSource + 1] === CellState.Wall) break;
         if (columnSource + 1 >= columnNumber || grid[rowSource * 8 + columnSource + 1] === CellState.Wall) break;
         else columnSource++;
       }
@@ -132,7 +108,6 @@ export const PathFindingModule = ({ title }: IModule) => {
   };
 
   const handleModuleMouseLeave = () => {
-    isMouseOver.current = false;
     clearTimeout(timeoutID.current);
     resetComponentState();
   };
@@ -146,12 +121,9 @@ export const PathFindingModule = ({ title }: IModule) => {
             flex-wrap: wrap;
           `}
         >
-          {/* {grid.map(function (row) {
-            return row.map(function (state) {
-              return <GridCell state={state} />;
-            });
-          })} */}
-          {gridRender}
+          {grid.map((state, index) => (
+            <GridCell key={index} state={state} />
+          ))}
         </div>
       </ModulePlaceholder>
     </div>
