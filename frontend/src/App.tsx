@@ -2,6 +2,11 @@
 import { css } from '@emotion/react';
 import React from 'react';
 import { HomePage } from './Pages/HomePage';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { SortingPage } from './Pages/SortingPage';
+import { StringMatchingPage } from './Pages/StringMatchingPage';
+import { PathFindingPage } from './Pages/PathFindingPage';
+import { NotFoundPage } from './Pages/NotFoundPage';
 
 function App() {
   return (
@@ -12,7 +17,15 @@ function App() {
         min-height: 100vh;
       `}
     >
-      <HomePage />
+      <BrowserRouter>
+        <Routes>
+          <Route path="" element={<HomePage />} />
+          <Route path="sort" element={<SortingPage />} />
+          <Route path="search" element={<StringMatchingPage />} />
+          <Route path="path_find" element={<PathFindingPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
       <div
         css={css`
           margin: 10px;
@@ -20,7 +33,7 @@ function App() {
           text-align: end;
         `}
       >
-        Made by Alex Egorchatov, 2022
+        Made by Alex Egorchatov, Dec 1, 2022
       </div>
     </div>
   );

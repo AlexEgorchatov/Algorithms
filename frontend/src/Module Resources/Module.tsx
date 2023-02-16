@@ -4,6 +4,7 @@ import { SortingModule } from './Modules/SortingModule';
 import { StringMatchingModule } from './Modules/StringMatchingModule';
 import { PathFindingModule } from './Modules/PathFindingModule';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export interface IModule {
   title: string;
@@ -16,13 +17,25 @@ export const Module = ({ data }: Props) => {
   const GetCurrentModule = () => {
     switch (data.moduleType) {
       case ModuleEnumeration.Sorting:
-        return <SortingModule title={data.title} />;
+        return (
+          <Link to="sort" style={{ textDecoration: 'none' }}>
+            <SortingModule title={data.title} />
+          </Link>
+        );
 
       case ModuleEnumeration.StringMatching:
-        return <StringMatchingModule title={data.title} />;
+        return (
+          <Link to="search" style={{ textDecoration: 'none' }}>
+            <StringMatchingModule title={data.title} />
+          </Link>
+        );
 
       case ModuleEnumeration.PathFinding:
-        return <PathFindingModule title={data.title} />;
+        return (
+          <Link to="path_find" style={{ textDecoration: 'none' }}>
+            <PathFindingModule title={data.title} />
+          </Link>
+        );
     }
   };
 

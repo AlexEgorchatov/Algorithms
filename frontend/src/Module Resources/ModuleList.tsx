@@ -1,6 +1,5 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React from 'react';
 import { ModuleData } from './ModuleData';
 import { Module } from './Module';
 
