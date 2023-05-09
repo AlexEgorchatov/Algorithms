@@ -20,6 +20,15 @@ function App() {
         min-height: 100vh;
       `}
     >
+      <div
+        css={css`
+          color: #f5c81a;
+          font-size: 36px;
+          text-align: center;
+        `}
+      >
+        Implement navigation bar here. Tomorrow
+      </div>
       <Provider store={store}>
         <BrowserRouter>
           <Routes>
@@ -38,7 +47,7 @@ function App() {
           text-align: end;
         `}
       >
-        Made by Alex Egorchatov, Dec 1, 2022
+        Made by Alex Egorchatov, 2022
       </div>
     </div>
   );
