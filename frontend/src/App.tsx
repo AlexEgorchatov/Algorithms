@@ -8,7 +8,7 @@ import { StringMatchingPage } from './Pages/StringMatchingPage';
 import { PathFindingPage } from './Pages/PathFindingPage';
 import { NotFoundPage } from './Pages/NotFoundPage';
 import { Provider } from 'react-redux';
-import { createStore } from './Redux/Store';
+import { createStore } from './Store/Store';
 
 const store = createStore();
 function App() {

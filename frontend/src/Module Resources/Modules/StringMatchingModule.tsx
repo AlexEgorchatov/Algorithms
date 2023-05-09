@@ -3,12 +3,10 @@ import { css } from '@emotion/react';
 import React from 'react';
 import { IModule } from '../Module';
 import { ModulePlaceholder } from '../ModulePlaceHolder';
-
-const enum CharacterState {
-  Unselected = 0,
-  Selected = 1,
-  Found = 2,
-}
+import { useSelector } from 'react-redux';
+import { AppState } from '../../Store/Store';
+import { useDispatch } from 'react-redux';
+import { CharacterState, updatingStringMatchingModuleStateAction } from '../../Store/Home Page/StringMatchingModuleManagement';
 
 interface Props {
   character: string;
@@ -41,24 +39,16 @@ const SearchableCharacter = ({ character, state = CharacterState.Unselected }: P
 };
 
 export const StringMatchingModule = ({ title }: IModule) => {
-  const initialState: CharacterState[] = [
-    CharacterState.Unselected,
-    CharacterState.Unselected,
-    CharacterState.Unselected,
-    CharacterState.Unselected,
-    CharacterState.Unselected,
-    CharacterState.Unselected,
-    CharacterState.Unselected,
-  ];
-  const [input, setInput] = React.useState(initialState);
+  const stringMatchingState = useSelector((state: AppState) => state.stringMatchingModuleState);
+  const dispatch = useDispatch();
   const inputRender = [
-    <SearchableCharacter key={0} character={'b'} state={input[0]} />,
-    <SearchableCharacter key={1} character={'a'} state={input[1]} />,
-    <SearchableCharacter key={2} character={'b'} state={input[2]} />,
-    <SearchableCharacter key={3} character={'b'} state={input[3]} />,
-    <SearchableCharacter key={4} character={'a'} state={input[4]} />,
-    <SearchableCharacter key={5} character={'b'} state={input[5]} />,
-    <SearchableCharacter key={6} character={'b'} state={input[6]} />,
+    <SearchableCharacter key={0} character={'b'} state={stringMatchingState.initialChars[0]} />,
+    <SearchableCharacter key={1} character={'a'} state={stringMatchingState.initialChars[1]} />,
+    <SearchableCharacter key={2} character={'b'} state={stringMatchingState.initialChars[2]} />,
+    <SearchableCharacter key={3} character={'b'} state={stringMatchingState.initialChars[3]} />,
+    <SearchableCharacter key={4} character={'a'} state={stringMatchingState.initialChars[4]} />,
+    <SearchableCharacter key={5} character={'b'} state={stringMatchingState.initialChars[5]} />,
+    <SearchableCharacter key={6} character={'b'} state={stringMatchingState.initialChars[6]} />,
   ];
   const search = 'ab';
   const timeoutID = React.useRef(-1);
@@ -66,7 +56,7 @@ export const StringMatchingModule = ({ title }: IModule) => {
   const animationCompleteTime: number = 500;
 
   const resetComponentState = () => {
-    setInput(initialState);
+    dispatch(updatingStringMatchingModuleStateAction());
   };
 
   const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {
@@ -74,17 +64,17 @@ export const StringMatchingModule = ({ title }: IModule) => {
   };
 
   const handleModuleMouseEnter = async () => {
-    let inputLength = input.length;
-    let inputCopy = [...input];
+    let inputLength = stringMatchingState.initialChars.length;
+    let inputCopy = [...stringMatchingState.initialChars];
 
     for (let i = 0; i < inputLength; i++) {
       inputCopy[i] = CharacterState.Selected;
-      setInput(inputCopy);
+      dispatch(updatingStringMatchingModuleStateAction(inputCopy));
       await new Promise((resolve) => awaitCancellation(resolve, stepTime));
       inputCopy = [...inputCopy];
 
       inputCopy[i] = i === 1 || i === 2 || i === 4 || i === 5 ? CharacterState.Found : CharacterState.Unselected;
-      setInput(inputCopy);
+      dispatch(updatingStringMatchingModuleStateAction(inputCopy));
       inputCopy = [...inputCopy];
 
       if (i === inputLength - 1) {
@@ -92,7 +82,7 @@ export const StringMatchingModule = ({ title }: IModule) => {
         resetComponentState();
         i = -1;
         await new Promise((resolve) => awaitCancellation(resolve, stepTime * 3));
-        inputCopy = [...input];
+        inputCopy = [...stringMatchingState.initialChars];
       }
     }
   };

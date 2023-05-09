@@ -4,7 +4,8 @@ import React from 'react';
 import { IModule } from '../Module';
 import { ModulePlaceholder } from '../ModulePlaceHolder';
 import { useSelector, useDispatch } from 'react-redux';
-import { updatingSortingModuleStateAction, AppState } from '../../Redux/Store';
+import { AppState } from '../../Store/Store';
+import { updatingSortingModuleStateAction } from '../../Store/Home Page/SortingModuleManagement';
 
 interface Props {
   height: number;
