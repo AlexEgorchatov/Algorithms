@@ -16,7 +16,7 @@ const initialSortingModuleState: SortingModuleState = {
 
 // Actions
 export const UPDATINGSORTINGMODULESTATE = 'UpdatingSortingModuleState';
-export const updatingSortingModuleStateAction = (heights: number[]) =>
+export const updatingSortingModuleStateAction = (heights = initialSortingModuleState.initialHeights) =>
   ({
     type: UPDATINGSORTINGMODULESTATE,
     heights: heights,

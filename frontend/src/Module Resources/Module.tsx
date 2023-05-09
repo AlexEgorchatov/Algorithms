@@ -18,21 +18,21 @@ export const Module = ({ data }: Props) => {
     switch (data.moduleType) {
       case ModuleEnumeration.Sorting:
         return (
-          <Link to="sort" style={{ textDecoration: 'none' }}>
+          <Link to="sort" style={{ textDecoration: 'none' }} reloadDocument={true}>
             <SortingModule title={data.title} />
           </Link>
         );
 
       case ModuleEnumeration.StringMatching:
         return (
-          <Link to="search" style={{ textDecoration: 'none' }}>
+          <Link to="search" style={{ textDecoration: 'none' }} reloadDocument={true}>
             <StringMatchingModule title={data.title} />
           </Link>
         );
 
       case ModuleEnumeration.PathFinding:
         return (
-          <Link to="path_find" style={{ textDecoration: 'none' }}>
+          <Link to="path_find" style={{ textDecoration: 'none' }} reloadDocument={true}>
             <PathFindingModule title={data.title} />
           </Link>
         );

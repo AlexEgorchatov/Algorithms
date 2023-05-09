@@ -26,13 +26,12 @@ const SortingBar = ({ height }: Props) => {
 export const SortingModule = ({ title }: IModule) => {
   const sortingState = useSelector((state: AppState) => state.sortingModuleState);
   const dispatch = useDispatch();
-  const initialState: number[] = [180, 100, 120, 140, 160];
   const timeoutID = React.useRef(-1);
   const stepTime: number = 80;
   const animationCompleteTime: number = 500;
 
   const resetComponentState = () => {
-    dispatch(updatingSortingModuleStateAction(initialState));
+    dispatch(updatingSortingModuleStateAction());
   };
 
   const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {
@@ -49,12 +48,11 @@ export const SortingModule = ({ title }: IModule) => {
       for (let j = 0; j < length - i - 1; j++) {
         if (heightsCopy[j] <= heightsCopy[j + 1]) continue;
 
-        var tempHeight = heightsCopy[j];
+        let tempHeight = heightsCopy[j];
         heightsCopy[j] = heightsCopy[j + 1];
         heightsCopy[j + 1] = tempHeight;
         dispatch(updatingSortingModuleStateAction(heightsCopy));
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
-
         heightsCopy = [...heightsCopy];
         isSwapped = true;
       }
