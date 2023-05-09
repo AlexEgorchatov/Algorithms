@@ -2,16 +2,16 @@ import { combineReducers, Store } from 'redux';
 import { configureStore } from '@reduxjs/toolkit';
 
 // State
-interface SortingModuleState {
-  readonly heights: number[];
+export interface AppState {
+  readonly sortingModuleState: SortingModuleState;
 }
 
-export interface AppState {
-  readonly sortingModule: SortingModuleState;
+interface SortingModuleState {
+  readonly initialHeights: number[];
 }
 
 const initialSortingModuleState: SortingModuleState = {
-  heights: [180, 100, 120, 140, 160],
+  initialHeights: [180, 100, 120, 140, 160],
 };
 
 // Actions
@@ -29,14 +29,14 @@ const sortingModuleReducer = (state = initialSortingModuleState, action: Sorting
     case UPDATINGSORTINGMODULESTATE:
       return {
         ...state,
+        initialHeights: action.heights,
       };
-      break;
   }
   return state;
 };
 
 // Store
-const rootReducer = combineReducers<AppState>({ sortingModule: sortingModuleReducer });
+const rootReducer = combineReducers<AppState>({ sortingModuleState: sortingModuleReducer });
 export function createStore(): Store<AppState> {
   const store = configureStore({ reducer: rootReducer });
   return store;

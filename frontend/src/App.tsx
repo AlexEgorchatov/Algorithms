@@ -7,7 +7,10 @@ import { SortingPage } from './Pages/SortingPage';
 import { StringMatchingPage } from './Pages/StringMatchingPage';
 import { PathFindingPage } from './Pages/PathFindingPage';
 import { NotFoundPage } from './Pages/NotFoundPage';
+import { Provider } from 'react-redux';
+import { createStore } from './Redux/Store';
 
+const store = createStore();
 function App() {
   return (
     <div
@@ -17,15 +20,17 @@ function App() {
         min-height: 100vh;
       `}
     >
-      <BrowserRouter>
-        <Routes>
-          <Route path="" element={<HomePage />} />
-          <Route path="sort" element={<SortingPage />} />
-          <Route path="search" element={<StringMatchingPage />} />
-          <Route path="path_find" element={<PathFindingPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="" element={<HomePage />} />
+            <Route path="sort" element={<SortingPage />} />
+            <Route path="search" element={<StringMatchingPage />} />
+            <Route path="path_find" element={<PathFindingPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </BrowserRouter>
+      </Provider>
       <div
         css={css`
           margin: 10px;

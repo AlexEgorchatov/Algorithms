@@ -3,6 +3,8 @@ import { css } from '@emotion/react';
 import React from 'react';
 import { IModule } from '../Module';
 import { ModulePlaceholder } from '../ModulePlaceHolder';
+import { useSelector, useDispatch } from 'react-redux';
+import { updatingSortingModuleStateAction, AppState } from '../../Redux/Store';
 
 interface Props {
   height: number;
@@ -22,14 +24,15 @@ const SortingBar = ({ height }: Props) => {
 };
 
 export const SortingModule = ({ title }: IModule) => {
+  const sortingState = useSelector((state: AppState) => state.sortingModuleState);
+  const dispatch = useDispatch();
   const initialState: number[] = [180, 100, 120, 140, 160];
-  const [heights, setHeights] = React.useState<number[]>(initialState);
   const timeoutID = React.useRef(-1);
   const stepTime: number = 80;
   const animationCompleteTime: number = 500;
 
   const resetComponentState = () => {
-    setHeights(initialState);
+    dispatch(updatingSortingModuleStateAction(initialState));
   };
 
   const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {
@@ -37,8 +40,8 @@ export const SortingModule = ({ title }: IModule) => {
   };
 
   const handleModuleMouseEnter = async () => {
-    let length = heights.length;
-    let heightsCopy = [...heights];
+    let length = sortingState.initialHeights.length;
+    let heightsCopy = [...sortingState.initialHeights];
 
     for (let i = 0; i < length - 1; i++) {
       let isSwapped: boolean = false;
@@ -49,7 +52,7 @@ export const SortingModule = ({ title }: IModule) => {
         var tempHeight = heightsCopy[j];
         heightsCopy[j] = heightsCopy[j + 1];
         heightsCopy[j + 1] = tempHeight;
-        setHeights(heightsCopy);
+        dispatch(updatingSortingModuleStateAction(heightsCopy));
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
 
         heightsCopy = [...heightsCopy];
@@ -61,7 +64,7 @@ export const SortingModule = ({ title }: IModule) => {
         resetComponentState();
         i = -1;
         await new Promise((resolve) => awaitCancellation(resolve, stepTime * 2));
-        heightsCopy = [...heights];
+        heightsCopy = [...sortingState.initialHeights];
       }
     }
   };
@@ -83,7 +86,7 @@ export const SortingModule = ({ title }: IModule) => {
             align-items: flex-end;
           `}
         >
-          {heights.map((height, index) => (
+          {sortingState.initialHeights.map((height, index) => (
             <SortingBar key={index} height={height} />
           ))}
         </div>
