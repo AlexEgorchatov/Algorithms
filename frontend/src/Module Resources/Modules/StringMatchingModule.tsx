@@ -1,6 +1,6 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { IModule } from '../Module';
 import { ModulePlaceholder } from '../ModulePlaceHolder';
 
@@ -16,10 +16,6 @@ interface Props {
 }
 
 const SearchableCharacter = ({ character, state = CharacterState.Unselected }: Props) => {
-  useEffect(() => {
-    setFont();
-  });
-
   const setFont = () => {
     switch (state) {
       case CharacterState.Unselected:
