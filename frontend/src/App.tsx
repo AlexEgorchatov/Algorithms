@@ -9,6 +9,7 @@ import { PathFindingPage } from './Pages/PathFindingPage';
 import { NotFoundPage } from './Pages/NotFoundPage';
 import { Provider } from 'react-redux';
 import { createStore } from './Store/Store';
+import { Header } from './Module Resources/Header';
 
 const store = createStore();
 function App() {
@@ -17,29 +18,28 @@ function App() {
       css={css`
         margin: 0px;
         background-color: #222222;
-        min-height: 100vh;
+        min-width: 450px;
       `}
     >
+      <Header />
       <div
         css={css`
-          color: #f5c81a;
-          font-size: 36px;
-          text-align: center;
+          margin: 50px 10px 0px 10px;
+          background-color: #444444;
         `}
       >
-        Implement navigation bar here. Tomorrow
+        <Provider store={store}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="" element={<HomePage />} />
+              <Route path="sort" element={<SortingPage />} />
+              <Route path="search" element={<StringMatchingPage />} />
+              <Route path="path_find" element={<PathFindingPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </BrowserRouter>
+        </Provider>
       </div>
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="" element={<HomePage />} />
-            <Route path="sort" element={<SortingPage />} />
-            <Route path="search" element={<StringMatchingPage />} />
-            <Route path="path_find" element={<PathFindingPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
       <div
         css={css`
           margin: 10px;

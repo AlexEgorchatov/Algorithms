@@ -5,26 +5,22 @@ import { ModuleList } from '../Module Resources/ModuleList';
 import { modules } from '../Module Resources/ModuleData';
 
 export const HomePage = () => (
-  <React.Fragment>
+  <div
+    css={css`
+      display: block;
+      overflow: auto;
+      min-height: 87vh;
+    `}
+  >
     <div
       css={css`
-        margin: 20px 10px 0px 10px;
-        background-color: #444444;
-        display: block;
-        overflow: auto;
-        min-height: 87vh;
+        color: #f5c81a;
+        font-size: 48px;
+        text-align: center;
       `}
     >
-      <div
-        css={css`
-          color: #f5c81a;
-          font-size: 48px;
-          text-align: center;
-        `}
-      >
-        Welcome to the Algorithms project!
-      </div>
-      <ModuleList data={modules} />
+      Welcome to the Algorithms project!
     </div>
-  </React.Fragment>
+    <ModuleList data={modules} />
+  </div>
 );
