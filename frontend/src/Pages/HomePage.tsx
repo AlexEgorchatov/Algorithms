@@ -1,6 +1,5 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React from 'react';
 import { ModuleList } from '../Module Resources/ModuleList';
 import { modules } from '../Module Resources/ModuleData';
 import { mainFontColor } from '../Styles/Styles';

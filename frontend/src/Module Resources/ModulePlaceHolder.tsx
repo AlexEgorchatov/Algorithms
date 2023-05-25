@@ -19,7 +19,6 @@ export const ModulePlaceholder = ({ title, children }: Props) => {
         border-color: ${moduleBorderBrush};
         border-width: 0px;
         position: relative;
-        cursor: pointer;
         :hover {
           padding: 8px;
           border-width: 2px;
