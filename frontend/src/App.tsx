@@ -10,6 +10,7 @@ import { NotFoundPage } from './Pages/NotFoundPage';
 import { Provider } from 'react-redux';
 import { createStore } from './Store/Store';
 import { Header } from './Module Resources/Header';
+import { mainBackground, mainFontColor, pageBackground } from './Styles/Styles';
 
 const store = createStore();
 function App() {
@@ -17,7 +18,7 @@ function App() {
     <div
       css={css`
         margin: 0px;
-        background-color: #222222;
+        background-color: ${mainBackground};
         min-width: 450px;
       `}
     >
@@ -25,7 +26,7 @@ function App() {
       <div
         css={css`
           margin: 50px 10px 0px 10px;
-          background-color: #444444;
+          background-color: ${pageBackground};
         `}
       >
         <Provider store={store}>
@@ -43,7 +44,7 @@ function App() {
       <div
         css={css`
           margin: 10px;
-          color: #f5c81a;
+          color: ${mainFontColor};
           text-align: end;
         `}
       >

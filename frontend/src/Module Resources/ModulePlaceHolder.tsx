@@ -1,6 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
+import { moduleBackground, moduleBorderBrush } from '../Styles/Styles';
 
 interface Props {
   title: string;
@@ -15,7 +16,7 @@ export const ModulePlaceholder = ({ title, children }: Props) => {
         width: 240px;
         height: 240px;
         border-style: solid;
-        border-color: #e8610e;
+        border-color: ${moduleBorderBrush};
         border-width: 0px;
         position: relative;
         cursor: pointer;
@@ -27,7 +28,7 @@ export const ModulePlaceholder = ({ title, children }: Props) => {
     >
       <div
         css={css`
-          background-color: #777777;
+          background-color: ${moduleBackground};
           height: 210px;
         `}
       >

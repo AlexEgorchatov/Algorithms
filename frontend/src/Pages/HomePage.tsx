@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import React from 'react';
 import { ModuleList } from '../Module Resources/ModuleList';
 import { modules } from '../Module Resources/ModuleData';
+import { mainFontColor } from '../Styles/Styles';
 
 export const HomePage = () => (
   <div
@@ -14,7 +15,7 @@ export const HomePage = () => (
   >
     <div
       css={css`
-        color: #f5c81a;
+        color: ${mainFontColor};
         font-size: 48px;
         text-align: center;
       `}

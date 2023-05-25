@@ -1,5 +1,6 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { mainBackground, mainFontColor } from '../Styles/Styles';
 
 export const Header = () => {
   return (
@@ -14,7 +15,7 @@ export const Header = () => {
         align-items: center;
         justify-content: space-between;
         padding: 0px 20px;
-        background-color: #222222;
+        background-color: ${mainBackground};
         z-index: 999;
       `}
     >
@@ -23,7 +24,7 @@ export const Header = () => {
           css={css`
             font-size: 36px;
             text-decoration: none;
-            color: #f5c81a;
+            color: ${mainFontColor};
             vertical-align: super;
             margin-right: 10px;
           `}
@@ -33,12 +34,17 @@ export const Header = () => {
         </a>
         <select
           css={css`
-            color: #f5c81a;
+            color: ${mainFontColor};
             background-color: transparent;
             border-color: transparent;
-            font-size: 24px;
+            font-size: 36px;
             margin-right: 10px;
             vertical-align: super;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+              'Droid Sans', 'Helvetica Neue', sans-serif;
           `}
         >
           <option>Module 1</option>
@@ -46,9 +52,9 @@ export const Header = () => {
         </select>
         <a
           css={css`
-            font-size: 24px;
+            font-size: 36px;
             text-decoration: none;
-            color: #f5c81a;
+            color: ${mainFontColor};
             vertical-align: super;
           `}
           href="#"
@@ -59,7 +65,7 @@ export const Header = () => {
       <a
         css={css`
           text-decoration: none;
-          color: #f5c81a;
+          color: ${mainFontColor};
           vertical-align: super;
         `}
         href="#"
