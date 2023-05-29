@@ -99,8 +99,8 @@ export const Header = ({ data }: Props) => {
               font-size: 28px;
               border: none;
               cursor: pointer;
-              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-                'Droid Sans', 'Helvetica Neue', sans-serif;
+              font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
+                Helvetica Neue, sans-serif;
             `}
           >
             Modules
