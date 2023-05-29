@@ -1,12 +1,12 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
-import { IModule } from '../Module';
-import { ModulePlaceholder } from '../ModulePlaceHolder';
+import { IModule } from '../Components/Module';
+import { ModulePlaceholder } from '../Components/ModulePlaceHolder';
 import { useSelector } from 'react-redux';
-import { AppState } from '../../Store/Store';
+import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
-import { CharacterState, updatingStringMatchingModuleStateAction } from '../../Store/Home Page/StringMatchingModuleManagement';
+import { CharacterState, updatingStringMatchingModuleStateAction } from '../Store/Home Page/StringMatchingModuleManagement';
 
 interface Props {
   character: string;

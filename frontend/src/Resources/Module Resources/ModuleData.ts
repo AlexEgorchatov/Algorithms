@@ -20,6 +20,6 @@ export const modules: ModuleData[] = [
   {
     moduleType: ModuleEnumeration.PathFinding,
     title: 'Path Finding',
-    link: 'path_find',
+    link: 'pathfinding',
   },
 ];

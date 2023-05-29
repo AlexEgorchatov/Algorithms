@@ -1,6 +1,6 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { ModuleData } from './ModuleData';
+import { ModuleData } from '../Resources/Module Resources/ModuleData';
 import { Module } from './Module';
 
 interface Props {

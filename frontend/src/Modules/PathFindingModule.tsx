@@ -1,11 +1,11 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect } from 'react';
-import { IModule } from '../Module';
-import { ModulePlaceholder } from '../ModulePlaceHolder';
-import { CellState, updatingPathFindingModuleStateAction } from '../../Store/Home Page/PathFindingModuleManagement';
+import { IModule } from '../Components/Module';
+import { ModulePlaceholder } from '../Components/ModulePlaceHolder';
+import { CellState, updatingPathFindingModuleStateAction } from '../Store/Home Page/PathFindingModuleManagement';
 import { useSelector } from 'react-redux';
-import { AppState } from '../../Store/Store';
+import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 
 interface Props {

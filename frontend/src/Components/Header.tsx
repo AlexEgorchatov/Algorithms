@@ -1,12 +1,52 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { mainBackground, mainFontColor } from '../Styles/Styles';
-import { ModuleData } from './ModuleData';
+import { headerItemHovered, mainBackground, mainFontColor } from '../Resources/Colors';
+import { ModuleData } from '../Resources/Module Resources/ModuleData';
 import { Link } from 'react-router-dom';
 
 interface Props {
   data: ModuleData[];
 }
+
+const HeaderStyle = css`
+  font-size: 28px;
+  text-decoration: none;
+  color: ${mainFontColor};
+  vertical-align: super;
+  background-color: transparent;
+  :hover {
+    color: ${headerItemHovered};
+  }
+`;
+
+const HeaderMenuButton = () => {
+  return (
+    <div
+      css={css`
+        &,
+        &::after,
+        &::before {
+          box-sizing: border-box;
+          position: relative;
+          width: 25px;
+          height: 2px;
+          border-radius: 3px;
+          color: ${mainFontColor};
+          background: currentColor;
+        }
+        &::after,
+        &::before {
+          content: '';
+          position: absolute;
+          top: -8px;
+        }
+        &::after {
+          top: 8px;
+        }
+      `}
+    ></div>
+  );
+};
 
 export const Header = ({ data }: Props) => {
   return (
@@ -16,7 +56,8 @@ export const Header = ({ data }: Props) => {
         box-sizing: border-box;
         top: 0;
         width: 100%;
-        min-width: 460px;
+        height: 42px;
+        min-width: 450px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -25,20 +66,14 @@ export const Header = ({ data }: Props) => {
         z-index: 999;
       `}
     >
-      <div>
-        <Link
-          css={css`
-            font-size: 28px;
-            text-decoration: none;
-            color: ${mainFontColor};
-            vertical-align: super;
-            margin-right: 10px;
-            cursor: hand;
-          `}
-          to=""
-          style={{ textDecoration: 'none' }}
-          reloadDocument={true}
-        >
+      <div
+        css={css`
+          @media (max-width: 450px) {
+            display: none;
+          }
+        `}
+      >
+        <Link css={HeaderStyle} style={{ marginRight: '10px' }} to="" reloadDocument={true}>
           Home
         </Link>
         <div
@@ -50,6 +85,9 @@ export const Header = ({ data }: Props) => {
             :hover {
               & > div {
                 display: block;
+              }
+              & > button {
+                color: ${headerItemHovered};
               }
             }
           `}
@@ -72,7 +110,6 @@ export const Header = ({ data }: Props) => {
               display: none;
               position: absolute;
               background-color: #f1f1f1;
-              min-width: 140px;
               z-index: 1;
             `}
           >
@@ -83,13 +120,13 @@ export const Header = ({ data }: Props) => {
                   padding: 12px 16px;
                   text-decoration: none;
                   display: block;
+                  text-decoration: 'none';
                   :hover {
                     background-color: #ddd;
                   }
                 `}
                 key={index}
                 to={item.link}
-                style={{ textDecoration: 'none' }}
                 reloadDocument={true}
               >
                 {item.title}
@@ -97,29 +134,31 @@ export const Header = ({ data }: Props) => {
             ))}
           </div>
         </div>
-        <a
-          css={css`
-            font-size: 28px;
-            text-decoration: none;
-            color: ${mainFontColor};
-            vertical-align: super;
-          `}
-          href="#"
-        >
+        <Link css={HeaderStyle} to="#" reloadDocument={true}>
           About
-        </a>
+        </Link>
       </div>
-      <a
+
+      <div
         css={css`
-          font-size: 18px;
-          text-decoration: none;
-          color: ${mainFontColor};
-          vertical-align: super;
+          display: contents;
+          height: 420px;
+          :hover {
+            & > div {
+              color: ${headerItemHovered};
+            }
+          }
+          @media (min-width: 451px) {
+            display: none;
+          }
         `}
-        href="#"
       >
+        <HeaderMenuButton></HeaderMenuButton>
+      </div>
+
+      <Link css={HeaderStyle} style={{ fontSize: '18px' }} to="*" reloadDocument={true}>
         Sign In
-      </a>
+      </Link>
     </div>
   );
 };

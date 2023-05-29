@@ -1,8 +1,8 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { ModuleList } from '../Module Resources/ModuleList';
-import { modules } from '../Module Resources/ModuleData';
-import { mainFontColor } from '../Styles/Styles';
+import { ModuleList } from '../Components/ModuleList';
+import { modules } from '../Resources/Module Resources/ModuleData';
+import { mainFontColor } from '../Resources/Colors';
 
 export const HomePage = () => (
   <div

@@ -1,7 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
-import { moduleBackground, moduleBorderBrush } from '../Styles/Styles';
+import { moduleBackground, moduleBorderBrush } from '../Resources/Colors';
 
 interface Props {
   title: string;

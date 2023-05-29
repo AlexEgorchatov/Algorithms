@@ -1,8 +1,8 @@
-import { ModuleData } from './ModuleData';
-import { ModuleEnumeration } from './ModuleEnumeration';
-import { SortingModule } from './Modules/SortingModule';
-import { StringMatchingModule } from './Modules/StringMatchingModule';
-import { PathFindingModule } from './Modules/PathFindingModule';
+import { ModuleData } from '../Resources/Module Resources/ModuleData';
+import { ModuleEnumeration } from '../Resources/Module Resources/ModuleEnumeration';
+import { SortingModule } from '../Modules/SortingModule';
+import { StringMatchingModule } from '../Modules/StringMatchingModule';
+import { PathFindingModule } from '../Modules/PathFindingModule';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -32,7 +32,7 @@ export const Module = ({ data }: Props) => {
 
       case ModuleEnumeration.PathFinding:
         return (
-          <Link to="path_find" style={{ textDecoration: 'none' }} reloadDocument={true}>
+          <Link to="pathfinding" style={{ textDecoration: 'none' }} reloadDocument={true}>
             <PathFindingModule title={data.title} />
           </Link>
         );
