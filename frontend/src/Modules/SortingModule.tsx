@@ -1,7 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
-import { IModule } from '../Components/Module';
+import { ModuleTitle } from '../Components/Module';
 import { ModulePlaceholder } from '../Components/ModulePlaceHolder';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppState } from '../Store/Store';
@@ -24,7 +24,7 @@ const SortingBar = ({ height }: Props) => {
   );
 };
 
-export const SortingModule = ({ title }: IModule) => {
+export const SortingModule = ({ title }: ModuleTitle) => {
   const sortingState = useSelector((state: AppState) => state.sortingModuleState);
   const dispatch = useDispatch();
   const timeoutID = React.useRef(-1);

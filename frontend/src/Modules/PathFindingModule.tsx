@@ -1,7 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect } from 'react';
-import { IModule } from '../Components/Module';
+import { ModuleTitle } from '../Components/Module';
 import { ModulePlaceholder } from '../Components/ModulePlaceHolder';
 import { CellState, updatingPathFindingModuleStateAction } from '../Store/Home Page/PathFindingModuleManagement';
 import { useSelector } from 'react-redux';
@@ -51,7 +51,7 @@ const GridCell = ({ state = CellState.Unselected }: Props) => {
   );
 };
 
-export const PathFindingModule = ({ title }: IModule) => {
+export const PathFindingModule = ({ title }: ModuleTitle) => {
   const pathFindingState = useSelector((state: AppState) => state.pathFindingModuleState);
   const dispatch = useDispatch();
   const columnNumber: number = 8;

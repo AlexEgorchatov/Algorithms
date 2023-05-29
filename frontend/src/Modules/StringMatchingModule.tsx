@@ -1,7 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
-import { IModule } from '../Components/Module';
+import { ModuleTitle } from '../Components/Module';
 import { ModulePlaceholder } from '../Components/ModulePlaceHolder';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
@@ -38,7 +38,7 @@ const SearchableCharacter = ({ character, state = CharacterState.Unselected }: P
   );
 };
 
-export const StringMatchingModule = ({ title }: IModule) => {
+export const StringMatchingModule = ({ title }: ModuleTitle) => {
   const stringMatchingState = useSelector((state: AppState) => state.stringMatchingModuleState);
   const dispatch = useDispatch();
   const inputRender = [

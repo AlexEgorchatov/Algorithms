@@ -6,7 +6,7 @@ import { PathFindingModule } from '../Modules/PathFindingModule';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export interface IModule {
+export interface ModuleTitle {
   title: string;
 }
 interface Props {
@@ -18,21 +18,21 @@ export const Module = ({ data }: Props) => {
     switch (data.moduleType) {
       case ModuleEnumeration.Sorting:
         return (
-          <Link to="sort" style={{ textDecoration: 'none' }} reloadDocument={true}>
+          <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
             <SortingModule title={data.title} />
           </Link>
         );
 
       case ModuleEnumeration.StringMatching:
         return (
-          <Link to="search" style={{ textDecoration: 'none' }} reloadDocument={true}>
+          <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
             <StringMatchingModule title={data.title} />
           </Link>
         );
 
       case ModuleEnumeration.PathFinding:
         return (
-          <Link to="pathfinding" style={{ textDecoration: 'none' }} reloadDocument={true}>
+          <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
             <PathFindingModule title={data.title} />
           </Link>
         );
