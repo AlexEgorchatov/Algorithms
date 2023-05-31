@@ -16,21 +16,21 @@ const store = createStore();
 function App() {
   return (
     <BrowserRouter>
-      <div
-        css={css`
-          margin: 0px;
-          background-color: ${mainBackground};
-          min-width: 450px;
-        `}
-      >
-        <Header data={modules} />
+      <Provider store={store}>
         <div
           css={css`
-            margin: 50px 10px 0px 10px;
-            background-color: ${pageBackground};
+            margin: 0px;
+            background-color: ${mainBackground};
+            min-width: 450px;
           `}
         >
-          <Provider store={store}>
+          <Header data={modules} />
+          <div
+            css={css`
+              margin: 50px 10px 0px 10px;
+              background-color: ${pageBackground};
+            `}
+          >
             <Routes>
               <Route path="" element={<HomePage />} />
               <Route path="sort" element={<SortingPage />} />
@@ -38,18 +38,18 @@ function App() {
               <Route path="pathfinding" element={<PathFindingPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
-          </Provider>
+          </div>
+          <div
+            css={css`
+              margin: 10px;
+              color: ${mainFontColor};
+              text-align: end;
+            `}
+          >
+            Made by Alex Egorchatov, 2022
+          </div>
         </div>
-        <div
-          css={css`
-            margin: 10px;
-            color: ${mainFontColor};
-            text-align: end;
-          `}
-        >
-          Made by Alex Egorchatov, 2022
-        </div>
-      </div>
+      </Provider>
     </BrowserRouter>
   );
 }
