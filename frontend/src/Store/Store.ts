@@ -1,13 +1,15 @@
 import { combineReducers, Store } from 'redux';
 import { configureStore } from '@reduxjs/toolkit';
-import { sortingModuleReducer, SortingModuleState } from './Home Page/SortingModuleManagement';
-import { stringMatchingModuleReducer, StringMatchingModuleState } from './Home Page/StringMatchingModuleManagement';
-import { pathFindingModuleReducer, PathFindingModuleState } from './Home Page/PathFindingModuleManagement';
+import { sortingModuleReducer, SortingModuleState } from './Home Page/SortingModuleStateManagement';
+import { stringMatchingModuleReducer, StringMatchingModuleState } from './Home Page/StringMatchingModuleStateManagement';
+import { pathFindingModuleReducer, PathFindingModuleState } from './Home Page/PathFindingModuleStateManagement';
+import { headerReducer, HeaderState } from './Home Page/HeaderStateManagement';
 
 const rootReducer = combineReducers<AppState>({
   sortingModuleState: sortingModuleReducer,
   stringMatchingModuleState: stringMatchingModuleReducer,
   pathFindingModuleState: pathFindingModuleReducer,
+  headerState: headerReducer,
 });
 
 export function createStore(): Store<AppState> {
@@ -19,4 +21,5 @@ export interface AppState {
   readonly sortingModuleState: SortingModuleState;
   readonly stringMatchingModuleState: StringMatchingModuleState;
   readonly pathFindingModuleState: PathFindingModuleState;
+  readonly headerState: HeaderState;
 }
