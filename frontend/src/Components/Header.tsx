@@ -3,9 +3,14 @@ import { css } from '@emotion/react';
 import { headerItemHovered, mainBackground, mainFontColor } from '../Resources/Colors';
 import { ModuleData } from '../Resources/Module Resources/ModuleData';
 import { Link } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppState } from '../Store/Store';
+import { updatingHeaderStateAction } from '../Store/Home Page/HeaderStateManagement';
 
 interface Props {
   data: ModuleData[];
+  isVisible?: boolean;
 }
 
 const HeaderStyle = css`
@@ -19,16 +24,18 @@ const HeaderStyle = css`
   }
 `;
 
-const HeaderMainComponent = ({ data }: Props) => {
+const HeaderMainComponent = ({ data, isVisible }: Props) => {
   return (
     <div
       css={css`
-        @media (max-width: 450px) {
+        background-color: ${mainBackground};
+        ${isVisible &&
+        `@media (max-width: 450px) {
           display: none;
-        }
+        }`}
       `}
     >
-      <Link css={HeaderStyle} style={{ marginRight: '10px' }} to="" reloadDocument={true}>
+      <Link css={HeaderStyle} to="" reloadDocument={true}>
         Home
       </Link>
       <div
@@ -36,7 +43,7 @@ const HeaderMainComponent = ({ data }: Props) => {
           position: relative;
           display: inline-block;
           vertical-align: super;
-          margin-right: 10px;
+          margin: ${isVisible ? '0px 10px' : '0px'};
           :hover {
             & > div {
               display: block;
@@ -49,6 +56,7 @@ const HeaderMainComponent = ({ data }: Props) => {
       >
         <button
           css={css`
+            display: ${isVisible ? 'block' : 'contents'};
             background-color: transparent;
             color: ${mainFontColor};
             font-size: 28px;
@@ -65,6 +73,8 @@ const HeaderMainComponent = ({ data }: Props) => {
             display: none;
             position: absolute;
             background-color: #f1f1f1;
+            left: ${isVisible ? '0px' : '107px'};
+            top: ${isVisible ? '' : '0px'};
             z-index: 1;
           `}
         >
@@ -96,41 +106,68 @@ const HeaderMainComponent = ({ data }: Props) => {
   );
 };
 
-const HeaderMenuButton = () => {
+const HeaderMenuButton = ({ data }: Props) => {
+  const headerState = useSelector((state: AppState) => state.headerState);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        dispatch(updatingHeaderStateAction(false));
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  });
+  const ref = useRef<HTMLDivElement>(null);
   const barStyle = css`
     width: 30px;
     height: 4px;
     background-color: ${mainFontColor};
     margin: 6px 0;
   `;
+  const setDisplay = () => {
+    if (headerState.initialMenuButtonVisibility) return 'display: block';
+    else return 'display: none';
+  };
 
   return (
     <div
       css={css`
         position: relative;
         display: inline-block;
-        :hover {
-          & > div.bar {
-            background-color: ${headerItemHovered};
-          }
-        }
-        @media (min-width: 4501px) {
+        cursor: pointer;
+        @media (min-width: 451px) {
           display: none;
         }
       `}
+      ref={ref}
     >
-      <div className="bar" css={barStyle}></div>
-      <div className="bar" css={barStyle}></div>
-      <div className="bar" css={barStyle}></div>
       <div
-        className="test"
         css={css`
-          display: none;
+          :hover {
+            & > div {
+              background-color: ${headerItemHovered};
+            }
+          }
+        `}
+        onClick={() => dispatch(updatingHeaderStateAction(!headerState.initialMenuButtonVisibility))}
+      >
+        <div css={barStyle}></div>
+        <div css={barStyle}></div>
+        <div css={barStyle}></div>
+      </div>
+
+      <div
+        css={css`
+          position: absolute;
+          margin-left: -1px;
+          ${setDisplay()}
         `}
       >
-        <a>Test1</a>
-        <a>Test1</a>
-        <a>Test1</a>
+        <HeaderMainComponent data={data} isVisible={false} />
       </div>
     </div>
   );
@@ -149,13 +186,13 @@ export const Header = ({ data }: Props) => {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0px 20px;
+        padding: 0px 10px;
         background-color: ${mainBackground};
         z-index: 999;
       `}
     >
-      <HeaderMainComponent data={data} />
-      <HeaderMenuButton />
+      <HeaderMainComponent data={data} isVisible={true} />
+      <HeaderMenuButton data={data} />
 
       <Link css={HeaderStyle} style={{ fontSize: '18px' }} to="*" reloadDocument={true}>
         Sign In
