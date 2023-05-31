@@ -5,7 +5,7 @@ import { ModuleTitle } from '../Components/Module';
 import { ModulePlaceholder } from '../Components/ModulePlaceHolder';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppState } from '../Store/Store';
-import { updatingSortingModuleStateAction } from '../Store/Home Page/SortingModuleManagement';
+import { updatingSortingModuleStateAction } from '../Store/Home Page/SortingModuleStateManagement';
 
 interface Props {
   height: number;

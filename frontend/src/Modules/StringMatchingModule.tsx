@@ -6,7 +6,7 @@ import { ModulePlaceholder } from '../Components/ModulePlaceHolder';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
-import { CharacterState, updatingStringMatchingModuleStateAction } from '../Store/Home Page/StringMatchingModuleManagement';
+import { CharacterState, updatingStringMatchingModuleStateAction } from '../Store/Home Page/StringMatchingModuleStateManagement';
 
 interface Props {
   character: string;
