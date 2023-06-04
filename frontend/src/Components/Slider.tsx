@@ -1,10 +1,12 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
-import { updatingSliderValueStateAction } from '../Store/Sorting Page/SliderComponentStateManagement';
+import {
+  updatingPauseVisibilityStateAction,
+  updatingSliderValueStateAction,
+} from '../Store/Shared/SliderComponentStateManagement';
 
 const controlButtonsContainerStyle = css`
   transform: scale(var(--ggs, 1));
@@ -18,7 +20,8 @@ const controlButtonsContainerStyle = css`
 `;
 
 const PlayPauseButton = () => {
-  let [pauseVisible, setPauseVisible] = React.useState<boolean>(false);
+  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const dispatch = useDispatch();
 
   return (
     <div>
@@ -26,7 +29,7 @@ const PlayPauseButton = () => {
         css={css`
           box-sizing: border-box;
           position: relative;
-          display: ${pauseVisible ? 'none' : 'block'};
+          display: ${sliderState.initialPauseVisibility ? 'none' : 'block'};
           color: white;
           transform: scale(var(--ggs, 1));
           width: 15px;
@@ -36,7 +39,7 @@ const PlayPauseButton = () => {
             color: black;
           }
         `}
-        onClick={() => setPauseVisible(true)}
+        onClick={() => dispatch(updatingPauseVisibilityStateAction(true))}
       >
         <div
           css={css`
@@ -56,7 +59,7 @@ const PlayPauseButton = () => {
         css={css`
           box-sizing: border-box;
           position: relative;
-          display: ${pauseVisible ? 'block' : 'none'};
+          display: ${sliderState.initialPauseVisibility ? 'block' : 'none'};
           transform: scale(var(--ggs, 1));
           width: 12px;
           height: 16px;
@@ -69,7 +72,7 @@ const PlayPauseButton = () => {
             color: black;
           }
         `}
-        onClick={() => setPauseVisible(false)}
+        onClick={() => dispatch(updatingPauseVisibilityStateAction(false))}
       ></div>
     </div>
   );
@@ -135,14 +138,13 @@ const ResetButton = () => {
 };
 
 const Slider = () => {
-  // let [sliderValue, setSliderValue] = React.useState<number>(1);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const dispatch = useDispatch();
 
   const handleSliderChange = () => {
     let input = document.getElementById('inputId');
-    // setSliderValue(parseInt((input! as HTMLInputElement).value));
-    dispatch(updatingSliderValueStateAction(parseInt((input! as HTMLInputElement).value)));
+    let inputValue: number = parseInt((input! as HTMLInputElement).value);
+    dispatch(updatingSliderValueStateAction(inputValue));
   };
   return (
     <div

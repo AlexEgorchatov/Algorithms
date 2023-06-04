@@ -4,7 +4,7 @@ import { sortingModuleReducer, SortingModuleState } from './Home Page/SortingMod
 import { stringMatchingModuleReducer, StringMatchingModuleState } from './Home Page/StringMatchingModuleStateManagement';
 import { pathFindingModuleReducer, PathFindingModuleState } from './Home Page/PathFindingModuleStateManagement';
 import { headerReducer, HeaderState } from './Home Page/HeaderStateManagement';
-import { SliderComponentState, sliderComponentReducer } from './Sorting Page/SliderComponentStateManagement';
+import { sliderComponentReducer, SliderComponentState } from './Shared/SliderComponentStateManagement';
 
 const rootReducer = combineReducers<AppState>({
   sortingModuleState: sortingModuleReducer,
