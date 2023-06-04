@@ -1,32 +1,75 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { AppState } from '../Store/Store';
+import { useDispatch } from 'react-redux';
+import { updatingSliderValueStateAction } from '../Store/Sorting Page/SliderComponentStateManagement';
 
-const PlayButton = () => {
+const controlButtonsContainerStyle = css`
+  transform: scale(var(--ggs, 1));
+  width: 35px;
+  display: flex;
+  color: white;
+  cursor: pointer;
+  :hover {
+    color: black;
+  }
+`;
+
+const PlayPauseButton = () => {
+  let [pauseVisible, setPauseVisible] = React.useState<boolean>(false);
+
   return (
-    <div
-      css={css`
-        box-sizing: border-box;
-        position: relative;
-        display: block;
-        transform: scale(var(--ggs, 1));
-        width: 15px;
-        height: 25px;
-      `}
-    >
-      {' '}
+    <div>
       <div
         css={css`
-          content: '';
-          display: block;
           box-sizing: border-box;
-          position: absolute;
-          width: 0;
-          height: 15px;
-          border-top: 10px solid transparent;
-          border-bottom: 10px solid transparent;
-          border-left: 15px solid;
+          position: relative;
+          display: ${pauseVisible ? 'none' : 'block'};
+          color: white;
+          transform: scale(var(--ggs, 1));
+          width: 15px;
+          height: 16px;
+          cursor: pointer;
+          :hover {
+            color: black;
+          }
         `}
+        onClick={() => setPauseVisible(true)}
+      >
+        <div
+          css={css`
+            content: '';
+            display: block;
+            box-sizing: border-box;
+            position: absolute;
+            width: 0;
+            height: 10px;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 15px solid;
+          `}
+        ></div>
+      </div>
+      <div
+        css={css`
+          box-sizing: border-box;
+          position: relative;
+          display: ${pauseVisible ? 'block' : 'none'};
+          transform: scale(var(--ggs, 1));
+          width: 12px;
+          height: 16px;
+          border-left: 4px solid;
+          border-right: 4px solid;
+          color: white;
+
+          cursor: pointer;
+          :hover {
+            color: black;
+          }
+        `}
+        onClick={() => setPauseVisible(false)}
       ></div>
     </div>
   );
@@ -40,26 +83,20 @@ const CompleteButton = () => {
     position: absolute;
     width: 0;
     height: 15px;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
     border-left: 15px solid;
   `;
 
   return (
-    <div
-      css={css`
-        transform: scale(var(--ggs, 1));
-        width: 35px;
-        display: flex;
-      `}
-    >
+    <div css={controlButtonsContainerStyle}>
       <div css={subButtonStyle} />
       <div css={subButtonStyle} style={{ left: '15px' }} />
       <div
         css={css`
           position: relative;
-          width: 5px;
-          height: 20px;
+          width: 4px;
+          height: 16px;
           background: currentColor;
           left: 30px;
         `}
@@ -76,71 +113,117 @@ const ResetButton = () => {
     position: absolute;
     width: 0;
     height: 15px;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
     border-right: 15px solid;
   `;
 
   return (
-    <div
-      css={css`
-        transform: scale(var(--ggs, 1));
-        width: 35px;
-        display: flex;
-      `}
-    >
+    <div css={controlButtonsContainerStyle}>
       <div
         css={css`
           position: relative;
-          width: 5px;
-          height: 20px;
+          width: 4px;
+          height: 16px;
           background: currentColor;
         `}
       ></div>
-      <div css={subButtonStyle} style={{ right: '15px' }}></div>
-      <div css={subButtonStyle} style={{ right: '0px' }}></div>
+      <div css={subButtonStyle} style={{ right: '16px' }}></div>
+      <div css={subButtonStyle} style={{ right: '1px' }}></div>
     </div>
   );
 };
 
-export const Slider = () => {
-  let [sliderValue, setSliderValue] = React.useState<number>(1);
+const Slider = () => {
+  // let [sliderValue, setSliderValue] = React.useState<number>(1);
+  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const dispatch = useDispatch();
 
   const handleSliderChange = () => {
     let input = document.getElementById('inputId');
-    setSliderValue(parseInt((input! as HTMLInputElement).value));
+    // setSliderValue(parseInt((input! as HTMLInputElement).value));
+    dispatch(updatingSliderValueStateAction(parseInt((input! as HTMLInputElement).value)));
   };
-
   return (
     <div
       css={css`
-        width: 250px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 18px;
+        max-width: 190px;
+        color: white;
+        line-height: 100%;
+        align-items: flex-end;
       `}
     >
+      <input
+        css={css`
+          width: 150px;
+          appearance: none;
+          -webkit-appearance: none;
+          height: 12px;
+          ::-webkit-slider-thumb {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 25px;
+            height: 12px;
+            background: #333;
+            cursor: pointer;
+            :hover {
+              background: black;
+            }
+          }
+        `}
+        id="inputId"
+        type="range"
+        min="1"
+        max="5"
+        step="1"
+        value={sliderState.initialSliderValue}
+        onChange={() => handleSliderChange()}
+      />
       <div
         css={css`
-          display: flex;
-          justify-content: space-between;
-          font-size: 18px;
-          max-width: 160px;
-          color: black;
-          line-height: 100%;
+          cursor: default;
+          margin-bottom: 1px;
         `}
       >
-        <input id="inputId" type="range" min="1" max="5" step="1" value={sliderValue} onChange={() => handleSliderChange()} />
-        <div>x{sliderValue}</div>
+        <b>x{sliderState.initialSliderValue}</b>
       </div>
-      <div
-        css={css`
-          display: flex;
-          justify-content: space-between;
-          max-width: 160px;
-        `}
-      >
-        <ResetButton />
-        <PlayButton />
-        <CompleteButton />
-      </div>
+    </div>
+  );
+};
+
+const AnimationControllers = () => {
+  return (
+    <div
+      css={css`
+        display: flex;
+        justify-content: space-between;
+        max-width: 160px;
+      `}
+    >
+      <ResetButton />
+      <PlayPauseButton />
+      <CompleteButton />
+    </div>
+  );
+};
+
+export const SliderComponent = () => {
+  return (
+    <div
+      css={css`
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 185px;
+        padding: 15px;
+        height: 45px;
+      `}
+    >
+      <Slider />
+      <AnimationControllers />
     </div>
   );
 };

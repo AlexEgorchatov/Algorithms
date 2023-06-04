@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import React from 'react';
 import { mainFontColor, moduleBackground } from '../Resources/Colors';
-import { Slider } from '../Components/Slider';
+import { SliderComponent } from '../Components/Slider';
 
 export const SortingPage = () => {
   return (
@@ -19,7 +19,7 @@ export const SortingPage = () => {
           background-color: ${moduleBackground};
         `}
       >
-        <Slider />
+        <SliderComponent />
       </div>
     </div>
   );
