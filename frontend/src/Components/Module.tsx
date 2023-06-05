@@ -1,5 +1,5 @@
-import { ModuleData } from '../Resources/Module Resources/ModuleData';
-import { ModuleEnumeration } from '../Resources/Module Resources/ModuleEnumeration';
+import { ModuleData } from '../Resources/Home Page Resources/ModuleData';
+import { ModuleEnumeration } from '../Resources/Home Page Resources/ModuleData';
 import { SortingModule } from '../Modules/SortingModule';
 import { StringMatchingModule } from '../Modules/StringMatchingModule';
 import { PathFindingModule } from '../Modules/PathFindingModule';

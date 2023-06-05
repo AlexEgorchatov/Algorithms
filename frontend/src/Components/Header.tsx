@@ -1,7 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { headerItemHovered, mainBackground, mainFontColor } from '../Resources/Colors';
-import { ModuleData } from '../Resources/Module Resources/ModuleData';
+import { ModuleData } from '../Resources/Home Page Resources/ModuleData';
 import { Link } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';

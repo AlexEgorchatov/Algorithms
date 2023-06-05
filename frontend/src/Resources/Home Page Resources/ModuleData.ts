@@ -1,4 +1,8 @@
-import { ModuleEnumeration } from './ModuleEnumeration';
+export enum ModuleEnumeration {
+  Sorting = 0,
+  StringMatching = 1,
+  PathFinding = 2,
+}
 
 export interface ModuleData {
   moduleType: ModuleEnumeration;

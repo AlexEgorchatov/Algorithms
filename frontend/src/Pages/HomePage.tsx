@@ -1,7 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { ModuleList } from '../Components/ModuleList';
-import { modules } from '../Resources/Module Resources/ModuleData';
+import { modules } from '../Resources/Home Page Resources/ModuleData';
 import { mainFontColor } from '../Resources/Colors';
 
 export const HomePage = () => (
