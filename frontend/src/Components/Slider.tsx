@@ -160,7 +160,7 @@ const Slider = () => {
     >
       <input
         css={css`
-          width: 150px;
+          width: 155px;
           appearance: none;
           -webkit-appearance: none;
           height: 12px;

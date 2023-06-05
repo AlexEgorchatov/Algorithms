@@ -1,55 +1,26 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React from 'react';
-import { mainFontColor, moduleBackground } from '../Resources/Colors';
+import React, { Dispatch } from 'react';
+import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
 import { SortingEnumeration, SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
+import { useSelector } from 'react-redux';
+import { AppState } from '../Store/Store';
+import { useDispatch } from 'react-redux';
+import { updatingSortingAlgorithmStateAction } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
+import { AnyAction } from 'redux';
 
-interface Props {
+interface AlgorithmListProps {
   data: SortingData[];
   selectedAlgorithm: SortingEnumeration;
-  setState: React.Dispatch<React.SetStateAction<SortingEnumeration>>;
+  dispatch: Dispatch<AnyAction>;
 }
 
-interface AlgoProps {
-  algorithm: SortingData;
+interface AlgorithmProps {
+  title: string;
   isSelected: boolean;
   onClick: React.MouseEventHandler;
 }
-
-const Algorithm = ({ algorithm, isSelected, onClick }: AlgoProps) => {
-  return (
-    <div
-      css={css`
-        cursor: pointer;
-        background-color: ${isSelected ? 'red' : 'blue'};
-      `}
-      onClick={onClick}
-    >
-      {algorithm.title}
-    </div>
-  );
-};
-
-const AlgorithmsList = ({ data, selectedAlgorithm, setState }: Props) => {
-  return (
-    <div
-      css={css`
-        display: flex;
-      `}
-    >
-      {data.map((algorithm) => (
-        <Algorithm
-          key={algorithm.sortingType}
-          algorithm={algorithm}
-          isSelected={algorithm.sortingType === selectedAlgorithm}
-          onClick={() => setState(algorithm.sortingType)}
-        />
-      ))}
-      {selectedAlgorithm}
-    </div>
-  );
-};
 
 const SortingInput = () => {
   return (
@@ -70,6 +41,7 @@ const SortingInput = () => {
       </div>
       <div
         css={css`
+          display: grid;
           width: 99%;
         `}
       >
@@ -102,8 +74,48 @@ const SortingInput = () => {
   );
 };
 
+const Algorithm = ({ title, isSelected, onClick }: AlgorithmProps) => {
+  return (
+    <div
+      css={css`
+        cursor: pointer;
+        font-size: 20px;
+        color: ${isSelected ? '' : 'white'};
+        margin-right: 10px;
+        :hover {
+          color: ${!isSelected ? `${headerItemHovered}` : ''};
+        }
+      `}
+      onClick={onClick}
+    >
+      {title}
+    </div>
+  );
+};
+
+const AlgorithmsList = ({ data, selectedAlgorithm, dispatch }: AlgorithmListProps) => {
+  return (
+    <div
+      css={css`
+        width: 99%;
+        display: flex;
+      `}
+    >
+      {data.map((algorithm) => (
+        <Algorithm
+          key={algorithm.sortingType}
+          title={algorithm.title}
+          isSelected={algorithm.sortingType === selectedAlgorithm}
+          onClick={() => dispatch(updatingSortingAlgorithmStateAction(algorithm.sortingType))}
+        />
+      ))}
+    </div>
+  );
+};
+
 export const SortingPage = () => {
-  let [selectedAlgorithm, setSelectedAlgorithm] = React.useState<SortingEnumeration>(SortingEnumeration.BubbleSort);
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const dispatch = useDispatch();
 
   return (
     <div
@@ -120,14 +132,7 @@ export const SortingPage = () => {
       >
         Sorting
         <SortingInput />
-        <div
-          css={css`
-            height: 50px;
-            font-size: 16px;
-            background-color: gray;
-          `}
-        ></div>
-        <AlgorithmsList data={sortingAlgorithms} selectedAlgorithm={selectedAlgorithm} setState={setSelectedAlgorithm} />
+        <AlgorithmsList data={sortingAlgorithms} selectedAlgorithm={algorithmState.initialSortingAlgorithm} dispatch={dispatch} />
       </div>
       <div
         css={css`
@@ -137,7 +142,6 @@ export const SortingPage = () => {
         <div
           css={css`
             height: 400px;
-            background-color: gainsboro;
           `}
         ></div>
         <SliderComponent />
