@@ -8,7 +8,7 @@ export interface SortingData {
   title: string;
 }
 
-export const modules: SortingData[] = [
+export const sortingAlgorithms: SortingData[] = [
   {
     sortingType: SortingEnumeration.BubbleSort,
     title: 'Bubble Sort',
