@@ -113,6 +113,131 @@ const AlgorithmsList = ({ data, selectedAlgorithm, dispatch }: AlgorithmListProp
   );
 };
 
+const RefreshButton = () => {
+  return (
+    <div
+      css={css`
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        position: relative;
+        display: flex;
+        transform: scale(var(--ggs, 1));
+        width: 22px;
+        height: 22px;
+        border: 2px solid;
+        border-radius: 4px;
+        color: white;
+        cursor: pointer;
+        :hover {
+          color: ${headerItemHovered};
+          & > div {
+            color: ${headerItemHovered};
+          }
+        }
+      `}
+    >
+      <div
+        css={css`
+          box-sizing: border-box;
+          position: relative;
+          display: block;
+          transform: scale(var(--ggs, 1));
+          width: 12px;
+          height: 12px;
+          border: 2px solid;
+          border-right-color: transparent;
+          border-radius: 100px;
+          color: white;
+          ::before {
+            content: '';
+            display: block;
+            box-sizing: border-box;
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-top: 2px solid;
+            border-right: 2px solid;
+            top: -3px;
+            right: -1px;
+            transform: rotate(68deg);
+          }
+        `}
+      ></div>
+    </div>
+  );
+};
+
+const PlayButton = () => {
+  return (
+    <div
+      css={css`
+        box-sizing: border-box;
+        position: relative;
+        display: block;
+        width: 22px;
+        height: 22px;
+        border: 2px solid;
+        border-radius: 4px;
+        color: white;
+        cursor: pointer;
+        :hover {
+          color: ${headerItemHovered};
+        }
+        ::before {
+          content: '';
+          display: block;
+          box-sizing: border-box;
+          position: absolute;
+          width: 0;
+          height: 10px;
+          border-top: 5px solid transparent;
+          border-bottom: 5px solid transparent;
+          border-left: 6px solid;
+          top: 4px;
+          left: 7px;
+        }
+      `}
+    ></div>
+  );
+};
+
+const GenerateInputButton = () => {
+  return (
+    <div
+      css={css`
+        display: flex;
+      `}
+    >
+      <div
+        css={css`
+          color: white;
+          font-size: 20px;
+        `}
+      >
+        Generate #
+      </div>
+      <input type="text" />
+    </div>
+  );
+};
+
+const AlgorithmControls = () => {
+  return (
+    <div
+      css={css`
+        display: flex;
+        align-items: flex-end;
+        width: 350px;
+      `}
+    >
+      <PlayButton />
+      <RefreshButton />
+      <GenerateInputButton />
+    </div>
+  );
+};
+
 export const SortingPage = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
@@ -131,8 +256,21 @@ export const SortingPage = () => {
         `}
       >
         Sorting
-        <SortingInput />
-        <AlgorithmsList data={sortingAlgorithms} selectedAlgorithm={algorithmState.initialSortingAlgorithm} dispatch={dispatch} />
+        <div
+          css={css`
+            height: 120px;
+            display: grid;
+            align-content: space-between;
+          `}
+        >
+          <SortingInput />
+          <AlgorithmControls />
+          <AlgorithmsList
+            data={sortingAlgorithms}
+            selectedAlgorithm={algorithmState.initialSortingAlgorithm}
+            dispatch={dispatch}
+          />
+        </div>
       </div>
       <div
         css={css`
