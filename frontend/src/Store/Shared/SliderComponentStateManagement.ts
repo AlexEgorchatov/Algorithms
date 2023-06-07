@@ -1,12 +1,12 @@
 //#region State
 export interface SliderComponentState {
   readonly initialSliderValue: number;
-  readonly initialPauseVisibility: boolean;
+  readonly initialPauseVisible: boolean;
 }
 
 const initialSliderComponentState: SliderComponentState = {
   initialSliderValue: 1,
-  initialPauseVisibility: false,
+  initialPauseVisible: false,
 };
 //#endregion State
 
@@ -42,7 +42,7 @@ export const sliderComponentReducer = (state = initialSliderComponentState, acti
     case UPDATINGSPAUSEVISIBILITYSTATE:
       return {
         ...state,
-        initialPauseVisibility: action.visibility,
+        initialPauseVisible: action.visibility,
       };
 
     default:

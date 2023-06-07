@@ -29,7 +29,7 @@ const PlayPauseButton = () => {
         css={css`
           box-sizing: border-box;
           position: relative;
-          display: ${sliderState.initialPauseVisibility ? 'none' : 'block'};
+          display: ${sliderState.initialPauseVisible ? 'none' : 'block'};
           color: white;
           transform: scale(var(--ggs, 1));
           width: 15px;
@@ -59,7 +59,7 @@ const PlayPauseButton = () => {
         css={css`
           box-sizing: border-box;
           position: relative;
-          display: ${sliderState.initialPauseVisibility ? 'block' : 'none'};
+          display: ${sliderState.initialPauseVisible ? 'block' : 'none'};
           transform: scale(var(--ggs, 1));
           width: 12px;
           height: 16px;

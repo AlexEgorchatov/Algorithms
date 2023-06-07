@@ -9,6 +9,7 @@ import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import { updatingSortingAlgorithmStateAction } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
 import { AnyAction } from 'redux';
+import { updatingPauseVisibilityStateAction } from '../Store/Shared/SliderComponentStateManagement';
 
 interface AlgorithmListProps {
   data: SortingData[];
@@ -169,36 +170,77 @@ const RefreshButton = () => {
 };
 
 const PlayButton = () => {
+  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const dispatch = useDispatch();
+
   return (
-    <div
-      css={css`
-        box-sizing: border-box;
-        position: relative;
-        display: block;
-        width: 22px;
-        height: 22px;
-        border: 2px solid;
-        border-radius: 4px;
-        color: white;
-        cursor: pointer;
-        :hover {
-          color: ${headerItemHovered};
-        }
-        ::before {
-          content: '';
-          display: block;
+    <div>
+      <div
+        css={css`
           box-sizing: border-box;
-          position: absolute;
-          width: 0;
-          height: 10px;
-          border-top: 5px solid transparent;
-          border-bottom: 5px solid transparent;
-          border-left: 6px solid;
-          top: 4px;
-          left: 7px;
-        }
-      `}
-    ></div>
+          position: relative;
+          display: ${sliderState.initialPauseVisible ? 'none' : 'flex'};
+          width: 22px;
+          height: 22px;
+          border: 2px solid;
+          border-radius: 4px;
+          color: white;
+          cursor: pointer;
+          :hover {
+            color: ${headerItemHovered};
+          }
+          ::before {
+            content: '';
+            display: block;
+            box-sizing: border-box;
+            position: absolute;
+            width: 0;
+            height: 10px;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 6px solid;
+            top: 4px;
+            left: 7px;
+          }
+        `}
+        onClick={() => dispatch(updatingPauseVisibilityStateAction(true))}
+      ></div>
+      <div
+        css={css`
+          box-sizing: border-box;
+          justify-content: center;
+          align-items: center;
+          position: relative;
+          display: ${sliderState.initialPauseVisible ? 'flex' : 'none'};
+          width: 22px;
+          height: 22px;
+          border: 2px solid;
+          border-radius: 4px;
+          color: white;
+          cursor: pointer;
+          :hover {
+            color: ${headerItemHovered};
+            & > div {
+              color: ${headerItemHovered};
+            }
+          }
+        `}
+        onClick={() => dispatch(updatingPauseVisibilityStateAction(false))}
+      >
+        <div
+          css={css`
+            box-sizing: border-box;
+            position: relative;
+            transform: scale(var(--ggs, 1));
+            width: 10px;
+            height: 12px;
+            border-left: 4px solid;
+            border-right: 4px solid;
+            color: white;
+          `}
+        ></div>
+      </div>
+    </div>
   );
 };
 
@@ -207,17 +249,36 @@ const GenerateInputButton = () => {
     <div
       css={css`
         display: flex;
+        align-items: flex-end;
       `}
     >
       <div
         css={css`
+          box-sizing: border-box;
+          position: relative;
+          align-items: center;
+          display: flex;
+          height: 22px;
+          font-size: 16px;
+          transform: scale(var(--ggs, 1));
+          border: 2px solid;
+          border-radius: 4px;
           color: white;
-          font-size: 20px;
+          cursor: pointer;
+          :hover {
+            color: ${headerItemHovered};
+          }
         `}
       >
         Generate #
       </div>
-      <input type="text" />
+      <input
+        css={css`
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
+            Helvetica Neue, sans-serif;
+        `}
+        type="text"
+      />
     </div>
   );
 };
