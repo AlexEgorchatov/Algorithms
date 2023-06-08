@@ -25,7 +25,6 @@ export const Tooltip = ({ text, direction = 'top' }: Props) => {
         break;
     }
   };
-
   const getBorderRight = () => {
     switch (direction) {
       case 'top':
@@ -44,7 +43,6 @@ export const Tooltip = ({ text, direction = 'top' }: Props) => {
         break;
     }
   };
-
   const getBorderBottom = () => {
     switch (direction) {
       case 'top':
@@ -63,7 +61,6 @@ export const Tooltip = ({ text, direction = 'top' }: Props) => {
         break;
     }
   };
-
   const getBorderLeft = () => {
     switch (direction) {
       case 'top':
@@ -95,7 +92,7 @@ export const Tooltip = ({ text, direction = 'top' }: Props) => {
         border-radius: 6px;
         padding: 5px 0;
         position: absolute;
-        z-index: 1;
+        z-index: 10;
         top: ${direction === 'left' || direction === 'right' ? '-6px' : direction === 'bottom' ? '150%' : ''};
         right: ${direction === 'left' ? '120%' : ''};
         bottom: ${direction === 'top' ? '150%' : ''};
@@ -104,6 +101,7 @@ export const Tooltip = ({ text, direction = 'top' }: Props) => {
         ::before {
           content: '';
           position: absolute;
+          z-index: 10;
           border-top: ${getBorderTop()};
           border-right: ${getBorderRight()};
           border-bottom: ${getBorderBottom()};

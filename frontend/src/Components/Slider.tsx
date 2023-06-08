@@ -7,6 +7,7 @@ import {
   updatingPauseVisibilityStateAction,
   updatingSliderValueStateAction,
 } from '../Store/Shared/SliderComponentStateManagement';
+import { Tooltip } from './Tooltip';
 
 const controlButtonsContainerStyle = css`
   transform: scale(var(--ggs, 1));
@@ -16,6 +17,9 @@ const controlButtonsContainerStyle = css`
   cursor: pointer;
   :hover {
     color: black;
+    & > span {
+      visibility: visible;
+    }
   }
 `;
 
@@ -37,6 +41,9 @@ const PlayPauseButton = () => {
           cursor: pointer;
           :hover {
             color: black;
+            & > span {
+              visibility: visible;
+            }
           }
         `}
         onClick={() => dispatch(updatingPauseVisibilityStateAction(true))}
@@ -54,6 +61,7 @@ const PlayPauseButton = () => {
             border-left: 15px solid;
           `}
         ></div>
+        <Tooltip text="Start animation" />
       </div>
       <div
         css={css`
@@ -70,10 +78,15 @@ const PlayPauseButton = () => {
           cursor: pointer;
           :hover {
             color: black;
+            & > span {
+              visibility: visible;
+            }
           }
         `}
         onClick={() => dispatch(updatingPauseVisibilityStateAction(false))}
-      ></div>
+      >
+        <Tooltip text="Pause animation" />
+      </div>
     </div>
   );
 };
@@ -104,6 +117,7 @@ const CompleteButton = () => {
           left: 30px;
         `}
       ></div>
+      <Tooltip text="Skip animation" />
     </div>
   );
 };
@@ -133,6 +147,7 @@ const ResetButton = () => {
       ></div>
       <div css={subButtonStyle} style={{ right: '16px' }}></div>
       <div css={subButtonStyle} style={{ right: '1px' }}></div>
+      <Tooltip text="Reset animation" />
     </div>
   );
 };
@@ -220,7 +235,7 @@ export const SliderComponent = () => {
         flex-direction: column;
         justify-content: space-between;
         width: 185px;
-        padding: 15px;
+        padding: 15px 15px 15px 45px;
         height: 45px;
       `}
     >
