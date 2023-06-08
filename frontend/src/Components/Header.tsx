@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { headerItemHovered, mainBackground, mainFontColor } from '../Resources/Colors';
 import { ModuleData } from '../Resources/Home Page Resources/ModuleData';
 import { Link } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { updatingHeaderStateAction } from '../Store/Home Page/HeaderStateManagement';
@@ -109,29 +109,28 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
 const HeaderMenuButton = ({ data }: Props) => {
   const headerState = useSelector((state: AppState) => state.headerState);
   const dispatch = useDispatch();
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        dispatch(updatingHeaderStateAction(false));
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside, true);
-    return () => {
-      document.removeEventListener('click', handleClickOutside, true);
-    };
-  });
   const ref = useRef<HTMLDivElement>(null);
+
+  const handleOutsideMenuButtonClick = (event: MouseEvent) => {
+    if (ref.current && !ref.current.contains(event.target as Node)) {
+      dispatch(updatingHeaderStateAction(false));
+    }
+    document.removeEventListener('click', handleOutsideMenuButtonClick, true);
+  };
+  const handleMenuButtonClick = () => {
+    dispatch(updatingHeaderStateAction(!headerState.initialMenuButtonVisibility));
+    document.addEventListener('click', handleOutsideMenuButtonClick, true);
+    return () => {
+      document.removeEventListener('click', handleOutsideMenuButtonClick, true);
+    };
+  };
+
   const barStyle = css`
     width: 30px;
     height: 4px;
     background-color: ${mainFontColor};
     margin: 6px 0;
   `;
-  const setDisplay = () => {
-    if (headerState.initialMenuButtonVisibility) return 'display: block';
-    else return 'display: none';
-  };
 
   return (
     <div
@@ -153,18 +152,17 @@ const HeaderMenuButton = ({ data }: Props) => {
             }
           }
         `}
-        onClick={() => dispatch(updatingHeaderStateAction(!headerState.initialMenuButtonVisibility))}
+        onClick={() => handleMenuButtonClick()}
       >
         <div css={barStyle}></div>
         <div css={barStyle}></div>
         <div css={barStyle}></div>
       </div>
-
       <div
         css={css`
           position: absolute;
           margin-left: -1px;
-          ${setDisplay()}
+          display: ${headerState.initialMenuButtonVisibility ? 'block' : 'none'};
         `}
       >
         <HeaderMainComponent data={data} isVisible={false} />
