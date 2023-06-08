@@ -50,7 +50,7 @@ export const StringMatchingModule = ({ title }: ModuleTitle) => {
     <SearchableCharacter key={5} character={'b'} state={stringMatchingState.initialChars[5]} />,
     <SearchableCharacter key={6} character={'b'} state={stringMatchingState.initialChars[6]} />,
   ];
-  const search = 'ab';
+  const pattern = 'ab';
   const timeoutID = React.useRef(-1);
   const stepTime: number = 50;
   const animationCompleteTime: number = 500;
@@ -125,13 +125,13 @@ export const StringMatchingModule = ({ title }: ModuleTitle) => {
             height: 105px;
           `}
         >
-          Search:
+          Pattern:
           <div
             css={css`
               margin-left: 5px;
             `}
           >
-            {search}
+            {pattern}
           </div>
         </div>
       </ModulePlaceholder>
