@@ -1,21 +1,22 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React, { Dispatch } from 'react';
+import React, { useRef } from 'react';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
-import { SortingEnumeration, SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
+import { SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
-import { updatingSortingAlgorithmStateAction } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
-import { AnyAction } from 'redux';
+import {
+  updatingSortingAlgorithmStateAction,
+  updatingSortingGenerateInputStateAction,
+  updatingSortingHeightsStateAction,
+  updatingSortingInputStateAction,
+} from '../Store/Sorting Page/SortingAlgorithmStateManagement';
 import { updatingPauseVisibilityStateAction } from '../Store/Shared/SliderComponentStateManagement';
-import { Tooltip } from '../Components/Tooltip';
 
 interface AlgorithmListProps {
   data: SortingData[];
-  selectedAlgorithm: SortingEnumeration;
-  dispatch: Dispatch<AnyAction>;
 }
 
 interface AlgorithmProps {
@@ -25,6 +26,20 @@ interface AlgorithmProps {
 }
 
 const SortingInput = () => {
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const dispatch = useDispatch();
+  const inputRegex: RegExp = /^[0-9]{0,2}(\s[0-9]{1,2}){0,24}(\s)?$/;
+  const ref = useRef<HTMLInputElement>(null);
+  const validateInput = (currentInput: string) => {
+    let isValid: boolean = inputRegex.test(currentInput);
+    if (!isValid) return;
+
+    dispatch(updatingSortingInputStateAction(currentInput));
+    let heightsCopy = currentInput.split(' ');
+    if (isNaN(parseInt(heightsCopy[heightsCopy.length - 1]))) heightsCopy.pop();
+    dispatch(updatingSortingHeightsStateAction(heightsCopy));
+  };
+
   return (
     <div
       css={css`
@@ -43,8 +58,11 @@ const SortingInput = () => {
             font-style: italic;
           }
         `}
+        ref={ref}
         type="text"
         placeholder="Type several numbers..."
+        value={algorithmState.initialSortingInput}
+        onInput={() => validateInput(ref.current?.value as string)}
       />
       <div
         css={css`
@@ -85,7 +103,6 @@ const RefreshButton = () => {
         }
       `}
     >
-      <Tooltip text="Reset animation" direction="right" />
       <div
         css={css`
           box-sizing: border-box;
@@ -155,9 +172,7 @@ const PlayPauseButton = () => {
           }
         `}
         onClick={() => dispatch(updatingPauseVisibilityStateAction(true))}
-      >
-        <Tooltip text="Start animation" direction="right" />
-      </div>
+      ></div>
       <div
         css={css`
           box-sizing: border-box;
@@ -183,7 +198,6 @@ const PlayPauseButton = () => {
         `}
         onClick={() => dispatch(updatingPauseVisibilityStateAction(false))}
       >
-        <Tooltip text="Pause animation" direction="right" />
         <div
           css={css`
             box-sizing: border-box;
@@ -202,13 +216,24 @@ const PlayPauseButton = () => {
 };
 
 const GenerateInputComponent = () => {
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const dispatch = useDispatch();
+  const ref = useRef<HTMLInputElement>(null);
+
+  const validateInput = (currentInput: string) => {
+    let inputNumber: number = parseInt(currentInput);
+    if (inputNumber / 100 > 1 || inputNumber > 25) return;
+
+    dispatch(updatingSortingGenerateInputStateAction(currentInput));
+  };
+
   return (
     <div
       css={css`
         display: flex;
         align-items: flex-end;
         justify-content: space-between;
-        width: 185px;
+        width: 125px;
       `}
     >
       <div
@@ -233,12 +258,11 @@ const GenerateInputComponent = () => {
           }
         `}
       >
-        <Tooltip text="Generate # items" />
         Generate
       </div>
       <input
         css={css`
-          width: 100px;
+          width: 40px;
           font-size: 13px;
           font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
             Helvetica Neue, sans-serif;
@@ -246,8 +270,11 @@ const GenerateInputComponent = () => {
             font-style: italic;
           }
         `}
-        type="text"
-        placeholder="Type a number..."
+        max={25}
+        ref={ref}
+        type="number"
+        value={algorithmState.initialSortingGenerateInput}
+        onInput={() => validateInput(ref.current?.value as string)}
       />
     </div>
   );
@@ -260,7 +287,7 @@ const AlgorithmControls = () => {
         display: flex;
         align-items: flex-end;
         justify-content: space-between;
-        width: 270px;
+        width: 210px;
       `}
     >
       <div
@@ -297,7 +324,10 @@ const Algorithm = ({ title, isSelected, onClick }: AlgorithmProps) => {
   );
 };
 
-const AlgorithmsList = ({ data, selectedAlgorithm, dispatch }: AlgorithmListProps) => {
+const AlgorithmsList = ({ data }: AlgorithmListProps) => {
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const dispatch = useDispatch();
+
   return (
     <div
       css={css`
@@ -309,10 +339,39 @@ const AlgorithmsList = ({ data, selectedAlgorithm, dispatch }: AlgorithmListProp
         <Algorithm
           key={algorithm.sortingType}
           title={algorithm.title}
-          isSelected={algorithm.sortingType === selectedAlgorithm}
+          isSelected={algorithm.sortingType === algorithmState.initialSortingAlgorithm}
           onClick={() => dispatch(updatingSortingAlgorithmStateAction(algorithm.sortingType))}
         />
       ))}
+    </div>
+  );
+};
+
+interface Props {
+  height: number;
+}
+const SortingBar = ({ height }: Props) => {
+  return (
+    <div>
+      <div
+        css={css`
+          display: ${isNaN(height) ? 'none' : ''};
+          background-color: white;
+          width: 25px;
+          height: ${height}px;
+          position: relative;
+        `}
+      ></div>
+      <div
+        css={css`
+          display: flex;
+          justify-content: center;
+          color: white;
+          font-size: 20px;
+        `}
+      >
+        {height}
+      </div>
     </div>
   );
 };
@@ -337,7 +396,14 @@ export const SortingPage = () => {
           padding: 10px;
         `}
       >
-        Sorting
+        <div
+          css={css`
+            padding-bottom: 10px;
+            margin-top: -10px;
+          `}
+        >
+          Sorting
+        </div>
         <div
           css={css`
             height: 120px;
@@ -347,24 +413,42 @@ export const SortingPage = () => {
         >
           <SortingInput />
           <AlgorithmControls />
-          <AlgorithmsList
-            data={sortingAlgorithms}
-            selectedAlgorithm={algorithmState.initialSortingAlgorithm}
-            dispatch={dispatch}
-          />
+          <AlgorithmsList data={sortingAlgorithms} />
         </div>
       </div>
       <div
         css={css`
-          display: flex;
-          flex-direction: column;
+          display: block;
           justify-content: space-between;
           background-color: ${moduleBackground};
         `}
       >
-        <div>Elements</div>
+        <div
+          css={css`
+            display: flex;
+            justify-content: center;
+          `}
+        >
+          <div
+            css={css`
+              display: flex;
+              align-items: flex-end;
+              justify-content: space-evenly;
+              width: ${algorithmState.initialSortingHeights.length * 40}px;
+            `}
+          >
+            {algorithmState.initialSortingHeights.map((height, index) => (
+              <SortingBar key={index} height={parseInt(height)} />
+            ))}
+          </div>
+        </div>
+
         <SliderComponent />
       </div>
     </div>
   );
 };
+
+/*
+1 2 91 90 10 9 29 27 2 71 27 12 51 17 10 11 2 49 71 16
+*/
