@@ -418,28 +418,41 @@ export const SortingPage = () => {
       </div>
       <div
         css={css`
-          display: block;
-          justify-content: space-between;
+          display: flex;
+          height: 626px;
+          flex-direction: column;
           background-color: ${moduleBackground};
         `}
       >
         <div
           css={css`
             display: flex;
+            height: 550px;
+            flex-direction: column;
             justify-content: center;
           `}
         >
           <div
             css={css`
               display: flex;
-              align-items: flex-end;
-              justify-content: space-evenly;
-              width: ${algorithmState.initialSortingHeights.length * 40}px;
+              justify-content: center;
+              align-items: center;
+              height: 100%;
+              margin-top: 100px;
             `}
           >
-            {algorithmState.initialSortingHeights.map((height, index) => (
-              <SortingBar key={index} height={parseInt(height)} />
-            ))}
+            <div
+              css={css`
+                display: flex;
+                align-items: flex-end;
+                justify-content: space-evenly;
+                width: ${algorithmState.initialSortingHeights.length * 40}px;
+              `}
+            >
+              {algorithmState.initialSortingHeights.map((height, index) => (
+                <SortingBar key={index} height={parseInt(height)} />
+              ))}
+            </div>
           </div>
         </div>
 
