@@ -15,6 +15,10 @@ import {
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
 import { updatingPauseVisibilityStateAction } from '../Store/Shared/SliderComponentStateManagement';
 
+interface SortingBarProps {
+  height: number;
+}
+
 interface AlgorithmListProps {
   data: SortingData[];
 }
@@ -347,10 +351,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
   );
 };
 
-interface Props {
-  height: number;
-}
-const SortingBar = ({ height }: Props) => {
+const SortingBar = ({ height }: SortingBarProps) => {
   return (
     <div>
       <div
@@ -358,7 +359,7 @@ const SortingBar = ({ height }: Props) => {
           display: ${isNaN(height) ? 'none' : ''};
           background-color: white;
           width: 25px;
-          height: ${height}px;
+          height: ${height * 4}px;
           position: relative;
         `}
       ></div>
@@ -428,31 +429,22 @@ export const SortingPage = () => {
           css={css`
             display: flex;
             height: 550px;
-            flex-direction: column;
             justify-content: center;
+            align-items: flex-end;
+            margin-bottom: 100px;
           `}
         >
           <div
             css={css`
               display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 100%;
-              margin-top: 100px;
+              align-items: flex-end;
+              justify-content: space-evenly;
+              width: ${algorithmState.initialSortingHeights.length * 40}px;
             `}
           >
-            <div
-              css={css`
-                display: flex;
-                align-items: flex-end;
-                justify-content: space-evenly;
-                width: ${algorithmState.initialSortingHeights.length * 40}px;
-              `}
-            >
-              {algorithmState.initialSortingHeights.map((height, index) => (
-                <SortingBar key={index} height={parseInt(height)} />
-              ))}
-            </div>
+            {algorithmState.initialSortingHeights.map((height, index) => (
+              <SortingBar key={index} height={parseInt(height)} />
+            ))}
           </div>
         </div>
 
