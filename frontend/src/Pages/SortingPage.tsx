@@ -1,6 +1,6 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React, { useRef } from 'react';
+import React, { ChangeEvent, KeyboardEventHandler, useEffect, useRef } from 'react';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
 import { SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
@@ -224,9 +224,33 @@ const GenerateInputComponent = () => {
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    handleGenerateElements();
+  }, []);
+
+  const handleGenerateElements = () => {
+    let newHeights: string[] = [];
+    let newInput: string = '';
+
+    for (let i = 0; i < parseInt(algorithmState.initialSortingGenerateInput); i++) {
+      let random: number = Math.floor(Math.random() * 100);
+      let stringValue = random.toString();
+      newInput += `${stringValue} `;
+      newHeights.push(stringValue);
+    }
+
+    dispatch(updatingSortingInputStateAction(newInput.trim()));
+    dispatch(updatingSortingHeightsStateAction(newHeights));
+  };
+
+  const handleEnterKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') return;
+    handleGenerateElements();
+  };
+
   const validateInput = (currentInput: string) => {
     let inputNumber: number = parseInt(currentInput);
-    if (inputNumber / 100 > 1 || inputNumber > 25) return;
+    if (inputNumber > 25) return;
 
     dispatch(updatingSortingGenerateInputStateAction(currentInput));
   };
@@ -261,6 +285,7 @@ const GenerateInputComponent = () => {
             }
           }
         `}
+        onClick={handleGenerateElements}
       >
         Generate
       </div>
@@ -274,11 +299,13 @@ const GenerateInputComponent = () => {
             font-style: italic;
           }
         `}
+        min={0}
         max={25}
         ref={ref}
         type="number"
         value={algorithmState.initialSortingGenerateInput}
         onInput={() => validateInput(ref.current?.value as string)}
+        onKeyUp={handleEnterKeyUp}
       />
     </div>
   );
@@ -377,6 +404,31 @@ const SortingBar = ({ height }: SortingBarProps) => {
   );
 };
 
+const executeBubbleSortAlgorithm = async () => {
+  // let length = sortingState.initialHeights.length;
+  // let heightsCopy = [...sortingState.initialHeights];
+  // for (let i = 0; i < length - 1; i++) {
+  //   let isSwapped: boolean = false;
+  //   for (let j = 0; j < length - i - 1; j++) {
+  //     if (heightsCopy[j] <= heightsCopy[j + 1]) continue;
+  //     let tempHeight = heightsCopy[j];
+  //     heightsCopy[j] = heightsCopy[j + 1];
+  //     heightsCopy[j + 1] = tempHeight;
+  //     dispatch(updatingSortingModuleStateAction(heightsCopy));
+  //     await new Promise((resolve) => awaitCancellation(resolve, stepTime));
+  //     heightsCopy = [...heightsCopy];
+  //     isSwapped = true;
+  //   }
+  //   if (!isSwapped) {
+  //     await new Promise((resolve) => awaitCancellation(resolve, animationCompleteTime));
+  //     resetComponentState();
+  //     i = -1;
+  //     await new Promise((resolve) => awaitCancellation(resolve, stepTime * 2));
+  //     heightsCopy = [...sortingState.initialHeights];
+  //   }
+  // }
+};
+
 export const SortingPage = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
@@ -453,7 +505,3 @@ export const SortingPage = () => {
     </div>
   );
 };
-
-/*
-1 2 91 90 10 9 29 27 2 71 27 12 51 17 10 11 2 49 71 16
-*/
