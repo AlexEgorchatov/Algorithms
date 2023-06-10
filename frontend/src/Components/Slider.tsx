@@ -197,7 +197,7 @@ const Slider = () => {
         max="5"
         step="1"
         value={sliderState.initialSliderValue}
-        onChange={() => handleSliderChange()}
+        onChange={handleSliderChange}
       />
       <div
         css={css`

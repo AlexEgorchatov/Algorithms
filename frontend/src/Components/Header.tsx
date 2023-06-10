@@ -152,7 +152,7 @@ const HeaderMenuButton = ({ data }: Props) => {
             }
           }
         `}
-        onClick={() => handleMenuButtonClick()}
+        onClick={handleMenuButtonClick}
       >
         <div css={barStyle}></div>
         <div css={barStyle}></div>
