@@ -1,6 +1,6 @@
 /**@jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import React, { ChangeEvent, KeyboardEventHandler, useEffect, useRef } from 'react';
+import { css, keyframes } from '@emotion/react';
+import React, { useEffect, useRef } from 'react';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
 import { SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
@@ -8,16 +8,14 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import {
+  SortingBarProps,
+  SortingBarState,
   updatingSortingAlgorithmStateAction,
   updatingSortingGenerateInputStateAction,
-  updatingSortingHeightsStateAction,
+  updatingSortingHeightsStateAction as updatingSortingBarsStateAction,
   updatingSortingInputStateAction,
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
 import { updatingPauseVisibilityStateAction } from '../Store/Shared/SliderComponentStateManagement';
-
-interface SortingBarProps {
-  height: number;
-}
 
 interface AlgorithmListProps {
   data: SortingData[];
@@ -39,9 +37,13 @@ const SortingInput = () => {
     if (!isValid) return;
 
     dispatch(updatingSortingInputStateAction(currentInput));
-    let heightsCopy = currentInput.split(' ');
-    if (isNaN(parseInt(heightsCopy[heightsCopy.length - 1]))) heightsCopy.pop();
-    dispatch(updatingSortingHeightsStateAction(heightsCopy));
+    let stringArrayInput = currentInput.split(' ');
+    if (isNaN(parseInt(stringArrayInput[stringArrayInput.length - 1]))) stringArrayInput.pop();
+    let barsCopy: SortingBarProps[] = [];
+    for (let i = 0; i < stringArrayInput.length; i++) {
+      barsCopy.push({ height: parseInt(stringArrayInput[i]), left: 0 });
+    }
+    dispatch(updatingSortingBarsStateAction(barsCopy));
   };
 
   return (
@@ -140,7 +142,47 @@ const RefreshButton = () => {
 
 const PlayPauseButton = () => {
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
+  const stepTime: number = 1000;
+  const animationCompleteTime: number = 1000;
+
+  const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {
+    window.setTimeout(resolve, awaitTime);
+  };
+
+  const executeBubbleSortAlgorithm = async () => {
+    let length = algorithmState.initialSortingBars.length;
+    let barsCopy = [...algorithmState.initialSortingBars];
+
+    for (let i = 0; i < length - 1; i++) {
+      let isSwapped: boolean = false;
+      for (let j = 0; j < length - i - 1; j++) {
+        if (barsCopy[j].height <= barsCopy[j + 1].height) continue;
+
+        console.log(`processing ${j} and ${j + 1}`);
+
+        let tempBar = barsCopy[j];
+        barsCopy[j] = { height: barsCopy[j + 1].height, barState: SortingBarState.Selected, left: 40 };
+        barsCopy[j + 1] = { height: tempBar.height, barState: SortingBarState.Selected, left: -40 };
+        dispatch(updatingSortingBarsStateAction(barsCopy));
+
+        await new Promise((resolve) => awaitCancellation(resolve, stepTime));
+        barsCopy = [...barsCopy];
+        isSwapped = true;
+        await new Promise((resolve) => awaitCancellation(resolve, stepTime));
+      }
+      if (!isSwapped) {
+        await new Promise((resolve) => awaitCancellation(resolve, animationCompleteTime));
+        await new Promise((resolve) => awaitCancellation(resolve, stepTime * 2));
+      }
+    }
+  };
+
+  const handleStartButtonClick = () => {
+    dispatch(updatingPauseVisibilityStateAction(true));
+    executeBubbleSortAlgorithm();
+  };
 
   return (
     <div>
@@ -175,7 +217,7 @@ const PlayPauseButton = () => {
             left: 7px;
           }
         `}
-        onClick={() => dispatch(updatingPauseVisibilityStateAction(true))}
+        onClick={handleStartButtonClick}
       ></div>
       <div
         css={css`
@@ -229,18 +271,18 @@ const GenerateInputComponent = () => {
   }, []);
 
   const handleGenerateElements = () => {
-    let newHeights: string[] = [];
+    let newHeights: SortingBarProps[] = [];
     let newInput: string = '';
 
     for (let i = 0; i < parseInt(algorithmState.initialSortingGenerateInput); i++) {
       let random: number = Math.floor(Math.random() * 100);
       let stringValue = random.toString();
       newInput += `${stringValue} `;
-      newHeights.push(stringValue);
+      newHeights.push({ height: random, left: 0 });
     }
 
     dispatch(updatingSortingInputStateAction(newInput.trim()));
-    dispatch(updatingSortingHeightsStateAction(newHeights));
+    dispatch(updatingSortingBarsStateAction(newHeights));
   };
 
   const handleEnterKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -378,9 +420,23 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
   );
 };
 
-const SortingBar = ({ height }: SortingBarProps) => {
+const SortingBar = ({ height, left = 0, barState = SortingBarState.Unselected }: SortingBarProps) => {
+  const swap = keyframes`
+    0%{
+
+    }
+    100%{
+      
+    }
+  `;
+
   return (
-    <div>
+    <div
+      css={css`
+        position: relative;
+        left: ${left}px;
+      `}
+    >
       <div
         css={css`
           display: ${isNaN(height) ? 'none' : ''};
@@ -388,6 +444,7 @@ const SortingBar = ({ height }: SortingBarProps) => {
           width: 25px;
           height: ${height * 4}px;
           position: relative;
+          background-color: ${barState === SortingBarState.Unselected ? 'white' : 'orange'};
         `}
       ></div>
       <div
@@ -396,37 +453,13 @@ const SortingBar = ({ height }: SortingBarProps) => {
           justify-content: center;
           color: white;
           font-size: 20px;
+          color: ${barState === SortingBarState.Unselected ? 'white' : 'orange'};
         `}
       >
         {height}
       </div>
     </div>
   );
-};
-
-const executeBubbleSortAlgorithm = async () => {
-  // let length = sortingState.initialHeights.length;
-  // let heightsCopy = [...sortingState.initialHeights];
-  // for (let i = 0; i < length - 1; i++) {
-  //   let isSwapped: boolean = false;
-  //   for (let j = 0; j < length - i - 1; j++) {
-  //     if (heightsCopy[j] <= heightsCopy[j + 1]) continue;
-  //     let tempHeight = heightsCopy[j];
-  //     heightsCopy[j] = heightsCopy[j + 1];
-  //     heightsCopy[j + 1] = tempHeight;
-  //     dispatch(updatingSortingModuleStateAction(heightsCopy));
-  //     await new Promise((resolve) => awaitCancellation(resolve, stepTime));
-  //     heightsCopy = [...heightsCopy];
-  //     isSwapped = true;
-  //   }
-  //   if (!isSwapped) {
-  //     await new Promise((resolve) => awaitCancellation(resolve, animationCompleteTime));
-  //     resetComponentState();
-  //     i = -1;
-  //     await new Promise((resolve) => awaitCancellation(resolve, stepTime * 2));
-  //     heightsCopy = [...sortingState.initialHeights];
-  //   }
-  // }
 };
 
 export const SortingPage = () => {
@@ -491,11 +524,11 @@ export const SortingPage = () => {
               display: flex;
               align-items: flex-end;
               justify-content: space-evenly;
-              width: ${algorithmState.initialSortingHeights.length * 40}px;
+              width: ${algorithmState.initialSortingBars.length * 40}px;
             `}
           >
-            {algorithmState.initialSortingHeights.map((height, index) => (
-              <SortingBar key={index} height={parseInt(height)} />
+            {algorithmState.initialSortingBars.map((bar, index) => (
+              <SortingBar key={index} height={bar.height} barState={bar.barState} left={bar.left} />
             ))}
           </div>
         </div>

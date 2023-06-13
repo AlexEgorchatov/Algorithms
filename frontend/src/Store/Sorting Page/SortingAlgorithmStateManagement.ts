@@ -1,18 +1,29 @@
 import { SortingEnumeration } from '../../Resources/Sorting Page Resources/SortingData';
 
+export enum SortingBarState {
+  Unselected = 0,
+  Selected = 1,
+}
+
+export interface SortingBarProps {
+  height: number;
+  left: number;
+  barState?: SortingBarState;
+}
+
 //#region State
 export interface SortingAlgorithmState {
   readonly initialSortingAlgorithm: SortingEnumeration;
   readonly initialSortingInput: string;
   readonly initialSortingGenerateInput: string;
-  readonly initialSortingHeights: string[];
+  readonly initialSortingBars: SortingBarProps[];
 }
 
 const initialSortingModuleState: SortingAlgorithmState = {
   initialSortingAlgorithm: SortingEnumeration.BubbleSort,
   initialSortingInput: '',
   initialSortingGenerateInput: '25',
-  initialSortingHeights: [],
+  initialSortingBars: [],
 };
 //#endregion State
 
@@ -39,10 +50,10 @@ export const updatingSortingGenerateInputStateAction = (generateInput = initialS
   } as const);
 
 const UPDATINGSORTINGHEIGHTSSTATE = 'UpdatingSortingHeightsState';
-export const updatingSortingHeightsStateAction = (heights = initialSortingModuleState.initialSortingHeights) =>
+export const updatingSortingHeightsStateAction = (bars = initialSortingModuleState.initialSortingBars) =>
   ({
     type: UPDATINGSORTINGHEIGHTSSTATE,
-    heights: heights,
+    bars: bars,
   } as const);
 
 //#endregion Actions
@@ -76,7 +87,7 @@ export const sortingAlgorithmReducer = (state = initialSortingModuleState, actio
     case UPDATINGSORTINGHEIGHTSSTATE:
       return {
         ...state,
-        initialSortingHeights: action.heights,
+        initialSortingBars: action.bars,
       };
 
     default:
