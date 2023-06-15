@@ -7,7 +7,6 @@ export enum SortingBarState {
 
 export interface SortingBarProps {
   height: number;
-  left: number;
   barState?: SortingBarState;
 }
 

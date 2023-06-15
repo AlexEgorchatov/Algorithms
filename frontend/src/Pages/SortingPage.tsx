@@ -41,7 +41,7 @@ const SortingInput = () => {
     if (isNaN(parseInt(stringArrayInput[stringArrayInput.length - 1]))) stringArrayInput.pop();
     let barsCopy: SortingBarProps[] = [];
     for (let i = 0; i < stringArrayInput.length; i++) {
-      barsCopy.push({ height: parseInt(stringArrayInput[i]), left: 0 });
+      barsCopy.push({ height: parseInt(stringArrayInput[i]) });
     }
     dispatch(updatingSortingBarsStateAction(barsCopy));
   };
@@ -144,7 +144,7 @@ const PlayPauseButton = () => {
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
-  const stepTime: number = 1000;
+  const stepTime: number = 100;
   const animationCompleteTime: number = 1000;
 
   const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {
@@ -163,8 +163,8 @@ const PlayPauseButton = () => {
         console.log(`processing ${j} and ${j + 1}`);
 
         let tempBar = barsCopy[j];
-        barsCopy[j] = { height: barsCopy[j + 1].height, barState: SortingBarState.Selected, left: 40 };
-        barsCopy[j + 1] = { height: tempBar.height, barState: SortingBarState.Selected, left: -40 };
+        barsCopy[j] = { height: barsCopy[j + 1].height, barState: SortingBarState.Selected };
+        barsCopy[j + 1] = { height: tempBar.height, barState: SortingBarState.Selected };
         dispatch(updatingSortingBarsStateAction(barsCopy));
 
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
@@ -278,7 +278,7 @@ const GenerateInputComponent = () => {
       let random: number = Math.floor(Math.random() * 100);
       let stringValue = random.toString();
       newInput += `${stringValue} `;
-      newHeights.push({ height: random, left: 0 });
+      newHeights.push({ height: random });
     }
 
     dispatch(updatingSortingInputStateAction(newInput.trim()));
@@ -420,7 +420,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
   );
 };
 
-const SortingBar = ({ height, left = 0, barState = SortingBarState.Unselected }: SortingBarProps) => {
+const SortingBar = ({ height, barState = SortingBarState.Unselected }: SortingBarProps) => {
   const swap = keyframes`
     0%{
 
@@ -434,7 +434,6 @@ const SortingBar = ({ height, left = 0, barState = SortingBarState.Unselected }:
     <div
       css={css`
         position: relative;
-        left: ${left}px;
       `}
     >
       <div
@@ -528,7 +527,7 @@ export const SortingPage = () => {
             `}
           >
             {algorithmState.initialSortingBars.map((bar, index) => (
-              <SortingBar key={index} height={bar.height} barState={bar.barState} left={bar.left} />
+              <SortingBar key={index} height={bar.height} barState={bar.barState} />
             ))}
           </div>
         </div>
