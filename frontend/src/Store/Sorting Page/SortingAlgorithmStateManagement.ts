@@ -8,6 +8,7 @@ export enum SortingBarState {
 export interface SortingBarProps {
   height: number;
   barState?: SortingBarState;
+  id?: string;
 }
 
 //#region State
@@ -21,7 +22,7 @@ export interface SortingAlgorithmState {
 const initialSortingModuleState: SortingAlgorithmState = {
   initialSortingAlgorithm: SortingEnumeration.BubbleSort,
   initialSortingInput: '',
-  initialSortingGenerateInput: '5',
+  initialSortingGenerateInput: '10',
   initialSortingBars: [],
 };
 //#endregion State
@@ -49,7 +50,7 @@ export const updatingSortingGenerateInputStateAction = (generateInput = initialS
   } as const);
 
 const UPDATINGSORTINGHEIGHTSSTATE = 'UpdatingSortingHeightsState';
-export const updatingSortingHeightsStateAction = (bars = initialSortingModuleState.initialSortingBars) =>
+export const updatingSortingBarsStateAction = (bars = initialSortingModuleState.initialSortingBars) =>
   ({
     type: UPDATINGSORTINGHEIGHTSSTATE,
     bars: bars,
@@ -62,7 +63,7 @@ type SortingAlgorithmActions =
   | ReturnType<typeof updatingSortingAlgorithmStateAction>
   | ReturnType<typeof updatingSortingInputStateAction>
   | ReturnType<typeof updatingSortingGenerateInputStateAction>
-  | ReturnType<typeof updatingSortingHeightsStateAction>;
+  | ReturnType<typeof updatingSortingBarsStateAction>;
 export const sortingAlgorithmReducer = (state = initialSortingModuleState, action: SortingAlgorithmActions) => {
   switch (action.type) {
     case UPDATINGSORTINGALGORITHMSTATE:

@@ -12,7 +12,7 @@ import {
   SortingBarState,
   updatingSortingAlgorithmStateAction,
   updatingSortingGenerateInputStateAction,
-  updatingSortingHeightsStateAction as updatingSortingBarsStateAction,
+  updatingSortingBarsStateAction,
   updatingSortingInputStateAction,
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
 import { updatingPauseVisibilityStateAction } from '../Store/Shared/SliderComponentStateManagement';
@@ -144,11 +144,33 @@ const PlayPauseButton = () => {
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
-  const stepTime: number = 100;
+  const stepTime: number = 1000;
   const animationCompleteTime: number = 1000;
 
   const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {
     window.setTimeout(resolve, awaitTime);
+  };
+
+  const swap = (div1: HTMLDivElement, div2: HTMLDivElement) => {
+    let div1X = div1.getBoundingClientRect().left - div2.getBoundingClientRect().left;
+    let div2X = div2.getBoundingClientRect().left - div1.getBoundingClientRect().left;
+
+    div1.style.transition = `transform ease-in ${1000}ms`;
+    div2.style.transition = `transform ease-in ${1000}ms`;
+    div1.style.transform = `translateX(${div2X}px)`;
+    div2.style.transform = `translateX(${div1X}px)`;
+
+    console.log('before ID update');
+    console.log(`${div1.innerText} ${div1.id}`);
+    console.log(`${div2.innerText} ${div2.id}`);
+
+    let tempDiv = div1.id;
+    div1.id = div2.id;
+    div2.id = tempDiv;
+
+    console.log('after ID update');
+    console.log(`${div1.innerText} ${div1.id}`);
+    console.log(`${div2.innerText} ${div2.id}`);
   };
 
   const executeBubbleSortAlgorithm = async () => {
@@ -160,21 +182,39 @@ const PlayPauseButton = () => {
       for (let j = 0; j < length - i - 1; j++) {
         if (barsCopy[j].height <= barsCopy[j + 1].height) continue;
 
-        let tempBar = barsCopy[j];
-        barsCopy[j] = { height: barsCopy[j + 1].height, barState: SortingBarState.Selected };
-        barsCopy[j + 1] = { height: tempBar.height, barState: SortingBarState.Selected };
-        dispatch(updatingSortingBarsStateAction(barsCopy));
+        // console.log(`Iteration number ${j}`);
+        // console.log(`State at the start of the iteration`);
+        // console.log(...barsCopy);
 
-        await new Promise((resolve) => awaitCancellation(resolve, stepTime));
+        const div1: HTMLDivElement = document.getElementById(j.toString()) as HTMLDivElement;
+        const div2: HTMLDivElement = document.getElementById((j + 1).toString()) as HTMLDivElement;
+        swap(div1, div2);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        var tempHeight = barsCopy[j].height;
+        barsCopy[j] = { height: barsCopy[j + 1].height, barState: SortingBarState.Selected };
+        barsCopy[j + 1] = { height: tempHeight, barState: SortingBarState.Selected };
+
+        // console.log(`Before state update `);
+        // console.log(...barsCopy);
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        dispatch(updatingSortingBarsStateAction(barsCopy));
         barsCopy = [...barsCopy];
-        barsCopy[j] = { height: barsCopy[j].height, barState: SortingBarState.Unselected };
-        barsCopy[j + 1] = { height: barsCopy[j + 1].height, barState: SortingBarState.Unselected };
+        div1.style.transition = ``;
+        div2.style.transition = ``;
+        div1.style.transform = ``;
+        div2.style.transform = ``;
+        dispatch(updatingSortingBarsStateAction(barsCopy));
+        barsCopy = [...barsCopy];
+
+        // console.log(`After state update `);
+        // console.log(...barsCopy);
+
         isSwapped = true;
-        await new Promise((resolve) => awaitCancellation(resolve, stepTime));
       }
       if (!isSwapped) {
-        await new Promise((resolve) => awaitCancellation(resolve, animationCompleteTime));
-        await new Promise((resolve) => awaitCancellation(resolve, stepTime * 2));
       }
     }
   };
@@ -420,21 +460,13 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
   );
 };
 
-const SortingBar = ({ height, barState = SortingBarState.Unselected }: SortingBarProps) => {
-  const swap = keyframes`
-    0%{
-
-    }
-    100%{
-      
-    }
-  `;
-
+const SortingBar = ({ height, barState = SortingBarState.Unselected, id }: SortingBarProps) => {
   return (
     <div
       css={css`
         position: relative;
       `}
+      id={id}
     >
       <div
         css={css`
@@ -527,7 +559,7 @@ export const SortingPage = () => {
             `}
           >
             {algorithmState.initialSortingBars.map((bar, index) => (
-              <SortingBar key={index} height={bar.height} barState={bar.barState} />
+              <SortingBar key={index} id={index.toString()} height={bar.height} barState={bar.barState} />
             ))}
           </div>
         </div>
