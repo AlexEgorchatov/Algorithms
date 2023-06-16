@@ -151,26 +151,28 @@ const PlayPauseButton = () => {
     window.setTimeout(resolve, awaitTime);
   };
 
-  const swap = (div1: HTMLDivElement, div2: HTMLDivElement) => {
-    let div1X = div1.getBoundingClientRect().left - div2.getBoundingClientRect().left;
-    let div2X = div2.getBoundingClientRect().left - div1.getBoundingClientRect().left;
+  const swap = async (div1: HTMLDivElement, div2: HTMLDivElement) => {
+    let div1Shift = div1.getBoundingClientRect().left - div2.getBoundingClientRect().left;
+    let div2Shift = -div1Shift;
 
-    div1.style.transition = `transform ease-in ${1000}ms`;
-    div2.style.transition = `transform ease-in ${1000}ms`;
-    div1.style.transform = `translateX(${div2X}px)`;
-    div2.style.transform = `translateX(${div1X}px)`;
+    console.log('entered swap');
 
-    console.log('before ID update');
-    console.log(`${div1.innerText} ${div1.id}`);
-    console.log(`${div2.innerText} ${div2.id}`);
+    let div1ComputedStyle = getComputedStyle(div1).transform;
+    let div2ComputedStyle = getComputedStyle(div2).transform;
+    let div1Matrix = new DOMMatrix(div1ComputedStyle);
+    let div2Matrix = new DOMMatrix(div2ComputedStyle);
+    let currentDiv1XTranslate = div1Matrix.e + div2Shift;
+    let currentDiv2XTranslate = div2Matrix.e + div1Shift;
+
+    div1.style.transition = `transform ease-in ${500}ms`;
+    div2.style.transition = `transform ease-in ${500}ms`;
+    // div1.style.transform = `translateX(${currentDiv1XTranslate}px)`;
+    // div2.style.transform = `translateX(${currentDiv2XTranslate}px)`;
 
     let tempDiv = div1.id;
     div1.id = div2.id;
     div2.id = tempDiv;
-
-    console.log('after ID update');
-    console.log(`${div1.innerText} ${div1.id}`);
-    console.log(`${div2.innerText} ${div2.id}`);
+    await new Promise((resolve) => setTimeout(resolve, stepTime));
   };
 
   const executeBubbleSortAlgorithm = async () => {
@@ -182,35 +184,41 @@ const PlayPauseButton = () => {
       for (let j = 0; j < length - i - 1; j++) {
         if (barsCopy[j].height <= barsCopy[j + 1].height) continue;
 
-        // console.log(`Iteration number ${j}`);
-        // console.log(`State at the start of the iteration`);
-        // console.log(...barsCopy);
+        console.log(`iteration # ${j}`);
+        console.log(`current state`);
+        console.log([...barsCopy]);
+
+        barsCopy[j] = { height: barsCopy[j].height, barState: SortingBarState.Selected };
+        barsCopy[j + 1] = { height: barsCopy[j + 1].height, barState: SortingBarState.Selected };
+        dispatch(updatingSortingBarsStateAction(barsCopy));
+        console.log(`updated active bars colors to selected state`);
+        console.log([...barsCopy]);
+        await new Promise((resolve) => setTimeout(resolve, stepTime));
+        barsCopy = [...barsCopy];
 
         const div1: HTMLDivElement = document.getElementById(j.toString()) as HTMLDivElement;
         const div2: HTMLDivElement = document.getElementById((j + 1).toString()) as HTMLDivElement;
-        swap(div1, div2);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await swap(div1, div2);
+        console.log('swap completed');
+        await new Promise((resolve) => setTimeout(resolve, stepTime));
 
         var tempHeight = barsCopy[j].height;
         barsCopy[j] = { height: barsCopy[j + 1].height, barState: SortingBarState.Selected };
         barsCopy[j + 1] = { height: tempHeight, barState: SortingBarState.Selected };
 
-        // console.log(`Before state update `);
-        // console.log(...barsCopy);
-
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
         dispatch(updatingSortingBarsStateAction(barsCopy));
-        barsCopy = [...barsCopy];
-        div1.style.transition = ``;
-        div2.style.transition = ``;
-        div1.style.transform = ``;
-        div2.style.transform = ``;
-        dispatch(updatingSortingBarsStateAction(barsCopy));
+        console.log(`updated active bars heights state`);
+        console.log([...barsCopy]);
+        await new Promise((resolve) => setTimeout(resolve, stepTime));
         barsCopy = [...barsCopy];
 
-        // console.log(`After state update `);
-        // console.log(...barsCopy);
+        barsCopy[j] = { height: barsCopy[j].height, barState: SortingBarState.Unselected };
+        barsCopy[j + 1] = { height: barsCopy[j + 1].height, barState: SortingBarState.Unselected };
+        dispatch(updatingSortingBarsStateAction(barsCopy));
+        console.log(`updated active bars colors to UNselected state`);
+        console.log([...barsCopy]);
+        await new Promise((resolve) => setTimeout(resolve, stepTime));
+        barsCopy = [...barsCopy];
 
         isSwapped = true;
       }
