@@ -21,7 +21,7 @@ export interface SortingAlgorithmState {
 const initialSortingModuleState: SortingAlgorithmState = {
   initialSortingAlgorithm: SortingEnumeration.BubbleSort,
   initialSortingInput: '',
-  initialSortingGenerateInput: '25',
+  initialSortingGenerateInput: '5',
   initialSortingBars: [],
 };
 //#endregion State

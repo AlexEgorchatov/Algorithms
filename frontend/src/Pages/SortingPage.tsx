@@ -160,8 +160,6 @@ const PlayPauseButton = () => {
       for (let j = 0; j < length - i - 1; j++) {
         if (barsCopy[j].height <= barsCopy[j + 1].height) continue;
 
-        console.log(`processing ${j} and ${j + 1}`);
-
         let tempBar = barsCopy[j];
         barsCopy[j] = { height: barsCopy[j + 1].height, barState: SortingBarState.Selected };
         barsCopy[j + 1] = { height: tempBar.height, barState: SortingBarState.Selected };
@@ -169,6 +167,8 @@ const PlayPauseButton = () => {
 
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
         barsCopy = [...barsCopy];
+        barsCopy[j] = { height: barsCopy[j].height, barState: SortingBarState.Unselected };
+        barsCopy[j + 1] = { height: barsCopy[j + 1].height, barState: SortingBarState.Unselected };
         isSwapped = true;
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
       }
