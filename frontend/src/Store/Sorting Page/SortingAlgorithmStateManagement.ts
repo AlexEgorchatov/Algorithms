@@ -7,6 +7,7 @@ export enum SortingBarState {
 
 export interface SortingBarProps {
   height: number;
+  barRef?: React.RefCallback<HTMLDivElement>;
   barState?: SortingBarState;
   id?: string;
 }
@@ -85,6 +86,7 @@ export const sortingAlgorithmReducer = (state = initialSortingModuleState, actio
       };
 
     case UPDATINGSORTINGHEIGHTSSTATE:
+      console.log(action.bars);
       return {
         ...state,
         initialSortingBars: action.bars,

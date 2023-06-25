@@ -1,6 +1,6 @@
 /**@jsxImportSource @emotion/react */
 import { css, keyframes } from '@emotion/react';
-import React, { useEffect, useRef } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
 import { SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
@@ -147,15 +147,11 @@ const PlayPauseButton = () => {
   const stepTime: number = 1000;
   const animationCompleteTime: number = 1000;
 
-  const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {
-    window.setTimeout(resolve, awaitTime);
-  };
-
   const swap = async (div1: HTMLDivElement, div2: HTMLDivElement) => {
     let div1Shift = div1.getBoundingClientRect().left - div2.getBoundingClientRect().left;
     let div2Shift = -div1Shift;
 
-    console.log('entered swap');
+    // console.log('entered swap');
 
     let div1ComputedStyle = getComputedStyle(div1).transform;
     let div2ComputedStyle = getComputedStyle(div2).transform;
@@ -166,13 +162,13 @@ const PlayPauseButton = () => {
 
     div1.style.transition = `transform ease-in ${500}ms`;
     div2.style.transition = `transform ease-in ${500}ms`;
-    // div1.style.transform = `translateX(${currentDiv1XTranslate}px)`;
-    // div2.style.transform = `translateX(${currentDiv2XTranslate}px)`;
+    div1.style.transform = `translateX(${currentDiv1XTranslate}px)`;
+    div2.style.transform = `translateX(${currentDiv2XTranslate}px)`;
 
     let tempDiv = div1.id;
     div1.id = div2.id;
     div2.id = tempDiv;
-    await new Promise((resolve) => setTimeout(resolve, stepTime));
+    // await new Promise((resolve) => setTimeout(resolve, stepTime));
   };
 
   const executeBubbleSortAlgorithm = async () => {
@@ -184,17 +180,22 @@ const PlayPauseButton = () => {
       for (let j = 0; j < length - i - 1; j++) {
         if (barsCopy[j].height <= barsCopy[j + 1].height) continue;
 
-        console.log(`iteration # ${j}`);
-        console.log(`current state`);
-        console.log([...barsCopy]);
+        // console.log(`iteration # ${j}`);
+        // console.log(`current state`);
+        // console.log([...barsCopy]);
 
         barsCopy[j] = { height: barsCopy[j].height, barState: SortingBarState.Selected };
         barsCopy[j + 1] = { height: barsCopy[j + 1].height, barState: SortingBarState.Selected };
         dispatch(updatingSortingBarsStateAction(barsCopy));
-        console.log(`updated active bars colors to selected state`);
-        console.log([...barsCopy]);
+        // console.log(`updated active bars colors to selected state`);
+        // console.log([...barsCopy]);
         await new Promise((resolve) => setTimeout(resolve, stepTime));
         barsCopy = [...barsCopy];
+
+        let test1 = barsCopy[j].id;
+        let test2 = barsCopy[j + 1].id;
+
+        console.log(`${test1} ${test2}`);
 
         const div1: HTMLDivElement = document.getElementById(j.toString()) as HTMLDivElement;
         const div2: HTMLDivElement = document.getElementById((j + 1).toString()) as HTMLDivElement;
@@ -207,16 +208,16 @@ const PlayPauseButton = () => {
         barsCopy[j + 1] = { height: tempHeight, barState: SortingBarState.Selected };
 
         dispatch(updatingSortingBarsStateAction(barsCopy));
-        console.log(`updated active bars heights state`);
-        console.log([...barsCopy]);
+        // console.log(`updated active bars heights state`);
+        // console.log([...barsCopy]);
         await new Promise((resolve) => setTimeout(resolve, stepTime));
         barsCopy = [...barsCopy];
 
         barsCopy[j] = { height: barsCopy[j].height, barState: SortingBarState.Unselected };
         barsCopy[j + 1] = { height: barsCopy[j + 1].height, barState: SortingBarState.Unselected };
         dispatch(updatingSortingBarsStateAction(barsCopy));
-        console.log(`updated active bars colors to UNselected state`);
-        console.log([...barsCopy]);
+        // console.log(`updated active bars colors to UNselected state`);
+        // console.log([...barsCopy]);
         await new Promise((resolve) => setTimeout(resolve, stepTime));
         barsCopy = [...barsCopy];
 
@@ -225,6 +226,10 @@ const PlayPauseButton = () => {
       if (!isSwapped) {
       }
     }
+  };
+
+  const waitForCondition = (): Promise<void> => {
+    return new Promise<void>((resolve) => {});
   };
 
   const handleStartButtonClick = () => {
@@ -326,7 +331,7 @@ const GenerateInputComponent = () => {
       let random: number = Math.floor(Math.random() * 100);
       let stringValue = random.toString();
       newInput += `${stringValue} `;
-      newHeights.push({ height: random });
+      newHeights.push({ height: random, id: i.toString() });
     }
 
     dispatch(updatingSortingInputStateAction(newInput.trim()));
@@ -468,13 +473,14 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
   );
 };
 
-const SortingBar = ({ height, barState = SortingBarState.Unselected, id }: SortingBarProps) => {
+const SortingBar = ({ height, barState = SortingBarState.Unselected, id, barRef }: SortingBarProps) => {
   return (
     <div
       css={css`
         position: relative;
       `}
       id={id}
+      ref={barRef}
     >
       <div
         css={css`
@@ -504,6 +510,7 @@ const SortingBar = ({ height, barState = SortingBarState.Unselected, id }: Sorti
 export const SortingPage = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
+  const refs = useRef<HTMLDivElement[]>([]);
 
   return (
     <div
@@ -567,7 +574,13 @@ export const SortingPage = () => {
             `}
           >
             {algorithmState.initialSortingBars.map((bar, index) => (
-              <SortingBar key={index} id={index.toString()} height={bar.height} barState={bar.barState} />
+              <SortingBar
+                barRef={(ref: HTMLDivElement) => refs.current.push(ref)}
+                key={index}
+                id={index.toString()}
+                height={bar.height}
+                barState={bar.barState}
+              />
             ))}
           </div>
         </div>
