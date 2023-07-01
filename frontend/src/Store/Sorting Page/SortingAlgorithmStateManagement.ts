@@ -6,10 +6,9 @@ export enum SortingBarState {
 }
 
 export interface SortingBarProps {
-  height: number;
-  barRef?: React.RefCallback<HTMLDivElement>;
+  barHeight: number;
   barState?: SortingBarState;
-  id?: string;
+  barID: number;
 }
 
 //#region State

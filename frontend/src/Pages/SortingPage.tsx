@@ -1,6 +1,6 @@
 /**@jsxImportSource @emotion/react */
-import { css, keyframes } from '@emotion/react';
-import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { css } from '@emotion/react';
+import React, { useEffect, useRef } from 'react';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
 import { SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
@@ -41,7 +41,7 @@ const SortingInput = () => {
     if (isNaN(parseInt(stringArrayInput[stringArrayInput.length - 1]))) stringArrayInput.pop();
     let barsCopy: SortingBarProps[] = [];
     for (let i = 0; i < stringArrayInput.length; i++) {
-      barsCopy.push({ height: parseInt(stringArrayInput[i]) });
+      barsCopy.push({ barHeight: parseInt(stringArrayInput[i]), barID: i });
     }
     dispatch(updatingSortingBarsStateAction(barsCopy));
   };
@@ -57,8 +57,7 @@ const SortingInput = () => {
         css={css`
           height: 20px;
           font-size: 16px;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
-            Helvetica Neue, sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
           ::placeholder {
             font-size: 16px;
             font-style: italic;
@@ -147,30 +146,6 @@ const PlayPauseButton = () => {
   const stepTime: number = 1000;
   const animationCompleteTime: number = 1000;
 
-  const swap = async (div1: HTMLDivElement, div2: HTMLDivElement) => {
-    let div1Shift = div1.getBoundingClientRect().left - div2.getBoundingClientRect().left;
-    let div2Shift = -div1Shift;
-
-    // console.log('entered swap');
-
-    let div1ComputedStyle = getComputedStyle(div1).transform;
-    let div2ComputedStyle = getComputedStyle(div2).transform;
-    let div1Matrix = new DOMMatrix(div1ComputedStyle);
-    let div2Matrix = new DOMMatrix(div2ComputedStyle);
-    let currentDiv1XTranslate = div1Matrix.e + div2Shift;
-    let currentDiv2XTranslate = div2Matrix.e + div1Shift;
-
-    div1.style.transition = `transform ease-in ${500}ms`;
-    div2.style.transition = `transform ease-in ${500}ms`;
-    div1.style.transform = `translateX(${currentDiv1XTranslate}px)`;
-    div2.style.transform = `translateX(${currentDiv2XTranslate}px)`;
-
-    let tempDiv = div1.id;
-    div1.id = div2.id;
-    div2.id = tempDiv;
-    // await new Promise((resolve) => setTimeout(resolve, stepTime));
-  };
-
   const executeBubbleSortAlgorithm = async () => {
     let length = algorithmState.initialSortingBars.length;
     let barsCopy = [...algorithmState.initialSortingBars];
@@ -178,46 +153,35 @@ const PlayPauseButton = () => {
     for (let i = 0; i < length - 1; i++) {
       let isSwapped: boolean = false;
       for (let j = 0; j < length - i - 1; j++) {
-        if (barsCopy[j].height <= barsCopy[j + 1].height) continue;
+        if (barsCopy[j].barHeight <= barsCopy[j + 1].barHeight) continue;
 
-        // console.log(`iteration # ${j}`);
-        // console.log(`current state`);
-        // console.log([...barsCopy]);
-
-        barsCopy[j] = { height: barsCopy[j].height, barState: SortingBarState.Selected };
-        barsCopy[j + 1] = { height: barsCopy[j + 1].height, barState: SortingBarState.Selected };
+        barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarState.Selected, barID: barsCopy[j].barID };
+        barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarState.Selected, barID: barsCopy[j + 1].barID };
         dispatch(updatingSortingBarsStateAction(barsCopy));
-        // console.log(`updated active bars colors to selected state`);
-        // console.log([...barsCopy]);
         await new Promise((resolve) => setTimeout(resolve, stepTime));
+
         barsCopy = [...barsCopy];
-
-        let test1 = barsCopy[j].id;
-        let test2 = barsCopy[j + 1].id;
-
-        console.log(`${test1} ${test2}`);
-
-        const div1: HTMLDivElement = document.getElementById(j.toString()) as HTMLDivElement;
-        const div2: HTMLDivElement = document.getElementById((j + 1).toString()) as HTMLDivElement;
-        await swap(div1, div2);
-        console.log('swap completed');
-        await new Promise((resolve) => setTimeout(resolve, stepTime));
-
-        var tempHeight = barsCopy[j].height;
-        barsCopy[j] = { height: barsCopy[j + 1].height, barState: SortingBarState.Selected };
-        barsCopy[j + 1] = { height: tempHeight, barState: SortingBarState.Selected };
-
+        let tempID = barsCopy[j].barID;
+        barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarState.Selected, barID: barsCopy[j + 1].barID };
+        barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarState.Selected, barID: tempID };
         dispatch(updatingSortingBarsStateAction(barsCopy));
-        // console.log(`updated active bars heights state`);
-        // console.log([...barsCopy]);
         await new Promise((resolve) => setTimeout(resolve, stepTime));
+
         barsCopy = [...barsCopy];
-
-        barsCopy[j] = { height: barsCopy[j].height, barState: SortingBarState.Unselected };
-        barsCopy[j + 1] = { height: barsCopy[j + 1].height, barState: SortingBarState.Unselected };
+        var tempHeight = barsCopy[j].barHeight;
+        barsCopy[j] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarState.Selected, barID: barsCopy[j].barID };
+        barsCopy[j + 1] = { barHeight: tempHeight, barState: SortingBarState.Selected, barID: barsCopy[j + 1].barID };
         dispatch(updatingSortingBarsStateAction(barsCopy));
-        // console.log(`updated active bars colors to UNselected state`);
-        // console.log([...barsCopy]);
+        await new Promise((resolve) => setTimeout(resolve, stepTime));
+
+        barsCopy = [...barsCopy];
+        barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarState.Unselected, barID: barsCopy[j].barID };
+        barsCopy[j + 1] = {
+          barHeight: barsCopy[j + 1].barHeight,
+          barState: SortingBarState.Unselected,
+          barID: barsCopy[j + 1].barID,
+        };
+        dispatch(updatingSortingBarsStateAction(barsCopy));
         await new Promise((resolve) => setTimeout(resolve, stepTime));
         barsCopy = [...barsCopy];
 
@@ -226,10 +190,6 @@ const PlayPauseButton = () => {
       if (!isSwapped) {
       }
     }
-  };
-
-  const waitForCondition = (): Promise<void> => {
-    return new Promise<void>((resolve) => {});
   };
 
   const handleStartButtonClick = () => {
@@ -331,7 +291,7 @@ const GenerateInputComponent = () => {
       let random: number = Math.floor(Math.random() * 100);
       let stringValue = random.toString();
       newInput += `${stringValue} `;
-      newHeights.push({ height: random, id: i.toString() });
+      newHeights.push({ barHeight: random, barID: i });
     }
 
     dispatch(updatingSortingInputStateAction(newInput.trim()));
@@ -388,8 +348,7 @@ const GenerateInputComponent = () => {
         css={css`
           width: 40px;
           font-size: 13px;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
-            Helvetica Neue, sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
           ::placeholder {
             font-style: italic;
           }
@@ -473,21 +432,39 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
   );
 };
 
-const SortingBar = ({ height, barState = SortingBarState.Unselected, id, barRef }: SortingBarProps) => {
+const SortingBar = ({ barHeight, barID, barState = SortingBarState.Unselected }: SortingBarProps) => {
+  let divRef = React.useRef<HTMLDivElement>(null);
+  let prevDiv = React.useRef<string>(barID.toString());
+
+  useEffect(() => {
+    console.log('called useEffect');
+    if (divRef.current === null) return;
+    if (prevDiv.current === barID.toString()) {
+      console.log(`but ${prevDiv.current} === ${barID}`);
+      return;
+    }
+
+    console.log('started animation');
+    let translateLength = (barID - parseInt(prevDiv.current)) * 40;
+    divRef.current.style.transition = `transform ease-in ${500}ms`;
+    divRef.current.style.transform = `translateX(${translateLength}px)`;
+    prevDiv.current = barID.toString();
+  }, [barID]);
+
   return (
     <div
       css={css`
         position: relative;
       `}
-      id={id}
-      ref={barRef}
+      ref={divRef}
+      id={barID.toString()}
     >
       <div
         css={css`
-          display: ${isNaN(height) ? 'none' : ''};
+          display: ${isNaN(barHeight) ? 'none' : ''};
           background-color: white;
           width: 25px;
-          height: ${height * 4}px;
+          height: ${barHeight * 4}px;
           position: relative;
           background-color: ${barState === SortingBarState.Unselected ? 'white' : 'orange'};
         `}
@@ -501,7 +478,7 @@ const SortingBar = ({ height, barState = SortingBarState.Unselected, id, barRef 
           color: ${barState === SortingBarState.Unselected ? 'white' : 'orange'};
         `}
       >
-        {height}
+        {barHeight}
       </div>
     </div>
   );
@@ -510,7 +487,6 @@ const SortingBar = ({ height, barState = SortingBarState.Unselected, id, barRef 
 export const SortingPage = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
-  const refs = useRef<HTMLDivElement[]>([]);
 
   return (
     <div
@@ -574,13 +550,7 @@ export const SortingPage = () => {
             `}
           >
             {algorithmState.initialSortingBars.map((bar, index) => (
-              <SortingBar
-                barRef={(ref: HTMLDivElement) => refs.current.push(ref)}
-                key={index}
-                id={index.toString()}
-                height={bar.height}
-                barState={bar.barState}
-              />
+              <SortingBar key={index} barID={bar.barID} barHeight={bar.barHeight} barState={bar.barState} />
             ))}
           </div>
         </div>
