@@ -437,19 +437,20 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarState.Unselected }:
   let prevDiv = React.useRef<string>(barID.toString());
 
   useEffect(() => {
-    console.log('called useEffect');
     if (divRef.current === null) return;
-    if (prevDiv.current === barID.toString()) {
-      console.log(`but ${prevDiv.current} === ${barID}`);
+    if (prevDiv.current !== barID.toString()) {
+      let translateLength = (barID - parseInt(prevDiv.current)) * 40;
+      divRef.current.style.transition = `transform ease-in ${500}ms`;
+      divRef.current.style.transform = `translateX(${translateLength}px)`;
+      prevDiv.current = barID.toString();
       return;
     }
 
-    console.log('started animation');
-    let translateLength = (barID - parseInt(prevDiv.current)) * 40;
-    divRef.current.style.transition = `transform ease-in ${500}ms`;
-    divRef.current.style.transform = `translateX(${translateLength}px)`;
-    prevDiv.current = barID.toString();
-  }, [barID]);
+    console.log(`position of bar ${divRef.current.offsetLeft}`);
+
+    divRef.current.style.transition = `transform ease-in 0ms`;
+    divRef.current.style.transform = `translateX(0px)`;
+  }, [barID, barHeight]);
 
   return (
     <div
@@ -545,8 +546,9 @@ export const SortingPage = () => {
             css={css`
               display: flex;
               align-items: flex-end;
-              justify-content: space-evenly;
-              width: ${algorithmState.initialSortingBars.length * 40}px;
+              justify-content: space-between;
+              width: ${algorithmState.initialSortingBars.length * 35}px;
+              position: absolute;
             `}
           >
             {algorithmState.initialSortingBars.map((bar, index) => (
