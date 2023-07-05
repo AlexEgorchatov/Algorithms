@@ -103,9 +103,6 @@ const RefreshButton = () => {
           & > div {
             color: ${headerItemHovered};
           }
-          & > span {
-            visibility: visible;
-          }
         }
       `}
     >
@@ -140,7 +137,7 @@ const RefreshButton = () => {
   );
 };
 
-const PlayPauseButton = () => {
+const PlayButton = () => {
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
@@ -217,78 +214,116 @@ const PlayPauseButton = () => {
   };
 
   return (
-    <div>
+    <div
+      css={css`
+        box-sizing: border-box;
+        position: relative;
+        display: ${sliderState.initialPauseVisible ? 'none' : 'flex'};
+        width: 22px;
+        height: 22px;
+        border: 2px solid;
+        border-radius: 4px;
+        color: white;
+        cursor: pointer;
+        :hover {
+          color: ${headerItemHovered};
+        }
+        ::before {
+          content: '';
+          display: block;
+          box-sizing: border-box;
+          position: absolute;
+          width: 0;
+          height: 10px;
+          border-top: 6px solid transparent;
+          border-bottom: 6px solid transparent;
+          border-left: 8px solid;
+          top: 3px;
+          left: 6px;
+        }
+      `}
+      onClick={handleStartButtonClick}
+    ></div>
+  );
+};
+
+const PauseButton = () => {
+  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const dispatch = useDispatch();
+
+  return (
+    <div
+      css={css`
+        box-sizing: border-box;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        display: ${sliderState.initialPauseVisible ? 'flex' : 'none'};
+        width: 22px;
+        height: 22px;
+        border: 2px solid;
+        border-radius: 4px;
+        color: white;
+        cursor: pointer;
+        :hover {
+          color: ${headerItemHovered};
+          & > div {
+            color: ${headerItemHovered};
+          }
+        }
+      `}
+      onClick={() => dispatch(updatingPauseVisibilityStateAction(false))}
+    >
       <div
         css={css`
           box-sizing: border-box;
           position: relative;
-          display: ${sliderState.initialPauseVisible ? 'none' : 'flex'};
-          width: 22px;
-          height: 22px;
-          border: 2px solid;
-          border-radius: 4px;
+          transform: scale(var(--ggs, 1));
+          width: 10px;
+          height: 12px;
+          border-left: 4px solid;
+          border-right: 4px solid;
           color: white;
-          cursor: pointer;
-          :hover {
-            color: ${headerItemHovered};
-            & > span {
-              visibility: visible;
-            }
-          }
-          ::before {
-            content: '';
-            display: block;
-            box-sizing: border-box;
-            position: absolute;
-            width: 0;
-            height: 10px;
-            border-top: 5px solid transparent;
-            border-bottom: 5px solid transparent;
-            border-left: 6px solid;
-            top: 4px;
-            left: 7px;
-          }
         `}
-        onClick={handleStartButtonClick}
       ></div>
+    </div>
+  );
+};
+
+const StopButton = () => {
+  return (
+    <div
+      css={css`
+        box-sizing: border-box;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        display: flex;
+        width: 22px;
+        height: 22px;
+        border: 2px solid;
+        border-radius: 4px;
+        color: white;
+        cursor: pointer;
+        :hover {
+          color: ${headerItemHovered};
+          & > div {
+            background: ${headerItemHovered};
+          }
+        }
+      `}
+    >
       <div
         css={css`
           box-sizing: border-box;
-          justify-content: center;
-          align-items: center;
           position: relative;
-          display: ${sliderState.initialPauseVisible ? 'flex' : 'none'};
-          width: 22px;
-          height: 22px;
-          border: 2px solid;
-          border-radius: 4px;
-          color: white;
-          cursor: pointer;
-          :hover {
-            color: ${headerItemHovered};
-            & > div {
-              color: ${headerItemHovered};
-            }
-            & > span {
-              visibility: visible;
-            }
-          }
+          display: block;
+          transform: scale(var(--ggs, 1));
+          width: 8px;
+          height: 8px;
+          background: white;
         `}
-        onClick={() => dispatch(updatingPauseVisibilityStateAction(false))}
-      >
-        <div
-          css={css`
-            box-sizing: border-box;
-            position: relative;
-            transform: scale(var(--ggs, 1));
-            width: 10px;
-            height: 12px;
-            border-left: 4px solid;
-            border-right: 4px solid;
-            color: white;
-          `}
-        ></div>
-      </div>
+      ></div>
     </div>
   );
 };
@@ -336,34 +371,10 @@ const GenerateInputComponent = () => {
         display: flex;
         align-items: flex-end;
         justify-content: space-between;
-        width: 125px;
+        width: 75px;
       `}
     >
-      <div
-        css={css`
-          box-sizing: border-box;
-          position: relative;
-          align-items: center;
-          display: flex;
-          height: 22px;
-          font-size: 16px;
-          transform: scale(var(--ggs, 1));
-          border: 2px solid;
-          border-radius: 4px;
-          color: white;
-          padding: 2px;
-          cursor: pointer;
-          :hover {
-            color: ${headerItemHovered};
-            & > span {
-              visibility: visible;
-            }
-          }
-        `}
-        onClick={handleGenerateElements}
-      >
-        Generate
-      </div>
+      <RefreshButton />
       <input
         css={css`
           width: 40px;
@@ -387,6 +398,8 @@ const GenerateInputComponent = () => {
 };
 
 const AlgorithmControls = () => {
+  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+
   return (
     <div
       css={css`
@@ -403,8 +416,8 @@ const AlgorithmControls = () => {
           width: 47px;
         `}
       >
-        <PlayPauseButton />
-        <RefreshButton />
+        {sliderState.initialPauseVisible ? <PauseButton /> : <PlayButton />}
+        <StopButton />
       </div>
       <GenerateInputComponent />
     </div>

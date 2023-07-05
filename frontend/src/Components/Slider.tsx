@@ -38,9 +38,8 @@ const PlayButton = () => {
         display: ${sliderState.initialPauseVisible ? 'none' : 'block'};
         color: white;
         transform: scale(var(--ggs, 1));
-        width: 15px;
+        width: 12px;
         height: 16px;
-        left: 3px;
         cursor: pointer;
         :hover {
           color: black;
@@ -204,8 +203,8 @@ const SliderButtons = () => {
         max-width: 160px;
       `}
     >
-      <StopButton />
       {sliderState.initialPauseVisible ? <PauseButton /> : <PlayButton />}
+      <StopButton />
       <CompleteButton />
     </div>
   );
