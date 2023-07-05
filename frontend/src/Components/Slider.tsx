@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import { updatingPauseVisibilityStateAction, updatingSliderValueStateAction } from '../Store/Shared/SliderComponentStateManagement';
-import { Tooltip } from './Tooltip';
+import { useRef } from 'react';
 
 const controlButtonsContainerStyle = css`
   transform: scale(var(--ggs, 1));
@@ -58,7 +58,6 @@ const PlayPauseButton = () => {
             border-left: 15px solid;
           `}
         ></div>
-        <Tooltip text="Start animation" />
       </div>
       <div
         css={css`
@@ -81,9 +80,7 @@ const PlayPauseButton = () => {
           }
         `}
         onClick={() => dispatch(updatingPauseVisibilityStateAction(false))}
-      >
-        <Tooltip text="Pause animation" />
-      </div>
+      ></div>
     </div>
   );
 };
@@ -114,7 +111,6 @@ const CompleteButton = () => {
           left: 30px;
         `}
       ></div>
-      <Tooltip text="Skip animation" />
     </div>
   );
 };
@@ -144,7 +140,6 @@ const ResetButton = () => {
       ></div>
       <div css={subButtonStyle} style={{ right: '16px' }}></div>
       <div css={subButtonStyle} style={{ right: '1px' }}></div>
-      <Tooltip text="Reset animation" />
     </div>
   );
 };
@@ -152,10 +147,11 @@ const ResetButton = () => {
 const Slider = () => {
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const dispatch = useDispatch();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSliderChange = () => {
-    let input = document.getElementById('inputId');
-    let inputValue: number = parseInt((input! as HTMLInputElement).value);
+    if (inputRef.current == null) return;
+    let inputValue: number = parseInt(inputRef.current.value);
     dispatch(updatingSliderValueStateAction(inputValue));
   };
   return (
@@ -188,7 +184,7 @@ const Slider = () => {
             }
           }
         `}
-        id="inputId"
+        ref={inputRef}
         type="range"
         min="1"
         max="5"

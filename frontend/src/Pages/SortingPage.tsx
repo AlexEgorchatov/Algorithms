@@ -196,13 +196,11 @@ const PlayPauseButton = () => {
           barHeight: barsCopy[j + 1].barHeight,
           barState: SortingBarState.Unselected,
           barID: barsCopy[j + 1].barID,
-          leftOffset: barsCopy[j + 1].leftOffset,
         };
         barsCopy[j + 1] = {
           barHeight: tempBar.barHeight,
           barState: SortingBarState.Unselected,
           barID: tempBar.barID,
-          leftOffset: tempBar.leftOffset,
         };
         dispatch(updatingSortingBarsStateAction(barsCopy));
         await new Promise((resolve) => setTimeout(resolve, stepTime.current));
