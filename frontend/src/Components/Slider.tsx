@@ -6,82 +6,89 @@ import { useDispatch } from 'react-redux';
 import { updatingPauseVisibilityStateAction, updatingSliderValueStateAction } from '../Store/Shared/SliderComponentStateManagement';
 import { useRef } from 'react';
 
-const controlButtonsContainerStyle = css`
-  transform: scale(var(--ggs, 1));
-  width: 35px;
-  display: flex;
-  color: white;
-  cursor: pointer;
-  :hover {
-    color: black;
-    & > span {
-      visibility: visible;
-    }
-  }
-`;
+const StopButton = () => {
+  return (
+    <div
+      css={css`
+        box-sizing: border-box;
+        position: relative;
+        display: block;
+        transform: scale(var(--ggs, 1));
+        width: 16px;
+        height: 16px;
+        background: white;
+        cursor: pointer;
+        :hover {
+          background: black;
+        }
+      `}
+    ></div>
+  );
+};
 
-const PlayPauseButton = () => {
+const PlayButton = () => {
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const dispatch = useDispatch();
 
   return (
-    <div>
+    <div
+      css={css`
+        box-sizing: border-box;
+        position: relative;
+        display: ${sliderState.initialPauseVisible ? 'none' : 'block'};
+        color: white;
+        transform: scale(var(--ggs, 1));
+        width: 15px;
+        height: 16px;
+        left: 3px;
+        cursor: pointer;
+        :hover {
+          color: black;
+        }
+      `}
+      onClick={() => dispatch(updatingPauseVisibilityStateAction(true))}
+    >
       <div
         css={css`
+          content: '';
+          display: block;
           box-sizing: border-box;
-          position: relative;
-          display: ${sliderState.initialPauseVisible ? 'none' : 'block'};
-          color: white;
-          transform: scale(var(--ggs, 1));
-          width: 15px;
-          height: 16px;
-          cursor: pointer;
-          :hover {
-            color: black;
-            & > span {
-              visibility: visible;
-            }
-          }
+          position: absolute;
+          width: 0;
+          height: 10px;
+          border-top: 8px solid transparent;
+          border-bottom: 8px solid transparent;
+          border-left: 15px solid;
         `}
-        onClick={() => dispatch(updatingPauseVisibilityStateAction(true))}
-      >
-        <div
-          css={css`
-            content: '';
-            display: block;
-            box-sizing: border-box;
-            position: absolute;
-            width: 0;
-            height: 10px;
-            border-top: 8px solid transparent;
-            border-bottom: 8px solid transparent;
-            border-left: 15px solid;
-          `}
-        ></div>
-      </div>
-      <div
-        css={css`
-          box-sizing: border-box;
-          position: relative;
-          display: ${sliderState.initialPauseVisible ? 'block' : 'none'};
-          transform: scale(var(--ggs, 1));
-          width: 12px;
-          height: 16px;
-          border-left: 4px solid;
-          border-right: 4px solid;
-          color: white;
-
-          cursor: pointer;
-          :hover {
-            color: black;
-            & > span {
-              visibility: visible;
-            }
-          }
-        `}
-        onClick={() => dispatch(updatingPauseVisibilityStateAction(false))}
       ></div>
     </div>
+  );
+};
+
+const PauseButton = () => {
+  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const dispatch = useDispatch();
+
+  return (
+    <div
+      css={css`
+        box-sizing: border-box;
+        position: relative;
+        display: ${sliderState.initialPauseVisible ? 'block' : 'none'};
+        transform: scale(var(--ggs, 1));
+        width: 12px;
+        height: 16px;
+        border-left: 4px solid;
+        border-right: 4px solid;
+        color: white;
+
+        cursor: pointer;
+        :hover {
+          color: black;
+        }
+      `}
+      onClick={() => dispatch(updatingPauseVisibilityStateAction(false))}
+    ></div>
   );
 };
 
@@ -99,7 +106,18 @@ const CompleteButton = () => {
   `;
 
   return (
-    <div css={controlButtonsContainerStyle}>
+    <div
+      css={css`
+        transform: scale(var(--ggs, 1));
+        width: 35px;
+        display: flex;
+        color: white;
+        cursor: pointer;
+        :hover {
+          color: black;
+        }
+      `}
+    >
       <div css={subButtonStyle} />
       <div css={subButtonStyle} style={{ left: '15px' }} />
       <div
@@ -111,35 +129,6 @@ const CompleteButton = () => {
           left: 30px;
         `}
       ></div>
-    </div>
-  );
-};
-
-const ResetButton = () => {
-  const subButtonStyle = css`
-    content: '';
-    display: block;
-    box-sizing: border-box;
-    position: absolute;
-    width: 0;
-    height: 15px;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-right: 15px solid;
-  `;
-
-  return (
-    <div css={controlButtonsContainerStyle}>
-      <div
-        css={css`
-          position: relative;
-          width: 4px;
-          height: 16px;
-          background: currentColor;
-        `}
-      ></div>
-      <div css={subButtonStyle} style={{ right: '16px' }}></div>
-      <div css={subButtonStyle} style={{ right: '1px' }}></div>
     </div>
   );
 };
@@ -204,7 +193,9 @@ const Slider = () => {
   );
 };
 
-const AnimationControllers = () => {
+const SliderButtons = () => {
+  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+
   return (
     <div
       css={css`
@@ -213,8 +204,8 @@ const AnimationControllers = () => {
         max-width: 160px;
       `}
     >
-      <ResetButton />
-      <PlayPauseButton />
+      <StopButton />
+      {sliderState.initialPauseVisible ? <PauseButton /> : <PlayButton />}
       <CompleteButton />
     </div>
   );
@@ -233,7 +224,7 @@ export const SliderComponent = () => {
       `}
     >
       <Slider />
-      <AnimationControllers />
+      <SliderButtons />
     </div>
   );
 };

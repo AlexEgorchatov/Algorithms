@@ -300,6 +300,7 @@ const GenerateInputComponent = () => {
 
   useEffect(() => {
     handleGenerateElements();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleGenerateElements = () => {
