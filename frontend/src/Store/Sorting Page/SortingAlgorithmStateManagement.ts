@@ -6,9 +6,10 @@ export enum SortingBarState {
 }
 
 export interface SortingBarProps {
+  barID: number;
   barHeight: number;
   barState?: SortingBarState;
-  barID: number;
+  leftOffset?: number;
 }
 
 //#region State
@@ -85,7 +86,6 @@ export const sortingAlgorithmReducer = (state = initialSortingModuleState, actio
       };
 
     case UPDATINGSORTINGHEIGHTSSTATE:
-      console.log(action.bars);
       return {
         ...state,
         initialSortingBars: action.bars,

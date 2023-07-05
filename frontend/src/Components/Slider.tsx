@@ -3,10 +3,7 @@ import { css } from '@emotion/react';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
-import {
-  updatingPauseVisibilityStateAction,
-  updatingSliderValueStateAction,
-} from '../Store/Shared/SliderComponentStateManagement';
+import { updatingPauseVisibilityStateAction, updatingSliderValueStateAction } from '../Store/Shared/SliderComponentStateManagement';
 import { Tooltip } from './Tooltip';
 
 const controlButtonsContainerStyle = css`

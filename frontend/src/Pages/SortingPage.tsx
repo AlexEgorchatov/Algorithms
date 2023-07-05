@@ -57,7 +57,8 @@ const SortingInput = () => {
         css={css`
           height: 20px;
           font-size: 16px;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+            sans-serif;
           ::placeholder {
             font-size: 16px;
             font-style: italic;
@@ -143,8 +144,11 @@ const PlayPauseButton = () => {
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
-  const stepTime: number = 1000;
-  const animationCompleteTime: number = 1000;
+  let stepTime = useRef<number>(0);
+
+  useEffect(() => {
+    stepTime.current = 400 - 30 * (sliderState.initialSliderValue - 1);
+  }, [sliderState.initialSliderValue]);
 
   const executeBubbleSortAlgorithm = async () => {
     let length = algorithmState.initialSortingBars.length;
@@ -153,42 +157,59 @@ const PlayPauseButton = () => {
     for (let i = 0; i < length - 1; i++) {
       let isSwapped: boolean = false;
       for (let j = 0; j < length - i - 1; j++) {
-        if (barsCopy[j].barHeight <= barsCopy[j + 1].barHeight) continue;
-
+        barsCopy = [...barsCopy];
         barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarState.Selected, barID: barsCopy[j].barID };
         barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarState.Selected, barID: barsCopy[j + 1].barID };
         dispatch(updatingSortingBarsStateAction(barsCopy));
-        await new Promise((resolve) => setTimeout(resolve, stepTime));
+        await new Promise((resolve) => setTimeout(resolve, stepTime.current));
+
+        if (barsCopy[j].barHeight <= barsCopy[j + 1].barHeight) {
+          barsCopy = [...barsCopy];
+          barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarState.Unselected, barID: barsCopy[j].barID };
+          barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarState.Unselected, barID: barsCopy[j + 1].barID };
+          dispatch(updatingSortingBarsStateAction(barsCopy));
+          continue;
+        }
 
         barsCopy = [...barsCopy];
+        let currentLeftOffset = document.getElementById(barsCopy[j].barID.toString())?.offsetLeft;
+        let nextLeftOffset = document.getElementById(barsCopy[j + 1].barID.toString())?.offsetLeft;
         let tempID = barsCopy[j].barID;
-        barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarState.Selected, barID: barsCopy[j + 1].barID };
-        barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarState.Selected, barID: tempID };
-        dispatch(updatingSortingBarsStateAction(barsCopy));
-        await new Promise((resolve) => setTimeout(resolve, stepTime));
-
-        barsCopy = [...barsCopy];
-        var tempHeight = barsCopy[j].barHeight;
-        barsCopy[j] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarState.Selected, barID: barsCopy[j].barID };
-        barsCopy[j + 1] = { barHeight: tempHeight, barState: SortingBarState.Selected, barID: barsCopy[j + 1].barID };
-        dispatch(updatingSortingBarsStateAction(barsCopy));
-        await new Promise((resolve) => setTimeout(resolve, stepTime));
-
-        barsCopy = [...barsCopy];
-        barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarState.Unselected, barID: barsCopy[j].barID };
+        barsCopy[j] = {
+          barHeight: barsCopy[j].barHeight,
+          barState: SortingBarState.Selected,
+          barID: barsCopy[j + 1].barID,
+          leftOffset: nextLeftOffset,
+        };
         barsCopy[j + 1] = {
+          barHeight: barsCopy[j + 1].barHeight,
+          barState: SortingBarState.Selected,
+          barID: tempID,
+          leftOffset: currentLeftOffset,
+        };
+        dispatch(updatingSortingBarsStateAction(barsCopy));
+        await new Promise((resolve) => setTimeout(resolve, stepTime.current));
+
+        barsCopy = [...barsCopy];
+        var tempBar = barsCopy[j];
+        barsCopy[j] = {
           barHeight: barsCopy[j + 1].barHeight,
           barState: SortingBarState.Unselected,
           barID: barsCopy[j + 1].barID,
+          leftOffset: barsCopy[j + 1].leftOffset,
+        };
+        barsCopy[j + 1] = {
+          barHeight: tempBar.barHeight,
+          barState: SortingBarState.Unselected,
+          barID: tempBar.barID,
+          leftOffset: tempBar.leftOffset,
         };
         dispatch(updatingSortingBarsStateAction(barsCopy));
-        await new Promise((resolve) => setTimeout(resolve, stepTime));
-        barsCopy = [...barsCopy];
+        await new Promise((resolve) => setTimeout(resolve, stepTime.current));
 
         isSwapped = true;
       }
-      if (!isSwapped) {
-      }
+      if (!isSwapped) return;
     }
   };
 
@@ -348,7 +369,8 @@ const GenerateInputComponent = () => {
         css={css`
           width: 40px;
           font-size: 13px;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+            sans-serif;
           ::placeholder {
             font-style: italic;
           }
@@ -432,33 +454,31 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
   );
 };
 
-const SortingBar = ({ barHeight, barID, barState = SortingBarState.Unselected }: SortingBarProps) => {
+const SortingBar = ({ barHeight, barID, barState = SortingBarState.Unselected, leftOffset: newLeftOffset }: SortingBarProps) => {
   let divRef = React.useRef<HTMLDivElement>(null);
-  let prevDiv = React.useRef<string>(barID.toString());
+  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
 
   useEffect(() => {
     if (divRef.current === null) return;
-    if (prevDiv.current !== barID.toString()) {
-      let translateLength = (barID - parseInt(prevDiv.current)) * 40;
-      divRef.current.style.transition = `transform ease-in ${500}ms`;
+
+    if (newLeftOffset !== undefined && newLeftOffset !== divRef.current.offsetLeft) {
+      let transformTime = 280 - 30 * sliderState.initialSliderValue;
+      let translateLength = newLeftOffset - divRef.current.offsetLeft;
+      divRef.current.style.transition = `transform ease-in ${transformTime}ms`;
       divRef.current.style.transform = `translateX(${translateLength}px)`;
-      prevDiv.current = barID.toString();
-      return;
+    } else {
+      divRef.current.style.transition = `transform ease-in 0ms`;
+      divRef.current.style.transform = `translateX(0px)`;
     }
-
-    console.log(`position of bar ${divRef.current.offsetLeft}`);
-
-    divRef.current.style.transition = `transform ease-in 0ms`;
-    divRef.current.style.transform = `translateX(0px)`;
-  }, [barID, barHeight]);
+  }, [newLeftOffset, barHeight, sliderState.initialSliderValue]);
 
   return (
     <div
       css={css`
         position: relative;
       `}
-      ref={divRef}
       id={barID.toString()}
+      ref={divRef}
     >
       <div
         css={css`
@@ -552,7 +572,7 @@ export const SortingPage = () => {
             `}
           >
             {algorithmState.initialSortingBars.map((bar, index) => (
-              <SortingBar key={index} barID={bar.barID} barHeight={bar.barHeight} barState={bar.barState} />
+              <SortingBar key={index} barID={bar.barID} barHeight={bar.barHeight} barState={bar.barState} leftOffset={bar.leftOffset} />
             ))}
           </div>
         </div>

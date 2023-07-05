@@ -28,9 +28,7 @@ export const updatingPauseVisibilityStateAction = (visibility: boolean) =>
 //#endregion Actions
 
 //#region Reducers
-type SliderComponentActions =
-  | ReturnType<typeof updatingSliderValueStateAction>
-  | ReturnType<typeof updatingPauseVisibilityStateAction>;
+type SliderComponentActions = ReturnType<typeof updatingSliderValueStateAction> | ReturnType<typeof updatingPauseVisibilityStateAction>;
 export const sliderComponentReducer = (state = initialSliderComponentState, action: SliderComponentActions) => {
   switch (action.type) {
     case UPDATINGSLIDERVALUESTATE:
