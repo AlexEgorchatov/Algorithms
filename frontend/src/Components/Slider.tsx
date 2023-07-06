@@ -107,8 +107,7 @@ const CompleteButton = () => {
   return (
     <div
       css={css`
-        transform: scale(var(--ggs, 1));
-        width: 35px;
+        width: 15px;
         display: flex;
         color: white;
         cursor: pointer;
@@ -118,14 +117,13 @@ const CompleteButton = () => {
       `}
     >
       <div css={subButtonStyle} />
-      <div css={subButtonStyle} style={{ left: '15px' }} />
       <div
         css={css`
           position: relative;
           width: 4px;
           height: 16px;
           background: currentColor;
-          left: 30px;
+          left: 15px;
         `}
       ></div>
     </div>
@@ -200,7 +198,7 @@ const SliderButtons = () => {
       css={css`
         display: flex;
         justify-content: space-between;
-        max-width: 160px;
+        max-width: 155px;
       `}
     >
       {sliderState.initialPauseVisible ? <PauseButton /> : <PlayButton />}
