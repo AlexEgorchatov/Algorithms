@@ -1,6 +1,6 @@
 import { SortingEnumeration } from '../../Resources/Sorting Page Resources/SortingData';
 
-export enum SortingBarState {
+export enum SortingBarStateEnum {
   Unselected = 0,
   Selected = 1,
 }
@@ -8,50 +8,59 @@ export enum SortingBarState {
 export interface SortingBarProps {
   barID: number;
   barHeight: number;
-  barState?: SortingBarState;
+  barState?: SortingBarStateEnum;
   leftOffset?: number;
 }
 
 //#region State
 export interface SortingAlgorithmState {
-  readonly initialSortingAlgorithm: SortingEnumeration;
-  readonly initialSortingInput: string;
-  readonly initialSortingGenerateInput: string;
-  readonly initialSortingBars: SortingBarProps[];
+  readonly sortingAlgorithm: SortingEnumeration;
+  readonly sortingInput: string;
+  readonly sortingGenerateInput: string;
+  readonly isAlgorithmRunning: boolean;
+  readonly sortingBars: SortingBarProps[];
 }
 
 const initialSortingModuleState: SortingAlgorithmState = {
-  initialSortingAlgorithm: SortingEnumeration.BubbleSort,
-  initialSortingInput: '',
-  initialSortingGenerateInput: '10',
-  initialSortingBars: [],
+  sortingAlgorithm: SortingEnumeration.BubbleSort,
+  sortingInput: '',
+  sortingGenerateInput: '10',
+  isAlgorithmRunning: false,
+  sortingBars: [],
 };
 //#endregion State
 
 //#region Actions
 const UPDATINGSORTINGALGORITHMSTATE = 'UpdatingSortingAlgorithmState';
-export const updatingSortingAlgorithmStateAction = (algorithm = initialSortingModuleState.initialSortingAlgorithm) =>
+export const updatingSortingAlgorithmStateAction = (algorithm = initialSortingModuleState.sortingAlgorithm) =>
   ({
     type: UPDATINGSORTINGALGORITHMSTATE,
     algorithm: algorithm,
   } as const);
 
 const UPDATINGSORTINGINPUTSTATE = 'UpdatingSortingInputState';
-export const updatingSortingInputStateAction = (sortingInput = initialSortingModuleState.initialSortingInput) =>
+export const updatingSortingInputStateAction = (sortingInput = initialSortingModuleState.sortingInput) =>
   ({
     type: UPDATINGSORTINGINPUTSTATE,
     sortingInput: sortingInput,
   } as const);
 
 const UPDATINGSORTINGGENERATEINPUTSTATE = 'UpdatingSortingGenerateInputState';
-export const updatingSortingGenerateInputStateAction = (generateInput = initialSortingModuleState.initialSortingGenerateInput) =>
+export const updatingSortingGenerateInputStateAction = (sortingGenerateInput = initialSortingModuleState.sortingGenerateInput) =>
   ({
     type: UPDATINGSORTINGGENERATEINPUTSTATE,
-    generateInput: generateInput,
+    sortingGenerateInput: sortingGenerateInput,
+  } as const);
+
+const UPDATINGISALGORITHMRUNNINGSTATE = 'UpdatingIsAlgorithmRunningState';
+export const updatingIsAlgorithmRunningStateAction = (isAlgorithmRunning = initialSortingModuleState.isAlgorithmRunning) =>
+  ({
+    type: UPDATINGISALGORITHMRUNNINGSTATE,
+    isAlgorithmRunning: isAlgorithmRunning,
   } as const);
 
 const UPDATINGSORTINGHEIGHTSSTATE = 'UpdatingSortingHeightsState';
-export const updatingSortingBarsStateAction = (bars = initialSortingModuleState.initialSortingBars) =>
+export const updatingSortingBarsStateAction = (bars = initialSortingModuleState.sortingBars) =>
   ({
     type: UPDATINGSORTINGHEIGHTSSTATE,
     bars: bars,
@@ -64,31 +73,38 @@ type SortingAlgorithmActions =
   | ReturnType<typeof updatingSortingAlgorithmStateAction>
   | ReturnType<typeof updatingSortingInputStateAction>
   | ReturnType<typeof updatingSortingGenerateInputStateAction>
+  | ReturnType<typeof updatingIsAlgorithmRunningStateAction>
   | ReturnType<typeof updatingSortingBarsStateAction>;
 export const sortingAlgorithmReducer = (state = initialSortingModuleState, action: SortingAlgorithmActions) => {
   switch (action.type) {
     case UPDATINGSORTINGALGORITHMSTATE:
       return {
         ...state,
-        initialSortingAlgorithm: action.algorithm,
+        sortingAlgorithm: action.algorithm,
       };
 
     case UPDATINGSORTINGINPUTSTATE:
       return {
         ...state,
-        initialSortingInput: action.sortingInput,
+        sortingInput: action.sortingInput,
       };
 
     case UPDATINGSORTINGGENERATEINPUTSTATE:
       return {
         ...state,
-        initialSortingGenerateInput: action.generateInput,
+        sortingGenerateInput: action.sortingGenerateInput,
+      };
+
+    case UPDATINGISALGORITHMRUNNINGSTATE:
+      return {
+        ...state,
+        isAlgorithmRunning: action.isAlgorithmRunning,
       };
 
     case UPDATINGSORTINGHEIGHTSSTATE:
       return {
         ...state,
-        initialSortingBars: action.bars,
+        sortingBars: action.bars,
       };
 
     default:
