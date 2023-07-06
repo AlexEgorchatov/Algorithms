@@ -9,13 +9,15 @@ import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import {
   SortingBarProps,
-  SortingBarState,
+  SortingBarStateEnum,
   updatingSortingAlgorithmStateAction,
   updatingSortingGenerateInputStateAction,
   updatingSortingBarsStateAction,
   updatingSortingInputStateAction,
+  updatingIsAlgorithmRunningStateAction,
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
 import { updatingPauseVisibilityStateAction } from '../Store/Shared/SliderComponentStateManagement';
+import { store } from '../App';
 
 interface AlgorithmListProps {
   data: SortingData[];
@@ -67,7 +69,7 @@ const SortingInput = () => {
         ref={ref}
         type="text"
         placeholder="Type several numbers..."
-        value={algorithmState.initialSortingInput}
+        value={algorithmState.sortingInput}
         onInput={() => validateInput(ref.current?.value as string)}
       />
       <div
@@ -147,23 +149,36 @@ const PlayButton = () => {
     stepTime.current = 400 - 30 * (sliderState.initialSliderValue - 1);
   }, [sliderState.initialSliderValue]);
 
+  const waitForContinuation = () => {
+    return new Promise<void>((resolve) => {
+      const checkState = () => {
+        console.log(`${algorithmState.isAlgorithmRunning}`);
+        if (!algorithmState.isAlgorithmRunning) resolve(); // Resolve the Promise when the desired state becomes true
+      };
+
+      const unsubscribe = store.subscribe(checkState); // Assuming you have a Redux store accessible here
+      return unsubscribe;
+    });
+  };
+
   const executeBubbleSortAlgorithm = async () => {
-    let length = algorithmState.initialSortingBars.length;
-    let barsCopy = [...algorithmState.initialSortingBars];
+    let length = algorithmState.sortingBars.length;
+    let barsCopy = [...algorithmState.sortingBars];
 
     for (let i = 0; i < length - 1; i++) {
       let isSwapped: boolean = false;
       for (let j = 0; j < length - i - 1; j++) {
         barsCopy = [...barsCopy];
-        barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarState.Selected, barID: barsCopy[j].barID };
-        barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarState.Selected, barID: barsCopy[j + 1].barID };
+        barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[j].barID };
+        barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[j + 1].barID };
         dispatch(updatingSortingBarsStateAction(barsCopy));
         await new Promise((resolve) => setTimeout(resolve, stepTime.current));
+        await waitForContinuation();
 
         if (barsCopy[j].barHeight <= barsCopy[j + 1].barHeight) {
           barsCopy = [...barsCopy];
-          barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarState.Unselected, barID: barsCopy[j].barID };
-          barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarState.Unselected, barID: barsCopy[j + 1].barID };
+          barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarStateEnum.Unselected, barID: barsCopy[j].barID };
+          barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Unselected, barID: barsCopy[j + 1].barID };
           dispatch(updatingSortingBarsStateAction(barsCopy));
           continue;
         }
@@ -174,33 +189,35 @@ const PlayButton = () => {
         let tempID = barsCopy[j].barID;
         barsCopy[j] = {
           barHeight: barsCopy[j].barHeight,
-          barState: SortingBarState.Selected,
+          barState: SortingBarStateEnum.Selected,
           barID: barsCopy[j + 1].barID,
           leftOffset: nextLeftOffset,
         };
         barsCopy[j + 1] = {
           barHeight: barsCopy[j + 1].barHeight,
-          barState: SortingBarState.Selected,
+          barState: SortingBarStateEnum.Selected,
           barID: tempID,
           leftOffset: currentLeftOffset,
         };
         dispatch(updatingSortingBarsStateAction(barsCopy));
         await new Promise((resolve) => setTimeout(resolve, stepTime.current));
+        await waitForContinuation();
 
         barsCopy = [...barsCopy];
         var tempBar = barsCopy[j];
         barsCopy[j] = {
           barHeight: barsCopy[j + 1].barHeight,
-          barState: SortingBarState.Unselected,
+          barState: SortingBarStateEnum.Unselected,
           barID: barsCopy[j + 1].barID,
         };
         barsCopy[j + 1] = {
           barHeight: tempBar.barHeight,
-          barState: SortingBarState.Unselected,
+          barState: SortingBarStateEnum.Unselected,
           barID: tempBar.barID,
         };
         dispatch(updatingSortingBarsStateAction(barsCopy));
         await new Promise((resolve) => setTimeout(resolve, stepTime.current));
+        await waitForContinuation();
 
         isSwapped = true;
       }
@@ -210,6 +227,7 @@ const PlayButton = () => {
 
   const handleStartButtonClick = () => {
     dispatch(updatingPauseVisibilityStateAction(true));
+    dispatch(updatingIsAlgorithmRunningStateAction(true));
     executeBubbleSortAlgorithm();
   };
 
@@ -249,7 +267,13 @@ const PlayButton = () => {
 
 const PauseButton = () => {
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
+
+  const handlePauseButtonClick = () => {
+    dispatch(updatingPauseVisibilityStateAction(false));
+    dispatch(updatingIsAlgorithmRunningStateAction(false));
+  };
 
   return (
     <div
@@ -272,17 +296,17 @@ const PauseButton = () => {
           }
         }
       `}
-      onClick={() => dispatch(updatingPauseVisibilityStateAction(false))}
+      onClick={handlePauseButtonClick}
     >
       <div
         css={css`
           box-sizing: border-box;
           position: relative;
           transform: scale(var(--ggs, 1));
-          width: 10px;
-          height: 12px;
-          border-left: 4px solid;
-          border-right: 4px solid;
+          width: 8px;
+          height: 10px;
+          border-left: 3px solid;
+          border-right: 3px solid;
           color: white;
         `}
       ></div>
@@ -291,6 +315,8 @@ const PauseButton = () => {
 };
 
 const StopButton = () => {
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+
   return (
     <div
       css={css`
@@ -328,6 +354,62 @@ const StopButton = () => {
   );
 };
 
+const CompleteButton = () => {
+  return (
+    <div
+      css={css`
+        box-sizing: border-box;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        display: flex;
+        width: 22px;
+        height: 22px;
+        border: 2px solid;
+        border-radius: 4px;
+        color: white;
+        cursor: pointer;
+        :hover {
+          color: ${headerItemHovered};
+          & > div {
+            color: ${headerItemHovered};
+          }
+        }
+      `}
+    >
+      <div
+        css={css`
+          width: 10px;
+          display: flex;
+        `}
+      >
+        <div
+          css={css`
+            content: '';
+            display: block;
+            box-sizing: border-box;
+            position: absolute;
+            width: 0;
+            height: 10px;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 8px solid;
+          `}
+        />
+        <div
+          css={css`
+            position: relative;
+            width: 3px;
+            height: 10px;
+            background: currentColor;
+            left: 8px;
+          `}
+        ></div>
+      </div>
+    </div>
+  );
+};
+
 const GenerateInputComponent = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
@@ -342,7 +424,7 @@ const GenerateInputComponent = () => {
     let newHeights: SortingBarProps[] = [];
     let newInput: string = '';
 
-    for (let i = 0; i < parseInt(algorithmState.initialSortingGenerateInput); i++) {
+    for (let i = 0; i < parseInt(algorithmState.sortingGenerateInput); i++) {
       let random: number = Math.floor(Math.random() * 100);
       let stringValue = random.toString();
       newInput += `${stringValue} `;
@@ -371,7 +453,7 @@ const GenerateInputComponent = () => {
         display: flex;
         align-items: flex-end;
         justify-content: space-between;
-        width: 75px;
+        width: 73px;
       `}
     >
       <div onClick={handleGenerateElements}>
@@ -391,7 +473,7 @@ const GenerateInputComponent = () => {
         max={25}
         ref={ref}
         type="number"
-        value={algorithmState.initialSortingGenerateInput}
+        value={algorithmState.sortingGenerateInput}
         onInput={() => validateInput(ref.current?.value as string)}
         onKeyUp={handleEnterKeyUp}
       />
@@ -399,7 +481,7 @@ const GenerateInputComponent = () => {
   );
 };
 
-const AlgorithmControls = () => {
+const ControlAlgorithmButtons = () => {
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
 
   return (
@@ -408,18 +490,19 @@ const AlgorithmControls = () => {
         display: flex;
         align-items: flex-end;
         justify-content: space-between;
-        width: 210px;
+        width: 250px;
       `}
     >
       <div
         css={css`
           display: flex;
           justify-content: space-between;
-          width: 47px;
+          width: 72px;
         `}
       >
         {sliderState.initialPauseVisible ? <PauseButton /> : <PlayButton />}
         <StopButton />
+        <CompleteButton />
       </div>
       <GenerateInputComponent />
     </div>
@@ -460,7 +543,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
         <Algorithm
           key={algorithm.sortingType}
           title={algorithm.title}
-          isSelected={algorithm.sortingType === algorithmState.initialSortingAlgorithm}
+          isSelected={algorithm.sortingType === algorithmState.sortingAlgorithm}
           onClick={() => dispatch(updatingSortingAlgorithmStateAction(algorithm.sortingType))}
         />
       ))}
@@ -468,7 +551,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
   );
 };
 
-const SortingBar = ({ barHeight, barID, barState = SortingBarState.Unselected, leftOffset: newLeftOffset }: SortingBarProps) => {
+const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselected, leftOffset: newLeftOffset }: SortingBarProps) => {
   let divRef = React.useRef<HTMLDivElement>(null);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
 
@@ -501,7 +584,7 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarState.Unselected, l
           width: 25px;
           height: ${barHeight * 4}px;
           position: relative;
-          background-color: ${barState === SortingBarState.Unselected ? 'white' : 'orange'};
+          background-color: ${barState === SortingBarStateEnum.Unselected ? 'white' : 'orange'};
         `}
       ></div>
       <div
@@ -510,7 +593,7 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarState.Unselected, l
           justify-content: center;
           color: white;
           font-size: 20px;
-          color: ${barState === SortingBarState.Unselected ? 'white' : 'orange'};
+          color: ${barState === SortingBarStateEnum.Unselected ? 'white' : 'orange'};
         `}
       >
         {barHeight}
@@ -555,7 +638,7 @@ export const SortingPage = () => {
           `}
         >
           <SortingInput />
-          <AlgorithmControls />
+          <ControlAlgorithmButtons />
           <AlgorithmsList data={sortingAlgorithms} />
         </div>
       </div>
@@ -581,11 +664,11 @@ export const SortingPage = () => {
               display: flex;
               align-items: flex-end;
               justify-content: space-between;
-              width: ${algorithmState.initialSortingBars.length * 35}px;
+              width: ${algorithmState.sortingBars.length * 35}px;
               position: absolute;
             `}
           >
-            {algorithmState.initialSortingBars.map((bar, index) => (
+            {algorithmState.sortingBars.map((bar, index) => (
               <SortingBar key={index} barID={bar.barID} barHeight={bar.barHeight} barState={bar.barState} leftOffset={bar.leftOffset} />
             ))}
           </div>

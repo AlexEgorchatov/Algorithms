@@ -12,7 +12,7 @@ import { Header } from './Components/Header';
 import { mainBackground, mainFontColor, pageBackground } from './Resources/Colors';
 import { modules } from './Resources/Home Page Resources/ModuleData';
 
-const store = createStore();
+export const store = createStore();
 function App() {
   return (
     <BrowserRouter>
