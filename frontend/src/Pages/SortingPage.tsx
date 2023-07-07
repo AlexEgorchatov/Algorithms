@@ -16,7 +16,6 @@ import {
   updatingSortingInputStateAction,
   updatingIsAlgorithmRunningStateAction,
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
-import { updatingPauseVisibilityStateAction } from '../Store/Shared/SliderComponentStateManagement';
 import { store } from '../App';
 
 interface AlgorithmListProps {
@@ -144,20 +143,26 @@ const PlayButton = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
   let stepTime = useRef<number>(0);
+  let test = useRef<boolean>(false);
+  let animationStarted = useRef<boolean>(false);
 
   useEffect(() => {
     stepTime.current = 400 - 30 * (sliderState.initialSliderValue - 1);
   }, [sliderState.initialSliderValue]);
 
+  useEffect(() => {
+    if (algorithmState.isAlgorithmRunning) test.current = true;
+    else test.current = false;
+  }, [algorithmState.isAlgorithmRunning]);
+
   const waitForContinuation = () => {
     return new Promise<void>((resolve) => {
-      const checkState = () => {
-        console.log(`${algorithmState.isAlgorithmRunning}`);
-        if (!algorithmState.isAlgorithmRunning) resolve(); // Resolve the Promise when the desired state becomes true
-      };
-
-      const unsubscribe = store.subscribe(checkState); // Assuming you have a Redux store accessible here
-      return unsubscribe;
+      let unsubscribe = store.subscribe(() => {
+        if (store.getState().sortingAlgorithmState.isAlgorithmRunning) {
+          unsubscribe();
+          resolve();
+        }
+      });
     });
   };
 
@@ -173,7 +178,7 @@ const PlayButton = () => {
         barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[j + 1].barID };
         dispatch(updatingSortingBarsStateAction(barsCopy));
         await new Promise((resolve) => setTimeout(resolve, stepTime.current));
-        await waitForContinuation();
+        if (!test.current) await waitForContinuation();
 
         if (barsCopy[j].barHeight <= barsCopy[j + 1].barHeight) {
           barsCopy = [...barsCopy];
@@ -201,7 +206,7 @@ const PlayButton = () => {
         };
         dispatch(updatingSortingBarsStateAction(barsCopy));
         await new Promise((resolve) => setTimeout(resolve, stepTime.current));
-        await waitForContinuation();
+        if (!test.current) await waitForContinuation();
 
         barsCopy = [...barsCopy];
         var tempBar = barsCopy[j];
@@ -217,7 +222,7 @@ const PlayButton = () => {
         };
         dispatch(updatingSortingBarsStateAction(barsCopy));
         await new Promise((resolve) => setTimeout(resolve, stepTime.current));
-        await waitForContinuation();
+        if (!test.current) await waitForContinuation();
 
         isSwapped = true;
       }
@@ -226,9 +231,11 @@ const PlayButton = () => {
   };
 
   const handleStartButtonClick = () => {
-    dispatch(updatingPauseVisibilityStateAction(true));
     dispatch(updatingIsAlgorithmRunningStateAction(true));
-    executeBubbleSortAlgorithm();
+    if (!animationStarted.current) {
+      animationStarted.current = true;
+      executeBubbleSortAlgorithm();
+    }
   };
 
   return (
@@ -236,7 +243,7 @@ const PlayButton = () => {
       css={css`
         box-sizing: border-box;
         position: relative;
-        display: ${sliderState.initialPauseVisible ? 'none' : 'flex'};
+        display: flex;
         width: 22px;
         height: 22px;
         border: 2px solid;
@@ -266,12 +273,9 @@ const PlayButton = () => {
 };
 
 const PauseButton = () => {
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
 
   const handlePauseButtonClick = () => {
-    dispatch(updatingPauseVisibilityStateAction(false));
     dispatch(updatingIsAlgorithmRunningStateAction(false));
   };
 
@@ -282,7 +286,7 @@ const PauseButton = () => {
         justify-content: center;
         align-items: center;
         position: relative;
-        display: ${sliderState.initialPauseVisible ? 'flex' : 'none'};
+        display: flex;
         width: 22px;
         height: 22px;
         border: 2px solid;
@@ -482,7 +486,7 @@ const GenerateInputComponent = () => {
 };
 
 const ControlAlgorithmButtons = () => {
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const sliderState = useSelector((state: AppState) => state.sortingAlgorithmState);
 
   return (
     <div
@@ -500,7 +504,9 @@ const ControlAlgorithmButtons = () => {
           width: 72px;
         `}
       >
-        {sliderState.initialPauseVisible ? <PauseButton /> : <PlayButton />}
+        {/* {sliderState.isAlgorithmRunning ? <PauseButton /> : <PlayButton />} */}
+        <PauseButton />
+        <PlayButton />
         <StopButton />
         <CompleteButton />
       </div>
