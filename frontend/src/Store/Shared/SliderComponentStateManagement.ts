@@ -1,12 +1,10 @@
 //#region State
 export interface SliderComponentState {
   readonly initialSliderValue: number;
-  readonly initialPauseVisible: boolean;
 }
 
 const initialSliderComponentState: SliderComponentState = {
   initialSliderValue: 1,
-  initialPauseVisible: false,
 };
 //#endregion State
 
@@ -18,29 +16,16 @@ export const updatingSliderValueStateAction = (sliderValue: number) =>
     sliderValue: sliderValue,
   } as const);
 
-const UPDATINGSPAUSEVISIBILITYSTATE = 'UpdatingPauseVisibilityState';
-export const updatingPauseVisibilityStateAction = (visibility: boolean) =>
-  ({
-    type: UPDATINGSPAUSEVISIBILITYSTATE,
-    visibility: visibility,
-  } as const);
-
 //#endregion Actions
 
 //#region Reducers
-type SliderComponentActions = ReturnType<typeof updatingSliderValueStateAction> | ReturnType<typeof updatingPauseVisibilityStateAction>;
+type SliderComponentActions = ReturnType<typeof updatingSliderValueStateAction>;
 export const sliderComponentReducer = (state = initialSliderComponentState, action: SliderComponentActions) => {
   switch (action.type) {
     case UPDATINGSLIDERVALUESTATE:
       return {
         ...state,
         initialSliderValue: action.sliderValue,
-      };
-
-    case UPDATINGSPAUSEVISIBILITYSTATE:
-      return {
-        ...state,
-        initialPauseVisible: action.visibility,
       };
 
     default:

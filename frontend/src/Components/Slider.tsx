@@ -3,8 +3,9 @@ import { css } from '@emotion/react';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
-import { updatingPauseVisibilityStateAction, updatingSliderValueStateAction } from '../Store/Shared/SliderComponentStateManagement';
+import { updatingSliderValueStateAction } from '../Store/Shared/SliderComponentStateManagement';
 import { useRef } from 'react';
+import { updatingIsAlgorithmRunningStateAction } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
 
 const StopButton = () => {
   return (
@@ -27,7 +28,6 @@ const StopButton = () => {
 };
 
 const PlayButton = () => {
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const dispatch = useDispatch();
 
   return (
@@ -35,7 +35,6 @@ const PlayButton = () => {
       css={css`
         box-sizing: border-box;
         position: relative;
-        display: ${sliderState.initialPauseVisible ? 'none' : 'block'};
         color: white;
         transform: scale(var(--ggs, 1));
         width: 12px;
@@ -45,7 +44,7 @@ const PlayButton = () => {
           color: black;
         }
       `}
-      onClick={() => dispatch(updatingPauseVisibilityStateAction(true))}
+      onClick={() => dispatch(updatingIsAlgorithmRunningStateAction(true))}
     >
       <div
         css={css`
@@ -65,7 +64,6 @@ const PlayButton = () => {
 };
 
 const PauseButton = () => {
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const dispatch = useDispatch();
 
   return (
@@ -73,7 +71,6 @@ const PauseButton = () => {
       css={css`
         box-sizing: border-box;
         position: relative;
-        display: ${sliderState.initialPauseVisible ? 'block' : 'none'};
         transform: scale(var(--ggs, 1));
         width: 12px;
         height: 16px;
@@ -86,7 +83,7 @@ const PauseButton = () => {
           color: black;
         }
       `}
-      onClick={() => dispatch(updatingPauseVisibilityStateAction(false))}
+      onClick={() => dispatch(updatingIsAlgorithmRunningStateAction(false))}
     ></div>
   );
 };
@@ -191,7 +188,7 @@ const Slider = () => {
 };
 
 const SliderButtons = () => {
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
 
   return (
     <div
@@ -201,7 +198,7 @@ const SliderButtons = () => {
         max-width: 155px;
       `}
     >
-      {sliderState.initialPauseVisible ? <PauseButton /> : <PlayButton />}
+      {algorithmState.isAlgorithmRunning ? <PauseButton /> : <PlayButton />}
       <StopButton />
       <CompleteButton />
     </div>
