@@ -166,6 +166,7 @@ const executeBubbleSortAlgorithm = async (
       barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[j + 1].barID };
       dispatch(updatingSortingBarsStateAction(barsCopy));
       await new Promise((resolve) => setTimeout(resolve, stepTime.current));
+      if (!store.getState().sortingAlgorithmState.isAlgorithmRunning) await waitForContinuation();
 
       if (barsCopy[j].barHeight <= barsCopy[j + 1].barHeight) {
         barsCopy = [...barsCopy];
