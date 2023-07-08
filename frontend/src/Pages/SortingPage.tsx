@@ -1,6 +1,6 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React, { useEffect, useRef } from 'react';
+import React, { Dispatch, useEffect, useRef } from 'react';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
 import { SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
@@ -17,6 +17,7 @@ import {
   updatingIsAlgorithmRunningStateAction,
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
 import { store } from '../App';
+import { AnyAction } from 'redux';
 
 interface AlgorithmListProps {
   data: SortingData[];
@@ -138,103 +139,100 @@ const RefreshButton = () => {
   );
 };
 
+const waitForContinuation = () => {
+  return new Promise<void>((resolve) => {
+    let unsubscribe = store.subscribe(() => {
+      if (store.getState().sortingAlgorithmState.isAlgorithmRunning) {
+        unsubscribe();
+        resolve();
+      }
+    });
+  });
+};
+
+const executeBubbleSortAlgorithm = async (
+  dispatch: Dispatch<AnyAction>,
+  sortingBars: SortingBarProps[],
+  stepTime: React.MutableRefObject<number>,
+) => {
+  let length = sortingBars.length;
+  let barsCopy = [...sortingBars];
+
+  for (let i = 0; i < length - 1; i++) {
+    let isSwapped: boolean = false;
+    for (let j = 0; j < length - i - 1; j++) {
+      barsCopy = [...barsCopy];
+      barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[j].barID };
+      barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[j + 1].barID };
+      dispatch(updatingSortingBarsStateAction(barsCopy));
+      await new Promise((resolve) => setTimeout(resolve, stepTime.current));
+
+      if (barsCopy[j].barHeight <= barsCopy[j + 1].barHeight) {
+        barsCopy = [...barsCopy];
+        barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarStateEnum.Unselected, barID: barsCopy[j].barID };
+        barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Unselected, barID: barsCopy[j + 1].barID };
+        dispatch(updatingSortingBarsStateAction(barsCopy));
+        continue;
+      }
+
+      barsCopy = [...barsCopy];
+      let currentLeftOffset = document.getElementById(barsCopy[j].barID.toString())?.offsetLeft;
+      let nextLeftOffset = document.getElementById(barsCopy[j + 1].barID.toString())?.offsetLeft;
+      let tempID = barsCopy[j].barID;
+      barsCopy[j] = {
+        barHeight: barsCopy[j].barHeight,
+        barState: SortingBarStateEnum.Selected,
+        barID: barsCopy[j + 1].barID,
+        leftOffset: nextLeftOffset,
+      };
+      barsCopy[j + 1] = {
+        barHeight: barsCopy[j + 1].barHeight,
+        barState: SortingBarStateEnum.Selected,
+        barID: tempID,
+        leftOffset: currentLeftOffset,
+      };
+      dispatch(updatingSortingBarsStateAction(barsCopy));
+      await new Promise((resolve) => setTimeout(resolve, stepTime.current));
+      if (!store.getState().sortingAlgorithmState.isAlgorithmRunning) await waitForContinuation();
+
+      barsCopy = [...barsCopy];
+      var tempBar = barsCopy[j];
+      barsCopy[j] = {
+        barHeight: barsCopy[j + 1].barHeight,
+        barState: SortingBarStateEnum.Unselected,
+        barID: barsCopy[j + 1].barID,
+      };
+      barsCopy[j + 1] = {
+        barHeight: tempBar.barHeight,
+        barState: SortingBarStateEnum.Unselected,
+        barID: tempBar.barID,
+      };
+      dispatch(updatingSortingBarsStateAction(barsCopy));
+      await new Promise((resolve) => setTimeout(resolve, stepTime.current));
+      if (!store.getState().sortingAlgorithmState.isAlgorithmRunning) await waitForContinuation();
+
+      isSwapped = true;
+    }
+    if (!isSwapped) return;
+  }
+};
+
 const PlayButton = () => {
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
   let stepTime = useRef<number>(0);
-  let test = useRef<boolean>(false);
   let animationStarted = useRef<boolean>(false);
 
   useEffect(() => {
     stepTime.current = 400 - 30 * (sliderState.initialSliderValue - 1);
   }, [sliderState.initialSliderValue]);
 
-  useEffect(() => {
-    if (algorithmState.isAlgorithmRunning) test.current = true;
-    else test.current = false;
-  }, [algorithmState.isAlgorithmRunning]);
-
-  const waitForContinuation = () => {
-    return new Promise<void>((resolve) => {
-      let unsubscribe = store.subscribe(() => {
-        if (store.getState().sortingAlgorithmState.isAlgorithmRunning) {
-          unsubscribe();
-          resolve();
-        }
-      });
-    });
-  };
-
-  const executeBubbleSortAlgorithm = async () => {
-    let length = algorithmState.sortingBars.length;
-    let barsCopy = [...algorithmState.sortingBars];
-
-    for (let i = 0; i < length - 1; i++) {
-      let isSwapped: boolean = false;
-      for (let j = 0; j < length - i - 1; j++) {
-        barsCopy = [...barsCopy];
-        barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[j].barID };
-        barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[j + 1].barID };
-        dispatch(updatingSortingBarsStateAction(barsCopy));
-        await new Promise((resolve) => setTimeout(resolve, stepTime.current));
-        if (!test.current) await waitForContinuation();
-
-        if (barsCopy[j].barHeight <= barsCopy[j + 1].barHeight) {
-          barsCopy = [...barsCopy];
-          barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarStateEnum.Unselected, barID: barsCopy[j].barID };
-          barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Unselected, barID: barsCopy[j + 1].barID };
-          dispatch(updatingSortingBarsStateAction(barsCopy));
-          continue;
-        }
-
-        barsCopy = [...barsCopy];
-        let currentLeftOffset = document.getElementById(barsCopy[j].barID.toString())?.offsetLeft;
-        let nextLeftOffset = document.getElementById(barsCopy[j + 1].barID.toString())?.offsetLeft;
-        let tempID = barsCopy[j].barID;
-        barsCopy[j] = {
-          barHeight: barsCopy[j].barHeight,
-          barState: SortingBarStateEnum.Selected,
-          barID: barsCopy[j + 1].barID,
-          leftOffset: nextLeftOffset,
-        };
-        barsCopy[j + 1] = {
-          barHeight: barsCopy[j + 1].barHeight,
-          barState: SortingBarStateEnum.Selected,
-          barID: tempID,
-          leftOffset: currentLeftOffset,
-        };
-        dispatch(updatingSortingBarsStateAction(barsCopy));
-        await new Promise((resolve) => setTimeout(resolve, stepTime.current));
-        if (!test.current) await waitForContinuation();
-
-        barsCopy = [...barsCopy];
-        var tempBar = barsCopy[j];
-        barsCopy[j] = {
-          barHeight: barsCopy[j + 1].barHeight,
-          barState: SortingBarStateEnum.Unselected,
-          barID: barsCopy[j + 1].barID,
-        };
-        barsCopy[j + 1] = {
-          barHeight: tempBar.barHeight,
-          barState: SortingBarStateEnum.Unselected,
-          barID: tempBar.barID,
-        };
-        dispatch(updatingSortingBarsStateAction(barsCopy));
-        await new Promise((resolve) => setTimeout(resolve, stepTime.current));
-        if (!test.current) await waitForContinuation();
-
-        isSwapped = true;
-      }
-      if (!isSwapped) return;
-    }
-  };
-
   const handleStartButtonClick = () => {
     dispatch(updatingIsAlgorithmRunningStateAction(true));
     if (!animationStarted.current) {
       animationStarted.current = true;
-      executeBubbleSortAlgorithm();
+      executeBubbleSortAlgorithm(dispatch, algorithmState.sortingBars, stepTime);
     }
   };
 
