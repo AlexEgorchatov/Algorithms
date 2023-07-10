@@ -618,6 +618,8 @@ export const SortingPage = () => {
   );
 };
 
+/**Waits for the next action after the algorithm was paused.
+ * Returns true if the algorithm continues execution, false if the algorithm was stopped or animation was skipped.*/
 const waitForContinuation = () => {
   return new Promise<boolean>((resolve) => {
     let unsubscribe = store.subscribe(() => {
