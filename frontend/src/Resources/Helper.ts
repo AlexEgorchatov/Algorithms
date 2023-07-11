@@ -24,6 +24,30 @@ const waitForContinuation = () => {
   });
 };
 
+export const handleStartAlgorithmButtonClick = async () => {
+  store.dispatch(updatingIsAlgorithmRunningStateAction(true));
+  if (store.getState().sortingAlgorithmState.hasAlgorithmStarted) return;
+
+  store.dispatch(updatingHasAlgorithmStartedState(true));
+  if (
+    JSON.stringify(store.getState().sortingAlgorithmState.sortingBars.map((i) => i.barHeight)) ===
+    JSON.stringify(store.getState().sortingAlgorithmState.finalSortingBars.map((i) => i.barHeight))
+  ) {
+    store.dispatch(updatingSortingBarsStateAction(store.getState().sortingAlgorithmState.initialSortingBars));
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+
+  switch (store.getState().sortingAlgorithmState.sortingAlgorithm) {
+    case SortingEnumeration.BubbleSort:
+      executeBubbleSortAlgorithm();
+      break;
+
+    case SortingEnumeration.QuickSort:
+      executeQuickSortAlgorithm();
+      break;
+  }
+};
+
 const isAlgorithmTerminated = (): boolean => {
   if (store.getState().sortingAlgorithmState.hasAlgorithmStarted) return false;
   else return true;
@@ -114,28 +138,4 @@ export const executeBubbleSortAlgorithm = async () => {
 
 export const executeQuickSortAlgorithm = async () => {
   console.log(`Executed Quick Sort`);
-};
-
-export const handleStartButtonClick = async () => {
-  store.dispatch(updatingIsAlgorithmRunningStateAction(true));
-  if (store.getState().sortingAlgorithmState.hasAlgorithmStarted) return;
-
-  store.dispatch(updatingHasAlgorithmStartedState(true));
-  if (
-    JSON.stringify(store.getState().sortingAlgorithmState.sortingBars.map((i) => i.barHeight)) ===
-    JSON.stringify(store.getState().sortingAlgorithmState.finalSortingBars.map((i) => i.barHeight))
-  ) {
-    store.dispatch(updatingSortingBarsStateAction(store.getState().sortingAlgorithmState.initialSortingBars));
-    await new Promise((resolve) => setTimeout(resolve, 250));
-  }
-
-  switch (store.getState().sortingAlgorithmState.sortingAlgorithm) {
-    case SortingEnumeration.BubbleSort:
-      executeBubbleSortAlgorithm();
-      break;
-
-    case SortingEnumeration.QuickSort:
-      executeQuickSortAlgorithm();
-      break;
-  }
 };

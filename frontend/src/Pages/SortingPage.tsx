@@ -19,7 +19,7 @@ import {
   updatingInitialSortingBarsStateAction,
   updatingFinalSortingBarsStateAction,
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
-import { handleStartButtonClick } from '../Resources/Helper';
+import { handleStartAlgorithmButtonClick } from '../Resources/Helper';
 
 interface AlgorithmListProps {
   data: SortingData[];
@@ -178,7 +178,7 @@ const PlayButton = () => {
           left: 6px;
         }
       `}
-      onClick={handleStartButtonClick}
+      onClick={handleStartAlgorithmButtonClick}
     ></div>
   );
 };

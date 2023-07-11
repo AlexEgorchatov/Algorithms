@@ -10,7 +10,7 @@ import {
   updatingIsAlgorithmRunningStateAction,
   updatingSortingBarsStateAction,
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
-import { handleStartButtonClick } from '../Resources/Helper';
+import { handleStartAlgorithmButtonClick } from '../Resources/Helper';
 
 const PlayButton = () => {
   return (
@@ -27,7 +27,7 @@ const PlayButton = () => {
           color: black;
         }
       `}
-      onClick={handleStartButtonClick}
+      onClick={handleStartAlgorithmButtonClick}
     >
       <div
         css={css`
