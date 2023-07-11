@@ -74,6 +74,7 @@ const SortingInput = () => {
         placeholder="Type several numbers..."
         value={algorithmState.sortingInput}
         onInput={() => validateInput(ref.current?.value as string)}
+        disabled={algorithmState.hasAlgorithmStarted}
       />
       <div
         css={css`
@@ -88,6 +89,8 @@ const SortingInput = () => {
 };
 
 const RefreshButton = () => {
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+
   return (
     <div
       css={css`
@@ -102,12 +105,16 @@ const RefreshButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: pointer;
+        cursor: ${!algorithmState.hasAlgorithmStarted ? 'pointer' : 'cursor'};
+        opacity: ${!algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
-          color: ${headerItemHovered};
-          & > div {
+          ${!algorithmState.hasAlgorithmStarted &&
+          `
             color: ${headerItemHovered};
-          }
+            & > div {
+              color: ${headerItemHovered};
+            }
+          `}
         }
       `}
     >
@@ -358,6 +365,7 @@ const CompleteButton = () => {
 };
 
 const GenerateInputComponent = () => {
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -366,6 +374,8 @@ const GenerateInputComponent = () => {
   }, []);
 
   const handleGenerateElements = () => {
+    if (algorithmState.hasAlgorithmStarted) return;
+
     let sortingBars: SortingBarProps[] = [];
     let newInput: string = '';
     if (inputRef.current === null) return;
@@ -386,6 +396,7 @@ const GenerateInputComponent = () => {
 
   const handleEnterKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') return;
+
     handleGenerateElements();
   };
 
@@ -412,6 +423,7 @@ const GenerateInputComponent = () => {
       <input
         css={css`
           width: 40px;
+          height: 16px;
           font-size: 13px;
           font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
             sans-serif;
@@ -426,12 +438,13 @@ const GenerateInputComponent = () => {
         defaultValue={10}
         onInput={() => validateInput(inputRef.current?.value as string)}
         onKeyUp={handleEnterKeyUp}
+        disabled={algorithmState.hasAlgorithmStarted}
       />
     </div>
   );
 };
 
-const ControlAlgorithmButtons = () => {
+const ActionBar = () => {
   const sliderState = useSelector((state: AppState) => state.sortingAlgorithmState);
 
   return (
@@ -485,7 +498,6 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
   return (
     <div
       css={css`
-        width: 99%;
         display: flex;
       `}
     >
@@ -592,7 +604,7 @@ export const SortingPage = () => {
           `}
         >
           <SortingInput />
-          <ControlAlgorithmButtons />
+          <ActionBar />
           <AlgorithmsList data={sortingAlgorithms} />
         </div>
       </div>
