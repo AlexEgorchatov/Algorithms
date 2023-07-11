@@ -13,10 +13,13 @@ const waitForContinuation = () => {
   return new Promise<boolean>((resolve) => {
     let unsubscribe = store.subscribe(() => {
       const state = store.getState().sortingAlgorithmState;
-      if (state.isAlgorithmRunning) resolve(true);
-      else if (!state.hasAlgorithmStarted) resolve(false);
-
-      unsubscribe();
+      if (state.isAlgorithmRunning) {
+        unsubscribe();
+        resolve(true);
+      } else if (!state.hasAlgorithmStarted) {
+        unsubscribe();
+        resolve(false);
+      }
     });
   });
 };
@@ -115,24 +118,24 @@ export const executeQuickSortAlgorithm = async () => {
 
 export const handleStartButtonClick = async () => {
   store.dispatch(updatingIsAlgorithmRunningStateAction(true));
-  if (!store.getState().sortingAlgorithmState.hasAlgorithmStarted) {
-    store.dispatch(updatingHasAlgorithmStartedState(true));
-    if (
-      JSON.stringify(store.getState().sortingAlgorithmState.sortingBars.map((i) => i.barHeight)) ===
-      JSON.stringify(store.getState().sortingAlgorithmState.finalSortingBars.map((i) => i.barHeight))
-    ) {
-      store.dispatch(updatingSortingBarsStateAction(store.getState().sortingAlgorithmState.initialSortingBars));
-      await new Promise((resolve) => setTimeout(resolve, 250));
-    }
+  if (store.getState().sortingAlgorithmState.hasAlgorithmStarted) return;
 
-    switch (store.getState().sortingAlgorithmState.sortingAlgorithm) {
-      case SortingEnumeration.BubbleSort:
-        executeBubbleSortAlgorithm();
-        break;
+  store.dispatch(updatingHasAlgorithmStartedState(true));
+  if (
+    JSON.stringify(store.getState().sortingAlgorithmState.sortingBars.map((i) => i.barHeight)) ===
+    JSON.stringify(store.getState().sortingAlgorithmState.finalSortingBars.map((i) => i.barHeight))
+  ) {
+    store.dispatch(updatingSortingBarsStateAction(store.getState().sortingAlgorithmState.initialSortingBars));
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
 
-      case SortingEnumeration.QuickSort:
-        executeQuickSortAlgorithm();
-        break;
-    }
+  switch (store.getState().sortingAlgorithmState.sortingAlgorithm) {
+    case SortingEnumeration.BubbleSort:
+      executeBubbleSortAlgorithm();
+      break;
+
+    case SortingEnumeration.QuickSort:
+      executeQuickSortAlgorithm();
+      break;
   }
 };
