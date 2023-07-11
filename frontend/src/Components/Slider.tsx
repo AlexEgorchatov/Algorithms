@@ -10,18 +10,9 @@ import {
   updatingIsAlgorithmRunningStateAction,
   updatingSortingBarsStateAction,
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
-import { store } from '../App';
-import { executeBubbleSortAlgorithm } from '../Resources/Helper';
+import { handleStartButtonClick } from '../Resources/Helper';
 
 const PlayButton = () => {
-  const handleStartButtonClick = () => {
-    store.dispatch(updatingIsAlgorithmRunningStateAction(true));
-    if (!store.getState().sortingAlgorithmState.hasAlgorithmStarted) {
-      store.dispatch(updatingHasAlgorithmStartedState(true));
-      executeBubbleSortAlgorithm();
-    }
-  };
-
   return (
     <div
       css={css`
@@ -102,7 +93,7 @@ const StopButton = () => {
         width: 16px;
         height: 16px;
         background: white;
-        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'cursor'};
+        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
         opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
           ${algorithmState.hasAlgorithmStarted &&
@@ -146,7 +137,7 @@ const CompleteButton = () => {
         width: 15px;
         display: flex;
         color: white;
-        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'cursor'};
+        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
         opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
           ${algorithmState.hasAlgorithmStarted &&

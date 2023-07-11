@@ -1,5 +1,11 @@
 import { store } from '../App';
-import { SortingBarStateEnum, updatingSortingBarsStateAction } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
+import {
+  SortingBarStateEnum,
+  updatingHasAlgorithmStartedState,
+  updatingIsAlgorithmRunningStateAction,
+  updatingSortingBarsStateAction,
+} from '../Store/Sorting Page/SortingAlgorithmStateManagement';
+import { SortingEnumeration } from './Sorting Page Resources/SortingData';
 
 /**Waits for the next action after the algorithm was paused.
  * Returns true if the algorithm continues execution, false if the algorithm was stopped or animation was skipped.*/
@@ -92,10 +98,41 @@ export const executeBubbleSortAlgorithm = async () => {
 
       isSwapped = true;
     }
-    if (!isSwapped) return;
+    if (!isSwapped) {
+      store.dispatch(updatingHasAlgorithmStartedState(false));
+      store.dispatch(updatingIsAlgorithmRunningStateAction(false));
+      return;
+    }
   }
+
+  store.dispatch(updatingHasAlgorithmStartedState(false));
+  store.dispatch(updatingIsAlgorithmRunningStateAction(false));
 };
 
 export const executeQuickSortAlgorithm = async () => {
   console.log(`Executed Quick Sort`);
+};
+
+export const handleStartButtonClick = async () => {
+  store.dispatch(updatingIsAlgorithmRunningStateAction(true));
+  if (!store.getState().sortingAlgorithmState.hasAlgorithmStarted) {
+    store.dispatch(updatingHasAlgorithmStartedState(true));
+    if (
+      JSON.stringify(store.getState().sortingAlgorithmState.sortingBars.map((i) => i.barHeight)) ===
+      JSON.stringify(store.getState().sortingAlgorithmState.finalSortingBars.map((i) => i.barHeight))
+    ) {
+      store.dispatch(updatingSortingBarsStateAction(store.getState().sortingAlgorithmState.initialSortingBars));
+      await new Promise((resolve) => setTimeout(resolve, 250));
+    }
+
+    switch (store.getState().sortingAlgorithmState.sortingAlgorithm) {
+      case SortingEnumeration.BubbleSort:
+        executeBubbleSortAlgorithm();
+        break;
+
+      case SortingEnumeration.QuickSort:
+        executeQuickSortAlgorithm();
+        break;
+    }
+  }
 };

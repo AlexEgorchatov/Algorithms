@@ -19,8 +19,7 @@ import {
   updatingInitialSortingBarsStateAction,
   updatingFinalSortingBarsStateAction,
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
-import { store } from '../App';
-import { executeBubbleSortAlgorithm, executeQuickSortAlgorithm } from '../Resources/Helper';
+import { handleStartButtonClick } from '../Resources/Helper';
 
 interface AlgorithmListProps {
   data: SortingData[];
@@ -29,7 +28,7 @@ interface AlgorithmListProps {
 interface AlgorithmProps {
   title: string;
   isSelected: boolean;
-  onClick: React.MouseEventHandler;
+  sortingType: SortingEnumeration;
 }
 
 const SortingInput = () => {
@@ -105,7 +104,7 @@ const RefreshButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${!algorithmState.hasAlgorithmStarted ? 'pointer' : 'cursor'};
+        cursor: ${!algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
         opacity: ${!algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
           ${!algorithmState.hasAlgorithmStarted &&
@@ -150,25 +149,6 @@ const RefreshButton = () => {
 };
 
 const PlayButton = () => {
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
-
-  const handleStartButtonClick = () => {
-    store.dispatch(updatingIsAlgorithmRunningStateAction(true));
-    if (!algorithmState.hasAlgorithmStarted) {
-      store.dispatch(updatingHasAlgorithmStartedState(true));
-
-      switch (algorithmState.sortingAlgorithm) {
-        case SortingEnumeration.BubbleSort:
-          executeBubbleSortAlgorithm();
-          break;
-
-        case SortingEnumeration.QuickSort:
-          executeQuickSortAlgorithm();
-          break;
-      }
-    }
-  };
-
   return (
     <div
       css={css`
@@ -274,7 +254,7 @@ const StopButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'cursor'};
+        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
         opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
           ${algorithmState.hasAlgorithmStarted &&
@@ -328,7 +308,7 @@ const CompleteButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'cursor'};
+        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
         opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
           ${algorithmState.hasAlgorithmStarted &&
@@ -395,7 +375,7 @@ const GenerateInputComponent = () => {
       let random: number = Math.floor(Math.random() * 100);
       let stringValue = random.toString();
       newInput += `${stringValue} `;
-      sortingBars.push({ barHeight: random, barID: i });
+      sortingBars.push({ barHeight: random, barState: SortingBarStateEnum.Unselected, barID: i });
     }
 
     let sortingBarsCopy = [...sortingBars];
@@ -483,19 +463,32 @@ const ActionBar = () => {
   );
 };
 
-const Algorithm = ({ title, isSelected, onClick }: AlgorithmProps) => {
+const Algorithm = ({ title, isSelected, sortingType }: AlgorithmProps) => {
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    if (algorithmState.hasAlgorithmStarted) return;
+
+    dispatch(updatingSortingAlgorithmStateAction(sortingType));
+  };
+
   return (
     <div
       css={css`
-        cursor: pointer;
         font-size: 20px;
         color: ${isSelected ? '' : 'white'};
         margin-right: 10px;
+        cursor: ${algorithmState.hasAlgorithmStarted && !isSelected ? 'default' : 'pointer'};
+        opacity: ${algorithmState.hasAlgorithmStarted && !isSelected ? '0.5' : '1'};
         :hover {
-          color: ${!isSelected ? `${headerItemHovered}` : ''};
+          ${!algorithmState.hasAlgorithmStarted &&
+          `
+            color: ${!isSelected ? `${headerItemHovered}` : ''};
+          `}
         }
       `}
-      onClick={onClick}
+      onClick={handleClick}
     >
       {title}
     </div>
@@ -504,7 +497,6 @@ const Algorithm = ({ title, isSelected, onClick }: AlgorithmProps) => {
 
 const AlgorithmsList = ({ data }: AlgorithmListProps) => {
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
-  const dispatch = useDispatch();
 
   return (
     <div
@@ -517,7 +509,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
           key={algorithm.sortingType}
           title={algorithm.title}
           isSelected={algorithm.sortingType === algorithmState.sortingAlgorithm}
-          onClick={() => dispatch(updatingSortingAlgorithmStateAction(algorithm.sortingType))}
+          sortingType={algorithm.sortingType}
         />
       ))}
     </div>
@@ -581,7 +573,6 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
 
 export const SortingPage = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
-  const dispatch = useDispatch();
 
   return (
     <div
