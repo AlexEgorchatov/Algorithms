@@ -20,6 +20,7 @@ export interface SortingAlgorithmState {
   readonly hasAlgorithmStarted: boolean;
   readonly sortingBars: SortingBarProps[];
   readonly initialSortingBars: SortingBarProps[];
+  readonly finalSortingBars: SortingBarProps[];
 }
 
 const initialSortingModuleState: SortingAlgorithmState = {
@@ -29,6 +30,7 @@ const initialSortingModuleState: SortingAlgorithmState = {
   hasAlgorithmStarted: false,
   sortingBars: [],
   initialSortingBars: [],
+  finalSortingBars: [],
 };
 //#endregion State
 
@@ -69,10 +71,17 @@ export const updatingSortingBarsStateAction = (sortingBars = initialSortingModul
   } as const);
 
 const UPDATINGINITIALSORTINGBARSSTATE = 'UpdatingInitialSortingBarsState';
-export const updatingInitialSortingBarsStateAction = (initialSortingBars = initialSortingModuleState.sortingBars) =>
+export const updatingInitialSortingBarsStateAction = (initialSortingBars = initialSortingModuleState.initialSortingBars) =>
   ({
     type: UPDATINGINITIALSORTINGBARSSTATE,
     initialSortingBars: initialSortingBars,
+  } as const);
+
+const UPDATINGFINALSORTINGBARSSTATE = 'UpdatingFinalSortingBarsState';
+export const updatingFinalSortingBarsStateAction = (finalSortingBars = initialSortingModuleState.finalSortingBars) =>
+  ({
+    type: UPDATINGFINALSORTINGBARSSTATE,
+    finalSortingBars: finalSortingBars,
   } as const);
 
 //#endregion Actions
@@ -84,7 +93,8 @@ type SortingAlgorithmActions =
   | ReturnType<typeof updatingIsAlgorithmRunningStateAction>
   | ReturnType<typeof updatingHasAlgorithmStartedState>
   | ReturnType<typeof updatingSortingBarsStateAction>
-  | ReturnType<typeof updatingInitialSortingBarsStateAction>;
+  | ReturnType<typeof updatingInitialSortingBarsStateAction>
+  | ReturnType<typeof updatingFinalSortingBarsStateAction>;
 export const sortingAlgorithmReducer = (state = initialSortingModuleState, action: SortingAlgorithmActions) => {
   switch (action.type) {
     case UPDATINGSORTINGALGORITHMSTATE:
@@ -121,6 +131,12 @@ export const sortingAlgorithmReducer = (state = initialSortingModuleState, actio
       return {
         ...state,
         initialSortingBars: action.initialSortingBars,
+      };
+
+    case UPDATINGFINALSORTINGBARSSTATE:
+      return {
+        ...state,
+        finalSortingBars: action.finalSortingBars,
       };
 
     default:

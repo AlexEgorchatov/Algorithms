@@ -17,6 +17,7 @@ import {
   updatingIsAlgorithmRunningStateAction,
   updatingHasAlgorithmStartedState,
   updatingInitialSortingBarsStateAction,
+  updatingFinalSortingBarsStateAction,
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
 import { store } from '../App';
 import { AnyAction } from 'redux';
@@ -288,6 +289,15 @@ const StopButton = () => {
 };
 
 const CompleteButton = () => {
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const dispatch = useDispatch();
+
+  const handleCompleteButtonClick = () => {
+    dispatch(updatingHasAlgorithmStartedState(false));
+    dispatch(updatingIsAlgorithmRunningStateAction(false));
+    dispatch(updatingSortingBarsStateAction(algorithmState.finalSortingBars));
+  };
+
   return (
     <div
       css={css`
@@ -309,6 +319,7 @@ const CompleteButton = () => {
           }
         }
       `}
+      onClick={handleCompleteButtonClick}
     >
       <div
         css={css`
@@ -363,9 +374,11 @@ const GenerateInputComponent = () => {
       sortingBars.push({ barHeight: random, barID: i });
     }
 
+    let sortingBarsCopy = [...sortingBars];
     dispatch(updatingSortingInputStateAction(newInput.trim()));
     dispatch(updatingSortingBarsStateAction(sortingBars));
     dispatch(updatingInitialSortingBarsStateAction(sortingBars));
+    dispatch(updatingFinalSortingBarsStateAction(sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight)));
   };
 
   const handleEnterKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -623,8 +636,9 @@ export const SortingPage = () => {
 const waitForContinuation = () => {
   return new Promise<boolean>((resolve) => {
     let unsubscribe = store.subscribe(() => {
-      if (store.getState().sortingAlgorithmState.isAlgorithmRunning) resolve(true);
-      else if (!store.getState().sortingAlgorithmState.hasAlgorithmStarted) resolve(false);
+      const state = store.getState().sortingAlgorithmState;
+      if (state.isAlgorithmRunning) resolve(true);
+      else if (!state.hasAlgorithmStarted) resolve(false);
 
       unsubscribe();
     });
