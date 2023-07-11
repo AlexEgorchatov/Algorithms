@@ -5,30 +5,22 @@ import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import { updatingSliderValueStateAction } from '../Store/Shared/SliderComponentStateManagement';
 import { useRef } from 'react';
-import { updatingIsAlgorithmRunningStateAction } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
-
-const StopButton = () => {
-  return (
-    <div
-      css={css`
-        box-sizing: border-box;
-        position: relative;
-        display: block;
-        transform: scale(var(--ggs, 1));
-        width: 16px;
-        height: 16px;
-        background: white;
-        cursor: pointer;
-        :hover {
-          background: black;
-        }
-      `}
-    ></div>
-  );
-};
+import {
+  updatingHasAlgorithmStartedState,
+  updatingIsAlgorithmRunningStateAction,
+  updatingSortingBarsStateAction,
+} from '../Store/Sorting Page/SortingAlgorithmStateManagement';
+import { store } from '../App';
+import { executeBubbleSortAlgorithm } from '../Resources/Helper';
 
 const PlayButton = () => {
-  const dispatch = useDispatch();
+  const handleStartButtonClick = () => {
+    store.dispatch(updatingIsAlgorithmRunningStateAction(true));
+    if (!store.getState().sortingAlgorithmState.hasAlgorithmStarted) {
+      store.dispatch(updatingHasAlgorithmStartedState(true));
+      executeBubbleSortAlgorithm();
+    }
+  };
 
   return (
     <div
@@ -44,7 +36,7 @@ const PlayButton = () => {
           color: black;
         }
       `}
-      onClick={() => dispatch(updatingIsAlgorithmRunningStateAction(true))}
+      onClick={handleStartButtonClick}
     >
       <div
         css={css`
@@ -88,6 +80,42 @@ const PauseButton = () => {
   );
 };
 
+const StopButton = () => {
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const dispatch = useDispatch();
+
+  const handleStopButtonClick = () => {
+    if (!algorithmState.hasAlgorithmStarted) return;
+
+    dispatch(updatingHasAlgorithmStartedState(false));
+    dispatch(updatingIsAlgorithmRunningStateAction(false));
+    dispatch(updatingSortingBarsStateAction(algorithmState.initialSortingBars));
+  };
+
+  return (
+    <div
+      css={css`
+        box-sizing: border-box;
+        position: relative;
+        display: block;
+        transform: scale(var(--ggs, 1));
+        width: 16px;
+        height: 16px;
+        background: white;
+        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'cursor'};
+        opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
+        :hover {
+          ${algorithmState.hasAlgorithmStarted &&
+          `
+            background: black;
+          `}
+        }
+      `}
+      onClick={handleStopButtonClick}
+    ></div>
+  );
+};
+
 const CompleteButton = () => {
   const subButtonStyle = css`
     content: '';
@@ -101,17 +129,35 @@ const CompleteButton = () => {
     border-left: 15px solid;
   `;
 
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const dispatch = useDispatch();
+
+  const handleCompleteButtonClick = () => {
+    if (!algorithmState.hasAlgorithmStarted) return;
+
+    dispatch(updatingHasAlgorithmStartedState(false));
+    dispatch(updatingIsAlgorithmRunningStateAction(false));
+    dispatch(updatingSortingBarsStateAction(algorithmState.finalSortingBars));
+  };
+
   return (
     <div
       css={css`
         width: 15px;
         display: flex;
         color: white;
-        cursor: pointer;
+        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'cursor'};
+        opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
-          color: black;
+          ${algorithmState.hasAlgorithmStarted &&
+          `
+            & > div {
+              color: black;
+            }
+          `}
         }
       `}
+      onClick={handleCompleteButtonClick}
     >
       <div css={subButtonStyle} />
       <div

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React, { Dispatch, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
 import { SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
@@ -20,7 +20,7 @@ import {
   updatingFinalSortingBarsStateAction,
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
 import { store } from '../App';
-import { AnyAction } from 'redux';
+import { executeBubbleSortAlgorithm } from '../Resources/Helper';
 
 interface AlgorithmListProps {
   data: SortingData[];
@@ -143,20 +143,11 @@ const RefreshButton = () => {
 };
 
 const PlayButton = () => {
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
-  const dispatch = useDispatch();
-  let stepTime = useRef<number>(0);
-
-  useEffect(() => {
-    stepTime.current = 400 - 30 * (sliderState.initialSliderValue - 1);
-  }, [sliderState.initialSliderValue]);
-
   const handleStartButtonClick = () => {
-    dispatch(updatingIsAlgorithmRunningStateAction(true));
-    if (!algorithmState.hasAlgorithmStarted) {
-      dispatch(updatingHasAlgorithmStartedState(true));
-      executeBubbleSortAlgorithm(dispatch, algorithmState.sortingBars, stepTime);
+    store.dispatch(updatingIsAlgorithmRunningStateAction(true));
+    if (!store.getState().sortingAlgorithmState.hasAlgorithmStarted) {
+      store.dispatch(updatingHasAlgorithmStartedState(true));
+      executeBubbleSortAlgorithm();
     }
   };
 
@@ -245,6 +236,8 @@ const StopButton = () => {
   const dispatch = useDispatch();
 
   const handleStopButtonClick = () => {
+    if (!algorithmState.hasAlgorithmStarted) return;
+
     dispatch(updatingHasAlgorithmStartedState(false));
     dispatch(updatingIsAlgorithmRunningStateAction(false));
     dispatch(updatingSortingBarsStateAction(algorithmState.initialSortingBars));
@@ -263,12 +256,16 @@ const StopButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: pointer;
+        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'cursor'};
+        opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
-          color: ${headerItemHovered};
-          & > div {
-            background: ${headerItemHovered};
-          }
+          ${algorithmState.hasAlgorithmStarted &&
+          `
+            color: ${headerItemHovered};
+            & > div {
+              background: ${headerItemHovered};
+            }
+          `}
         }
       `}
       onClick={handleStopButtonClick}
@@ -293,6 +290,8 @@ const CompleteButton = () => {
   const dispatch = useDispatch();
 
   const handleCompleteButtonClick = () => {
+    if (!algorithmState.hasAlgorithmStarted) return;
+
     dispatch(updatingHasAlgorithmStartedState(false));
     dispatch(updatingIsAlgorithmRunningStateAction(false));
     dispatch(updatingSortingBarsStateAction(algorithmState.finalSortingBars));
@@ -311,12 +310,16 @@ const CompleteButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: pointer;
+        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'cursor'};
+        opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
-          color: ${headerItemHovered};
-          & > div {
+          ${algorithmState.hasAlgorithmStarted &&
+          `
             color: ${headerItemHovered};
-          }
+            & > div {
+              color: ${headerItemHovered};
+            }
+          `}
         }
       `}
       onClick={handleCompleteButtonClick}
@@ -629,103 +632,4 @@ export const SortingPage = () => {
       </div>
     </div>
   );
-};
-
-/**Waits for the next action after the algorithm was paused.
- * Returns true if the algorithm continues execution, false if the algorithm was stopped or animation was skipped.*/
-const waitForContinuation = () => {
-  return new Promise<boolean>((resolve) => {
-    let unsubscribe = store.subscribe(() => {
-      const state = store.getState().sortingAlgorithmState;
-      if (state.isAlgorithmRunning) resolve(true);
-      else if (!state.hasAlgorithmStarted) resolve(false);
-
-      unsubscribe();
-    });
-  });
-};
-
-const isAlgorithmTerminated = (): boolean => {
-  if (store.getState().sortingAlgorithmState.hasAlgorithmStarted) return false;
-  else return true;
-};
-
-const executeBubbleSortAlgorithm = async (
-  dispatch: Dispatch<AnyAction>,
-  sortingBars: SortingBarProps[],
-  stepTime: React.MutableRefObject<number>,
-) => {
-  let length = sortingBars.length;
-  let barsCopy = [...sortingBars];
-
-  for (let i = 0; i < length - 1; i++) {
-    let isSwapped: boolean = false;
-    for (let j = 0; j < length - i - 1; j++) {
-      barsCopy = [...barsCopy];
-      barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[j].barID };
-      barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[j + 1].barID };
-      dispatch(updatingSortingBarsStateAction(barsCopy));
-      await new Promise((resolve) => setTimeout(resolve, stepTime.current));
-      if (isAlgorithmTerminated()) return;
-      if (!store.getState().sortingAlgorithmState.isAlgorithmRunning) {
-        if (!(await waitForContinuation())) return;
-      }
-
-      if (barsCopy[j].barHeight <= barsCopy[j + 1].barHeight) {
-        barsCopy = [...barsCopy];
-        barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarStateEnum.Unselected, barID: barsCopy[j].barID };
-        barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Unselected, barID: barsCopy[j + 1].barID };
-        dispatch(updatingSortingBarsStateAction(barsCopy));
-        if (isAlgorithmTerminated()) return;
-        if (!store.getState().sortingAlgorithmState.isAlgorithmRunning) {
-          if (!(await waitForContinuation())) return;
-        }
-        continue;
-      }
-
-      barsCopy = [...barsCopy];
-      let currentLeftOffset = document.getElementById(barsCopy[j].barID.toString())?.offsetLeft;
-      let nextLeftOffset = document.getElementById(barsCopy[j + 1].barID.toString())?.offsetLeft;
-      let tempID = barsCopy[j].barID;
-      barsCopy[j] = {
-        barHeight: barsCopy[j].barHeight,
-        barState: SortingBarStateEnum.Selected,
-        barID: barsCopy[j + 1].barID,
-        leftOffset: nextLeftOffset,
-      };
-      barsCopy[j + 1] = {
-        barHeight: barsCopy[j + 1].barHeight,
-        barState: SortingBarStateEnum.Selected,
-        barID: tempID,
-        leftOffset: currentLeftOffset,
-      };
-      dispatch(updatingSortingBarsStateAction(barsCopy));
-      await new Promise((resolve) => setTimeout(resolve, stepTime.current));
-      if (isAlgorithmTerminated()) return;
-      if (!store.getState().sortingAlgorithmState.isAlgorithmRunning) {
-        if (!(await waitForContinuation())) return;
-      }
-
-      barsCopy = [...barsCopy];
-      var tempBar = barsCopy[j];
-      barsCopy[j] = {
-        barHeight: barsCopy[j + 1].barHeight,
-        barState: SortingBarStateEnum.Unselected,
-        barID: barsCopy[j + 1].barID,
-      };
-      barsCopy[j + 1] = {
-        barHeight: tempBar.barHeight,
-        barState: SortingBarStateEnum.Unselected,
-        barID: tempBar.barID,
-      };
-      dispatch(updatingSortingBarsStateAction(barsCopy));
-      if (isAlgorithmTerminated()) return;
-      if (!store.getState().sortingAlgorithmState.isAlgorithmRunning) {
-        if (!(await waitForContinuation())) return;
-      }
-
-      isSwapped = true;
-    }
-    if (!isSwapped) return;
-  }
 };
