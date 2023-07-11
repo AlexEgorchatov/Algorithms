@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import React, { useEffect, useRef } from 'react';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
-import { SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
+import { SortingData, SortingEnumeration, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
@@ -20,7 +20,7 @@ import {
   updatingFinalSortingBarsStateAction,
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
 import { store } from '../App';
-import { executeBubbleSortAlgorithm } from '../Resources/Helper';
+import { executeBubbleSortAlgorithm, executeQuickSortAlgorithm } from '../Resources/Helper';
 
 interface AlgorithmListProps {
   data: SortingData[];
@@ -150,11 +150,22 @@ const RefreshButton = () => {
 };
 
 const PlayButton = () => {
+  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+
   const handleStartButtonClick = () => {
     store.dispatch(updatingIsAlgorithmRunningStateAction(true));
-    if (!store.getState().sortingAlgorithmState.hasAlgorithmStarted) {
+    if (!algorithmState.hasAlgorithmStarted) {
       store.dispatch(updatingHasAlgorithmStartedState(true));
-      executeBubbleSortAlgorithm();
+
+      switch (algorithmState.sortingAlgorithm) {
+        case SortingEnumeration.BubbleSort:
+          executeBubbleSortAlgorithm();
+          break;
+
+        case SortingEnumeration.QuickSort:
+          executeQuickSortAlgorithm();
+          break;
+      }
     }
   };
 

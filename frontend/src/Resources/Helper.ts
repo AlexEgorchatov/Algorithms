@@ -95,3 +95,7 @@ export const executeBubbleSortAlgorithm = async () => {
     if (!isSwapped) return;
   }
 };
+
+export const executeQuickSortAlgorithm = async () => {
+  console.log(`Executed Quick Sort`);
+};
