@@ -4,7 +4,7 @@ import {
   updatingHasAlgorithmStartedState,
   updatingIsAlgorithmRunningStateAction,
   updatingSortingBarsStateAction,
-} from '../../Store/Sorting Page/SortingAlgorithmStateManagement';
+} from '../../Store/Sorting Page/SortingPageStateManagement';
 import { isAlgorithmTerminated, waitForContinuation } from '../Helper';
 import { SortingAlgorithmBase } from './AlgorithmBase';
 

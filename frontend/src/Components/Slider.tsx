@@ -9,7 +9,7 @@ import {
   updatingHasAlgorithmStartedState,
   updatingIsAlgorithmRunningStateAction,
   updatingSortingBarsStateAction,
-} from '../Store/Sorting Page/SortingAlgorithmStateManagement';
+} from '../Store/Sorting Page/SortingPageStateManagement';
 import { handleStartAlgorithmButtonClick } from '../Resources/Helper';
 import { FinalSortingBars, InitialSortingBars } from '../Pages/SortingPage';
 

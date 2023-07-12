@@ -5,7 +5,7 @@ import { stringMatchingModuleReducer, StringMatchingModuleState } from './Home P
 import { pathFindingModuleReducer, PathFindingModuleState } from './Home Page/PathFindingModuleStateManagement';
 import { headerReducer, HeaderState } from './Home Page/HeaderStateManagement';
 import { sliderComponentReducer, SliderComponentState } from './Shared/SliderComponentStateManagement';
-import { sortingAlgorithmReducer, SortingAlgorithmState } from './Sorting Page/SortingAlgorithmStateManagement';
+import { sortingAlgorithmReducer, SortingPageState } from './Sorting Page/SortingPageStateManagement';
 
 const rootReducer = combineReducers<AppState>({
   sortingModuleState: sortingModuleReducer,
@@ -27,5 +27,5 @@ export interface AppState {
   readonly pathFindingModuleState: PathFindingModuleState;
   readonly headerState: HeaderState;
   readonly sliderComponentState: SliderComponentState;
-  readonly sortingAlgorithmState: SortingAlgorithmState;
+  readonly sortingAlgorithmState: SortingPageState;
 }

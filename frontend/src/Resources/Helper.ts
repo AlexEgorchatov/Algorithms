@@ -4,7 +4,7 @@ import {
   updatingHasAlgorithmStartedState,
   updatingIsAlgorithmRunningStateAction,
   updatingSortingBarsStateAction,
-} from '../Store/Sorting Page/SortingAlgorithmStateManagement';
+} from '../Store/Sorting Page/SortingPageStateManagement';
 
 /**Waits for the next action after the algorithm was paused.
  * Returns true if the algorithm continues execution, false if the algorithm was stopped or animation was skipped.*/

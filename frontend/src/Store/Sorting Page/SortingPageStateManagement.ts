@@ -13,7 +13,7 @@ export interface SortingBarProps {
 }
 
 //#region State
-export interface SortingAlgorithmState {
+export interface SortingPageState {
   selectedSortingAlgorithmType: SortingAlgorithmTypeEnum;
   readonly sortingInput: string;
   readonly isAlgorithmRunning: boolean;
@@ -21,7 +21,7 @@ export interface SortingAlgorithmState {
   readonly sortingBars: SortingBarProps[];
 }
 
-const initialSortingModuleState: SortingAlgorithmState = {
+const initialSortingModuleState: SortingPageState = {
   selectedSortingAlgorithmType: SortingAlgorithmTypeEnum.BubbleSort,
   sortingInput: '',
   isAlgorithmRunning: false,

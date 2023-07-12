@@ -16,7 +16,7 @@ import {
   updatingIsAlgorithmRunningStateAction,
   updatingHasAlgorithmStartedState,
   updatingSelectedSortingAlgorithmState,
-} from '../Store/Sorting Page/SortingAlgorithmStateManagement';
+} from '../Store/Sorting Page/SortingPageStateManagement';
 import { handleStartAlgorithmButtonClick } from '../Resources/Helper';
 import { SortingAlgorithmBase, SortingAlgorithmTypeEnum } from '../Resources/Algorithms/AlgorithmBase';
 import { BubbleSort } from '../Resources/Algorithms/SortingAlgorithms';
