@@ -4,22 +4,26 @@ import { css } from '@emotion/react';
 import React, { useEffect, useRef } from 'react';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
-import { SortingData, SortingEnumeration, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
+import { SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import {
   SortingBarProps,
   SortingBarStateEnum,
-  updatingSortingAlgorithmStateAction,
   updatingSortingBarsStateAction,
   updatingSortingInputStateAction,
   updatingIsAlgorithmRunningStateAction,
   updatingHasAlgorithmStartedState,
-  updatingInitialSortingBarsStateAction,
-  updatingFinalSortingBarsStateAction,
+  updatingSelectedSortingAlgorithmState,
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
 import { handleStartAlgorithmButtonClick } from '../Resources/Helper';
+import { SortingAlgorithmBase, SortingAlgorithmTypeEnum } from '../Resources/Algorithms/AlgorithmBase';
+import { BubbleSort } from '../Resources/Algorithms/SortingAlgorithms';
+
+export let SelectedAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmTypeEnum.BubbleSort);
+export let InitialSortingBars: SortingBarProps[];
+export let FinalSortingBars: SortingBarProps[];
 
 interface AlgorithmListProps {
   data: SortingData[];
@@ -28,7 +32,7 @@ interface AlgorithmListProps {
 interface AlgorithmProps {
   title: string;
   isSelected: boolean;
-  sortingType: SortingEnumeration;
+  sortingAlgorithm: SortingAlgorithmBase;
 }
 
 const SortingInput = () => {
@@ -238,7 +242,7 @@ const StopButton = () => {
 
     dispatch(updatingHasAlgorithmStartedState(false));
     dispatch(updatingIsAlgorithmRunningStateAction(false));
-    dispatch(updatingSortingBarsStateAction(algorithmState.initialSortingBars));
+    dispatch(updatingSortingBarsStateAction(InitialSortingBars));
   };
 
   return (
@@ -292,7 +296,7 @@ const CompleteButton = () => {
 
     dispatch(updatingHasAlgorithmStartedState(false));
     dispatch(updatingIsAlgorithmRunningStateAction(false));
-    dispatch(updatingSortingBarsStateAction(algorithmState.finalSortingBars));
+    dispatch(updatingSortingBarsStateAction(FinalSortingBars));
   };
 
   return (
@@ -381,8 +385,8 @@ const GenerateInputComponent = () => {
     let sortingBarsCopy = [...sortingBars];
     dispatch(updatingSortingInputStateAction(newInput.trim()));
     dispatch(updatingSortingBarsStateAction(sortingBars));
-    dispatch(updatingInitialSortingBarsStateAction(sortingBars));
-    dispatch(updatingFinalSortingBarsStateAction(sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight)));
+    InitialSortingBars = [...sortingBars];
+    FinalSortingBars = sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight);
   };
 
   const handleEnterKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -463,14 +467,13 @@ const ActionBar = () => {
   );
 };
 
-const Algorithm = ({ title, isSelected, sortingType }: AlgorithmProps) => {
+const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmProps) => {
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    if (algorithmState.hasAlgorithmStarted) return;
-
-    dispatch(updatingSortingAlgorithmStateAction(sortingType));
+    SelectedAlgorithm = sortingAlgorithm;
+    dispatch(updatingSelectedSortingAlgorithmState(sortingAlgorithm.sortingAlgorithmType));
   };
 
   return (
@@ -504,12 +507,12 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
         display: flex;
       `}
     >
-      {data.map((algorithm) => (
-        <Algorithm
-          key={algorithm.sortingType}
+      {data.map((algorithm, index) => (
+        <AlgorithmComponent
+          key={index}
           title={algorithm.title}
-          isSelected={algorithm.sortingType === algorithmState.sortingAlgorithm}
-          sortingType={algorithm.sortingType}
+          isSelected={algorithm.sortingAlgorithm.sortingAlgorithmType === algorithmState.selectedSortingAlgorithmType}
+          sortingAlgorithm={algorithm.sortingAlgorithm}
         />
       ))}
     </div>

@@ -1,4 +1,4 @@
-import { SortingEnumeration } from '../../Resources/Sorting Page Resources/SortingData';
+import { SortingAlgorithmTypeEnum } from '../../Resources/Algorithms/AlgorithmBase';
 
 export enum SortingBarStateEnum {
   Unselected = 0,
@@ -14,32 +14,29 @@ export interface SortingBarProps {
 
 //#region State
 export interface SortingAlgorithmState {
-  readonly sortingAlgorithm: SortingEnumeration;
+  selectedSortingAlgorithmType: SortingAlgorithmTypeEnum;
   readonly sortingInput: string;
   readonly isAlgorithmRunning: boolean;
   readonly hasAlgorithmStarted: boolean;
   readonly sortingBars: SortingBarProps[];
-  readonly initialSortingBars: SortingBarProps[];
-  readonly finalSortingBars: SortingBarProps[];
 }
 
 const initialSortingModuleState: SortingAlgorithmState = {
-  sortingAlgorithm: SortingEnumeration.BubbleSort,
+  selectedSortingAlgorithmType: SortingAlgorithmTypeEnum.BubbleSort,
   sortingInput: '',
   isAlgorithmRunning: false,
   hasAlgorithmStarted: false,
   sortingBars: [],
-  initialSortingBars: [],
-  finalSortingBars: [],
 };
 //#endregion State
 
 //#region Actions
-const UPDATINGSORTINGALGORITHMSTATE = 'UpdatingSortingAlgorithmState';
-export const updatingSortingAlgorithmStateAction = (algorithm = initialSortingModuleState.sortingAlgorithm) =>
+
+const UPDATINGSELECTEDSORTINGALGORITHMSTATE = 'UpdatingSelectedSortingAlgorithmState';
+export const updatingSelectedSortingAlgorithmState = (selectedSortingAlgorithmType = initialSortingModuleState.selectedSortingAlgorithmType) =>
   ({
-    type: UPDATINGSORTINGALGORITHMSTATE,
-    algorithm: algorithm,
+    type: UPDATINGSELECTEDSORTINGALGORITHMSTATE,
+    selectedSortingAlgorithmType: selectedSortingAlgorithmType,
   } as const);
 
 const UPDATINGSORTINGINPUTSTATE = 'UpdatingSortingInputState';
@@ -70,37 +67,21 @@ export const updatingSortingBarsStateAction = (sortingBars = initialSortingModul
     sortingBars: sortingBars,
   } as const);
 
-const UPDATINGINITIALSORTINGBARSSTATE = 'UpdatingInitialSortingBarsState';
-export const updatingInitialSortingBarsStateAction = (initialSortingBars = initialSortingModuleState.initialSortingBars) =>
-  ({
-    type: UPDATINGINITIALSORTINGBARSSTATE,
-    initialSortingBars: initialSortingBars,
-  } as const);
-
-const UPDATINGFINALSORTINGBARSSTATE = 'UpdatingFinalSortingBarsState';
-export const updatingFinalSortingBarsStateAction = (finalSortingBars = initialSortingModuleState.finalSortingBars) =>
-  ({
-    type: UPDATINGFINALSORTINGBARSSTATE,
-    finalSortingBars: finalSortingBars,
-  } as const);
-
 //#endregion Actions
 
 //#region Reducers
 type SortingAlgorithmActions =
-  | ReturnType<typeof updatingSortingAlgorithmStateAction>
+  | ReturnType<typeof updatingSelectedSortingAlgorithmState>
   | ReturnType<typeof updatingSortingInputStateAction>
   | ReturnType<typeof updatingIsAlgorithmRunningStateAction>
   | ReturnType<typeof updatingHasAlgorithmStartedState>
-  | ReturnType<typeof updatingSortingBarsStateAction>
-  | ReturnType<typeof updatingInitialSortingBarsStateAction>
-  | ReturnType<typeof updatingFinalSortingBarsStateAction>;
+  | ReturnType<typeof updatingSortingBarsStateAction>;
 export const sortingAlgorithmReducer = (state = initialSortingModuleState, action: SortingAlgorithmActions) => {
   switch (action.type) {
-    case UPDATINGSORTINGALGORITHMSTATE:
+    case UPDATINGSELECTEDSORTINGALGORITHMSTATE:
       return {
         ...state,
-        sortingAlgorithm: action.algorithm,
+        selectedSortingAlgorithmType: action.selectedSortingAlgorithmType,
       };
 
     case UPDATINGSORTINGINPUTSTATE:
@@ -125,18 +106,6 @@ export const sortingAlgorithmReducer = (state = initialSortingModuleState, actio
       return {
         ...state,
         sortingBars: action.sortingBars,
-      };
-
-    case UPDATINGINITIALSORTINGBARSSTATE:
-      return {
-        ...state,
-        initialSortingBars: action.initialSortingBars,
-      };
-
-    case UPDATINGFINALSORTINGBARSSTATE:
-      return {
-        ...state,
-        finalSortingBars: action.finalSortingBars,
       };
 
     default:

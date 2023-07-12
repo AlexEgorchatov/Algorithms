@@ -11,6 +11,7 @@ import {
   updatingSortingBarsStateAction,
 } from '../Store/Sorting Page/SortingAlgorithmStateManagement';
 import { handleStartAlgorithmButtonClick } from '../Resources/Helper';
+import { FinalSortingBars, InitialSortingBars } from '../Pages/SortingPage';
 
 const PlayButton = () => {
   return (
@@ -80,7 +81,7 @@ const StopButton = () => {
 
     dispatch(updatingHasAlgorithmStartedState(false));
     dispatch(updatingIsAlgorithmRunningStateAction(false));
-    dispatch(updatingSortingBarsStateAction(algorithmState.initialSortingBars));
+    dispatch(updatingSortingBarsStateAction(InitialSortingBars));
   };
 
   return (
@@ -128,7 +129,7 @@ const CompleteButton = () => {
 
     dispatch(updatingHasAlgorithmStartedState(false));
     dispatch(updatingIsAlgorithmRunningStateAction(false));
-    dispatch(updatingSortingBarsStateAction(algorithmState.finalSortingBars));
+    dispatch(updatingSortingBarsStateAction(FinalSortingBars));
   };
 
   return (

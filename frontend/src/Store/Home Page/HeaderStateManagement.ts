@@ -1,12 +1,10 @@
 //#region State
 export interface HeaderState {
   readonly initialMenuButtonVisibility: boolean;
-  readonly initialDropdownWidth: number;
 }
 
 const initialHeaderState: HeaderState = {
   initialMenuButtonVisibility: false,
-  initialDropdownWidth: 0,
 };
 //#endregion State
 

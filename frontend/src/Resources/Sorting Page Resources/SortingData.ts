@@ -1,20 +1,18 @@
-export enum SortingEnumeration {
-  BubbleSort = 0,
-  QuickSort = 1,
-}
+import { SortingAlgorithmBase, SortingAlgorithmTypeEnum } from '../Algorithms/AlgorithmBase';
+import { BubbleSort, QuickSort } from '../Algorithms/SortingAlgorithms';
 
 export interface SortingData {
-  sortingType: SortingEnumeration;
+  sortingAlgorithm: SortingAlgorithmBase;
   title: string;
 }
 
 export const sortingAlgorithms: SortingData[] = [
   {
-    sortingType: SortingEnumeration.BubbleSort,
+    sortingAlgorithm: new BubbleSort(SortingAlgorithmTypeEnum.BubbleSort),
     title: 'Bubble Sort',
   },
   {
-    sortingType: SortingEnumeration.QuickSort,
+    sortingAlgorithm: new QuickSort(SortingAlgorithmTypeEnum.QuickSort),
     title: 'Quick Sort',
   },
 ];
