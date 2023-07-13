@@ -71,7 +71,7 @@ export const HomePage = () => (
     css={css`
       display: block;
       overflow: auto;
-      min-height: 87vh;
+      height: 100%;
     `}
   >
     <div

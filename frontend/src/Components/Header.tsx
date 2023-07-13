@@ -178,7 +178,8 @@ export const Header = ({ data }: Props) => {
         box-sizing: border-box;
         top: 0;
         width: 100%;
-        height: 50px;
+        height: 5%;
+        min-height: 46px;
         min-width: 450px;
         display: flex;
         align-items: center;

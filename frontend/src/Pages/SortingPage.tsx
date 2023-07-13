@@ -584,28 +584,32 @@ export const SortingPage = () => {
         font-size: 36px;
         text-align: left;
         overflow: auto;
-        height: 87vh;
-        min-height: 87vh;
+        height: 100%;
       `}
     >
       <div
         css={css`
-          padding: 10px;
+          margin: 0px 10px;
+          height: 20%;
+          min-height: 168px;
+          display: block;
         `}
       >
         <div
           css={css`
-            padding-bottom: 10px;
-            margin-top: -10px;
+            height: 30%;
+            min-height: 50px;
           `}
         >
           Sorting
         </div>
         <div
           css={css`
-            height: 120px;
-            display: grid;
-            align-content: space-between;
+            height: 70%;
+            min-height: 118px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
           `}
         >
           <SortingInput />
@@ -615,19 +619,17 @@ export const SortingPage = () => {
       </div>
       <div
         css={css`
-          display: flex;
-          height: 626px;
-          flex-direction: column;
+          display: block;
           background-color: ${moduleBackground};
+          height: 80%;
         `}
       >
         <div
           css={css`
             display: flex;
-            height: 550px;
+            height: 70%;
             justify-content: center;
             align-items: flex-end;
-            margin-bottom: 100px;
           `}
         >
           <div
