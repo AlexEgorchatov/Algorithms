@@ -19,6 +19,7 @@ function App() {
       <Provider store={store}>
         <div
           css={css`
+            height: 100%;
             margin: 0px;
             background-color: ${mainBackground};
             min-width: 450px;
@@ -27,7 +28,7 @@ function App() {
           <Header data={modules} />
           <div
             css={css`
-              margin: 50px 10px 0px 10px;
+              margin: 0px 10px;
               background-color: ${pageBackground};
             `}
           >

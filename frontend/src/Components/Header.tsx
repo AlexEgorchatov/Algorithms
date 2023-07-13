@@ -62,8 +62,8 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
             font-size: 28px;
             border: none;
             cursor: pointer;
-            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
-              Helvetica Neue, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+              sans-serif;
           `}
         >
           Modules
@@ -175,7 +175,6 @@ export const Header = ({ data }: Props) => {
   return (
     <div
       css={css`
-        position: fixed;
         box-sizing: border-box;
         top: 0;
         width: 100%;
