@@ -136,6 +136,7 @@ const CompleteButton = () => {
     <div
       css={css`
         width: 15px;
+        position: relative;
         display: flex;
         color: white;
         cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
