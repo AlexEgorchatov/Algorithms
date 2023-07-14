@@ -5,13 +5,8 @@ import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import { updatingSliderValueStateAction } from '../Store/Shared/SliderComponentStateManagement';
 import { useRef } from 'react';
-import {
-  updatingHasAlgorithmStartedState,
-  updatingIsAlgorithmRunningStateAction,
-  updatingSortingBarsStateAction,
-} from '../Store/Sorting Page/SortingPageStateManagement';
-import { handleStartAlgorithmButtonClick } from '../Resources/Helper';
-import { finalSortingBars, initialSortingBars } from '../Pages/SortingPage';
+import { updatingIsAlgorithmRunningStateAction } from '../Store/Sorting Page/SortingPageStateManagement';
+import { handleCompleteSorting, handleStartSorting, handleStopSorting } from '../Resources/Helper';
 
 const PlayButton = () => {
   return (
@@ -28,7 +23,7 @@ const PlayButton = () => {
           color: black;
         }
       `}
-      onClick={handleStartAlgorithmButtonClick}
+      onClick={handleStartSorting}
     >
       <div
         css={css`
@@ -74,15 +69,6 @@ const PauseButton = () => {
 
 const StopButton = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingPageState);
-  const dispatch = useDispatch();
-
-  const handleStopButtonClick = () => {
-    if (!algorithmState.hasAlgorithmStarted) return;
-
-    dispatch(updatingHasAlgorithmStartedState(false));
-    dispatch(updatingIsAlgorithmRunningStateAction(false));
-    dispatch(updatingSortingBarsStateAction(initialSortingBars));
-  };
 
   return (
     <div
@@ -103,34 +89,13 @@ const StopButton = () => {
           `}
         }
       `}
-      onClick={handleStopButtonClick}
+      onClick={handleStopSorting}
     ></div>
   );
 };
 
 const CompleteButton = () => {
-  const subButtonStyle = css`
-    content: '';
-    display: block;
-    box-sizing: border-box;
-    position: absolute;
-    width: 0;
-    height: 15px;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-left: 15px solid;
-  `;
-
   const algorithmState = useSelector((state: AppState) => state.sortingPageState);
-  const dispatch = useDispatch();
-
-  const handleCompleteButtonClick = () => {
-    if (!algorithmState.hasAlgorithmStarted) return;
-
-    dispatch(updatingHasAlgorithmStartedState(false));
-    dispatch(updatingIsAlgorithmRunningStateAction(false));
-    dispatch(updatingSortingBarsStateAction(finalSortingBars));
-  };
 
   return (
     <div
@@ -150,9 +115,21 @@ const CompleteButton = () => {
           `}
         }
       `}
-      onClick={handleCompleteButtonClick}
+      onClick={handleCompleteSorting}
     >
-      <div css={subButtonStyle} />
+      <div
+        css={css`
+          content: '';
+          display: block;
+          box-sizing: border-box;
+          position: absolute;
+          width: 0;
+          height: 15px;
+          border-top: 8px solid transparent;
+          border-bottom: 8px solid transparent;
+          border-left: 15px solid;
+        `}
+      />
       <div
         css={css`
           position: relative;
@@ -176,6 +153,7 @@ const Slider = () => {
     let inputValue: number = parseInt(inputRef.current.value);
     dispatch(updatingSliderValueStateAction(inputValue));
   };
+
   return (
     <div
       css={css`

@@ -1,16 +1,11 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
-import { handleStartAlgorithmButtonClick } from '../Resources/Helper';
+import { handleCompleteSorting, handleStartSorting, handleStopSorting } from '../Resources/Helper';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  updatingHasAlgorithmStartedState,
-  updatingIsAlgorithmRunningStateAction,
-  updatingSortingBarsStateAction,
-} from '../Store/Sorting Page/SortingPageStateManagement';
+import { updatingIsAlgorithmRunningStateAction } from '../Store/Sorting Page/SortingPageStateManagement';
 import { AppState } from '../Store/Store';
-import { finalSortingBars, initialSortingBars } from '../Pages/SortingPage';
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 
 const PlayButton = () => {
   return (
@@ -42,17 +37,13 @@ const PlayButton = () => {
           left: 6px;
         }
       `}
-      onClick={handleStartAlgorithmButtonClick}
+      onClick={handleStartSorting}
     ></div>
   );
 };
 
 const PauseButton = () => {
   const dispatch = useDispatch();
-
-  const handlePauseButtonClick = () => {
-    dispatch(updatingIsAlgorithmRunningStateAction(false));
-  };
 
   return (
     <div
@@ -75,7 +66,7 @@ const PauseButton = () => {
           }
         }
       `}
-      onClick={handlePauseButtonClick}
+      onClick={() => dispatch(updatingIsAlgorithmRunningStateAction(false))}
     >
       <div
         css={css`
@@ -95,15 +86,6 @@ const PauseButton = () => {
 
 const StopButton = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingPageState);
-  const dispatch = useDispatch();
-
-  const handleStopButtonClick = () => {
-    if (!algorithmState.hasAlgorithmStarted) return;
-
-    dispatch(updatingHasAlgorithmStartedState(false));
-    dispatch(updatingIsAlgorithmRunningStateAction(false));
-    dispatch(updatingSortingBarsStateAction(initialSortingBars));
-  };
 
   return (
     <div
@@ -130,7 +112,7 @@ const StopButton = () => {
             `}
         }
       `}
-      onClick={handleStopButtonClick}
+      onClick={handleStopSorting}
     >
       <div
         css={css`
@@ -149,15 +131,6 @@ const StopButton = () => {
 
 const CompleteButton = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingPageState);
-  const dispatch = useDispatch();
-
-  const handleCompleteButtonClick = () => {
-    if (!algorithmState.hasAlgorithmStarted) return;
-
-    dispatch(updatingHasAlgorithmStartedState(false));
-    dispatch(updatingIsAlgorithmRunningStateAction(false));
-    dispatch(updatingSortingBarsStateAction(finalSortingBars));
-  };
 
   return (
     <div
@@ -184,7 +157,7 @@ const CompleteButton = () => {
             `}
         }
       `}
-      onClick={handleCompleteButtonClick}
+      onClick={handleCompleteSorting}
     >
       <div
         css={css`
