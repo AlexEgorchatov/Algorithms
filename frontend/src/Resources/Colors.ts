@@ -5,3 +5,4 @@ export const moduleBackground = '#777777';
 export const moduleBorderBrush = '#e8610e';
 export const headerItemHovered = '#f59e42';
 export const errorMessageColor = '#ff5f1f';
+export const completionColor = '#FFD700';
