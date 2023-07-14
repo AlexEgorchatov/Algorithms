@@ -22,7 +22,7 @@ function App() {
             height: 100%;
             margin: 0px;
             background-color: ${mainBackground};
-            min-width: 450px;
+            min-width: 560px;
           `}
         >
           <Header data={modules} />

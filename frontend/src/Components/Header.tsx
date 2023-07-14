@@ -30,7 +30,7 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
       css={css`
         background-color: ${mainBackground};
         ${isVisible &&
-        `@media (max-width: 450px) {
+        `@media (max-width: 560px) {
           display: none;
         }`}
       `}
@@ -138,7 +138,7 @@ const HeaderMenuButton = ({ data }: Props) => {
         position: relative;
         display: inline-block;
         cursor: pointer;
-        @media (min-width: 451px) {
+        @media (min-width: 561px) {
           display: none;
         }
       `}
@@ -178,13 +178,14 @@ export const Header = ({ data }: Props) => {
         box-sizing: border-box;
         top: 0;
         width: 100%;
-        min-width: 450px;
+        min-width: 560px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 0px 10px;
         background-color: ${mainBackground};
         z-index: 999;
+        min-height: 5%;
       `}
     >
       <HeaderMainComponent data={data} isVisible={true} />

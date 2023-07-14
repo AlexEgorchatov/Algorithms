@@ -11,7 +11,7 @@ import {
   updatingSortingBarsStateAction,
 } from '../Store/Sorting Page/SortingPageStateManagement';
 import { handleStartAlgorithmButtonClick } from '../Resources/Helper';
-import { FinalSortingBars, InitialSortingBars } from '../Pages/SortingPage';
+import { finalSortingBars, initialSortingBars } from '../Pages/SortingPage';
 
 const PlayButton = () => {
   return (
@@ -73,7 +73,7 @@ const PauseButton = () => {
 };
 
 const StopButton = () => {
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
   const dispatch = useDispatch();
 
   const handleStopButtonClick = () => {
@@ -81,7 +81,7 @@ const StopButton = () => {
 
     dispatch(updatingHasAlgorithmStartedState(false));
     dispatch(updatingIsAlgorithmRunningStateAction(false));
-    dispatch(updatingSortingBarsStateAction(InitialSortingBars));
+    dispatch(updatingSortingBarsStateAction(initialSortingBars));
   };
 
   return (
@@ -121,7 +121,7 @@ const CompleteButton = () => {
     border-left: 15px solid;
   `;
 
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
   const dispatch = useDispatch();
 
   const handleCompleteButtonClick = () => {
@@ -129,7 +129,7 @@ const CompleteButton = () => {
 
     dispatch(updatingHasAlgorithmStartedState(false));
     dispatch(updatingIsAlgorithmRunningStateAction(false));
-    dispatch(updatingSortingBarsStateAction(FinalSortingBars));
+    dispatch(updatingSortingBarsStateAction(finalSortingBars));
   };
 
   return (
@@ -227,7 +227,7 @@ const Slider = () => {
 };
 
 const SliderButtons = () => {
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
 
   return (
     <div
