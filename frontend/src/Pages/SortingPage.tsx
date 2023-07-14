@@ -2,7 +2,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect, useRef } from 'react';
-import { errorMessageColor, headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
+import { completionColor, errorMessageColor, headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
 import { SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
 import { useSelector } from 'react-redux';
@@ -13,19 +13,20 @@ import {
   SortingBarStateEnum,
   updatingSortingBarsStateAction,
   updatingSortingInputStateAction,
-  updatingIsAlgorithmRunningStateAction,
-  updatingHasAlgorithmStartedState,
   updatingSelectedSortingAlgorithmState,
+  updatingIsInputNanState,
+  updatingIsInputOverMaxState,
 } from '../Store/Sorting Page/SortingPageStateManagement';
-import { handleStartAlgorithmButtonClick } from '../Resources/Helper';
 import { SortingAlgorithmBase, SortingAlgorithmTypeEnum } from '../Resources/Algorithms/AlgorithmBase';
 import { BubbleSort } from '../Resources/Algorithms/SortingAlgorithms';
 import { updatingWindowHeightStateAction, updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
+import { ActionBar } from '../Components/ActionBar';
 
-export let SelectedAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmTypeEnum.BubbleSort);
-export let InitialSortingBars: SortingBarProps[];
-export let FinalSortingBars: SortingBarProps[];
-let ValidSortingInput: string = '';
+export let selectedAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmTypeEnum.BubbleSort);
+export let initialSortingBars: SortingBarProps[];
+export let finalSortingBars: SortingBarProps[];
+let validSortingInput: string = '';
+const sortingBarWidth: number = 35;
 
 interface AlgorithmListProps {
   data: SortingData[];
@@ -38,31 +39,49 @@ interface AlgorithmProps {
 }
 
 const SortingInput = () => {
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
   const windowState = useSelector((state: AppState) => state.windowState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
   const validateInput = (currentInput: string) => {
     dispatch(updatingSortingInputStateAction(currentInput));
-    ValidSortingInput = '';
+    validSortingInput = '';
     let stringArrayInput = currentInput.split(' ');
     let barsCopy: SortingBarProps[] = [];
+    let isLetter: boolean = false;
+    let isOverMax: boolean = false;
     for (let i = 0; i < stringArrayInput.length; i++) {
       let currentNumber: number = parseInt(stringArrayInput[i]);
-      if (isNaN(currentNumber)) continue;
-      if (barsCopy.length >= getMaxBarsNumber(windowState.windowWidth)) continue;
-      if (currentNumber > 99) currentNumber = 99;
+      if (isNaN(currentNumber)) {
+        isLetter = true;
+        continue;
+      }
+      if (currentNumber > 99) {
+        isOverMax = true;
+        currentNumber = 99;
+      }
 
-      ValidSortingInput += `${currentNumber} `;
+      validSortingInput += `${currentNumber} `;
       barsCopy.push({ barHeight: currentNumber, barID: i });
     }
 
+    if (isLetter) dispatch(updatingIsInputNanState(true));
+    else dispatch(updatingIsInputNanState(false));
+    if (isOverMax) dispatch(updatingIsInputOverMaxState(true));
+    else dispatch(updatingIsInputOverMaxState(false));
+
     let sortingBarsCopy = [...barsCopy];
-    InitialSortingBars = [...barsCopy];
-    FinalSortingBars = sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight);
+    initialSortingBars = [...barsCopy];
+    finalSortingBars = sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight);
 
     dispatch(updatingSortingBarsStateAction(barsCopy));
+  };
+
+  const fixInput = () => {
+    dispatch(updatingSortingInputStateAction(validSortingInput));
+    dispatch(updatingIsInputNanState(false));
+    dispatch(updatingIsInputOverMaxState(false));
   };
 
   return (
@@ -94,15 +113,34 @@ const SortingInput = () => {
       <div>
         <div
           css={css`
+            display: flex;
             color: white;
             font-size: 13px;
           `}
         >
-          Ex: "32 0 9 82". Maximum number of elements {getMaxBarsNumber(windowState.windowWidth)}. Maximum value 99.
+          Ex:
+          <div
+            css={css`
+              margin-left: 5px;
+              color: ${algorithmState.sortingInput.trim() === validSortingInput.trim() ? 'white' : errorMessageColor};
+            `}
+          >
+            "32 0 9 82"
+          </div>
+          . Maximum recommended number of elements is {getMaxBarsNumber(windowState.windowWidth)}. Maximum value is
+          <div
+            css={css`
+              margin-left: 5px;
+              color: ${algorithmState.isInputOverMax ? errorMessageColor : 'white'};
+            `}
+          >
+            99
+          </div>
+          .
         </div>
         <div
           css={css`
-            visibility: ${algorithmState.sortingInput.trim() === ValidSortingInput.trim() ? 'hidden' : 'visible'};
+            visibility: ${algorithmState.sortingInput.trim() === validSortingInput.trim() ? 'hidden' : 'visible'};
             display: flex;
             color: ${errorMessageColor};
             font-size: 13px;
@@ -116,7 +154,7 @@ const SortingInput = () => {
               cursor: pointer;
               text-decoration: underline;
             `}
-            onClick={() => dispatch(updatingSortingInputStateAction(ValidSortingInput))}
+            onClick={fixInput}
           >
             Fix
           </div>
@@ -127,7 +165,7 @@ const SortingInput = () => {
 };
 
 const RefreshButton = () => {
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
 
   return (
     <div
@@ -187,215 +225,8 @@ const RefreshButton = () => {
   );
 };
 
-const PlayButton = () => {
-  return (
-    <div
-      css={css`
-        box-sizing: border-box;
-        position: relative;
-        display: flex;
-        width: 22px;
-        height: 22px;
-        border: 2px solid;
-        border-radius: 4px;
-        color: white;
-        cursor: pointer;
-        :hover {
-          color: ${headerItemHovered};
-        }
-        ::before {
-          content: '';
-          display: block;
-          box-sizing: border-box;
-          position: absolute;
-          width: 0;
-          height: 10px;
-          border-top: 6px solid transparent;
-          border-bottom: 6px solid transparent;
-          border-left: 8px solid;
-          top: 3px;
-          left: 6px;
-        }
-      `}
-      onClick={handleStartAlgorithmButtonClick}
-    ></div>
-  );
-};
-
-const PauseButton = () => {
-  const dispatch = useDispatch();
-
-  const handlePauseButtonClick = () => {
-    dispatch(updatingIsAlgorithmRunningStateAction(false));
-  };
-
-  return (
-    <div
-      css={css`
-        box-sizing: border-box;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        display: flex;
-        width: 22px;
-        height: 22px;
-        border: 2px solid;
-        border-radius: 4px;
-        color: white;
-        cursor: pointer;
-        :hover {
-          color: ${headerItemHovered};
-          & > div {
-            color: ${headerItemHovered};
-          }
-        }
-      `}
-      onClick={handlePauseButtonClick}
-    >
-      <div
-        css={css`
-          box-sizing: border-box;
-          position: relative;
-          transform: scale(var(--ggs, 1));
-          width: 8px;
-          height: 10px;
-          border-left: 3px solid;
-          border-right: 3px solid;
-          color: white;
-        `}
-      ></div>
-    </div>
-  );
-};
-
-const StopButton = () => {
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
-  const dispatch = useDispatch();
-
-  const handleStopButtonClick = () => {
-    if (!algorithmState.hasAlgorithmStarted) return;
-
-    dispatch(updatingHasAlgorithmStartedState(false));
-    dispatch(updatingIsAlgorithmRunningStateAction(false));
-    dispatch(updatingSortingBarsStateAction(InitialSortingBars));
-  };
-
-  return (
-    <div
-      css={css`
-        box-sizing: border-box;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        display: flex;
-        width: 22px;
-        height: 22px;
-        border: 2px solid;
-        border-radius: 4px;
-        color: white;
-        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
-        opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
-        :hover {
-          ${algorithmState.hasAlgorithmStarted &&
-          `
-            color: ${headerItemHovered};
-            & > div {
-              background: ${headerItemHovered};
-            }
-          `}
-        }
-      `}
-      onClick={handleStopButtonClick}
-    >
-      <div
-        css={css`
-          box-sizing: border-box;
-          position: relative;
-          display: block;
-          transform: scale(var(--ggs, 1));
-          width: 8px;
-          height: 8px;
-          background: white;
-        `}
-      ></div>
-    </div>
-  );
-};
-
-const CompleteButton = () => {
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
-  const dispatch = useDispatch();
-
-  const handleCompleteButtonClick = () => {
-    if (!algorithmState.hasAlgorithmStarted) return;
-
-    dispatch(updatingHasAlgorithmStartedState(false));
-    dispatch(updatingIsAlgorithmRunningStateAction(false));
-    dispatch(updatingSortingBarsStateAction(FinalSortingBars));
-  };
-
-  return (
-    <div
-      css={css`
-        box-sizing: border-box;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        display: flex;
-        width: 22px;
-        height: 22px;
-        border: 2px solid;
-        border-radius: 4px;
-        color: white;
-        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
-        opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
-        :hover {
-          ${algorithmState.hasAlgorithmStarted &&
-          `
-            color: ${headerItemHovered};
-            & > div {
-              color: ${headerItemHovered};
-            }
-          `}
-        }
-      `}
-      onClick={handleCompleteButtonClick}
-    >
-      <div
-        css={css`
-          width: 10px;
-          display: flex;
-        `}
-      >
-        <div
-          css={css`
-            content: '';
-            display: block;
-            box-sizing: border-box;
-            position: absolute;
-            width: 0;
-            height: 10px;
-            border-top: 5px solid transparent;
-            border-bottom: 5px solid transparent;
-            border-left: 8px solid;
-          `}
-        />
-        <div
-          css={css`
-            position: relative;
-            width: 3px;
-            height: 10px;
-            background: currentColor;
-            left: 8px;
-          `}
-        ></div>
-      </div>
-    </div>
-  );
-};
-
 const GenerateInputComponent = () => {
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
   const windowState = useSelector((state: AppState) => state.windowState);
   const dispatch = useDispatch();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -415,16 +246,16 @@ const GenerateInputComponent = () => {
       let random: number = Math.floor(Math.random() * 100);
       let stringValue = random.toString();
       newInput += `${stringValue} `;
-      sortingBars.push({ barHeight: random, barState: SortingBarStateEnum.Unselected, barID: i });
+      sortingBars.push({ barHeight: random, barID: i });
     }
 
     newInput = newInput.trim();
     let sortingBarsCopy = [...sortingBars];
-    ValidSortingInput = newInput;
+    validSortingInput = newInput;
     dispatch(updatingSortingInputStateAction(newInput));
     dispatch(updatingSortingBarsStateAction(sortingBars));
-    InitialSortingBars = [...sortingBars];
-    FinalSortingBars = sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight);
+    initialSortingBars = [...sortingBars];
+    finalSortingBars = sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight);
   };
 
   const handleEnterKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -476,40 +307,12 @@ const GenerateInputComponent = () => {
   );
 };
 
-const ActionBar = () => {
-  const sliderState = useSelector((state: AppState) => state.sortingAlgorithmState);
-
-  return (
-    <div
-      css={css`
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        width: 250px;
-      `}
-    >
-      <div
-        css={css`
-          display: flex;
-          justify-content: space-between;
-          width: 72px;
-        `}
-      >
-        {sliderState.isAlgorithmRunning ? <PauseButton /> : <PlayButton />}
-        <StopButton />
-        <CompleteButton />
-      </div>
-      <GenerateInputComponent />
-    </div>
-  );
-};
-
 const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmProps) => {
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    SelectedAlgorithm = sortingAlgorithm;
+    selectedAlgorithm = sortingAlgorithm;
     dispatch(updatingSelectedSortingAlgorithmState(sortingAlgorithm.sortingAlgorithmType));
   };
 
@@ -536,7 +339,7 @@ const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmPr
 };
 
 const AlgorithmsList = ({ data }: AlgorithmListProps) => {
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
 
   return (
     <div
@@ -559,7 +362,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
 const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselected, leftOffset: newLeftOffset }: SortingBarProps) => {
   let divRef = React.useRef<HTMLDivElement>(null);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
 
   useEffect(() => {
     if (divRef.current === null) return;
@@ -593,7 +396,11 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
           width: 25px;
           height: ${barHeight * 4}px;
           position: relative;
-          background-color: ${barState === SortingBarStateEnum.Unselected ? 'white' : 'orange'};
+          background-color: ${barState === SortingBarStateEnum.Unselected
+            ? 'white'
+            : barState === SortingBarStateEnum.Selected
+            ? 'orange'
+            : completionColor};
         `}
       ></div>
       <div
@@ -602,7 +409,7 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
           justify-content: center;
           color: white;
           font-size: 20px;
-          color: ${barState === SortingBarStateEnum.Unselected ? 'white' : 'orange'};
+          color: ${barState === SortingBarStateEnum.Unselected ? 'white' : barState === SortingBarStateEnum.Selected ? 'orange' : completionColor};
         `}
       >
         {barHeight}
@@ -612,7 +419,7 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
 };
 
 export const SortingPage = () => {
-  const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -663,7 +470,25 @@ export const SortingPage = () => {
           `}
         >
           <SortingInput />
-          <ActionBar />
+          <div
+            css={css`
+              display: flex;
+              align-items: flex-end;
+              justify-content: space-between;
+              width: 250px;
+            `}
+          >
+            <div
+              css={css`
+                display: flex;
+                justify-content: space-between;
+                width: 72px;
+              `}
+            >
+              <ActionBar />
+            </div>
+            <GenerateInputComponent />
+          </div>
           <AlgorithmsList data={sortingAlgorithms} />
         </div>
       </div>
@@ -691,7 +516,7 @@ export const SortingPage = () => {
               display: flex;
               align-items: flex-end;
               justify-content: space-between;
-              width: ${algorithmState.sortingBars.length * 35}px;
+              width: ${algorithmState.sortingBars.length * sortingBarWidth}px;
             `}
           >
             {algorithmState.sortingBars.map((bar, index) => (
@@ -715,5 +540,5 @@ export const SortingPage = () => {
 };
 
 const getMaxBarsNumber = (windowWidth: number): number => {
-  return Math.floor(Math.max(windowWidth, 450) / 35);
+  return Math.floor(Math.max(windowWidth, 560) / sortingBarWidth);
 };
