@@ -7,6 +7,7 @@ import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { updatingHeaderStateAction } from '../Store/Home Page/HeaderStateManagement';
+import { minAppWidth } from '../App';
 
 interface Props {
   data: ModuleData[];
@@ -30,7 +31,7 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
       css={css`
         background-color: ${mainBackground};
         ${isVisible &&
-        `@media (max-width: 560px) {
+        `@media (max-width: ${minAppWidth}px) {
           display: none;
         }`}
       `}
@@ -178,7 +179,7 @@ export const Header = ({ data }: Props) => {
         box-sizing: border-box;
         top: 0;
         width: 100%;
-        min-width: 560px;
+        min-width: ${minAppWidth}px;
         display: flex;
         align-items: center;
         justify-content: space-between;

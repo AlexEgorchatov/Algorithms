@@ -21,6 +21,7 @@ import { SortingAlgorithmBase, SortingAlgorithmTypeEnum } from '../Resources/Alg
 import { BubbleSort } from '../Resources/Algorithms/SortingAlgorithms';
 import { updatingWindowHeightStateAction, updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
+import { minAppWidth } from '../App';
 
 export let selectedAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmTypeEnum.BubbleSort);
 export let initialSortingBars: SortingBarProps[];
@@ -38,7 +39,7 @@ interface AlgorithmProps {
   sortingAlgorithm: SortingAlgorithmBase;
 }
 
-const SortingInput = () => {
+const SortingInputComponent = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingPageState);
   const windowState = useSelector((state: AppState) => state.windowState);
   const dispatch = useDispatch();
@@ -49,14 +50,10 @@ const SortingInput = () => {
     validSortingInput = '';
     let stringArrayInput = currentInput.split(' ');
     let barsCopy: SortingBarProps[] = [];
-    let isLetter: boolean = false;
     let isOverMax: boolean = false;
     for (let i = 0; i < stringArrayInput.length; i++) {
       let currentNumber: number = parseInt(stringArrayInput[i]);
-      if (isNaN(currentNumber)) {
-        isLetter = true;
-        continue;
-      }
+      if (isNaN(currentNumber)) continue;
       if (currentNumber > 99) {
         isOverMax = true;
         currentNumber = 99;
@@ -66,7 +63,7 @@ const SortingInput = () => {
       barsCopy.push({ barHeight: currentNumber, barID: i });
     }
 
-    if (isLetter) dispatch(updatingIsInputNanState(true));
+    if (!/^[0-9\s]*$/.test(currentInput)) dispatch(updatingIsInputNanState(true));
     else dispatch(updatingIsInputNanState(false));
     if (isOverMax) dispatch(updatingIsInputOverMaxState(true));
     else dispatch(updatingIsInputOverMaxState(false));
@@ -116,31 +113,33 @@ const SortingInput = () => {
             display: flex;
             color: white;
             font-size: 13px;
+            min-width: 520px;
+            font-weight: bold;
           `}
         >
           Ex:
           <div
             css={css`
               margin-left: 5px;
-              color: ${algorithmState.sortingInput.trim() === validSortingInput.trim() ? 'white' : errorMessageColor};
+              color: ${algorithmState.isInputNan ? errorMessageColor : 'white'};
             `}
           >
-            "32 0 9 82"
+            32 0 9 82
           </div>
-          . Maximum recommended number of elements is {getMaxBarsNumber(windowState.windowWidth)}. Maximum value is
+          . Maximum recommended number of elements is {getMaxBarsNumber(windowState.windowWidth)}.
           <div
             css={css`
               margin-left: 5px;
               color: ${algorithmState.isInputOverMax ? errorMessageColor : 'white'};
             `}
           >
-            99
+            Maximum value is 99
           </div>
           .
         </div>
         <div
           css={css`
-            visibility: ${algorithmState.sortingInput.trim() === validSortingInput.trim() ? 'hidden' : 'visible'};
+            visibility: ${algorithmState.isInputNan || algorithmState.isInputOverMax ? 'visible' : 'hidden'};
             display: flex;
             color: ${errorMessageColor};
             font-size: 13px;
@@ -254,6 +253,8 @@ const GenerateInputComponent = () => {
     validSortingInput = newInput;
     dispatch(updatingSortingInputStateAction(newInput));
     dispatch(updatingSortingBarsStateAction(sortingBars));
+    dispatch(updatingIsInputNanState(false));
+    dispatch(updatingIsInputOverMaxState(false));
     initialSortingBars = [...sortingBars];
     finalSortingBars = sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight);
   };
@@ -295,7 +296,7 @@ const GenerateInputComponent = () => {
           }
         `}
         min={0}
-        max={25}
+        max={getMaxBarsNumber(windowState.windowWidth)}
         ref={inputRef}
         type="number"
         defaultValue={10}
@@ -418,8 +419,110 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
   );
 };
 
-export const SortingPage = () => {
+const SettingsComponent = () => {
+  return (
+    <div
+      css={css`
+        margin: 0px 10px;
+        height: 25%;
+        min-height: 200px;
+        display: block;
+      `}
+    >
+      <div
+        css={css`
+          height: 50px;
+          min-height: 50px;
+        `}
+      >
+        Sorting
+      </div>
+      <div
+        css={css`
+          height: 70%;
+          min-height: 118px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+        `}
+      >
+        <SortingInputComponent />
+        <div
+          css={css`
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            width: 250px;
+          `}
+        >
+          <div
+            css={css`
+              display: flex;
+              justify-content: space-between;
+              width: 72px;
+            `}
+          >
+            <ActionBar />
+          </div>
+          <GenerateInputComponent />
+        </div>
+        <AlgorithmsList data={sortingAlgorithms} />
+      </div>
+    </div>
+  );
+};
+
+const AnimationComponent = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingPageState);
+
+  return (
+    <div
+      css={css`
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        background-color: ${moduleBackground};
+        height: 75%;
+        min-height: 500px;
+      `}
+    >
+      <div
+        css={css`
+          display: flex;
+          height: 70%;
+          min-height: 425px;
+          justify-content: center;
+          align-items: flex-end;
+        `}
+      >
+        <div
+          css={css`
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            width: ${algorithmState.sortingBars.length * sortingBarWidth}px;
+          `}
+        >
+          {algorithmState.sortingBars.map((bar, index) => (
+            <SortingBar key={index} barID={bar.barID} barHeight={bar.barHeight} barState={bar.barState} leftOffset={bar.leftOffset} />
+          ))}
+        </div>
+      </div>
+
+      <div
+        css={css`
+          display: flex;
+          justify-content: flex-start;
+          align-items: flex-end;
+        `}
+      >
+        <SliderComponent />
+      </div>
+    </div>
+  );
+};
+
+export const SortingPage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -444,101 +547,12 @@ export const SortingPage = () => {
         height: 100%;
       `}
     >
-      <div
-        css={css`
-          margin: 0px 10px;
-          height: 25%;
-          min-height: 200px;
-          display: block;
-        `}
-      >
-        <div
-          css={css`
-            height: 50px;
-            min-height: 50px;
-          `}
-        >
-          Sorting
-        </div>
-        <div
-          css={css`
-            height: 70%;
-            min-height: 118px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-          `}
-        >
-          <SortingInput />
-          <div
-            css={css`
-              display: flex;
-              align-items: flex-end;
-              justify-content: space-between;
-              width: 250px;
-            `}
-          >
-            <div
-              css={css`
-                display: flex;
-                justify-content: space-between;
-                width: 72px;
-              `}
-            >
-              <ActionBar />
-            </div>
-            <GenerateInputComponent />
-          </div>
-          <AlgorithmsList data={sortingAlgorithms} />
-        </div>
-      </div>
-      <div
-        css={css`
-          display: flex;
-          flex-direction: column;
-          justify-content: space-around;
-          background-color: ${moduleBackground};
-          height: 75%;
-          min-height: 500px;
-        `}
-      >
-        <div
-          css={css`
-            display: flex;
-            height: 70%;
-            min-height: 425px;
-            justify-content: center;
-            align-items: flex-end;
-          `}
-        >
-          <div
-            css={css`
-              display: flex;
-              align-items: flex-end;
-              justify-content: space-between;
-              width: ${algorithmState.sortingBars.length * sortingBarWidth}px;
-            `}
-          >
-            {algorithmState.sortingBars.map((bar, index) => (
-              <SortingBar key={index} barID={bar.barID} barHeight={bar.barHeight} barState={bar.barState} leftOffset={bar.leftOffset} />
-            ))}
-          </div>
-        </div>
-
-        <div
-          css={css`
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-end;
-          `}
-        >
-          <SliderComponent />
-        </div>
-      </div>
+      <SettingsComponent />
+      <AnimationComponent />
     </div>
   );
 };
 
 const getMaxBarsNumber = (windowWidth: number): number => {
-  return Math.floor(Math.max(windowWidth, 560) / sortingBarWidth);
+  return Math.floor(Math.max(windowWidth, minAppWidth) / sortingBarWidth);
 };

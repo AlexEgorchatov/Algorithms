@@ -13,6 +13,8 @@ import { mainBackground, mainFontColor, pageBackground } from './Resources/Color
 import { modules } from './Resources/Home Page Resources/ModuleData';
 
 export const store = createStore();
+export const minAppWidth: number = 580;
+
 function App() {
   return (
     <BrowserRouter>
@@ -22,7 +24,7 @@ function App() {
             height: 100%;
             margin: 0px;
             background-color: ${mainBackground};
-            min-width: 560px;
+            min-width: ${minAppWidth}px;
           `}
         >
           <Header data={modules} />
