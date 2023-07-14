@@ -6,6 +6,7 @@ import { pathFindingModuleReducer, PathFindingModuleState } from './Home Page/Pa
 import { headerReducer, HeaderState } from './Home Page/HeaderStateManagement';
 import { sliderComponentReducer, SliderComponentState } from './Shared/SliderComponentStateManagement';
 import { sortingAlgorithmReducer, SortingPageState } from './Sorting Page/SortingPageStateManagement';
+import { windowReducer, WindowState } from './Shared/WindowStateManagement';
 
 const rootReducer = combineReducers<AppState>({
   sortingModuleState: sortingModuleReducer,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers<AppState>({
   headerState: headerReducer,
   sliderComponentState: sliderComponentReducer,
   sortingAlgorithmState: sortingAlgorithmReducer,
+  windowState: windowReducer,
 });
 
 export function createStore(): Store<AppState> {
@@ -28,4 +30,5 @@ export interface AppState {
   readonly headerState: HeaderState;
   readonly sliderComponentState: SliderComponentState;
   readonly sortingAlgorithmState: SortingPageState;
+  readonly windowState: WindowState;
 }

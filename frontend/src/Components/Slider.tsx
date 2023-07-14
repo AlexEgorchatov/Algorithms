@@ -252,7 +252,7 @@ export const SliderComponent = () => {
         flex-direction: column;
         justify-content: space-between;
         width: 185px;
-        padding: 15px 15px 15px 45px;
+        padding-left: 20px;
         height: 45px;
       `}
     >

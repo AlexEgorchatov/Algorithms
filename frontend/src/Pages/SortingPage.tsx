@@ -20,6 +20,7 @@ import {
 import { handleStartAlgorithmButtonClick } from '../Resources/Helper';
 import { SortingAlgorithmBase, SortingAlgorithmTypeEnum } from '../Resources/Algorithms/AlgorithmBase';
 import { BubbleSort } from '../Resources/Algorithms/SortingAlgorithms';
+import { updatingWindowHeightStateAction, updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 
 export let SelectedAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmTypeEnum.BubbleSort);
 export let InitialSortingBars: SortingBarProps[];
@@ -37,8 +38,9 @@ interface AlgorithmProps {
 
 const SortingInput = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const windowState = useSelector((state: AppState) => state.windowState);
   const dispatch = useDispatch();
-  const inputRegex: RegExp = /^[0-9]{0,2}(\s[0-9]{1,2}){0,24}(\s)?$/;
+  const inputRegex: RegExp = /^[0-9]{0,2}(\s[0-9]{1,2})*(\s)?$/;
   const ref = useRef<HTMLInputElement>(null);
   const validateInput = (currentInput: string) => {
     let isValid: boolean = inputRegex.test(currentInput);
@@ -85,7 +87,7 @@ const SortingInput = () => {
           font-size: 13px;
         `}
       >
-        Ex: "12 32 89 29". Maximum number of elements is 25.
+        Ex: "12 32 89 29". Recommended maximum number of elements is {Math.floor(Math.max(windowState.windowWidth, 450) / 35)}.
       </div>
     </div>
   );
@@ -576,6 +578,19 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
 
 export const SortingPage = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const handleWindowResize = () => {
+      dispatch(updatingWindowWidthStateAction(window.innerWidth));
+      dispatch(updatingWindowHeightStateAction(window.outerHeight));
+    };
+
+    window.addEventListener('resize', handleWindowResize);
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  }, []);
 
   return (
     <div
@@ -619,15 +634,19 @@ export const SortingPage = () => {
       </div>
       <div
         css={css`
-          display: block;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
           background-color: ${moduleBackground};
           height: 80%;
+          min-height: 500px;
         `}
       >
         <div
           css={css`
             display: flex;
             height: 70%;
+            min-height: 425px;
             justify-content: center;
             align-items: flex-end;
           `}
@@ -638,7 +657,6 @@ export const SortingPage = () => {
               align-items: flex-end;
               justify-content: space-between;
               width: ${algorithmState.sortingBars.length * 35}px;
-              position: absolute;
             `}
           >
             {algorithmState.sortingBars.map((bar, index) => (
@@ -647,7 +665,15 @@ export const SortingPage = () => {
           </div>
         </div>
 
-        <SliderComponent />
+        <div
+          css={css`
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+          `}
+        >
+          <SliderComponent />
+        </div>
       </div>
     </div>
   );

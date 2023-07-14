@@ -31,7 +31,6 @@ function App() {
               margin: 0px 10px;
               background-color: ${pageBackground};
               height: 90%;
-              min-height: ${window.innerHeight * 0.9}px;
             `}
           >
             <Routes>
@@ -44,8 +43,6 @@ function App() {
           </div>
           <div
             css={css`
-              height: 5%;
-              min-height: 46px;
               margin: 0px 10px;
               color: ${mainFontColor};
               text-align: end;

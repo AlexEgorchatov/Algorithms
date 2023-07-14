@@ -66,23 +66,25 @@ const ModuleList = ({ data }: ModuleListProps) => (
   </div>
 );
 
-export const HomePage = () => (
-  <div
-    css={css`
-      display: block;
-      overflow: auto;
-      height: 100%;
-    `}
-  >
+export const HomePage = () => {
+  return (
     <div
       css={css`
-        color: ${mainFontColor};
-        font-size: 48px;
-        text-align: center;
+        display: block;
+        overflow: auto;
+        height: 100%;
       `}
     >
-      Welcome to the Algorithms project!
+      <div
+        css={css`
+          color: ${mainFontColor};
+          font-size: 48px;
+          text-align: center;
+        `}
+      >
+        Welcome to the Algorithms project!
+      </div>
+      <ModuleList data={modules} />
     </div>
-    <ModuleList data={modules} />
-  </div>
-);
+  );
+};
