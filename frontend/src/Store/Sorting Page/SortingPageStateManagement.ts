@@ -14,7 +14,7 @@ export interface SortingBarProps {
 
 //#region State
 export interface SortingPageState {
-  selectedSortingAlgorithmType: SortingAlgorithmTypeEnum;
+  readonly selectedSortingAlgorithmType: SortingAlgorithmTypeEnum;
   readonly sortingInput: string;
   readonly isAlgorithmRunning: boolean;
   readonly hasAlgorithmStarted: boolean;

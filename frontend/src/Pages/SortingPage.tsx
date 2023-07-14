@@ -2,7 +2,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect, useRef } from 'react';
-import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
+import { errorMessageColor, headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
 import { SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
 import { useSelector } from 'react-redux';
@@ -25,6 +25,7 @@ import { updatingWindowHeightStateAction, updatingWindowWidthStateAction } from 
 export let SelectedAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmTypeEnum.BubbleSort);
 export let InitialSortingBars: SortingBarProps[];
 export let FinalSortingBars: SortingBarProps[];
+let ValidSortingInput: string = '';
 
 interface AlgorithmListProps {
   data: SortingData[];
@@ -40,19 +41,27 @@ const SortingInput = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
   const windowState = useSelector((state: AppState) => state.windowState);
   const dispatch = useDispatch();
-  const inputRegex: RegExp = /^[0-9]{0,2}(\s[0-9]{1,2})*(\s)?$/;
   const ref = useRef<HTMLInputElement>(null);
-  const validateInput = (currentInput: string) => {
-    let isValid: boolean = inputRegex.test(currentInput);
-    if (!isValid) return;
 
+  const validateInput = (currentInput: string) => {
     dispatch(updatingSortingInputStateAction(currentInput));
+    ValidSortingInput = '';
     let stringArrayInput = currentInput.split(' ');
-    if (isNaN(parseInt(stringArrayInput[stringArrayInput.length - 1]))) stringArrayInput.pop();
     let barsCopy: SortingBarProps[] = [];
     for (let i = 0; i < stringArrayInput.length; i++) {
-      barsCopy.push({ barHeight: parseInt(stringArrayInput[i]), barID: i });
+      let currentNumber: number = parseInt(stringArrayInput[i]);
+      if (isNaN(currentNumber)) continue;
+      if (barsCopy.length >= getMaxBarsNumber(windowState.windowWidth)) continue;
+      if (currentNumber > 99) currentNumber = 99;
+
+      ValidSortingInput += `${currentNumber} `;
+      barsCopy.push({ barHeight: currentNumber, barID: i });
     }
+
+    let sortingBarsCopy = [...barsCopy];
+    InitialSortingBars = [...barsCopy];
+    FinalSortingBars = sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight);
+
     dispatch(updatingSortingBarsStateAction(barsCopy));
   };
 
@@ -81,13 +90,37 @@ const SortingInput = () => {
         onInput={() => validateInput(ref.current?.value as string)}
         disabled={algorithmState.hasAlgorithmStarted}
       />
-      <div
-        css={css`
-          color: white;
-          font-size: 13px;
-        `}
-      >
-        Ex: "12 32 89 29". Recommended maximum number of elements is {Math.floor(Math.max(windowState.windowWidth, 450) / 35)}.
+
+      <div>
+        <div
+          css={css`
+            color: white;
+            font-size: 13px;
+          `}
+        >
+          Ex: "32 0 9 82". Maximum number of elements {getMaxBarsNumber(windowState.windowWidth)}. Maximum value 99.
+        </div>
+        <div
+          css={css`
+            visibility: ${algorithmState.sortingInput.trim() === ValidSortingInput.trim() ? 'hidden' : 'visible'};
+            display: flex;
+            color: ${errorMessageColor};
+            font-size: 13px;
+            font-weight: bold;
+          `}
+        >
+          Input has invalid format.
+          <div
+            css={css`
+              margin-left: 5px;
+              cursor: pointer;
+              text-decoration: underline;
+            `}
+            onClick={() => dispatch(updatingSortingInputStateAction(ValidSortingInput))}
+          >
+            Fix
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -363,6 +396,7 @@ const CompleteButton = () => {
 
 const GenerateInputComponent = () => {
   const algorithmState = useSelector((state: AppState) => state.sortingAlgorithmState);
+  const windowState = useSelector((state: AppState) => state.windowState);
   const dispatch = useDispatch();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -372,20 +406,22 @@ const GenerateInputComponent = () => {
 
   const handleGenerateElements = () => {
     if (algorithmState.hasAlgorithmStarted) return;
+    if (inputRef.current === null) return;
 
     let sortingBars: SortingBarProps[] = [];
     let newInput: string = '';
-    if (inputRef.current === null) return;
 
-    for (let i = 0; i < parseInt(inputRef.current?.value); i++) {
+    for (let i = 0; i < parseInt(inputRef.current.value); i++) {
       let random: number = Math.floor(Math.random() * 100);
       let stringValue = random.toString();
       newInput += `${stringValue} `;
       sortingBars.push({ barHeight: random, barState: SortingBarStateEnum.Unselected, barID: i });
     }
 
+    newInput = newInput.trim();
     let sortingBarsCopy = [...sortingBars];
-    dispatch(updatingSortingInputStateAction(newInput.trim()));
+    ValidSortingInput = newInput;
+    dispatch(updatingSortingInputStateAction(newInput));
     dispatch(updatingSortingBarsStateAction(sortingBars));
     InitialSortingBars = [...sortingBars];
     FinalSortingBars = sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight);
@@ -400,9 +436,8 @@ const GenerateInputComponent = () => {
   const validateInput = (currentInput: string) => {
     if (inputRef.current === null) return;
 
-    let inputNumber: number = parseInt(currentInput);
-    if (inputNumber > 25) inputRef.current.value = '25';
-    else inputRef.current.value = currentInput;
+    let maxBarsNumber: number = getMaxBarsNumber(windowState.windowWidth);
+    inputRef.current.value = parseInt(currentInput) > maxBarsNumber ? maxBarsNumber.toString() : currentInput;
   };
 
   return (
@@ -605,14 +640,14 @@ export const SortingPage = () => {
       <div
         css={css`
           margin: 0px 10px;
-          height: 20%;
-          min-height: 168px;
+          height: 25%;
+          min-height: 200px;
           display: block;
         `}
       >
         <div
           css={css`
-            height: 30%;
+            height: 50px;
             min-height: 50px;
           `}
         >
@@ -638,7 +673,7 @@ export const SortingPage = () => {
           flex-direction: column;
           justify-content: space-around;
           background-color: ${moduleBackground};
-          height: 80%;
+          height: 75%;
           min-height: 500px;
         `}
       >
@@ -677,4 +712,8 @@ export const SortingPage = () => {
       </div>
     </div>
   );
+};
+
+const getMaxBarsNumber = (windowWidth: number): number => {
+  return Math.floor(Math.max(windowWidth, 450) / 35);
 };
