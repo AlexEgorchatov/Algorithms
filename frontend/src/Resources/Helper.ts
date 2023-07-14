@@ -1,6 +1,8 @@
 import { store } from '../App';
-import { FinalSortingBars, InitialSortingBars, SelectedAlgorithm } from '../Pages/SortingPage';
+import { finalSortingBars, initialSortingBars, selectedAlgorithm } from '../Pages/SortingPage';
 import {
+  SortingBarProps,
+  SortingBarStateEnum,
   updatingHasAlgorithmStartedState,
   updatingIsAlgorithmRunningStateAction,
   updatingSortingBarsStateAction,
@@ -11,7 +13,7 @@ import {
 export const waitForContinuation = () => {
   return new Promise<boolean>((resolve) => {
     let unsubscribe = store.subscribe(() => {
-      const state = store.getState().sortingAlgorithmState;
+      const state = store.getState().sortingPageState;
       if (state.isAlgorithmRunning) {
         unsubscribe();
         resolve(true);
@@ -25,21 +27,32 @@ export const waitForContinuation = () => {
 
 export const handleStartAlgorithmButtonClick = async () => {
   store.dispatch(updatingIsAlgorithmRunningStateAction(true));
-  if (store.getState().sortingAlgorithmState.hasAlgorithmStarted) return;
+  if (store.getState().sortingPageState.hasAlgorithmStarted) return;
 
   store.dispatch(updatingHasAlgorithmStartedState(true));
   if (
-    JSON.stringify(store.getState().sortingAlgorithmState.sortingBars.map((i) => i.barHeight)) ===
-    JSON.stringify(FinalSortingBars.map((i) => i.barHeight))
+    JSON.stringify(store.getState().sortingPageState.sortingBars.map((i) => i.barHeight)) === JSON.stringify(finalSortingBars.map((i) => i.barHeight))
   ) {
-    store.dispatch(updatingSortingBarsStateAction(InitialSortingBars));
+    store.dispatch(updatingSortingBarsStateAction(initialSortingBars));
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
 
-  SelectedAlgorithm.executeAlgorithm();
+  selectedAlgorithm.executeAlgorithm();
 };
 
 export const isAlgorithmTerminated = (): boolean => {
-  if (store.getState().sortingAlgorithmState.hasAlgorithmStarted) return false;
+  if (store.getState().sortingPageState.hasAlgorithmStarted) return false;
   else return true;
+};
+
+export const finalizeSorting = async (barsCopy: SortingBarProps[], length: number) => {
+  for (let i = 0; i < length; i++) {
+    barsCopy = [...barsCopy];
+    barsCopy[i] = { barHeight: barsCopy[i].barHeight, barState: SortingBarStateEnum.Completed, barID: barsCopy[i].barID };
+    store.dispatch(updatingSortingBarsStateAction(barsCopy));
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+
+  store.dispatch(updatingHasAlgorithmStartedState(false));
+  store.dispatch(updatingIsAlgorithmRunningStateAction(false));
 };

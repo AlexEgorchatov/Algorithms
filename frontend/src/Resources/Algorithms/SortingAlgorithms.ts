@@ -1,20 +1,16 @@
 import { store } from '../../App';
-import {
-  SortingBarStateEnum,
-  updatingHasAlgorithmStartedState,
-  updatingIsAlgorithmRunningStateAction,
-  updatingSortingBarsStateAction,
-} from '../../Store/Sorting Page/SortingPageStateManagement';
-import { isAlgorithmTerminated, waitForContinuation } from '../Helper';
+import { SortingBarStateEnum, updatingSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
+import { finalizeSorting, isAlgorithmTerminated, waitForContinuation } from '../Helper';
 import { SortingAlgorithmBase } from './AlgorithmBase';
 
 export class BubbleSort extends SortingAlgorithmBase {
   async executeAlgorithm(): Promise<void> {
-    let length = store.getState().sortingAlgorithmState.sortingBars.length;
-    let barsCopy = [...store.getState().sortingAlgorithmState.sortingBars];
+    let length = store.getState().sortingPageState.sortingBars.length;
+    let barsCopy = [...store.getState().sortingPageState.sortingBars];
 
-    for (let i = 0; i < length - 1; i++) {
-      let isSwapped: boolean = false;
+    let isSwapped: boolean = true;
+    for (let i = 0; i < length - 1 && isSwapped; i++) {
+      isSwapped = false;
       for (let j = 0; j < length - i - 1; j++) {
         barsCopy = [...barsCopy];
         barsCopy[j] = { barHeight: barsCopy[j].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[j].barID };
@@ -22,7 +18,7 @@ export class BubbleSort extends SortingAlgorithmBase {
         store.dispatch(updatingSortingBarsStateAction(barsCopy));
         await new Promise((resolve) => setTimeout(resolve, 400 - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
         if (isAlgorithmTerminated()) return;
-        if (!store.getState().sortingAlgorithmState.isAlgorithmRunning) {
+        if (!store.getState().sortingPageState.isAlgorithmRunning) {
           if (!(await waitForContinuation())) return;
         }
 
@@ -32,7 +28,7 @@ export class BubbleSort extends SortingAlgorithmBase {
           barsCopy[j + 1] = { barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Unselected, barID: barsCopy[j + 1].barID };
           store.dispatch(updatingSortingBarsStateAction(barsCopy));
           if (isAlgorithmTerminated()) return;
-          if (!store.getState().sortingAlgorithmState.isAlgorithmRunning) {
+          if (!store.getState().sortingPageState.isAlgorithmRunning) {
             if (!(await waitForContinuation())) return;
           }
           continue;
@@ -57,7 +53,7 @@ export class BubbleSort extends SortingAlgorithmBase {
         store.dispatch(updatingSortingBarsStateAction(barsCopy));
         await new Promise((resolve) => setTimeout(resolve, 400 - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
         if (isAlgorithmTerminated()) return;
-        if (!store.getState().sortingAlgorithmState.isAlgorithmRunning) {
+        if (!store.getState().sortingPageState.isAlgorithmRunning) {
           if (!(await waitForContinuation())) return;
         }
 
@@ -75,21 +71,18 @@ export class BubbleSort extends SortingAlgorithmBase {
         };
         store.dispatch(updatingSortingBarsStateAction(barsCopy));
         if (isAlgorithmTerminated()) return;
-        if (!store.getState().sortingAlgorithmState.isAlgorithmRunning) {
+        if (!store.getState().sortingPageState.isAlgorithmRunning) {
           if (!(await waitForContinuation())) return;
         }
 
         isSwapped = true;
       }
       if (!isSwapped) {
-        store.dispatch(updatingHasAlgorithmStartedState(false));
-        store.dispatch(updatingIsAlgorithmRunningStateAction(false));
-        return;
+        break;
       }
     }
 
-    store.dispatch(updatingHasAlgorithmStartedState(false));
-    store.dispatch(updatingIsAlgorithmRunningStateAction(false));
+    finalizeSorting(barsCopy, length);
   }
 }
 
