@@ -313,6 +313,7 @@ const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmPr
   const dispatch = useDispatch();
 
   const handleClick = () => {
+    if (algorithmState.hasAlgorithmStarted) return;
     selectedAlgorithm = sortingAlgorithm;
     dispatch(updatingSelectedSortingAlgorithmState(sortingAlgorithm.sortingAlgorithmType));
   };

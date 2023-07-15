@@ -72,3 +72,38 @@ export const handleStopSorting = () => {
   store.dispatch(updatingIsAlgorithmRunningStateAction(false));
   store.dispatch(updatingSortingBarsStateAction(initialSortingBars));
 };
+
+export const swapSortingBarsVisually = (barsCopy: SortingBarProps[], index1: number, index2: number) => {
+  barsCopy = [...barsCopy];
+  let currentLeftOffset = document.getElementById(barsCopy[index1].barID.toString())?.offsetLeft;
+  let nextLeftOffset = document.getElementById(barsCopy[index2].barID.toString())?.offsetLeft;
+  let tempID = barsCopy[index1].barID;
+  barsCopy[index1] = {
+    barHeight: barsCopy[index1].barHeight,
+    barState: SortingBarStateEnum.Selected,
+    barID: barsCopy[index2].barID,
+    leftOffset: nextLeftOffset,
+  };
+  barsCopy[index2] = {
+    barHeight: barsCopy[index2].barHeight,
+    barState: SortingBarStateEnum.Selected,
+    barID: tempID,
+    leftOffset: currentLeftOffset,
+  };
+  store.dispatch(updatingSortingBarsStateAction(barsCopy));
+};
+
+export const selectSortingBars = (barsCopy: SortingBarProps[], index1: number, index2: number) => {
+  barsCopy = [...barsCopy];
+  console.log(`selecting indices ${index1} and ${index2} that correspond to ${barsCopy[index1].barHeight} and ${barsCopy[index2].barHeight}`);
+  barsCopy[index1] = { barHeight: barsCopy[index1].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[index1].barID };
+  barsCopy[index2] = { barHeight: barsCopy[index2].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[index2].barID };
+  store.dispatch(updatingSortingBarsStateAction(barsCopy));
+};
+
+export const unselectSortingBars = (barsCopy: SortingBarProps[], index1: number, index2: number) => {
+  barsCopy = [...barsCopy];
+  barsCopy[index1] = { barHeight: barsCopy[index1].barHeight, barState: SortingBarStateEnum.Unselected, barID: barsCopy[index1].barID };
+  barsCopy[index2] = { barHeight: barsCopy[index2].barHeight, barState: SortingBarStateEnum.Unselected, barID: barsCopy[index2].barID };
+  store.dispatch(updatingSortingBarsStateAction(barsCopy));
+};
