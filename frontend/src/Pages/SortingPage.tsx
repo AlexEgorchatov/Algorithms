@@ -59,6 +59,7 @@ const SortingInputComponent = () => {
         currentNumber = 99;
       }
 
+      //TODO: Fix the index assignment in case when isNan(currentNumber) condition
       validSortingInput += `${currentNumber} `;
       barsCopy.push({ barHeight: currentNumber, barID: i });
     }
@@ -383,6 +384,25 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
     divRef.current.style.transform = `translateX(0px)`;
   }, [barHeight, algorithmState.hasAlgorithmStarted]);
 
+  const getColor = () => {
+    switch (barState) {
+      case SortingBarStateEnum.Unselected:
+        return 'white';
+
+      case SortingBarStateEnum.Selected:
+        return 'orange';
+
+      case SortingBarStateEnum.Pivot:
+        return 'green';
+
+      case SortingBarStateEnum.Completed:
+        return completionColor;
+
+      default:
+        return 'white';
+    }
+  };
+
   return (
     <div
       css={css`
@@ -398,11 +418,7 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
           width: 25px;
           height: ${barHeight * 4}px;
           position: relative;
-          background-color: ${barState === SortingBarStateEnum.Unselected
-            ? 'white'
-            : barState === SortingBarStateEnum.Selected
-            ? 'orange'
-            : completionColor};
+          background-color: ${getColor()};
         `}
       ></div>
       <div
@@ -411,7 +427,7 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
           justify-content: center;
           color: white;
           font-size: 20px;
-          color: ${barState === SortingBarStateEnum.Unselected ? 'white' : barState === SortingBarStateEnum.Selected ? 'orange' : completionColor};
+          color: ${getColor()};
         `}
       >
         {barHeight}

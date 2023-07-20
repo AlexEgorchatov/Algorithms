@@ -3,7 +3,8 @@ import { SortingAlgorithmTypeEnum } from '../../Resources/Algorithms/AlgorithmBa
 export enum SortingBarStateEnum {
   Unselected = 0,
   Selected = 1,
-  Completed = 2,
+  Pivot = 2,
+  Completed = 999,
 }
 
 export interface SortingBarProps {
@@ -135,6 +136,7 @@ export const sortingPageReducer = (state = initialSortingPageState, action: Sort
       };
 
     case UPDATINGSORTINGBARSSTATE:
+      console.log(`${JSON.stringify(action.sortingBars)}`);
       return {
         ...state,
         sortingBars: action.sortingBars,

@@ -95,7 +95,6 @@ export const swapSortingBarsVisually = (barsCopy: SortingBarProps[], index1: num
 
 export const selectSortingBars = (barsCopy: SortingBarProps[], index1: number, index2: number) => {
   barsCopy = [...barsCopy];
-  console.log(`selecting indices ${index1} and ${index2} that correspond to ${barsCopy[index1].barHeight} and ${barsCopy[index2].barHeight}`);
   barsCopy[index1] = { barHeight: barsCopy[index1].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[index1].barID };
   barsCopy[index2] = { barHeight: barsCopy[index2].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[index2].barID };
   store.dispatch(updatingSortingBarsStateAction(barsCopy));
