@@ -43,17 +43,9 @@ export class BubbleSort extends SortingAlgorithmBase {
         }
 
         barsCopy = [...barsCopy];
-        let tempBar = barsCopy[j];
-        barsCopy[j] = {
-          barHeight: barsCopy[j + 1].barHeight,
-          barState: SortingBarStateEnum.Unselected,
-          barID: barsCopy[j].barID,
-        };
-        barsCopy[j + 1] = {
-          barHeight: tempBar.barHeight,
-          barState: SortingBarStateEnum.Unselected,
-          barID: barsCopy[j + 1].barID,
-        };
+        let tempBar = { ...barsCopy[j] };
+        barsCopy[j] = { ...barsCopy[j], barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Unselected };
+        barsCopy[j + 1] = { ...barsCopy[j + 1], barHeight: tempBar.barHeight, barState: SortingBarStateEnum.Unselected };
         store.dispatch(updatingSortingBarsStateAction(barsCopy));
         if (isAlgorithmTerminated()) return;
         if (!store.getState().sortingPageState.isAlgorithmRunning) {
@@ -67,7 +59,7 @@ export class BubbleSort extends SortingAlgorithmBase {
       }
     }
 
-    finalizeSorting(barsCopy, length);
+    finalizeSorting(barsCopy);
   }
 }
 
@@ -75,29 +67,26 @@ export class QuickSort extends SortingAlgorithmBase {
   async executeAlgorithm(): Promise<void> {
     let length = store.getState().sortingPageState.sortingBars.length;
     await this.quickSort(0, length - 1);
-    finalizeSorting(store.getState().sortingPageState.sortingBars, length);
+    finalizeSorting(store.getState().sortingPageState.sortingBars);
   }
 
   async quickSort(left: number, right: number): Promise<void> {
     if (left >= right) return;
 
-    let index: number = await this.partition(left, right);
-    await this.quickSort(left, index - 1);
-    await this.quickSort(index + 1, right);
+    let partitionIndex: number = await this.partition(left, right);
+    await this.quickSort(left, partitionIndex - 1);
+    await this.quickSort(partitionIndex + 1, right);
   }
 
   async partition(left: number, right: number): Promise<number> {
     return new Promise<number>(async (resolve) => {
       let barsCopy = [...store.getState().sortingPageState.sortingBars];
       let pivot: number = barsCopy[left].barHeight;
-
-      barsCopy[left] = { barHeight: barsCopy[left].barHeight, barState: SortingBarStateEnum.Pivot, barID: barsCopy[left].barID };
-      store.dispatch(updatingSortingBarsStateAction(barsCopy));
-
-      let k: number = right;
+      barsCopy[left] = { ...barsCopy[left], barState: SortingBarStateEnum.Pivot };
+      let currentPartitionIndex: number = right;
 
       for (let i: number = right; i > left; i--) {
-        selectSortingBars(barsCopy, i, k);
+        selectSortingBars(barsCopy, i, currentPartitionIndex);
         await new Promise((resolve) => setTimeout(resolve, 400 - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
         if (isAlgorithmTerminated()) return;
         if (!store.getState().sortingPageState.isAlgorithmRunning) {
@@ -105,7 +94,7 @@ export class QuickSort extends SortingAlgorithmBase {
         }
 
         if (barsCopy[i].barHeight <= pivot) {
-          deselectSortingBars(barsCopy, i, k);
+          deselectSortingBars(barsCopy, i, currentPartitionIndex);
           if (isAlgorithmTerminated()) return;
           if (!store.getState().sortingPageState.isAlgorithmRunning) {
             if (!(await waitForContinuation())) return;
@@ -113,8 +102,8 @@ export class QuickSort extends SortingAlgorithmBase {
           continue;
         }
 
-        if (i !== k) {
-          swapSortingBarsVisually(barsCopy, i, k);
+        if (i !== currentPartitionIndex) {
+          swapSortingBarsVisually(barsCopy, i, currentPartitionIndex);
           await new Promise((resolve) => setTimeout(resolve, 400 - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
           if (isAlgorithmTerminated()) return;
           if (!store.getState().sortingPageState.isAlgorithmRunning) {
@@ -122,53 +111,44 @@ export class QuickSort extends SortingAlgorithmBase {
           }
 
           barsCopy = [...barsCopy];
-          let tempBar = barsCopy[i];
-          barsCopy[i] = {
-            barHeight: barsCopy[k].barHeight,
-            barState: SortingBarStateEnum.Unselected,
-            barID: barsCopy[i].barID,
-          };
-          barsCopy[k] = {
+          let tempBar = { ...barsCopy[i] };
+          barsCopy[i] = { ...barsCopy[i], barHeight: barsCopy[currentPartitionIndex].barHeight, barState: SortingBarStateEnum.Unselected };
+          barsCopy[currentPartitionIndex] = {
+            ...barsCopy[currentPartitionIndex],
             barHeight: tempBar.barHeight,
             barState: SortingBarStateEnum.Unselected,
-            barID: barsCopy[k].barID,
           };
-          store.dispatch(updatingSortingBarsStateAction(barsCopy));
           if (isAlgorithmTerminated()) return;
           if (!store.getState().sortingPageState.isAlgorithmRunning) {
             if (!(await waitForContinuation())) return;
           }
         }
 
-        k--;
+        currentPartitionIndex--;
         store.dispatch(updatingSortingBarsStateAction(barsCopy));
       }
 
-      selectSortingBars(barsCopy, left, k);
+      selectSortingBars(barsCopy, left, currentPartitionIndex);
       await new Promise((resolve) => setTimeout(resolve, 400 - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
       if (isAlgorithmTerminated()) return;
       if (!store.getState().sortingPageState.isAlgorithmRunning) {
         if (!(await waitForContinuation())) return;
       }
 
-      swapSortingBarsVisually(barsCopy, left, k);
+      swapSortingBarsVisually(barsCopy, left, currentPartitionIndex);
       await new Promise((resolve) => setTimeout(resolve, 400 - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
       if (isAlgorithmTerminated()) return;
       if (!store.getState().sortingPageState.isAlgorithmRunning) {
         if (!(await waitForContinuation())) return;
       }
 
+      let tempBar = { ...barsCopy[left] };
       barsCopy = [...barsCopy];
-      let tempBar = barsCopy[left];
-      barsCopy[left] = {
-        barHeight: barsCopy[k].barHeight,
-        barState: SortingBarStateEnum.Unselected,
-        barID: barsCopy[left].barID,
-      };
-      barsCopy[k] = {
+      barsCopy[left] = { ...barsCopy[left], barHeight: barsCopy[currentPartitionIndex].barHeight, barState: SortingBarStateEnum.Unselected };
+      barsCopy[currentPartitionIndex] = {
+        ...barsCopy[currentPartitionIndex],
         barHeight: tempBar.barHeight,
         barState: SortingBarStateEnum.Unselected,
-        barID: barsCopy[k].barID,
       };
       store.dispatch(updatingSortingBarsStateAction(barsCopy));
       if (isAlgorithmTerminated()) return;
@@ -176,9 +156,7 @@ export class QuickSort extends SortingAlgorithmBase {
         if (!(await waitForContinuation())) return;
       }
 
-      resolve(k);
+      resolve(currentPartitionIndex);
     });
   }
 }
-
-// 7 22 77 98 18 22 62 51 71 7
