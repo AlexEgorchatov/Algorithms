@@ -2,7 +2,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect, useRef } from 'react';
-import { completionColor, errorMessageColor, headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
+import { completionColor, errorMessageColor, headerItemHovered, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
 import { SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
 import { useSelector } from 'react-redux';
@@ -382,7 +382,7 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
 
     divRef.current.style.transition = `transform ease-in 0ms`;
     divRef.current.style.transform = `translateX(0px)`;
-  }, [barHeight, algorithmState.hasAlgorithmStarted]);
+  }, [barHeight, algorithmState.hasAlgorithmStarted, barState]);
 
   const getColor = () => {
     switch (barState) {
@@ -393,7 +393,7 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
         return 'orange';
 
       case SortingBarStateEnum.Pivot:
-        return 'green';
+        return `${pivotColor}`;
 
       case SortingBarStateEnum.Completed:
         return completionColor;
@@ -408,7 +408,7 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
       css={css`
         position: relative;
       `}
-      id={barID.toString()}
+      id={barID?.toString()}
       ref={divRef}
     >
       <div

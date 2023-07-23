@@ -6,3 +6,4 @@ export const moduleBorderBrush = '#e8610e';
 export const headerItemHovered = '#f59e42';
 export const errorMessageColor = '#ff5f1f';
 export const completionColor = '#FFD700';
+export const pivotColor = '#adff2f';
