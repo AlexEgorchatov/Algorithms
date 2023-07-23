@@ -2,11 +2,11 @@ import { store } from '../../App';
 import { SortingBarStateEnum, updatingSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
 import {
   finalizeSorting,
-  isAlgorithmTerminated,
   selectSortingBars,
   swapSortingBarsVisually,
   unselectSortingBars as deselectSortingBars,
-  waitForContinuation,
+  isAlgorithmTerminated,
+  awaitStepIteration as pauseForStepIteration,
 } from '../Helper';
 import { SortingAlgorithmBase } from './AlgorithmBase';
 
@@ -20,37 +20,26 @@ export class BubbleSort extends SortingAlgorithmBase {
       isSwapped = false;
       for (let j = 0; j < length - i - 1; j++) {
         selectSortingBars(barsCopy, j, j + 1);
-        await new Promise((resolve) => setTimeout(resolve, 400 - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
-        if (isAlgorithmTerminated()) return;
-        if (!store.getState().sortingPageState.isAlgorithmRunning) {
-          if (!(await waitForContinuation())) return;
-        }
+        await pauseForStepIteration();
+        if (await isAlgorithmTerminated()) return;
 
         if (barsCopy[j].barHeight <= barsCopy[j + 1].barHeight) {
           deselectSortingBars(barsCopy, j, j + 1);
-          if (isAlgorithmTerminated()) return;
-          if (!store.getState().sortingPageState.isAlgorithmRunning) {
-            if (!(await waitForContinuation())) return;
-          }
+          if (await isAlgorithmTerminated()) return;
           continue;
         }
 
         swapSortingBarsVisually(barsCopy, j, j + 1);
-        await new Promise((resolve) => setTimeout(resolve, 400 - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
-        if (isAlgorithmTerminated()) return;
-        if (!store.getState().sortingPageState.isAlgorithmRunning) {
-          if (!(await waitForContinuation())) return;
-        }
+        await pauseForStepIteration();
+        if (await isAlgorithmTerminated()) return;
 
+        //TODO: Figure out why putting this code in a function breaks the algorithm
         barsCopy = [...barsCopy];
         let tempBar = { ...barsCopy[j] };
         barsCopy[j] = { ...barsCopy[j], barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Unselected };
         barsCopy[j + 1] = { ...barsCopy[j + 1], barHeight: tempBar.barHeight, barState: SortingBarStateEnum.Unselected };
         store.dispatch(updatingSortingBarsStateAction(barsCopy));
-        if (isAlgorithmTerminated()) return;
-        if (!store.getState().sortingPageState.isAlgorithmRunning) {
-          if (!(await waitForContinuation())) return;
-        }
+        if (await isAlgorithmTerminated()) return;
 
         isSwapped = true;
       }
@@ -87,29 +76,19 @@ export class QuickSort extends SortingAlgorithmBase {
 
       for (let i: number = right; i > left; i--) {
         selectSortingBars(barsCopy, i, currentPartitionIndex);
-        await new Promise((resolve) => setTimeout(resolve, 400 - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
-        if (isAlgorithmTerminated()) return;
-        if (!store.getState().sortingPageState.isAlgorithmRunning) {
-          if (!(await waitForContinuation())) return;
-        }
+        await pauseForStepIteration();
+        if (await isAlgorithmTerminated()) return;
 
         if (barsCopy[i].barHeight <= pivot) {
           deselectSortingBars(barsCopy, i, currentPartitionIndex);
-          if (isAlgorithmTerminated()) return;
-          if (!store.getState().sortingPageState.isAlgorithmRunning) {
-            if (!(await waitForContinuation())) return;
-          }
+          if (await isAlgorithmTerminated()) return;
           continue;
         }
 
         if (i !== currentPartitionIndex) {
           swapSortingBarsVisually(barsCopy, i, currentPartitionIndex);
-          await new Promise((resolve) => setTimeout(resolve, 400 - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
-          if (isAlgorithmTerminated()) return;
-          if (!store.getState().sortingPageState.isAlgorithmRunning) {
-            if (!(await waitForContinuation())) return;
-          }
-
+          await pauseForStepIteration();
+          if (await isAlgorithmTerminated()) return;
           barsCopy = [...barsCopy];
           let tempBar = { ...barsCopy[i] };
           barsCopy[i] = { ...barsCopy[i], barHeight: barsCopy[currentPartitionIndex].barHeight, barState: SortingBarStateEnum.Unselected };
@@ -118,10 +97,7 @@ export class QuickSort extends SortingAlgorithmBase {
             barHeight: tempBar.barHeight,
             barState: SortingBarStateEnum.Unselected,
           };
-          if (isAlgorithmTerminated()) return;
-          if (!store.getState().sortingPageState.isAlgorithmRunning) {
-            if (!(await waitForContinuation())) return;
-          }
+          if (await isAlgorithmTerminated()) return;
         }
 
         currentPartitionIndex--;
@@ -129,18 +105,12 @@ export class QuickSort extends SortingAlgorithmBase {
       }
 
       selectSortingBars(barsCopy, left, currentPartitionIndex);
-      await new Promise((resolve) => setTimeout(resolve, 400 - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
-      if (isAlgorithmTerminated()) return;
-      if (!store.getState().sortingPageState.isAlgorithmRunning) {
-        if (!(await waitForContinuation())) return;
-      }
+      await pauseForStepIteration();
+      if (await isAlgorithmTerminated()) return;
 
       swapSortingBarsVisually(barsCopy, left, currentPartitionIndex);
-      await new Promise((resolve) => setTimeout(resolve, 400 - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
-      if (isAlgorithmTerminated()) return;
-      if (!store.getState().sortingPageState.isAlgorithmRunning) {
-        if (!(await waitForContinuation())) return;
-      }
+      await pauseForStepIteration();
+      if (await isAlgorithmTerminated()) return;
 
       let tempBar = { ...barsCopy[left] };
       barsCopy = [...barsCopy];
@@ -151,10 +121,7 @@ export class QuickSort extends SortingAlgorithmBase {
         barState: SortingBarStateEnum.Unselected,
       };
       store.dispatch(updatingSortingBarsStateAction(barsCopy));
-      if (isAlgorithmTerminated()) return;
-      if (!store.getState().sortingPageState.isAlgorithmRunning) {
-        if (!(await waitForContinuation())) return;
-      }
+      if (await isAlgorithmTerminated()) return;
 
       resolve(currentPartitionIndex);
     });

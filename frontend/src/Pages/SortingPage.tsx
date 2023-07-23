@@ -22,6 +22,7 @@ import { BubbleSort } from '../Resources/Algorithms/SortingAlgorithms';
 import { updatingWindowHeightStateAction, updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { minAppWidth } from '../App';
+import { algorithmAnimationBaseTime } from '../Resources/Helper';
 
 export let selectedAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmTypeEnum.BubbleSort);
 export let initialSortingBars: SortingBarProps[];
@@ -371,7 +372,7 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
     if (divRef.current === null) return;
     if (newLeftOffset === undefined) return;
 
-    let transformTime = 280 - 30 * sliderState.initialSliderValue;
+    let transformTime = algorithmAnimationBaseTime - 30 * sliderState.initialSliderValue;
     let translateLength = newLeftOffset - divRef.current.offsetLeft;
     divRef.current.style.transition = `transform ease-in ${transformTime}ms`;
     divRef.current.style.transform = `translateX(${translateLength}px)`;

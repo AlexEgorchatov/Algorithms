@@ -8,20 +8,53 @@ import {
   updatingSortingBarsStateAction,
 } from '../Store/Sorting Page/SortingPageStateManagement';
 
-/**Waits for the next action after the algorithm was paused.
- * Returns true if the algorithm continues execution, false if the algorithm was stopped or animation was skipped.*/
+export const algorithmStepBaseTime: number = 400;
+export const algorithmAnimationBaseTime: number = 280;
+
+/**
+ * Waits for the next action after the algorithm was paused.
+ * @returns true if the algorithm continues execution, false if the algorithm was stopped or animation was skipped.
+ */
 export const waitForContinuation = () => {
   return new Promise<boolean>((resolve) => {
     let unsubscribe = store.subscribe(() => {
       if (store.getState().sortingPageState.isAlgorithmRunning) {
         unsubscribe();
         resolve(true);
-      } else if (isAlgorithmTerminated()) {
+      } else if (!store.getState().sortingPageState.hasAlgorithmStarted) {
         unsubscribe();
         resolve(false);
       }
     });
   });
+};
+
+/**
+ * Checks if the algorithm is terminated or not.
+ * @returns true if an algorithm was terminated, false otherwise.
+ */
+export const isAlgorithmTerminated = async (): Promise<boolean> => {
+  return new Promise<boolean>(async (resolve) => {
+    if (!store.getState().sortingPageState.hasAlgorithmStarted) {
+      resolve(true);
+      return;
+    }
+    if (!store.getState().sortingPageState.isAlgorithmRunning) {
+      if (!(await waitForContinuation())) {
+        resolve(true);
+        return;
+      } else {
+        resolve(false);
+        return;
+      }
+    }
+
+    resolve(false);
+  });
+};
+
+export const awaitStepIteration = async () => {
+  await new Promise((resolve) => setTimeout(resolve, algorithmStepBaseTime - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
 };
 
 export const handleStartSorting = async () => {
@@ -37,11 +70,6 @@ export const handleStartSorting = async () => {
   }
 
   selectedAlgorithm.executeAlgorithm();
-};
-
-export const isAlgorithmTerminated = (): boolean => {
-  if (store.getState().sortingPageState.hasAlgorithmStarted) return false;
-  else return true;
 };
 
 export const finalizeSorting = async (barsCopy: SortingBarProps[], isComplete = false) => {
