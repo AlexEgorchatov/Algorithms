@@ -1,4 +1,4 @@
-import { SortingAlgorithmTypeEnum } from '../../Resources/Algorithms/AlgorithmBase';
+import { SortingAlgorithmEnum } from '../../Resources/Algorithms/AlgorithmBase';
 
 export enum SortingBarStateEnum {
   Unselected = 0,
@@ -16,7 +16,7 @@ export interface SortingBarProps {
 
 //#region State
 export interface SortingPageState {
-  readonly selectedSortingAlgorithmType: SortingAlgorithmTypeEnum;
+  readonly selectedSortingAlgorithmType: SortingAlgorithmEnum;
   readonly sortingInput: string;
   readonly isAlgorithmRunning: boolean;
   readonly hasAlgorithmStarted: boolean;
@@ -26,7 +26,7 @@ export interface SortingPageState {
 }
 
 const initialSortingPageState: SortingPageState = {
-  selectedSortingAlgorithmType: SortingAlgorithmTypeEnum.BubbleSort,
+  selectedSortingAlgorithmType: SortingAlgorithmEnum.BubbleSort,
   sortingInput: '',
   isAlgorithmRunning: false,
   hasAlgorithmStarted: false,

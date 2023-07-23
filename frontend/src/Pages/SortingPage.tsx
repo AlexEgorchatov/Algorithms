@@ -17,14 +17,13 @@ import {
   updatingIsInputNanState,
   updatingIsInputOverMaxState,
 } from '../Store/Sorting Page/SortingPageStateManagement';
-import { SortingAlgorithmBase, SortingAlgorithmTypeEnum } from '../Resources/Algorithms/AlgorithmBase';
+import { SortingAlgorithmBase, SortingAlgorithmEnum } from '../Resources/Algorithms/AlgorithmBase';
 import { BubbleSort } from '../Resources/Algorithms/SortingAlgorithms';
 import { updatingWindowHeightStateAction, updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { minAppWidth } from '../App';
 import { algorithmAnimationBaseTime } from '../Resources/Helper';
-
-export let selectedAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmTypeEnum.BubbleSort);
+export let selectedSortingAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmEnum.BubbleSort);
 export let initialSortingBars: SortingBarProps[];
 export let finalSortingBars: SortingBarProps[];
 let validSortingInput: string = '';
@@ -316,8 +315,8 @@ const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmPr
 
   const handleClick = () => {
     if (algorithmState.hasAlgorithmStarted) return;
-    selectedAlgorithm = sortingAlgorithm;
-    dispatch(updatingSelectedSortingAlgorithmState(sortingAlgorithm.sortingAlgorithmType));
+    selectedSortingAlgorithm = sortingAlgorithm;
+    dispatch(updatingSelectedSortingAlgorithmState(sortingAlgorithm.sortingAlgorithm));
   };
 
   return (
@@ -355,7 +354,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
         <AlgorithmComponent
           key={index}
           title={algorithm.title}
-          isSelected={algorithm.sortingAlgorithm.sortingAlgorithmType === algorithmState.selectedSortingAlgorithmType}
+          isSelected={algorithm.sortingAlgorithm.sortingAlgorithm === algorithmState.selectedSortingAlgorithmType}
           sortingAlgorithm={algorithm.sortingAlgorithm}
         />
       ))}
@@ -364,7 +363,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
 };
 
 const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselected, leftOffset: newLeftOffset }: SortingBarProps) => {
-  let divRef = React.useRef<HTMLDivElement>(null);
+  let divRef = useRef<HTMLDivElement>(null);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const algorithmState = useSelector((state: AppState) => state.sortingPageState);
 
