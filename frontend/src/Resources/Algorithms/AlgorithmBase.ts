@@ -1,6 +1,10 @@
-export enum SortingAlgorithmTypeEnum {
+export enum SortingAlgorithmEnum {
   BubbleSort = 0,
   QuickSort = 1,
+}
+export enum StringMatchingAlgorithmEnum {
+  Naive = 0,
+  KnuthMorrisPratt = 1,
 }
 
 abstract class AlgorithmBase {
@@ -8,10 +12,19 @@ abstract class AlgorithmBase {
 }
 
 export abstract class SortingAlgorithmBase extends AlgorithmBase {
-  public readonly sortingAlgorithmType: SortingAlgorithmTypeEnum;
+  public readonly sortingAlgorithm: SortingAlgorithmEnum;
 
-  constructor(sortingAlgorithmType: SortingAlgorithmTypeEnum) {
+  constructor(sortingAlgorithm: SortingAlgorithmEnum) {
     super();
-    this.sortingAlgorithmType = sortingAlgorithmType;
+    this.sortingAlgorithm = sortingAlgorithm;
+  }
+}
+
+export abstract class StringMatchingAlgorithmBase extends AlgorithmBase {
+  public readonly stringMatchingAlgorithm: StringMatchingAlgorithmEnum;
+
+  constructor(stringMatchingAlgorithm: StringMatchingAlgorithmEnum) {
+    super();
+    this.stringMatchingAlgorithm = stringMatchingAlgorithm;
   }
 }

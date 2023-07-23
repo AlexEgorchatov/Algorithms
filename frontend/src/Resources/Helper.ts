@@ -1,5 +1,5 @@
 import { store } from '../App';
-import { finalSortingBars, initialSortingBars, selectedAlgorithm } from '../Pages/SortingPage';
+import { finalSortingBars, initialSortingBars, selectedSortingAlgorithm } from '../Pages/SortingPage';
 import {
   SortingBarProps,
   SortingBarStateEnum,
@@ -69,7 +69,7 @@ export const handleStartSorting = async () => {
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
 
-  selectedAlgorithm.executeAlgorithm();
+  selectedSortingAlgorithm.executeAlgorithm();
 };
 
 export const finalizeSorting = async (barsCopy: SortingBarProps[], isComplete = false) => {

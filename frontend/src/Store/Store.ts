@@ -7,6 +7,7 @@ import { headerReducer, HeaderState } from './Home Page/HeaderStateManagement';
 import { sliderComponentReducer, SliderComponentState } from './Shared/SliderComponentStateManagement';
 import { sortingPageReducer, SortingPageState } from './Sorting Page/SortingPageStateManagement';
 import { windowReducer, WindowState } from './Shared/WindowStateManagement';
+import { stringMatchingPageReducer, StringMatchingPageState } from './String Matching Page/StringMatchingPageStateManagement';
 
 const rootReducer = combineReducers<AppState>({
   sortingModuleState: sortingModuleReducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers<AppState>({
   headerState: headerReducer,
   sliderComponentState: sliderComponentReducer,
   sortingPageState: sortingPageReducer,
+  stringMatchingPageState: stringMatchingPageReducer,
   windowState: windowReducer,
 });
 
@@ -30,5 +32,6 @@ export interface AppState {
   readonly headerState: HeaderState;
   readonly sliderComponentState: SliderComponentState;
   readonly sortingPageState: SortingPageState;
+  readonly stringMatchingPageState: StringMatchingPageState;
   readonly windowState: WindowState;
 }
