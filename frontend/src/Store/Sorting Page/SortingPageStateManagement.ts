@@ -8,8 +8,8 @@ export enum SortingBarStateEnum {
 }
 
 export interface SortingBarProps {
-  barID: number;
   barHeight: number;
+  barID?: number;
   barState?: SortingBarStateEnum;
   leftOffset?: number;
 }

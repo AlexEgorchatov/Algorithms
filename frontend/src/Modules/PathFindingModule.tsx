@@ -80,8 +80,7 @@ export const PathFindingModule = ({ title }: ModuleTitle) => {
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
         gridCopy = [...gridCopy];
 
-        if (columnSource + 1 >= columnNumber || pathFindingState.initialGrid[rowSource * 8 + columnSource + 1] === CellState.Wall)
-          break;
+        if (columnSource + 1 >= columnNumber || pathFindingState.initialGrid[rowSource * 8 + columnSource + 1] === CellState.Wall) break;
         else columnSource++;
       }
 

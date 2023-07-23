@@ -44,10 +44,11 @@ export const isAlgorithmTerminated = (): boolean => {
   else return true;
 };
 
-export const finalizeSorting = async (barsCopy: SortingBarProps[], length: number, timeout: number = 50) => {
-  for (let i = 0; i < length; i++) {
+export const finalizeSorting = async (barsCopy: SortingBarProps[], isComplete = false) => {
+  let timeout = isComplete ? 0 : 300 / barsCopy.length;
+  for (let i = 0; i < barsCopy.length; i++) {
     barsCopy = [...barsCopy];
-    barsCopy[i] = { barHeight: barsCopy[i].barHeight, barState: SortingBarStateEnum.Completed, barID: barsCopy[i].barID };
+    barsCopy[i] = { ...barsCopy[i], barState: SortingBarStateEnum.Completed };
     store.dispatch(updatingSortingBarsStateAction(barsCopy));
     if (timeout !== 0) await new Promise((resolve) => setTimeout(resolve, timeout));
   }
@@ -62,7 +63,7 @@ export const handleCompleteSorting = () => {
   store.dispatch(updatingHasAlgorithmStartedState(false));
   store.dispatch(updatingIsAlgorithmRunningStateAction(false));
   store.dispatch(updatingSortingBarsStateAction(finalSortingBars));
-  finalizeSorting(finalSortingBars, finalSortingBars.length, 0);
+  finalizeSorting(finalSortingBars, true);
 };
 
 export const handleStopSorting = () => {
@@ -77,31 +78,21 @@ export const swapSortingBarsVisually = (barsCopy: SortingBarProps[], index1: num
   barsCopy = [...barsCopy];
   let currentLeftOffset = document.getElementById(index1.toString())?.offsetLeft;
   let nextLeftOffset = document.getElementById(index2.toString())?.offsetLeft;
-  barsCopy[index1] = {
-    barHeight: barsCopy[index1].barHeight,
-    barState: SortingBarStateEnum.Selected,
-    barID: barsCopy[index1].barID,
-    leftOffset: nextLeftOffset,
-  };
-  barsCopy[index2] = {
-    barHeight: barsCopy[index2].barHeight,
-    barState: SortingBarStateEnum.Selected,
-    barID: barsCopy[index2].barID,
-    leftOffset: currentLeftOffset,
-  };
+  barsCopy[index1] = { ...barsCopy[index1], barState: SortingBarStateEnum.Selected, leftOffset: nextLeftOffset };
+  barsCopy[index2] = { ...barsCopy[index2], barState: SortingBarStateEnum.Selected, leftOffset: currentLeftOffset };
   store.dispatch(updatingSortingBarsStateAction(barsCopy));
 };
 
 export const selectSortingBars = (barsCopy: SortingBarProps[], index1: number, index2: number) => {
   barsCopy = [...barsCopy];
-  barsCopy[index1] = { barHeight: barsCopy[index1].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[index1].barID };
-  barsCopy[index2] = { barHeight: barsCopy[index2].barHeight, barState: SortingBarStateEnum.Selected, barID: barsCopy[index2].barID };
+  barsCopy[index1] = { ...barsCopy[index1], barState: SortingBarStateEnum.Selected };
+  barsCopy[index2] = { ...barsCopy[index2], barState: SortingBarStateEnum.Selected };
   store.dispatch(updatingSortingBarsStateAction(barsCopy));
 };
 
 export const unselectSortingBars = (barsCopy: SortingBarProps[], index1: number, index2: number) => {
   barsCopy = [...barsCopy];
-  barsCopy[index1] = { barHeight: barsCopy[index1].barHeight, barState: SortingBarStateEnum.Unselected, barID: barsCopy[index1].barID };
-  barsCopy[index2] = { barHeight: barsCopy[index2].barHeight, barState: SortingBarStateEnum.Unselected, barID: barsCopy[index2].barID };
+  barsCopy[index1] = { ...barsCopy[index1], barState: SortingBarStateEnum.Unselected };
+  barsCopy[index2] = { ...barsCopy[index2], barState: SortingBarStateEnum.Unselected };
   store.dispatch(updatingSortingBarsStateAction(barsCopy));
 };
