@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import React, { useEffect } from 'react';
 import { ModuleTitle } from '../Pages/HomePage';
-import { ModulePlaceholder } from '../Components/ModulePlaceHolder';
+import { ModulePlaceholder } from '../Components/ModulePlaceholder';
 import { CellState, updatingPathFindingModuleStateAction } from '../Store/Home Page/PathFindingModuleStateManagement';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
