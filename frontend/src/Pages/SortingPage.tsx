@@ -45,12 +45,13 @@ const SortingInputComponent = () => {
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
-  const validateInput = (currentInput: string) => {
+  const processInput = (currentInput: string) => {
     dispatch(updatingSortingInputStateAction(currentInput));
     validSortingInput = '';
     let stringArrayInput = currentInput.split(' ');
-    let barsCopy: SortingBarProps[] = [];
+    let sortingBars: SortingBarProps[] = [];
     let isOverMax: boolean = false;
+    let ID: number = 0;
     for (let i = 0; i < stringArrayInput.length; i++) {
       let currentNumber: number = parseInt(stringArrayInput[i]);
       if (isNaN(currentNumber)) continue;
@@ -59,9 +60,8 @@ const SortingInputComponent = () => {
         currentNumber = 99;
       }
 
-      //TODO: Fix the index assignment in case when isNan(currentNumber) condition
       validSortingInput += `${currentNumber} `;
-      barsCopy.push({ barHeight: currentNumber, barID: i });
+      sortingBars.push({ barHeight: currentNumber, barID: ID++ });
     }
 
     if (!/^[0-9\s]*$/.test(currentInput)) dispatch(updatingIsInputNanState(true));
@@ -69,11 +69,11 @@ const SortingInputComponent = () => {
     if (isOverMax) dispatch(updatingIsInputOverMaxState(true));
     else dispatch(updatingIsInputOverMaxState(false));
 
-    let sortingBarsCopy = [...barsCopy];
-    initialSortingBars = [...barsCopy];
+    let sortingBarsCopy = [...sortingBars];
+    initialSortingBars = [...sortingBars];
     finalSortingBars = sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight);
 
-    dispatch(updatingSortingBarsStateAction(barsCopy));
+    dispatch(updatingSortingBarsStateAction(sortingBars));
   };
 
   const fixInput = () => {
@@ -104,7 +104,7 @@ const SortingInputComponent = () => {
         type="text"
         placeholder="Type several numbers..."
         value={algorithmState.sortingInput}
-        onInput={() => validateInput(ref.current?.value as string)}
+        onInput={() => processInput(ref.current?.value as string)}
         disabled={algorithmState.hasAlgorithmStarted}
       />
 
