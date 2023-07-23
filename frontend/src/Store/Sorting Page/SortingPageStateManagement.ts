@@ -136,7 +136,6 @@ export const sortingPageReducer = (state = initialSortingPageState, action: Sort
       };
 
     case UPDATINGSORTINGBARSSTATE:
-      console.log(`${JSON.stringify(action.sortingBars)}`);
       return {
         ...state,
         sortingBars: action.sortingBars,

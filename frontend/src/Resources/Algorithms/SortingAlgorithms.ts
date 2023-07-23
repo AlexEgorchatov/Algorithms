@@ -42,19 +42,16 @@ export class BubbleSort extends SortingAlgorithmBase {
           if (!(await waitForContinuation())) return;
         }
 
-        //TODO: figure out how the ID swapping works
         barsCopy = [...barsCopy];
         let tempBar = barsCopy[j];
         barsCopy[j] = {
           barHeight: barsCopy[j + 1].barHeight,
           barState: SortingBarStateEnum.Unselected,
-          // barID: barsCopy[j + 1].barID,
           barID: barsCopy[j].barID,
         };
         barsCopy[j + 1] = {
           barHeight: tempBar.barHeight,
           barState: SortingBarStateEnum.Unselected,
-          // barID: tempBar.barID,
           barID: barsCopy[j + 1].barID,
         };
         store.dispatch(updatingSortingBarsStateAction(barsCopy));
@@ -94,7 +91,6 @@ export class QuickSort extends SortingAlgorithmBase {
       let barsCopy = [...store.getState().sortingPageState.sortingBars];
       let pivot: number = barsCopy[left].barHeight;
 
-      barsCopy = [...barsCopy];
       barsCopy[left] = { barHeight: barsCopy[left].barHeight, barState: SortingBarStateEnum.Pivot, barID: barsCopy[left].barID };
       store.dispatch(updatingSortingBarsStateAction(barsCopy));
 
@@ -130,12 +126,12 @@ export class QuickSort extends SortingAlgorithmBase {
           barsCopy[i] = {
             barHeight: barsCopy[k].barHeight,
             barState: SortingBarStateEnum.Unselected,
-            barID: barsCopy[k].barID,
+            barID: barsCopy[i].barID,
           };
           barsCopy[k] = {
             barHeight: tempBar.barHeight,
             barState: SortingBarStateEnum.Unselected,
-            barID: tempBar.barID,
+            barID: barsCopy[k].barID,
           };
           store.dispatch(updatingSortingBarsStateAction(barsCopy));
           if (isAlgorithmTerminated()) return;
@@ -146,6 +142,13 @@ export class QuickSort extends SortingAlgorithmBase {
 
         k--;
         store.dispatch(updatingSortingBarsStateAction(barsCopy));
+      }
+
+      selectSortingBars(barsCopy, left, k);
+      await new Promise((resolve) => setTimeout(resolve, 400 - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
+      if (isAlgorithmTerminated()) return;
+      if (!store.getState().sortingPageState.isAlgorithmRunning) {
+        if (!(await waitForContinuation())) return;
       }
 
       swapSortingBarsVisually(barsCopy, left, k);

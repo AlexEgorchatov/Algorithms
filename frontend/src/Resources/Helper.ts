@@ -75,19 +75,18 @@ export const handleStopSorting = () => {
 
 export const swapSortingBarsVisually = (barsCopy: SortingBarProps[], index1: number, index2: number) => {
   barsCopy = [...barsCopy];
-  let currentLeftOffset = document.getElementById(barsCopy[index1].barID.toString())?.offsetLeft;
-  let nextLeftOffset = document.getElementById(barsCopy[index2].barID.toString())?.offsetLeft;
-  let tempID = barsCopy[index1].barID;
+  let currentLeftOffset = document.getElementById(index1.toString())?.offsetLeft;
+  let nextLeftOffset = document.getElementById(index2.toString())?.offsetLeft;
   barsCopy[index1] = {
     barHeight: barsCopy[index1].barHeight,
     barState: SortingBarStateEnum.Selected,
-    barID: barsCopy[index2].barID,
+    barID: barsCopy[index1].barID,
     leftOffset: nextLeftOffset,
   };
   barsCopy[index2] = {
     barHeight: barsCopy[index2].barHeight,
     barState: SortingBarStateEnum.Selected,
-    barID: tempID,
+    barID: barsCopy[index2].barID,
     leftOffset: currentLeftOffset,
   };
   store.dispatch(updatingSortingBarsStateAction(barsCopy));
