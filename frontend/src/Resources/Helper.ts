@@ -1,3 +1,4 @@
+import { createContext } from 'react';
 import { store } from '../App';
 import { finalSortingBars, initialSortingBars, selectedSortingAlgorithm } from '../Pages/SortingPage';
 import {
@@ -7,6 +8,26 @@ import {
   updatingIsAlgorithmRunningStateAction,
   updatingSortingBarsStateAction,
 } from '../Store/Sorting Page/SortingPageStateManagement';
+
+//#region Shared helpers
+
+interface animationProps {
+  isAlgorithmRunning: boolean;
+  hasAlgorithmStarted: boolean;
+  startButtonClick: React.MouseEventHandler<HTMLDivElement>;
+  pauseButtonClick: React.MouseEventHandler<HTMLDivElement>;
+  stopButtonClick: React.MouseEventHandler<HTMLDivElement>;
+  completeButtonClick: React.MouseEventHandler<HTMLDivElement>;
+}
+
+export const animationContext = createContext<animationProps>({
+  isAlgorithmRunning: false,
+  hasAlgorithmStarted: false,
+  startButtonClick: () => {},
+  pauseButtonClick: () => {},
+  stopButtonClick: () => {},
+  completeButtonClick: () => {},
+});
 
 export const algorithmStepBaseTime: number = 400;
 export const algorithmAnimationBaseTime: number = 280;
@@ -57,14 +78,16 @@ export const awaitStepIteration = async () => {
   await new Promise((resolve) => setTimeout(resolve, algorithmStepBaseTime - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
 };
 
+//#endregion
+
+//#region Sorting Page helpers
+
 export const handleStartSorting = async () => {
   store.dispatch(updatingIsAlgorithmRunningStateAction(true));
   if (store.getState().sortingPageState.hasAlgorithmStarted) return;
 
   store.dispatch(updatingHasAlgorithmStartedState(true));
-  if (
-    JSON.stringify(store.getState().sortingPageState.sortingBars.map((i) => i.barHeight)) === JSON.stringify(finalSortingBars.map((i) => i.barHeight))
-  ) {
+  if (JSON.stringify(store.getState().sortingPageState.sortingBars.map((i) => i.barHeight)) === JSON.stringify(finalSortingBars.map((i) => i.barHeight))) {
     store.dispatch(updatingSortingBarsStateAction(initialSortingBars));
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
@@ -124,3 +147,15 @@ export const unselectSortingBars = (barsCopy: SortingBarProps[], index1: number,
   barsCopy[index2] = { ...barsCopy[index2], barState: SortingBarStateEnum.Unselected };
   store.dispatch(updatingSortingBarsStateAction(barsCopy));
 };
+
+//#endregion
+
+//#region String Matching helpers
+
+export const handleStartSearch = async () => {};
+
+export const handleCompleteSearch = () => {};
+
+export const handleStopSearch = () => {};
+
+//#endregion

@@ -4,22 +4,12 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import { updatingSliderValueStateAction } from '../Store/Shared/SliderComponentStateManagement';
-import { useEffect, useRef } from 'react';
-import React from 'react';
+import { useContext, useRef } from 'react';
+import { animationContext } from '../Resources/Helper';
 
-interface ButtonProps {
-  clickFunction: React.MouseEventHandler<HTMLDivElement>;
-}
+const PlayButton = () => {
+  const { startButtonClick } = useContext(animationContext);
 
-interface SliderButtonsProps {
-  isAlgorithmRunning: boolean;
-  startButtonClick: React.MouseEventHandler<HTMLDivElement>;
-  pauseButtonClick: React.MouseEventHandler<HTMLDivElement>;
-  stopButtonClick: React.MouseEventHandler<HTMLDivElement>;
-  completeButtonClick: React.MouseEventHandler<HTMLDivElement>;
-}
-
-const PlayButton = ({ clickFunction }: ButtonProps) => {
   return (
     <div
       css={css`
@@ -34,7 +24,7 @@ const PlayButton = ({ clickFunction }: ButtonProps) => {
           color: black;
         }
       `}
-      onClick={clickFunction}
+      onClick={startButtonClick}
     >
       <div
         css={css`
@@ -53,7 +43,9 @@ const PlayButton = ({ clickFunction }: ButtonProps) => {
   );
 };
 
-const PauseButton = ({ clickFunction }: ButtonProps) => {
+const PauseButton = () => {
+  const { pauseButtonClick } = useContext(animationContext);
+
   return (
     <div
       css={css`
@@ -71,13 +63,13 @@ const PauseButton = ({ clickFunction }: ButtonProps) => {
           color: black;
         }
       `}
-      onClick={clickFunction}
+      onClick={pauseButtonClick}
     ></div>
   );
 };
 
-const StopButton = ({ clickFunction }: ButtonProps) => {
-  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
+const StopButton = () => {
+  const { hasAlgorithmStarted, stopButtonClick } = useContext(animationContext);
 
   return (
     <div
@@ -89,22 +81,22 @@ const StopButton = ({ clickFunction }: ButtonProps) => {
         width: 16px;
         height: 16px;
         background: white;
-        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
-        opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
+        cursor: ${hasAlgorithmStarted ? 'pointer' : 'default'};
+        opacity: ${hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
-          ${algorithmState.hasAlgorithmStarted &&
+          ${hasAlgorithmStarted &&
           `
             background: black;
           `}
         }
       `}
-      onClick={clickFunction}
+      onClick={stopButtonClick}
     ></div>
   );
 };
 
-const CompleteButton = ({ clickFunction }: ButtonProps) => {
-  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
+const CompleteButton = () => {
+  const { hasAlgorithmStarted, completeButtonClick } = useContext(animationContext);
 
   return (
     <div
@@ -113,10 +105,10 @@ const CompleteButton = ({ clickFunction }: ButtonProps) => {
         position: relative;
         display: flex;
         color: white;
-        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
-        opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
+        cursor: ${hasAlgorithmStarted ? 'pointer' : 'default'};
+        opacity: ${hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
-          ${algorithmState.hasAlgorithmStarted &&
+          ${hasAlgorithmStarted &&
           `
             & > div {
               color: black;
@@ -124,7 +116,7 @@ const CompleteButton = ({ clickFunction }: ButtonProps) => {
           `}
         }
       `}
-      onClick={clickFunction}
+      onClick={completeButtonClick}
     >
       <div
         css={css`
@@ -213,12 +205,8 @@ const Slider = () => {
   );
 };
 
-const SliderButtons = ({ isAlgorithmRunning, startButtonClick, pauseButtonClick, stopButtonClick, completeButtonClick }: SliderButtonsProps) => {
-  const [isRunning, setIsRunning] = React.useState<boolean>(isAlgorithmRunning);
-
-  useEffect(() => {
-    setIsRunning(isAlgorithmRunning);
-  }, [isAlgorithmRunning]);
+const SliderButtons = () => {
+  const { isAlgorithmRunning } = useContext(animationContext);
 
   return (
     <div
@@ -228,14 +216,14 @@ const SliderButtons = ({ isAlgorithmRunning, startButtonClick, pauseButtonClick,
         max-width: 155px;
       `}
     >
-      {isRunning ? <PauseButton clickFunction={pauseButtonClick} /> : <PlayButton clickFunction={startButtonClick} />}
-      <StopButton clickFunction={stopButtonClick} />
-      <CompleteButton clickFunction={completeButtonClick} />
+      {isAlgorithmRunning ? <PauseButton /> : <PlayButton />}
+      <StopButton />
+      <CompleteButton />
     </div>
   );
 };
 
-export const SliderComponent = ({ isAlgorithmRunning, startButtonClick, pauseButtonClick, stopButtonClick, completeButtonClick }: SliderButtonsProps) => {
+export const SliderComponent = () => {
   return (
     <div
       css={css`
@@ -248,13 +236,7 @@ export const SliderComponent = ({ isAlgorithmRunning, startButtonClick, pauseBut
       `}
     >
       <Slider />
-      <SliderButtons
-        isAlgorithmRunning={isAlgorithmRunning}
-        startButtonClick={startButtonClick}
-        pauseButtonClick={pauseButtonClick}
-        stopButtonClick={stopButtonClick}
-        completeButtonClick={completeButtonClick}
-      />
+      <SliderButtons />
     </div>
   );
 };

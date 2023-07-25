@@ -23,7 +23,7 @@ import { BubbleSort } from '../Resources/Algorithms/SortingAlgorithms';
 import { updatingWindowHeightStateAction, updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { minAppWidth } from '../App';
-import { algorithmAnimationBaseTime, handleCompleteSorting, handleStartSorting, handleStopSorting } from '../Resources/Helper';
+import { algorithmAnimationBaseTime, animationContext, handleCompleteSorting, handleStartSorting, handleStopSorting } from '../Resources/Helper';
 
 let validSortingInput: string = '';
 const sortingBarWidth: number = 35;
@@ -479,13 +479,18 @@ const SettingsComponent = () => {
               width: 72px;
             `}
           >
-            <ActionBar
-              isAlgorithmRunning={sortingPageState.isAlgorithmRunning}
-              startButtonClick={handleStartSorting}
-              pauseButtonClick={() => dispatch(updatingIsAlgorithmRunningStateAction(false))}
-              stopButtonClick={handleStopSorting}
-              completeButtonClick={handleCompleteSorting}
-            />
+            <animationContext.Provider
+              value={{
+                isAlgorithmRunning: sortingPageState.isAlgorithmRunning,
+                hasAlgorithmStarted: sortingPageState.hasAlgorithmStarted,
+                startButtonClick: handleStartSorting,
+                pauseButtonClick: () => dispatch(updatingIsAlgorithmRunningStateAction(false)),
+                stopButtonClick: handleStopSorting,
+                completeButtonClick: handleCompleteSorting,
+              }}
+            >
+              <ActionBar />
+            </animationContext.Provider>
           </div>
           <GenerateInputComponent />
         </div>
@@ -540,13 +545,18 @@ const AnimationComponent = () => {
           align-items: flex-end;
         `}
       >
-        <SliderComponent
-          isAlgorithmRunning={sortingPageState.isAlgorithmRunning}
-          startButtonClick={handleStartSorting}
-          pauseButtonClick={() => dispatch(updatingIsAlgorithmRunningStateAction(false))}
-          stopButtonClick={handleStopSorting}
-          completeButtonClick={handleCompleteSorting}
-        />
+        <animationContext.Provider
+          value={{
+            isAlgorithmRunning: sortingPageState.isAlgorithmRunning,
+            hasAlgorithmStarted: sortingPageState.hasAlgorithmStarted,
+            startButtonClick: handleStartSorting,
+            pauseButtonClick: () => dispatch(updatingIsAlgorithmRunningStateAction(false)),
+            stopButtonClick: handleStopSorting,
+            completeButtonClick: handleCompleteSorting,
+          }}
+        >
+          <SliderComponent />
+        </animationContext.Provider>
       </div>
     </div>
   );

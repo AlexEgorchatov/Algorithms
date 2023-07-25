@@ -1,24 +1,12 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
-import { useSelector } from 'react-redux';
-import { AppState } from '../Store/Store';
-import { Fragment, useEffect } from 'react';
-import React from 'react';
+import { Fragment, useContext } from 'react';
+import { animationContext } from '../Resources/Helper';
 
-interface ButtonProps {
-  clickFunction: React.MouseEventHandler<HTMLDivElement>;
-}
+const PlayButton = () => {
+  const { startButtonClick } = useContext(animationContext);
 
-interface ActionBarProps {
-  isAlgorithmRunning: boolean;
-  startButtonClick: React.MouseEventHandler<HTMLDivElement>;
-  pauseButtonClick: React.MouseEventHandler<HTMLDivElement>;
-  stopButtonClick: React.MouseEventHandler<HTMLDivElement>;
-  completeButtonClick: React.MouseEventHandler<HTMLDivElement>;
-}
-
-const PlayButton = ({ clickFunction }: ButtonProps) => {
   return (
     <div
       css={css`
@@ -48,12 +36,14 @@ const PlayButton = ({ clickFunction }: ButtonProps) => {
           left: 6px;
         }
       `}
-      onClick={clickFunction}
+      onClick={startButtonClick}
     ></div>
   );
 };
 
-const PauseButton = ({ clickFunction }: ButtonProps) => {
+const PauseButton = () => {
+  const { pauseButtonClick } = useContext(animationContext);
+
   return (
     <div
       css={css`
@@ -75,7 +65,7 @@ const PauseButton = ({ clickFunction }: ButtonProps) => {
           }
         }
       `}
-      onClick={clickFunction}
+      onClick={pauseButtonClick}
     >
       <div
         css={css`
@@ -93,8 +83,8 @@ const PauseButton = ({ clickFunction }: ButtonProps) => {
   );
 };
 
-const StopButton = ({ clickFunction }: ButtonProps) => {
-  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
+const StopButton = () => {
+  const { hasAlgorithmStarted, stopButtonClick } = useContext(animationContext);
 
   return (
     <div
@@ -109,10 +99,10 @@ const StopButton = ({ clickFunction }: ButtonProps) => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
-        opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
+        cursor: ${hasAlgorithmStarted ? 'pointer' : 'default'};
+        opacity: ${hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
-          ${algorithmState.hasAlgorithmStarted &&
+          ${hasAlgorithmStarted &&
           `
               color: ${headerItemHovered};
               & > div {
@@ -121,7 +111,7 @@ const StopButton = ({ clickFunction }: ButtonProps) => {
             `}
         }
       `}
-      onClick={clickFunction}
+      onClick={stopButtonClick}
     >
       <div
         css={css`
@@ -138,8 +128,8 @@ const StopButton = ({ clickFunction }: ButtonProps) => {
   );
 };
 
-const CompleteButton = ({ clickFunction }: ButtonProps) => {
-  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
+const CompleteButton = () => {
+  const { hasAlgorithmStarted, completeButtonClick } = useContext(animationContext);
 
   return (
     <div
@@ -154,10 +144,10 @@ const CompleteButton = ({ clickFunction }: ButtonProps) => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
-        opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
+        cursor: ${hasAlgorithmStarted ? 'pointer' : 'default'};
+        opacity: ${hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
-          ${algorithmState.hasAlgorithmStarted &&
+          ${hasAlgorithmStarted &&
           `
               color: ${headerItemHovered};
               & > div {
@@ -166,7 +156,7 @@ const CompleteButton = ({ clickFunction }: ButtonProps) => {
             `}
         }
       `}
-      onClick={clickFunction}
+      onClick={completeButtonClick}
     >
       <div
         css={css`
@@ -201,18 +191,14 @@ const CompleteButton = ({ clickFunction }: ButtonProps) => {
   );
 };
 
-export const ActionBar = ({ isAlgorithmRunning, startButtonClick, pauseButtonClick, stopButtonClick, completeButtonClick }: ActionBarProps) => {
-  const [isRunning, setIsRunning] = React.useState<boolean>(isAlgorithmRunning);
-
-  useEffect(() => {
-    setIsRunning(isAlgorithmRunning);
-  }, [isAlgorithmRunning]);
+export const ActionBar = () => {
+  const { isAlgorithmRunning } = useContext(animationContext);
 
   return (
     <Fragment>
-      {isRunning ? <PauseButton clickFunction={pauseButtonClick} /> : <PlayButton clickFunction={startButtonClick} />}
-      <StopButton clickFunction={stopButtonClick} />
-      <CompleteButton clickFunction={completeButtonClick} />
+      {isAlgorithmRunning ? <PauseButton /> : <PlayButton />}
+      <StopButton />
+      <CompleteButton />
     </Fragment>
   );
 };
