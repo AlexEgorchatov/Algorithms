@@ -18,8 +18,8 @@ export interface SortingBarProps {
 export interface SortingPageState {
   readonly selectedSortingAlgorithmType: SortingAlgorithmEnum;
   readonly sortingInput: string;
-  readonly isAlgorithmRunning: boolean;
-  readonly hasAlgorithmStarted: boolean;
+  readonly isSortingAlgorithmRunning: boolean;
+  readonly hasSortingAlgorithmStarted: boolean;
   readonly isInputNan: boolean;
   readonly isInputOverMax: boolean;
   readonly sortingBars: SortingBarProps[];
@@ -28,8 +28,8 @@ export interface SortingPageState {
 const initialSortingPageState: SortingPageState = {
   selectedSortingAlgorithmType: SortingAlgorithmEnum.BubbleSort,
   sortingInput: '',
-  isAlgorithmRunning: false,
-  hasAlgorithmStarted: false,
+  isSortingAlgorithmRunning: false,
+  hasSortingAlgorithmStarted: false,
   isInputNan: false,
   isInputOverMax: false,
   sortingBars: [],
@@ -51,18 +51,18 @@ export const updatingSortingInputStateAction = (sortingInput = initialSortingPag
     sortingInput: sortingInput,
   } as const);
 
-const UPDATINGISALGORITHMRUNNINGSTATE = 'UpdatingIsAlgorithmRunningState';
-export const updatingIsAlgorithmRunningStateAction = (isAlgorithmRunning = initialSortingPageState.isAlgorithmRunning) =>
+const UPDATINGISSORTINGALGORITHMRUNNINGSTATE = 'UpdatingIsSortingAlgorithmRunningState';
+export const updatingIsSortingAlgorithmRunningStateAction = (isSortingAlgorithmRunning = initialSortingPageState.isSortingAlgorithmRunning) =>
   ({
-    type: UPDATINGISALGORITHMRUNNINGSTATE,
-    isAlgorithmRunning: isAlgorithmRunning,
+    type: UPDATINGISSORTINGALGORITHMRUNNINGSTATE,
+    isSortingAlgorithmRunning: isSortingAlgorithmRunning,
   } as const);
 
-const UPDATINGHASALGORITHMSTARTEDSTATE = 'UpdatingHasAlgorithmStartedState';
-export const updatingHasAlgorithmStartedState = (hasAlgorithmStarted = initialSortingPageState.hasAlgorithmStarted) =>
+const UPDATINGHASSORTINGALGORITHMSTARTEDSTATE = 'UpdatingHasSortingAlgorithmStartedState';
+export const updatingHasSortingAlgorithmStartedState = (hasSortingAlgorithmStarted = initialSortingPageState.hasSortingAlgorithmStarted) =>
   ({
-    type: UPDATINGHASALGORITHMSTARTEDSTATE,
-    hasAlgorithmStarted: hasAlgorithmStarted,
+    type: UPDATINGHASSORTINGALGORITHMSTARTEDSTATE,
+    hasSortingAlgorithmStarted: hasSortingAlgorithmStarted,
   } as const);
 
 const UPDATINGISINPUTNANSTATE = 'UpdatingIsInputNanState';
@@ -92,8 +92,8 @@ export const updatingSortingBarsStateAction = (sortingBars = initialSortingPageS
 type SortingPageActions =
   | ReturnType<typeof updatingSelectedSortingAlgorithmState>
   | ReturnType<typeof updatingSortingInputStateAction>
-  | ReturnType<typeof updatingIsAlgorithmRunningStateAction>
-  | ReturnType<typeof updatingHasAlgorithmStartedState>
+  | ReturnType<typeof updatingIsSortingAlgorithmRunningStateAction>
+  | ReturnType<typeof updatingHasSortingAlgorithmStartedState>
   | ReturnType<typeof updatingIsInputNanState>
   | ReturnType<typeof updatingIsInputOverMaxState>
   | ReturnType<typeof updatingSortingBarsStateAction>;
@@ -111,16 +111,16 @@ export const sortingPageReducer = (state = initialSortingPageState, action: Sort
         sortingInput: action.sortingInput,
       };
 
-    case UPDATINGISALGORITHMRUNNINGSTATE:
+    case UPDATINGISSORTINGALGORITHMRUNNINGSTATE:
       return {
         ...state,
-        isAlgorithmRunning: action.isAlgorithmRunning,
+        isSortingAlgorithmRunning: action.isSortingAlgorithmRunning,
       };
 
-    case UPDATINGHASALGORITHMSTARTEDSTATE:
+    case UPDATINGHASSORTINGALGORITHMSTARTEDSTATE:
       return {
         ...state,
-        hasAlgorithmStarted: action.hasAlgorithmStarted,
+        hasSortingAlgorithmStarted: action.hasSortingAlgorithmStarted,
       };
 
     case UPDATINGISINPUTNANSTATE:

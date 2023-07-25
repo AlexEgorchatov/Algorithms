@@ -4,8 +4,8 @@ import { finalSortingBars, initialSortingBars, selectedSortingAlgorithm } from '
 import {
   SortingBarProps,
   SortingBarStateEnum,
-  updatingHasAlgorithmStartedState,
-  updatingIsAlgorithmRunningStateAction,
+  updatingHasSortingAlgorithmStartedState,
+  updatingIsSortingAlgorithmRunningStateAction,
   updatingSortingBarsStateAction,
 } from '../Store/Sorting Page/SortingPageStateManagement';
 
@@ -39,10 +39,10 @@ export const algorithmAnimationBaseTime: number = 280;
 export const waitForContinuation = () => {
   return new Promise<boolean>((resolve) => {
     let unsubscribe = store.subscribe(() => {
-      if (store.getState().sortingPageState.isAlgorithmRunning) {
+      if (store.getState().sortingPageState.isSortingAlgorithmRunning) {
         unsubscribe();
         resolve(true);
-      } else if (!store.getState().sortingPageState.hasAlgorithmStarted) {
+      } else if (!store.getState().sortingPageState.hasSortingAlgorithmStarted) {
         unsubscribe();
         resolve(false);
       }
@@ -56,11 +56,11 @@ export const waitForContinuation = () => {
  */
 export const isAlgorithmTerminated = async (): Promise<boolean> => {
   return new Promise<boolean>(async (resolve) => {
-    if (!store.getState().sortingPageState.hasAlgorithmStarted) {
+    if (!store.getState().sortingPageState.hasSortingAlgorithmStarted) {
       resolve(true);
       return;
     }
-    if (!store.getState().sortingPageState.isAlgorithmRunning) {
+    if (!store.getState().sortingPageState.isSortingAlgorithmRunning) {
       if (!(await waitForContinuation())) {
         resolve(true);
         return;
@@ -83,10 +83,10 @@ export const awaitStepIteration = async () => {
 //#region Sorting Page helpers
 
 export const handleStartSorting = async () => {
-  store.dispatch(updatingIsAlgorithmRunningStateAction(true));
-  if (store.getState().sortingPageState.hasAlgorithmStarted) return;
+  store.dispatch(updatingIsSortingAlgorithmRunningStateAction(true));
+  if (store.getState().sortingPageState.hasSortingAlgorithmStarted) return;
 
-  store.dispatch(updatingHasAlgorithmStartedState(true));
+  store.dispatch(updatingHasSortingAlgorithmStartedState(true));
   if (JSON.stringify(store.getState().sortingPageState.sortingBars.map((i) => i.barHeight)) === JSON.stringify(finalSortingBars.map((i) => i.barHeight))) {
     store.dispatch(updatingSortingBarsStateAction(initialSortingBars));
     await new Promise((resolve) => setTimeout(resolve, 250));
@@ -104,24 +104,24 @@ export const finalizeSorting = async (barsCopy: SortingBarProps[], isComplete = 
     if (timeout !== 0) await new Promise((resolve) => setTimeout(resolve, timeout));
   }
 
-  store.dispatch(updatingHasAlgorithmStartedState(false));
-  store.dispatch(updatingIsAlgorithmRunningStateAction(false));
+  store.dispatch(updatingHasSortingAlgorithmStartedState(false));
+  store.dispatch(updatingIsSortingAlgorithmRunningStateAction(false));
 };
 
 export const handleCompleteSorting = () => {
-  if (!store.getState().sortingPageState.hasAlgorithmStarted) return;
+  if (!store.getState().sortingPageState.hasSortingAlgorithmStarted) return;
 
-  store.dispatch(updatingHasAlgorithmStartedState(false));
-  store.dispatch(updatingIsAlgorithmRunningStateAction(false));
+  store.dispatch(updatingHasSortingAlgorithmStartedState(false));
+  store.dispatch(updatingIsSortingAlgorithmRunningStateAction(false));
   store.dispatch(updatingSortingBarsStateAction(finalSortingBars));
   finalizeSorting(finalSortingBars, true);
 };
 
 export const handleStopSorting = () => {
-  if (!store.getState().sortingPageState.hasAlgorithmStarted) return;
+  if (!store.getState().sortingPageState.hasSortingAlgorithmStarted) return;
 
-  store.dispatch(updatingHasAlgorithmStartedState(false));
-  store.dispatch(updatingIsAlgorithmRunningStateAction(false));
+  store.dispatch(updatingHasSortingAlgorithmStartedState(false));
+  store.dispatch(updatingIsSortingAlgorithmRunningStateAction(false));
   store.dispatch(updatingSortingBarsStateAction(initialSortingBars));
 };
 

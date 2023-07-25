@@ -8,8 +8,13 @@ import { StringMatchingAlgorithmBase, StringMatchingAlgorithmEnum } from '../Res
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { NaivePatternMatching } from '../Resources/Algorithms/StringMatchingAlgorithms';
-import { updatingSelectedStringMatchingAlgorithmState } from '../Store/String Matching Page/StringMatchingPageStateManagement';
+import {
+  updatingIsSearchingAlgorithmRunningStateAction,
+  updatingSelectedStringMatchingAlgorithmState,
+} from '../Store/String Matching Page/StringMatchingPageStateManagement';
 import { updatingWindowHeightStateAction, updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
+import { animationContext, handleCompleteSearch, handleStartSearch, handleStopSearch } from '../Resources/Helper';
+import { ActionBar } from '../Components/ActionBar';
 
 export let selectedStringMatchingAlgorithm: StringMatchingAlgorithmBase = new NaivePatternMatching(StringMatchingAlgorithmEnum.Naive);
 
@@ -28,7 +33,7 @@ const AlgorithmComponent = ({ title, isSelected, stringMatchingAlgorithm }: Algo
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    if (algorithmState.hasAlgorithmStarted) return;
+    if (algorithmState.hasSortingAlgorithmStarted) return;
     selectedStringMatchingAlgorithm = stringMatchingAlgorithm;
     dispatch(updatingSelectedStringMatchingAlgorithmState(stringMatchingAlgorithm.stringMatchingAlgorithm));
   };
@@ -39,10 +44,10 @@ const AlgorithmComponent = ({ title, isSelected, stringMatchingAlgorithm }: Algo
         font-size: 20px;
         color: ${isSelected ? '' : 'white'};
         margin-right: 10px;
-        cursor: ${algorithmState.hasAlgorithmStarted && !isSelected ? 'default' : 'pointer'};
-        opacity: ${algorithmState.hasAlgorithmStarted && !isSelected ? '0.5' : '1'};
+        cursor: ${algorithmState.hasSortingAlgorithmStarted && !isSelected ? 'default' : 'pointer'};
+        opacity: ${algorithmState.hasSortingAlgorithmStarted && !isSelected ? '0.5' : '1'};
         :hover {
-          ${!algorithmState.hasAlgorithmStarted &&
+          ${!algorithmState.hasSortingAlgorithmStarted &&
           `
             color: ${!isSelected ? `${headerItemHovered}` : ''};
           `}
@@ -77,6 +82,9 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
 };
 
 const SettingsComponent = () => {
+  const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingPageState);
+  const dispatch = useDispatch();
+
   return (
     <div
       css={css`
@@ -118,7 +126,18 @@ const SettingsComponent = () => {
               width: 72px;
             `}
           >
-            {/* <ActionBar /> */}
+            <animationContext.Provider
+              value={{
+                isAlgorithmRunning: stringMatchingPageState.isSearchingAlgorithmRunning,
+                hasAlgorithmStarted: stringMatchingPageState.hasSearchingAlgorithmStarted,
+                startButtonClick: handleStartSearch,
+                pauseButtonClick: () => dispatch(updatingIsSearchingAlgorithmRunningStateAction(false)),
+                stopButtonClick: handleStopSearch,
+                completeButtonClick: handleCompleteSearch,
+              }}
+            >
+              <ActionBar />
+            </animationContext.Provider>
           </div>
           {/* <GenerateInputComponent /> */}
         </div>
