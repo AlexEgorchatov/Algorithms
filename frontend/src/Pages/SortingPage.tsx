@@ -16,13 +16,14 @@ import {
   updatingSelectedSortingAlgorithmState,
   updatingIsInputNanState,
   updatingIsInputOverMaxState,
+  updatingIsAlgorithmRunningStateAction,
 } from '../Store/Sorting Page/SortingPageStateManagement';
 import { SortingAlgorithmBase, SortingAlgorithmEnum } from '../Resources/Algorithms/AlgorithmBase';
 import { BubbleSort } from '../Resources/Algorithms/SortingAlgorithms';
 import { updatingWindowHeightStateAction, updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { minAppWidth } from '../App';
-import { algorithmAnimationBaseTime } from '../Resources/Helper';
+import { algorithmAnimationBaseTime, handleCompleteSorting, handleStartSorting, handleStopSorting } from '../Resources/Helper';
 export let selectedSortingAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmEnum.BubbleSort);
 export let initialSortingBars: SortingBarProps[];
 export let finalSortingBars: SortingBarProps[];
@@ -40,7 +41,7 @@ interface AlgorithmProps {
 }
 
 const SortingInputComponent = () => {
-  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
+  const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
   const windowState = useSelector((state: AppState) => state.windowState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
@@ -103,9 +104,9 @@ const SortingInputComponent = () => {
         ref={ref}
         type="text"
         placeholder="Type several numbers..."
-        value={algorithmState.sortingInput}
+        value={sortingPageState.sortingInput}
         onInput={() => processInput(ref.current?.value as string)}
-        disabled={algorithmState.hasAlgorithmStarted}
+        disabled={sortingPageState.hasAlgorithmStarted}
       />
 
       <div>
@@ -122,7 +123,7 @@ const SortingInputComponent = () => {
           <div
             css={css`
               margin-left: 5px;
-              color: ${algorithmState.isInputNan ? errorMessageColor : 'white'};
+              color: ${sortingPageState.isInputNan ? errorMessageColor : 'white'};
             `}
           >
             32 0 9 82
@@ -131,7 +132,7 @@ const SortingInputComponent = () => {
           <div
             css={css`
               margin-left: 5px;
-              color: ${algorithmState.isInputOverMax ? errorMessageColor : 'white'};
+              color: ${sortingPageState.isInputOverMax ? errorMessageColor : 'white'};
             `}
           >
             Maximum value is 99
@@ -140,7 +141,7 @@ const SortingInputComponent = () => {
         </div>
         <div
           css={css`
-            visibility: ${algorithmState.isInputNan || algorithmState.isInputOverMax ? 'visible' : 'hidden'};
+            visibility: ${sortingPageState.isInputNan || sortingPageState.isInputOverMax ? 'visible' : 'hidden'};
             display: flex;
             color: ${errorMessageColor};
             font-size: 13px;
@@ -165,7 +166,7 @@ const SortingInputComponent = () => {
 };
 
 const RefreshButton = () => {
-  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
+  const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
 
   return (
     <div
@@ -181,10 +182,10 @@ const RefreshButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${!algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
-        opacity: ${!algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
+        cursor: ${!sortingPageState.hasAlgorithmStarted ? 'pointer' : 'default'};
+        opacity: ${!sortingPageState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
-          ${!algorithmState.hasAlgorithmStarted &&
+          ${!sortingPageState.hasAlgorithmStarted &&
           `
             color: ${headerItemHovered};
             & > div {
@@ -226,7 +227,7 @@ const RefreshButton = () => {
 };
 
 const GenerateInputComponent = () => {
-  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
+  const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
   const windowState = useSelector((state: AppState) => state.windowState);
   const dispatch = useDispatch();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -236,7 +237,7 @@ const GenerateInputComponent = () => {
   }, []);
 
   const handleGenerateElements = () => {
-    if (algorithmState.hasAlgorithmStarted) return;
+    if (sortingPageState.hasAlgorithmStarted) return;
     if (inputRef.current === null) return;
 
     let sortingBars: SortingBarProps[] = [];
@@ -303,18 +304,18 @@ const GenerateInputComponent = () => {
         defaultValue={10}
         onInput={() => validateInput(inputRef.current?.value as string)}
         onKeyUp={handleEnterKeyUp}
-        disabled={algorithmState.hasAlgorithmStarted}
+        disabled={sortingPageState.hasAlgorithmStarted}
       />
     </div>
   );
 };
 
 const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmProps) => {
-  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
+  const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    if (algorithmState.hasAlgorithmStarted) return;
+    if (sortingPageState.hasAlgorithmStarted) return;
     selectedSortingAlgorithm = sortingAlgorithm;
     dispatch(updatingSelectedSortingAlgorithmState(sortingAlgorithm.sortingAlgorithm));
   };
@@ -325,10 +326,10 @@ const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmPr
         font-size: 20px;
         color: ${isSelected ? '' : 'white'};
         margin-right: 10px;
-        cursor: ${algorithmState.hasAlgorithmStarted && !isSelected ? 'default' : 'pointer'};
-        opacity: ${algorithmState.hasAlgorithmStarted && !isSelected ? '0.5' : '1'};
+        cursor: ${sortingPageState.hasAlgorithmStarted && !isSelected ? 'default' : 'pointer'};
+        opacity: ${sortingPageState.hasAlgorithmStarted && !isSelected ? '0.5' : '1'};
         :hover {
-          ${!algorithmState.hasAlgorithmStarted &&
+          ${!sortingPageState.hasAlgorithmStarted &&
           `
             color: ${!isSelected ? `${headerItemHovered}` : ''};
           `}
@@ -342,7 +343,7 @@ const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmPr
 };
 
 const AlgorithmsList = ({ data }: AlgorithmListProps) => {
-  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
+  const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
 
   return (
     <div
@@ -354,7 +355,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
         <AlgorithmComponent
           key={index}
           title={algorithm.title}
-          isSelected={algorithm.sortingAlgorithm.sortingAlgorithm === algorithmState.selectedSortingAlgorithmType}
+          isSelected={algorithm.sortingAlgorithm.sortingAlgorithm === sortingPageState.selectedSortingAlgorithmType}
           sortingAlgorithm={algorithm.sortingAlgorithm}
         />
       ))}
@@ -365,7 +366,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
 const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselected, leftOffset: newLeftOffset }: SortingBarProps) => {
   let divRef = useRef<HTMLDivElement>(null);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
-  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
+  const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
 
   useEffect(() => {
     if (divRef.current === null) return;
@@ -382,7 +383,7 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
 
     divRef.current.style.transition = `transform ease-in 0ms`;
     divRef.current.style.transform = `translateX(0px)`;
-  }, [barHeight, algorithmState.hasAlgorithmStarted, barState]);
+  }, [barHeight, sortingPageState.hasAlgorithmStarted, barState]);
 
   const getColor = () => {
     switch (barState) {
@@ -437,6 +438,8 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
 };
 
 const SettingsComponent = () => {
+  const dispatch = useDispatch();
+
   return (
     <div
       css={css`
@@ -479,7 +482,12 @@ const SettingsComponent = () => {
               width: 72px;
             `}
           >
-            <ActionBar />
+            <ActionBar
+              startButtonClick={handleStartSorting}
+              pauseButtonClick={() => dispatch(updatingIsAlgorithmRunningStateAction(false))}
+              stopButtonClick={handleStopSorting}
+              completeButtonClick={handleCompleteSorting}
+            />
           </div>
           <GenerateInputComponent />
         </div>
@@ -490,7 +498,7 @@ const SettingsComponent = () => {
 };
 
 const AnimationComponent = () => {
-  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
+  const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
 
   return (
     <div
@@ -517,10 +525,10 @@ const AnimationComponent = () => {
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
-            width: ${algorithmState.sortingBars.length * sortingBarWidth}px;
+            width: ${sortingPageState.sortingBars.length * sortingBarWidth}px;
           `}
         >
-          {algorithmState.sortingBars.map((bar, index) => (
+          {sortingPageState.sortingBars.map((bar, index) => (
             <SortingBar key={index} barID={bar.barID} barHeight={bar.barHeight} barState={bar.barState} leftOffset={bar.leftOffset} />
           ))}
         </div>

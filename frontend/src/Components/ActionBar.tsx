@@ -1,13 +1,22 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
-import { handleCompleteSorting, handleStartSorting, handleStopSorting } from '../Resources/Helper';
-import { useDispatch, useSelector } from 'react-redux';
-import { updatingIsAlgorithmRunningStateAction } from '../Store/Sorting Page/SortingPageStateManagement';
+import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { Fragment } from 'react';
 
-const PlayButton = () => {
+interface ButtonProps {
+  clickFunction: React.MouseEventHandler<HTMLDivElement>;
+}
+
+interface ActionBarProps {
+  startButtonClick: React.MouseEventHandler<HTMLDivElement>;
+  pauseButtonClick: React.MouseEventHandler<HTMLDivElement>;
+  stopButtonClick: React.MouseEventHandler<HTMLDivElement>;
+  completeButtonClick: React.MouseEventHandler<HTMLDivElement>;
+}
+
+const PlayButton = ({ clickFunction }: ButtonProps) => {
   return (
     <div
       css={css`
@@ -37,14 +46,12 @@ const PlayButton = () => {
           left: 6px;
         }
       `}
-      onClick={handleStartSorting}
+      onClick={clickFunction}
     ></div>
   );
 };
 
-const PauseButton = () => {
-  const dispatch = useDispatch();
-
+const PauseButton = ({ clickFunction }: ButtonProps) => {
   return (
     <div
       css={css`
@@ -66,7 +73,7 @@ const PauseButton = () => {
           }
         }
       `}
-      onClick={() => dispatch(updatingIsAlgorithmRunningStateAction(false))}
+      onClick={clickFunction}
     >
       <div
         css={css`
@@ -84,7 +91,7 @@ const PauseButton = () => {
   );
 };
 
-const StopButton = () => {
+const StopButton = ({ clickFunction }: ButtonProps) => {
   const algorithmState = useSelector((state: AppState) => state.sortingPageState);
 
   return (
@@ -112,7 +119,7 @@ const StopButton = () => {
             `}
         }
       `}
-      onClick={handleStopSorting}
+      onClick={clickFunction}
     >
       <div
         css={css`
@@ -129,7 +136,7 @@ const StopButton = () => {
   );
 };
 
-const CompleteButton = () => {
+const CompleteButton = ({ clickFunction }: ButtonProps) => {
   const algorithmState = useSelector((state: AppState) => state.sortingPageState);
 
   return (
@@ -157,7 +164,7 @@ const CompleteButton = () => {
             `}
         }
       `}
-      onClick={handleCompleteSorting}
+      onClick={clickFunction}
     >
       <div
         css={css`
@@ -192,14 +199,14 @@ const CompleteButton = () => {
   );
 };
 
-export const ActionBar = () => {
+export const ActionBar = ({ startButtonClick, pauseButtonClick, stopButtonClick, completeButtonClick }: ActionBarProps) => {
   const sliderState = useSelector((state: AppState) => state.sortingPageState);
 
   return (
     <Fragment>
-      {sliderState.isAlgorithmRunning ? <PauseButton /> : <PlayButton />}
-      <StopButton />
-      <CompleteButton />
+      {sliderState.isAlgorithmRunning ? <PauseButton clickFunction={pauseButtonClick} /> : <PlayButton clickFunction={startButtonClick} />}
+      <StopButton clickFunction={stopButtonClick} />
+      <CompleteButton clickFunction={completeButtonClick} />
     </Fragment>
   );
 };
