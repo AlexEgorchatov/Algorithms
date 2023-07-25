@@ -24,9 +24,7 @@ import { updatingWindowHeightStateAction, updatingWindowWidthStateAction } from 
 import { ActionBar } from '../Components/ActionBar';
 import { minAppWidth } from '../App';
 import { algorithmAnimationBaseTime, handleCompleteSorting, handleStartSorting, handleStopSorting } from '../Resources/Helper';
-export let selectedSortingAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmEnum.BubbleSort);
-export let initialSortingBars: SortingBarProps[];
-export let finalSortingBars: SortingBarProps[];
+
 let validSortingInput: string = '';
 const sortingBarWidth: number = 35;
 
@@ -94,8 +92,7 @@ const SortingInputComponent = () => {
         css={css`
           height: 20px;
           font-size: 16px;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
           ::placeholder {
             font-size: 16px;
             font-style: italic;
@@ -291,8 +288,7 @@ const GenerateInputComponent = () => {
           width: 40px;
           height: 16px;
           font-size: 13px;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
           ::placeholder {
             font-style: italic;
           }
@@ -501,6 +497,7 @@ const SettingsComponent = () => {
 
 const AnimationComponent = () => {
   const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
+  const dispatch = useDispatch();
 
   return (
     <div
@@ -543,7 +540,13 @@ const AnimationComponent = () => {
           align-items: flex-end;
         `}
       >
-        <SliderComponent />
+        <SliderComponent
+          isAlgorithmRunning={sortingPageState.isAlgorithmRunning}
+          startButtonClick={handleStartSorting}
+          pauseButtonClick={() => dispatch(updatingIsAlgorithmRunningStateAction(false))}
+          stopButtonClick={handleStopSorting}
+          completeButtonClick={handleCompleteSorting}
+        />
       </div>
     </div>
   );
@@ -579,6 +582,10 @@ export const SortingPage = () => {
     </div>
   );
 };
+
+export let selectedSortingAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmEnum.BubbleSort);
+export let initialSortingBars: SortingBarProps[];
+export let finalSortingBars: SortingBarProps[];
 
 const getMaxBarsNumber = (windowWidth: number): number => {
   return Math.floor(Math.max(windowWidth, minAppWidth) / sortingBarWidth);

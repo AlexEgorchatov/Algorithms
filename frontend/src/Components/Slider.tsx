@@ -4,11 +4,22 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import { updatingSliderValueStateAction } from '../Store/Shared/SliderComponentStateManagement';
-import { useRef } from 'react';
-import { updatingIsAlgorithmRunningStateAction } from '../Store/Sorting Page/SortingPageStateManagement';
-import { handleCompleteSorting, handleStartSorting, handleStopSorting } from '../Resources/Helper';
+import { useEffect, useRef } from 'react';
+import React from 'react';
 
-const PlayButton = () => {
+interface ButtonProps {
+  clickFunction: React.MouseEventHandler<HTMLDivElement>;
+}
+
+interface SliderButtonsProps {
+  isAlgorithmRunning: boolean;
+  startButtonClick: React.MouseEventHandler<HTMLDivElement>;
+  pauseButtonClick: React.MouseEventHandler<HTMLDivElement>;
+  stopButtonClick: React.MouseEventHandler<HTMLDivElement>;
+  completeButtonClick: React.MouseEventHandler<HTMLDivElement>;
+}
+
+const PlayButton = ({ clickFunction }: ButtonProps) => {
   return (
     <div
       css={css`
@@ -23,7 +34,7 @@ const PlayButton = () => {
           color: black;
         }
       `}
-      onClick={handleStartSorting}
+      onClick={clickFunction}
     >
       <div
         css={css`
@@ -42,9 +53,7 @@ const PlayButton = () => {
   );
 };
 
-const PauseButton = () => {
-  const dispatch = useDispatch();
-
+const PauseButton = ({ clickFunction }: ButtonProps) => {
   return (
     <div
       css={css`
@@ -62,12 +71,12 @@ const PauseButton = () => {
           color: black;
         }
       `}
-      onClick={() => dispatch(updatingIsAlgorithmRunningStateAction(false))}
+      onClick={clickFunction}
     ></div>
   );
 };
 
-const StopButton = () => {
+const StopButton = ({ clickFunction }: ButtonProps) => {
   const algorithmState = useSelector((state: AppState) => state.sortingPageState);
 
   return (
@@ -89,12 +98,12 @@ const StopButton = () => {
           `}
         }
       `}
-      onClick={handleStopSorting}
+      onClick={clickFunction}
     ></div>
   );
 };
 
-const CompleteButton = () => {
+const CompleteButton = ({ clickFunction }: ButtonProps) => {
   const algorithmState = useSelector((state: AppState) => state.sortingPageState);
 
   return (
@@ -115,7 +124,7 @@ const CompleteButton = () => {
           `}
         }
       `}
-      onClick={handleCompleteSorting}
+      onClick={clickFunction}
     >
       <div
         css={css`
@@ -204,8 +213,12 @@ const Slider = () => {
   );
 };
 
-const SliderButtons = () => {
-  const algorithmState = useSelector((state: AppState) => state.sortingPageState);
+const SliderButtons = ({ isAlgorithmRunning, startButtonClick, pauseButtonClick, stopButtonClick, completeButtonClick }: SliderButtonsProps) => {
+  const [isRunning, setIsRunning] = React.useState<boolean>(isAlgorithmRunning);
+
+  useEffect(() => {
+    setIsRunning(isAlgorithmRunning);
+  }, [isAlgorithmRunning]);
 
   return (
     <div
@@ -215,14 +228,14 @@ const SliderButtons = () => {
         max-width: 155px;
       `}
     >
-      {algorithmState.isAlgorithmRunning ? <PauseButton /> : <PlayButton />}
-      <StopButton />
-      <CompleteButton />
+      {isRunning ? <PauseButton clickFunction={pauseButtonClick} /> : <PlayButton clickFunction={startButtonClick} />}
+      <StopButton clickFunction={stopButtonClick} />
+      <CompleteButton clickFunction={completeButtonClick} />
     </div>
   );
 };
 
-export const SliderComponent = () => {
+export const SliderComponent = ({ isAlgorithmRunning, startButtonClick, pauseButtonClick, stopButtonClick, completeButtonClick }: SliderButtonsProps) => {
   return (
     <div
       css={css`
@@ -235,7 +248,13 @@ export const SliderComponent = () => {
       `}
     >
       <Slider />
-      <SliderButtons />
+      <SliderButtons
+        isAlgorithmRunning={isAlgorithmRunning}
+        startButtonClick={startButtonClick}
+        pauseButtonClick={pauseButtonClick}
+        stopButtonClick={stopButtonClick}
+        completeButtonClick={completeButtonClick}
+      />
     </div>
   );
 };
