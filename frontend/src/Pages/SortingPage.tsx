@@ -438,6 +438,7 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
 };
 
 const SettingsComponent = () => {
+  const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
   const dispatch = useDispatch();
 
   return (
@@ -483,6 +484,7 @@ const SettingsComponent = () => {
             `}
           >
             <ActionBar
+              isAlgorithmRunning={sortingPageState.isAlgorithmRunning}
               startButtonClick={handleStartSorting}
               pauseButtonClick={() => dispatch(updatingIsAlgorithmRunningStateAction(false))}
               stopButtonClick={handleStopSorting}

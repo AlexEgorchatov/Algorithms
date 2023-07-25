@@ -3,13 +3,15 @@ import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
+import React from 'react';
 
 interface ButtonProps {
   clickFunction: React.MouseEventHandler<HTMLDivElement>;
 }
 
 interface ActionBarProps {
+  isAlgorithmRunning: boolean;
   startButtonClick: React.MouseEventHandler<HTMLDivElement>;
   pauseButtonClick: React.MouseEventHandler<HTMLDivElement>;
   stopButtonClick: React.MouseEventHandler<HTMLDivElement>;
@@ -199,12 +201,16 @@ const CompleteButton = ({ clickFunction }: ButtonProps) => {
   );
 };
 
-export const ActionBar = ({ startButtonClick, pauseButtonClick, stopButtonClick, completeButtonClick }: ActionBarProps) => {
-  const sliderState = useSelector((state: AppState) => state.sortingPageState);
+export const ActionBar = ({ isAlgorithmRunning, startButtonClick, pauseButtonClick, stopButtonClick, completeButtonClick }: ActionBarProps) => {
+  const [isRunning, setIsRunning] = React.useState<boolean>(isAlgorithmRunning);
+
+  useEffect(() => {
+    setIsRunning(isAlgorithmRunning);
+  }, [isAlgorithmRunning]);
 
   return (
     <Fragment>
-      {sliderState.isAlgorithmRunning ? <PauseButton clickFunction={pauseButtonClick} /> : <PlayButton clickFunction={startButtonClick} />}
+      {isRunning ? <PauseButton clickFunction={pauseButtonClick} /> : <PlayButton clickFunction={startButtonClick} />}
       <StopButton clickFunction={stopButtonClick} />
       <CompleteButton clickFunction={completeButtonClick} />
     </Fragment>
