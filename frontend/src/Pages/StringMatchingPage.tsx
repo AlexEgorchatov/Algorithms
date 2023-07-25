@@ -2,7 +2,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useEffect } from 'react';
-import { headerItemHovered, mainFontColor } from '../Resources/Colors';
+import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { StringMatchingData, stringMatchingAlgorithms } from '../Resources/String Matching Page Resources/StringMatchingData';
 import { StringMatchingAlgorithmBase, StringMatchingAlgorithmEnum } from '../Resources/Algorithms/AlgorithmBase';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +15,8 @@ import {
 import { updatingWindowHeightStateAction, updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { animationContext, handleCompleteSearch, handleStartSearch, handleStopSearch } from '../Resources/Helper';
 import { ActionBar } from '../Components/ActionBar';
+import { SliderComponent } from '../Components/Slider';
+import { RefreshButton } from '../Components/RefreshButton';
 
 export let selectedStringMatchingAlgorithm: StringMatchingAlgorithmBase = new NaivePatternMatching(StringMatchingAlgorithmEnum.Naive);
 
@@ -139,9 +141,66 @@ const SettingsComponent = () => {
               <ActionBar />
             </animationContext.Provider>
           </div>
-          {/* <GenerateInputComponent /> */}
+          <RefreshButton />
         </div>
         <AlgorithmsList data={stringMatchingAlgorithms} />
+      </div>
+    </div>
+  );
+};
+
+const AnimationComponent = () => {
+  const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingPageState);
+  const dispatch = useDispatch();
+
+  return (
+    <div
+      css={css`
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        background-color: ${moduleBackground};
+        height: 75%;
+        min-height: 500px;
+      `}
+    >
+      <div
+        css={css`
+          display: flex;
+          height: 70%;
+          min-height: 425px;
+          justify-content: center;
+          align-items: flex-end;
+        `}
+      >
+        <div
+          css={css`
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+          `}
+        ></div>
+      </div>
+
+      <div
+        css={css`
+          display: flex;
+          justify-content: flex-start;
+          align-items: flex-end;
+        `}
+      >
+        <animationContext.Provider
+          value={{
+            isAlgorithmRunning: stringMatchingPageState.isSearchingAlgorithmRunning,
+            hasAlgorithmStarted: stringMatchingPageState.hasSearchingAlgorithmStarted,
+            startButtonClick: handleStartSearch,
+            pauseButtonClick: () => dispatch(updatingIsSearchingAlgorithmRunningStateAction(false)),
+            stopButtonClick: handleStopSearch,
+            completeButtonClick: handleCompleteSearch,
+          }}
+        >
+          <SliderComponent />
+        </animationContext.Provider>
       </div>
     </div>
   );
@@ -173,11 +232,7 @@ export const StringMatchingPage = () => {
       `}
     >
       <SettingsComponent />
-      <div
-        css={css`
-          height: 75%;
-        `}
-      ></div>
+      <AnimationComponent />
     </div>
   );
 };
