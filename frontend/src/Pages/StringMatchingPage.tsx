@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { StringMatchingData, stringMatchingAlgorithms } from '../Resources/String Matching Page Resources/StringMatchingData';
 import { StringMatchingAlgorithmBase, StringMatchingAlgorithmEnum } from '../Resources/Algorithms/AlgorithmBase';
@@ -11,14 +11,16 @@ import { NaivePatternMatching } from '../Resources/Algorithms/StringMatchingAlgo
 import {
   updatingIsSearchingAlgorithmRunningStateAction,
   updatingSelectedStringMatchingAlgorithmState,
+  updatingStringMatchingInputState,
+  updatingStringMatchingPatternLengthState,
+  updatingStringMatchingPatternState,
 } from '../Store/String Matching Page/StringMatchingPageStateManagement';
 import { updatingWindowHeightStateAction, updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { animationContext, handleCompleteSearch, handleStartSearch, handleStopSearch } from '../Resources/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
 import { RefreshButton } from '../Components/RefreshButton';
-
-export let selectedStringMatchingAlgorithm: StringMatchingAlgorithmBase = new NaivePatternMatching(StringMatchingAlgorithmEnum.Naive);
+import { minAppWidth } from '../App';
 
 interface AlgorithmListProps {
   data: StringMatchingData[];
@@ -83,6 +85,106 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
   );
 };
 
+const StringMatchingPatternComponent = () => {
+  const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingPageState);
+  const dispatch = useDispatch();
+  const ref = useRef<HTMLInputElement>(null);
+
+  const handlePatternChange = () => {
+    dispatch(updatingStringMatchingPatternState(ref.current?.value));
+    dispatch(updatingStringMatchingPatternLengthState(ref.current?.value.length));
+  };
+
+  return (
+    <div
+      css={css`
+        width: 100%;
+        display: grid;
+      `}
+    >
+      <input
+        css={css`
+          height: 20px;
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+          font-size: 16px;
+          ::placeholder {
+            font-size: 16px;
+            font-style: italic;
+          }
+        `}
+        ref={ref}
+        type="text"
+        placeholder="Type a pattern to search..."
+        value={stringMatchingPageState.stringMatchingPattern}
+        onInput={handlePatternChange}
+        disabled={stringMatchingPageState.hasSearchingAlgorithmStarted}
+        maxLength={50}
+      />
+      <div
+        css={css`
+          display: flex;
+          color: white;
+          font-size: 13px;
+          min-width: 520px;
+          font-weight: bold;
+        `}
+      >
+        Ex: "Pattern 123". Characters typed: {stringMatchingPageState.stringMatchingPatternLength}/50.
+      </div>
+    </div>
+  );
+};
+
+const StringMatchingInputComponent = () => {
+  const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingPageState);
+  const dispatch = useDispatch();
+  const ref = useRef<HTMLInputElement>(null);
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    //TODO: doesn't work, fix it later
+    return /[A-Za-z0-9]/.test(e.key);
+  };
+
+  return (
+    <div
+      css={css`
+        width: 100%;
+        display: grid;
+      `}
+    >
+      <input
+        css={css`
+          height: 20px;
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+          font-size: 16px;
+          ::placeholder {
+            font-size: 16px;
+            font-style: italic;
+          }
+        `}
+        ref={ref}
+        type="text"
+        placeholder="Type some text..."
+        onKeyDown={handleInputKeyDown}
+        value={stringMatchingPageState.stringMatchingInput}
+        onInput={() => dispatch(updatingStringMatchingInputState(ref.current?.value))}
+        disabled={stringMatchingPageState.hasSearchingAlgorithmStarted}
+      />
+      <div
+        css={css`
+          display: flex;
+          color: white;
+          font-size: 13px;
+          min-width: 520px;
+          font-weight: bold;
+        `}
+      >
+        Ex: "Search in this text". Maximum recommended number of elements is ##.
+      </div>
+    </div>
+  );
+};
+
 const SettingsComponent = () => {
   const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingPageState);
   const dispatch = useDispatch();
@@ -113,43 +215,8 @@ const SettingsComponent = () => {
           justify-content: space-around;
         `}
       >
-        <input
-          css={css`
-            height: 20px;
-            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-            font-size: 16px;
-          `}
-          defaultValue="pattern"
-          type="text"
-        />
-
-        <div
-          css={css`
-            width: 100%;
-            display: grid;
-          `}
-        >
-          <input
-            css={css`
-              height: 20px;
-              font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-              font-size: 16px;
-            `}
-            defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id egestas est. Curabitur nec lobortis diam, eu fringilla augue. Pellentesque ac metus finibus, convallis augue non, maximus lacus. Quisque in porta nisi. Mauris felis metus, tincidunt quis neque ac, feugiat sagittis erat. Aliquam vehicula augue gravida massa rhoncus, ut egestas nisi lacinia. Vivamus condimentum lorem turpis, eget tristique leo viverra tincidunt. Suspendisse ut augue a odio hendrerit molestie. Aliquam facilisis eu lacus sit amet accumsan. Praesent a libero convallis, pulvinar libero a, iaculis turpis. Phasellus viverra, mauris et dictum fermentum, velit ligula ullamcorper erat, ut pulvinar ex diam sit amet libero. Aliquam vitae est lectus. Sed mollis consequat finibus"
-          />
-          <div
-            css={css`
-              display: flex;
-              color: white;
-              font-size: 13px;
-              min-width: 520px;
-              font-weight: bold;
-            `}
-          >
-            Ex: "This is some text". Maximum Recommended number of elements is ##.
-          </div>
-        </div>
-
+        <StringMatchingPatternComponent />
+        <StringMatchingInputComponent />
         <div
           css={css`
             height: 65px;
@@ -213,21 +280,36 @@ const AnimationComponent = () => {
       <div
         css={css`
           display: flex;
+          flex-direction: column;
           height: 70%;
           min-height: 425px;
-          justify-content: center;
-          align-items: flex-end;
+          padding: 0px 20px;
         `}
       >
-        <div
+        <p
           css={css`
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
+            display: inline;
+            word-break: break-all;
+            align-items: flex-start;
+            margin: 0px;
+            color: white;
+            height: 130px;
           `}
-        ></div>
+        >
+          Pattern: {stringMatchingPageState.stringMatchingPattern}
+        </p>
+        <p
+          css={css`
+            display: inline;
+            word-break: break-all;
+            align-items: flex-start;
+            margin: 0px;
+            color: white;
+          `}
+        >
+          Input: {stringMatchingPageState.stringMatchingInput}
+        </p>
       </div>
-
       <div
         css={css`
           display: flex;
@@ -282,3 +364,9 @@ export const StringMatchingPage = () => {
     </div>
   );
 };
+
+export let selectedStringMatchingAlgorithm: StringMatchingAlgorithmBase = new NaivePatternMatching(StringMatchingAlgorithmEnum.Naive);
+
+// const getMaxInputLength = (windowWidth: number): number => {
+//   return Math.floor(Math.max(windowWidth, minAppWidth) / sortingBarWidth);
+// };
