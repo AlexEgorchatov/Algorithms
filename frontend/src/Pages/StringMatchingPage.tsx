@@ -115,53 +115,81 @@ const SettingsComponent = () => {
       >
         <input
           css={css`
-            vertical-align: super;
-            height: 15px;
+            height: 20px;
             font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-            font-size: 14px;
+            font-size: 16px;
           `}
           defaultValue="pattern"
           type="text"
         />
-        <input
-          css={css`
-            height: 15px;
-            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-            font-size: 14px;
-          `}
-          defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id egestas est. Curabitur nec lobortis diam, eu fringilla augue. Pellentesque ac metus finibus, convallis augue non, maximus lacus. Quisque in porta nisi. Mauris felis metus, tincidunt quis neque ac, feugiat sagittis erat. Aliquam vehicula augue gravida massa rhoncus, ut egestas nisi lacinia. Vivamus condimentum lorem turpis, eget tristique leo viverra tincidunt. Suspendisse ut augue a odio hendrerit molestie. Aliquam facilisis eu lacus sit amet accumsan. Praesent a libero convallis, pulvinar libero a, iaculis turpis. Phasellus viverra, mauris et dictum fermentum, velit ligula ullamcorper erat, ut pulvinar ex diam sit amet libero. Aliquam vitae est lectus. Sed mollis consequat finibus"
-        />
+
         <div
           css={css`
+            width: 100%;
+            display: grid;
+          `}
+        >
+          <input
+            css={css`
+              height: 20px;
+              font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+              font-size: 16px;
+            `}
+            defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id egestas est. Curabitur nec lobortis diam, eu fringilla augue. Pellentesque ac metus finibus, convallis augue non, maximus lacus. Quisque in porta nisi. Mauris felis metus, tincidunt quis neque ac, feugiat sagittis erat. Aliquam vehicula augue gravida massa rhoncus, ut egestas nisi lacinia. Vivamus condimentum lorem turpis, eget tristique leo viverra tincidunt. Suspendisse ut augue a odio hendrerit molestie. Aliquam facilisis eu lacus sit amet accumsan. Praesent a libero convallis, pulvinar libero a, iaculis turpis. Phasellus viverra, mauris et dictum fermentum, velit ligula ullamcorper erat, ut pulvinar ex diam sit amet libero. Aliquam vitae est lectus. Sed mollis consequat finibus"
+          />
+          <div
+            css={css`
+              display: flex;
+              color: white;
+              font-size: 13px;
+              min-width: 520px;
+              font-weight: bold;
+            `}
+          >
+            Ex: "This is some text". Maximum Recommended number of elements is ##.
+          </div>
+        </div>
+
+        <div
+          css={css`
+            height: 65px;
             display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            width: 202px;
+            flex-direction: column;
+            justify-content: space-evenly;
           `}
         >
           <div
             css={css`
               display: flex;
+              align-items: flex-end;
               justify-content: space-between;
-              width: 72px;
+              width: 199px;
             `}
           >
-            <animationContext.Provider
-              value={{
-                isAlgorithmRunning: stringMatchingPageState.isSearchingAlgorithmRunning,
-                hasAlgorithmStarted: stringMatchingPageState.hasSearchingAlgorithmStarted,
-                startButtonClick: handleStartSearch,
-                pauseButtonClick: () => dispatch(updatingIsSearchingAlgorithmRunningStateAction(false)),
-                stopButtonClick: handleStopSearch,
-                completeButtonClick: handleCompleteSearch,
-              }}
+            <div
+              css={css`
+                display: flex;
+                justify-content: space-between;
+                width: 72px;
+              `}
             >
-              <ActionBar />
-            </animationContext.Provider>
+              <animationContext.Provider
+                value={{
+                  isAlgorithmRunning: stringMatchingPageState.isSearchingAlgorithmRunning,
+                  hasAlgorithmStarted: stringMatchingPageState.hasSearchingAlgorithmStarted,
+                  startButtonClick: handleStartSearch,
+                  pauseButtonClick: () => dispatch(updatingIsSearchingAlgorithmRunningStateAction(false)),
+                  stopButtonClick: handleStopSearch,
+                  completeButtonClick: handleCompleteSearch,
+                }}
+              >
+                <ActionBar />
+              </animationContext.Provider>
+            </div>
+            <RefreshButton />
           </div>
-          <RefreshButton />
+          <AlgorithmsList data={stringMatchingAlgorithms} />
         </div>
-        <AlgorithmsList data={stringMatchingAlgorithms} />
       </div>
     </div>
   );

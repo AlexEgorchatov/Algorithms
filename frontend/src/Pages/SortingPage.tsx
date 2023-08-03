@@ -124,7 +124,7 @@ const SortingInputComponent = () => {
               color: ${sortingPageState.isInputNan ? errorMessageColor : 'white'};
             `}
           >
-            32 0 9 82
+            "32 0 9 82"
           </div>
           . Maximum recommended number of elements is {getMaxBarsNumber(windowState.windowWidth)}.
           <div
