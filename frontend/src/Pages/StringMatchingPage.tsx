@@ -98,27 +98,45 @@ const SettingsComponent = () => {
     >
       <div
         css={css`
-          height: 50px;
-          min-height: 50px;
+          height: 20%;
+          min-height: 40px;
         `}
       >
         String Matching
       </div>
       <div
         css={css`
-          height: 70%;
+          height: 80%;
           min-height: 118px;
           display: flex;
           flex-direction: column;
           justify-content: space-around;
         `}
       >
+        <input
+          css={css`
+            vertical-align: super;
+            height: 15px;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+            font-size: 14px;
+          `}
+          defaultValue="pattern"
+          type="text"
+        />
+        <input
+          css={css`
+            height: 15px;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+            font-size: 14px;
+          `}
+          defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id egestas est. Curabitur nec lobortis diam, eu fringilla augue. Pellentesque ac metus finibus, convallis augue non, maximus lacus. Quisque in porta nisi. Mauris felis metus, tincidunt quis neque ac, feugiat sagittis erat. Aliquam vehicula augue gravida massa rhoncus, ut egestas nisi lacinia. Vivamus condimentum lorem turpis, eget tristique leo viverra tincidunt. Suspendisse ut augue a odio hendrerit molestie. Aliquam facilisis eu lacus sit amet accumsan. Praesent a libero convallis, pulvinar libero a, iaculis turpis. Phasellus viverra, mauris et dictum fermentum, velit ligula ullamcorper erat, ut pulvinar ex diam sit amet libero. Aliquam vitae est lectus. Sed mollis consequat finibus"
+        />
         <div
           css={css`
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
-            width: 250px;
+            width: 202px;
           `}
         >
           <div
@@ -225,7 +243,7 @@ export const StringMatchingPage = () => {
     <div
       css={css`
         color: ${mainFontColor};
-        font-size: 36px;
+        font-size: 30px;
         text-align: left;
         overflow: auto;
         height: 100%;

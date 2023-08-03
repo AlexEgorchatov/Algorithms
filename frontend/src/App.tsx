@@ -22,6 +22,7 @@ function App() {
         <div
           css={css`
             height: 100%;
+            width: 100%;
             margin: 0px;
             background-color: ${mainBackground};
             min-width: ${minAppWidth}px;
@@ -30,9 +31,9 @@ function App() {
           <Header data={modules} />
           <div
             css={css`
-              margin: 0px 10px;
               background-color: ${pageBackground};
               height: 90%;
+              width: 100%;
             `}
           >
             <Routes>

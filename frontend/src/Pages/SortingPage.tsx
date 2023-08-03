@@ -388,15 +388,15 @@ const SettingsComponent = () => {
     >
       <div
         css={css`
-          height: 50px;
-          min-height: 50px;
+          height: 20%;
+          min-height: 40px;
         `}
       >
         Sorting
       </div>
       <div
         css={css`
-          height: 70%;
+          height: 80%;
           min-height: 118px;
           display: flex;
           flex-direction: column;
@@ -521,7 +521,7 @@ export const SortingPage = () => {
     <div
       css={css`
         color: ${mainFontColor};
-        font-size: 36px;
+        font-size: 30px;
         text-align: left;
         overflow: auto;
         height: 100%;
