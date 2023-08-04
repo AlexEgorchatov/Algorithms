@@ -2,15 +2,17 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useEffect, useRef } from 'react';
-import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
+import { errorMessageColor, headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { StringMatchingData, stringMatchingAlgorithms } from '../Resources/String Matching Page Resources/StringMatchingData';
 import { StringMatchingAlgorithmBase, StringMatchingAlgorithmEnum } from '../Resources/Algorithms/AlgorithmBase';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { NaivePatternMatching } from '../Resources/Algorithms/StringMatchingAlgorithms';
 import {
+  updatingIsPatternLengthOverMaxState,
   updatingIsSearchingAlgorithmRunningStateAction,
-  updatingSelectedStringMatchingAlgorithmState,
+  updatingSelectedSearchingAlgorithmState,
+  updatingStringMatchingAnimationPatternState,
   updatingStringMatchingInputState,
   updatingStringMatchingPatternLengthState,
   updatingStringMatchingPatternState,
@@ -21,6 +23,8 @@ import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
 import { RefreshButton } from '../Components/RefreshButton';
 import { minAppWidth } from '../App';
+
+const maxPatternLength = 40;
 
 interface AlgorithmListProps {
   data: StringMatchingData[];
@@ -39,7 +43,7 @@ const AlgorithmComponent = ({ title, isSelected, stringMatchingAlgorithm }: Algo
   const handleClick = () => {
     if (algorithmState.hasSortingAlgorithmStarted) return;
     selectedStringMatchingAlgorithm = stringMatchingAlgorithm;
-    dispatch(updatingSelectedStringMatchingAlgorithmState(stringMatchingAlgorithm.stringMatchingAlgorithm));
+    dispatch(updatingSelectedSearchingAlgorithmState(stringMatchingAlgorithm.stringMatchingAlgorithm));
   };
 
   return (
@@ -77,7 +81,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
         <AlgorithmComponent
           key={index}
           title={algorithm.title}
-          isSelected={algorithm.stringMatchingAlgorithm.stringMatchingAlgorithm === algorithmState.selectedStringMatchingAlgorithm}
+          isSelected={algorithm.stringMatchingAlgorithm.stringMatchingAlgorithm === algorithmState.selectedSearchingAlgorithm}
           stringMatchingAlgorithm={algorithm.stringMatchingAlgorithm}
         />
       ))}
@@ -90,9 +94,28 @@ const StringMatchingPatternComponent = () => {
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
-  const handlePatternChange = () => {
-    dispatch(updatingStringMatchingPatternState(ref.current?.value));
-    dispatch(updatingStringMatchingPatternLengthState(ref.current?.value.length));
+  const handlePatternChange = async () => {
+    if (ref.current === null) return;
+
+    dispatch(updatingStringMatchingPatternState(ref.current.value));
+    dispatch(updatingStringMatchingPatternLengthState(ref.current.value.replace(/\s/g, '').length));
+    if (ref.current.value.replace(/\s/g, '').length <= maxPatternLength) {
+      dispatch(updatingStringMatchingAnimationPatternState(ref.current.value.trim()));
+      dispatch(updatingIsPatternLengthOverMaxState(false));
+    }
+    if (ref.current.value.replace(/\s/g, '').length > maxPatternLength) {
+      dispatch(updatingIsPatternLengthOverMaxState(true));
+    }
+  };
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!/[A-Za-z0-9\s]/.test(e.key)) e.preventDefault();
+  };
+
+  const fixInput = () => {
+    dispatch(updatingStringMatchingPatternState(stringMatchingPageState.stringMatchingAnimationPattern.replace(/\s+/g, ' ')));
+    dispatch(updatingStringMatchingPatternLengthState(maxPatternLength));
+    dispatch(updatingIsPatternLengthOverMaxState(false));
   };
 
   return (
@@ -115,10 +138,10 @@ const StringMatchingPatternComponent = () => {
         ref={ref}
         type="text"
         placeholder="Type a pattern to search..."
+        onKeyDown={handleInputKeyDown}
         value={stringMatchingPageState.stringMatchingPattern}
         onInput={handlePatternChange}
         disabled={stringMatchingPageState.hasSearchingAlgorithmStarted}
-        maxLength={50}
       />
       <div
         css={css`
@@ -129,7 +152,37 @@ const StringMatchingPatternComponent = () => {
           font-weight: bold;
         `}
       >
-        Ex: "Pattern 123". Characters typed: {stringMatchingPageState.stringMatchingPatternLength}/50.
+        Ex: "Pattern 123". Characters typed:{' '}
+        <div
+          css={css`
+            color: white;
+            margin-left: 3px;
+            color: ${stringMatchingPageState.isPatternLengthOverMax ? errorMessageColor : 'white'};
+          `}
+        >
+          {stringMatchingPageState.stringMatchingPatternLength}/{maxPatternLength}
+        </div>
+        .
+        <div
+          css={css`
+            visibility: ${stringMatchingPageState.isPatternLengthOverMax ? 'visible' : 'hidden'};
+            display: flex;
+            color: ${errorMessageColor};
+            margin-left: 5px;
+          `}
+        >
+          Input has invalid format,
+          <div
+            css={css`
+              margin-left: 5px;
+              cursor: pointer;
+              text-decoration: underline;
+            `}
+            onClick={fixInput}
+          >
+            Fix
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -141,8 +194,7 @@ const StringMatchingInputComponent = () => {
   const ref = useRef<HTMLInputElement>(null);
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    //TODO: doesn't work, fix it later
-    return /[A-Za-z0-9]/.test(e.key);
+    if (!/[A-Za-z0-9\s]/.test(e.key)) e.preventDefault();
   };
 
   return (
@@ -179,7 +231,7 @@ const StringMatchingInputComponent = () => {
           font-weight: bold;
         `}
       >
-        Ex: "Search in this text". Maximum recommended number of elements is ##.
+        Ex: "Input 123". Maximum recommended number of elements is ##.
       </div>
     </div>
   );
@@ -296,7 +348,7 @@ const AnimationComponent = () => {
             height: 130px;
           `}
         >
-          Pattern: {stringMatchingPageState.stringMatchingPattern}
+          Pattern: {stringMatchingPageState.stringMatchingAnimationPattern}
         </p>
         <p
           css={css`

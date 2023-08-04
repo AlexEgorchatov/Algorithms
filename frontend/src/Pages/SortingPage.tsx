@@ -146,7 +146,7 @@ const SortingInputComponent = () => {
             font-weight: bold;
           `}
         >
-          Input has invalid format.
+          Input has invalid format,
           <div
             css={css`
               margin-left: 5px;
