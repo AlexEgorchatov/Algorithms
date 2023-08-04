@@ -4,19 +4,25 @@ import { StringMatchingAlgorithmEnum } from '../../Resources/Algorithms/Algorith
 export interface StringMatchingPageState {
   readonly isSearchingAlgorithmRunning: boolean;
   readonly hasSearchingAlgorithmStarted: boolean;
-  readonly selectedStringMatchingAlgorithm: StringMatchingAlgorithmEnum;
+  readonly selectedSearchingAlgorithm: StringMatchingAlgorithmEnum;
   readonly stringMatchingInput: string;
   readonly stringMatchingPattern: string;
+  readonly stringMatchingAnimationPattern: string;
   readonly stringMatchingPatternLength: number;
+  readonly stringMatchingInputLength: number;
+  readonly isPatternLengthOverMax: boolean;
 }
 
 const initialStringMatchingPageState: StringMatchingPageState = {
   isSearchingAlgorithmRunning: false,
   hasSearchingAlgorithmStarted: false,
-  selectedStringMatchingAlgorithm: StringMatchingAlgorithmEnum.Naive,
+  selectedSearchingAlgorithm: StringMatchingAlgorithmEnum.Naive,
   stringMatchingInput: '',
   stringMatchingPattern: '',
+  stringMatchingAnimationPattern: '',
   stringMatchingPatternLength: 0,
+  stringMatchingInputLength: 0,
+  isPatternLengthOverMax: false,
 };
 //#endregion State
 
@@ -35,11 +41,11 @@ export const updatingHasSearchingAlgorithmStartedState = (hasSearchingAlgorithmS
     hasSearchingAlgorithmStarted: hasSearchingAlgorithmStarted,
   } as const);
 
-const UPDATINGSELECTEDSTRINGMATCHINGALGORITHMSTATE = 'UpdatingSelectedStringMatchingAlgorithmState';
-export const updatingSelectedStringMatchingAlgorithmState = (selectedStringMatchingAlgorithm = initialStringMatchingPageState.selectedStringMatchingAlgorithm) =>
+const UPDATINGSELECTEDSEARCHINGALGORITHMSTATE = 'UpdatingSelectedStringMatchingAlgorithmState';
+export const updatingSelectedSearchingAlgorithmState = (selectedSearchingAlgorithm = initialStringMatchingPageState.selectedSearchingAlgorithm) =>
   ({
-    type: UPDATINGSELECTEDSTRINGMATCHINGALGORITHMSTATE,
-    selectedStringMatchingAlgorithm: selectedStringMatchingAlgorithm,
+    type: UPDATINGSELECTEDSEARCHINGALGORITHMSTATE,
+    selectedSearchingAlgorithm: selectedSearchingAlgorithm,
   } as const);
 
 const UPDATINGSTRINGMATCHINGINPUTSTATE = 'UpdatingStringMatchingInputState';
@@ -56,22 +62,46 @@ export const updatingStringMatchingPatternState = (stringMatchingPattern = initi
     stringMatchingPattern: stringMatchingPattern,
   } as const);
 
+const UPDATINGSTRINGMATCHINGANIMATIONPATTERNSTATE = 'UpdatingStringMatchingAnimationPatternState';
+export const updatingStringMatchingAnimationPatternState = (stringMatchingAnimationPattern = initialStringMatchingPageState.stringMatchingAnimationPattern) =>
+  ({
+    type: UPDATINGSTRINGMATCHINGANIMATIONPATTERNSTATE,
+    stringMatchingAnimationPattern: stringMatchingAnimationPattern,
+  } as const);
+
 const UPDATINGSTRINGMATCHINGPATTERNLENGTHSTATE = 'UpdatingStringMatchingPatternLengthState';
 export const updatingStringMatchingPatternLengthState = (stringMatchingPatternLength = initialStringMatchingPageState.stringMatchingPatternLength) =>
   ({
     type: UPDATINGSTRINGMATCHINGPATTERNLENGTHSTATE,
     stringMatchingPatternLength: stringMatchingPatternLength,
   } as const);
+
+const UPDATINGSTRINGMATCHINGINPUTLENGTHSTATE = 'UpdatingStringMatchingInputLengthState';
+export const updatingStringMatchingInputLengthState = (stringMatchingInputLength = initialStringMatchingPageState.stringMatchingInputLength) =>
+  ({
+    type: UPDATINGSTRINGMATCHINGINPUTLENGTHSTATE,
+    stringMatchingInputLength: stringMatchingInputLength,
+  } as const);
+
+const UPDATINGISPATTERNLENGTHOVERMAXSTATE = 'UpdatingIsPatternLengthOverMaxState';
+export const updatingIsPatternLengthOverMaxState = (isPatternLengthOverMax = initialStringMatchingPageState.isPatternLengthOverMax) =>
+  ({
+    type: UPDATINGISPATTERNLENGTHOVERMAXSTATE,
+    isPatternLengthOverMax: isPatternLengthOverMax,
+  } as const);
 //#endregion Actions
 
 //#region Reducers
 type StringMatchingPageActions =
-  | ReturnType<typeof updatingSelectedStringMatchingAlgorithmState>
+  | ReturnType<typeof updatingSelectedSearchingAlgorithmState>
   | ReturnType<typeof updatingHasSearchingAlgorithmStartedState>
   | ReturnType<typeof updatingIsSearchingAlgorithmRunningStateAction>
   | ReturnType<typeof updatingStringMatchingInputState>
   | ReturnType<typeof updatingStringMatchingPatternState>
-  | ReturnType<typeof updatingStringMatchingPatternLengthState>;
+  | ReturnType<typeof updatingStringMatchingAnimationPatternState>
+  | ReturnType<typeof updatingStringMatchingPatternLengthState>
+  | ReturnType<typeof updatingStringMatchingInputLengthState>
+  | ReturnType<typeof updatingIsPatternLengthOverMaxState>;
 export const stringMatchingPageReducer = (state = initialStringMatchingPageState, action: StringMatchingPageActions) => {
   switch (action.type) {
     case UPDATINGISSEARCHINGALGORITHMRUNNINGSTATE:
@@ -84,10 +114,10 @@ export const stringMatchingPageReducer = (state = initialStringMatchingPageState
         ...state,
         hasSearchingAlgorithmStarted: action.hasSearchingAlgorithmStarted,
       };
-    case UPDATINGSELECTEDSTRINGMATCHINGALGORITHMSTATE:
+    case UPDATINGSELECTEDSEARCHINGALGORITHMSTATE:
       return {
         ...state,
-        selectedStringMatchingAlgorithm: action.selectedStringMatchingAlgorithm,
+        selectedSearchingAlgorithm: action.selectedSearchingAlgorithm,
       };
 
     case UPDATINGSTRINGMATCHINGINPUTSTATE:
@@ -102,10 +132,28 @@ export const stringMatchingPageReducer = (state = initialStringMatchingPageState
         stringMatchingPattern: action.stringMatchingPattern,
       };
 
+    case UPDATINGSTRINGMATCHINGANIMATIONPATTERNSTATE:
+      return {
+        ...state,
+        stringMatchingAnimationPattern: action.stringMatchingAnimationPattern,
+      };
+
     case UPDATINGSTRINGMATCHINGPATTERNLENGTHSTATE:
       return {
         ...state,
         stringMatchingPatternLength: action.stringMatchingPatternLength,
+      };
+
+    case UPDATINGSTRINGMATCHINGINPUTLENGTHSTATE:
+      return {
+        ...state,
+        stringMatchingInputLength: action.stringMatchingInputLength,
+      };
+
+    case UPDATINGISPATTERNLENGTHOVERMAXSTATE:
+      return {
+        ...state,
+        isPatternLengthOverMax: action.isPatternLengthOverMax,
       };
 
     default:

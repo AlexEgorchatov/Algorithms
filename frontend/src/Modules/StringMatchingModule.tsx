@@ -105,14 +105,13 @@ export const StringMatchingModule = ({ title }: ModuleTitle) => {
             height: 105px;
           `}
         >
-          Input:
+          Pattern:
           <div
             css={css`
               margin-left: 5px;
-              display: flex;
             `}
           >
-            {inputRender}
+            {pattern}
           </div>
         </div>
         <div
@@ -125,13 +124,14 @@ export const StringMatchingModule = ({ title }: ModuleTitle) => {
             height: 105px;
           `}
         >
-          Pattern:
+          Input:
           <div
             css={css`
               margin-left: 5px;
+              display: flex;
             `}
           >
-            {pattern}
+            {inputRender}
           </div>
         </div>
       </ModulePlaceholder>

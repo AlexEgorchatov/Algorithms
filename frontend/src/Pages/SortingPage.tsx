@@ -20,7 +20,7 @@ import {
 } from '../Store/Sorting Page/SortingPageStateManagement';
 import { SortingAlgorithmBase, SortingAlgorithmEnum } from '../Resources/Algorithms/AlgorithmBase';
 import { BubbleSort } from '../Resources/Algorithms/SortingAlgorithms';
-import { updatingWindowHeightStateAction, updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
+import { updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { minAppWidth } from '../App';
 import { algorithmAnimationBaseTime, animationContext, handleCompleteSorting, handleStartSorting, handleStopSorting } from '../Resources/Helper';
@@ -146,7 +146,7 @@ const SortingInputComponent = () => {
             font-weight: bold;
           `}
         >
-          Input has invalid format.
+          Input has invalid format,
           <div
             css={css`
               margin-left: 5px;
@@ -508,7 +508,6 @@ export const SortingPage = () => {
   useEffect(() => {
     const handleWindowResize = () => {
       dispatch(updatingWindowWidthStateAction(window.innerWidth));
-      dispatch(updatingWindowHeightStateAction(window.outerHeight));
     };
 
     window.addEventListener('resize', handleWindowResize);
