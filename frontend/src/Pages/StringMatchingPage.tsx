@@ -11,7 +11,6 @@ import { NaivePatternMatching } from '../Resources/Algorithms/StringMatchingAlgo
 import {
   updatingIsSearchingAlgorithmRunningStateAction,
   updatingSelectedSearchingAlgorithmState,
-  updatingStringMatchingAnimationPatternState,
   updatingStringMatchingInputState,
   updatingStringMatchingPatternState,
 } from '../Store/String Matching Page/StringMatchingPageStateManagement';
@@ -22,6 +21,9 @@ import { SliderComponent } from '../Components/Slider';
 import { RefreshButton } from '../Components/RefreshButton';
 import { minAppWidth } from '../App';
 
+const renderedPatter: string = 'type';
+const renderedInput: string =
+  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
 const characterWidth: number = 16.5;
 const inputTextWidth: number = 115.5;
 const maxInputLinesNumber: number = 8;
@@ -94,14 +96,9 @@ const StringMatchingPatternComponent = () => {
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
-  const handlePatternChange = () => {
-    if (ref.current === null) return;
-
-    dispatch(updatingStringMatchingPatternState(ref.current.value));
-    if (ref.current.value.length <= maxPatternLength) {
-      dispatch(updatingStringMatchingAnimationPatternState(ref.current.value));
-    }
-  };
+  useEffect(() => {
+    dispatch(updatingStringMatchingPatternState(renderedPatter));
+  }, []);
 
   return (
     <div
@@ -124,7 +121,7 @@ const StringMatchingPatternComponent = () => {
         type="text"
         placeholder="Type a pattern to search..."
         value={stringMatchingPageState.stringMatchingPattern}
-        onChange={handlePatternChange}
+        onChange={() => dispatch(updatingStringMatchingPatternState(ref.current?.value))}
         disabled={stringMatchingPageState.hasSearchingAlgorithmStarted}
       />
       <div
@@ -177,6 +174,10 @@ const StringMatchingInputComponent = () => {
   const windowState = useSelector((state: AppState) => state.windowState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    dispatch(updatingStringMatchingInputState(renderedInput));
+  }, []);
 
   return (
     <div
