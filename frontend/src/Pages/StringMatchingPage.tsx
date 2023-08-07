@@ -3,12 +3,14 @@
 import { css } from '@emotion/react';
 import { useEffect, useRef } from 'react';
 import { errorMessageColor, headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
+import { errorMessageColor, headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { StringMatchingData, stringMatchingAlgorithms } from '../Resources/String Matching Page Resources/StringMatchingData';
 import { StringMatchingAlgorithmBase, StringMatchingAlgorithmEnum } from '../Resources/Algorithms/AlgorithmBase';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { NaivePatternMatching } from '../Resources/Algorithms/StringMatchingAlgorithms';
 import {
+  updatingIsPatternLengthOverMaxState,
   updatingIsPatternLengthOverMaxState,
   updatingIsSearchingAlgorithmRunningStateAction,
   updatingSelectedSearchingAlgorithmState,
@@ -48,6 +50,7 @@ const AlgorithmComponent = ({ title, isSelected, stringMatchingAlgorithm }: Algo
     if (algorithmState.hasSortingAlgorithmStarted) return;
     selectedStringMatchingAlgorithm = stringMatchingAlgorithm;
     dispatch(updatingSelectedSearchingAlgorithmState(stringMatchingAlgorithm.stringMatchingAlgorithm));
+    dispatch(updatingSelectedSearchingAlgorithmState(stringMatchingAlgorithm.stringMatchingAlgorithm));
   };
 
   return (
@@ -85,6 +88,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
         <AlgorithmComponent
           key={index}
           title={algorithm.title}
+          isSelected={algorithm.stringMatchingAlgorithm.stringMatchingAlgorithm === algorithmState.selectedSearchingAlgorithm}
           isSelected={algorithm.stringMatchingAlgorithm.stringMatchingAlgorithm === algorithmState.selectedSearchingAlgorithm}
           stringMatchingAlgorithm={algorithm.stringMatchingAlgorithm}
         />
@@ -139,6 +143,7 @@ const StringMatchingPatternComponent = () => {
         ref={ref}
         type="text"
         placeholder="Type a pattern to search..."
+        onKeyDown={handleInputKeyDown}
         value={stringMatchingPageState.stringMatchingPattern}
         onChange={handlePatternChange}
         disabled={stringMatchingPageState.hasSearchingAlgorithmStarted}
