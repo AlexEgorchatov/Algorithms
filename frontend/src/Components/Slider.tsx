@@ -240,3 +240,5 @@ export const SliderComponent = () => {
     </div>
   );
 };
+
+//TODO make the enabled/disabled and visibility of buttons to be internal states of the Slider

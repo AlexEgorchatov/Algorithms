@@ -25,10 +25,10 @@ import { SliderComponent } from '../Components/Slider';
 import { RefreshButton } from '../Components/RefreshButton';
 import { minAppWidth } from '../App';
 
-const maxPatternLength = 40;
-const characterWidth = 16.5;
-const inputTextWidth = 115.5;
-const maxInputLinesNumber = 8;
+const maxPatternLength: number = 60;
+const characterWidth: number = 16.5;
+const inputTextWidth: number = 115.5;
+const maxInputLinesNumber: number = 8;
 
 interface AlgorithmListProps {
   data: StringMatchingData[];
@@ -101,21 +101,20 @@ const StringMatchingPatternComponent = () => {
 
   const handlePatternChange = () => {
     if (ref.current === null) return;
-    if (/[^a-zA-Z0-9\s]/.test(ref.current.value)) return;
 
     dispatch(updatingStringMatchingPatternState(ref.current.value));
-    dispatch(updatingStringMatchingPatternLengthState(ref.current.value.replace(/\s/g, '').length));
-    if (ref.current.value.replace(/\s/g, '').length <= maxPatternLength) {
-      dispatch(updatingStringMatchingAnimationPatternState(ref.current.value.trim()));
+    dispatch(updatingStringMatchingPatternLengthState(ref.current.value.length));
+    if (ref.current.value.length <= maxPatternLength) {
+      dispatch(updatingStringMatchingAnimationPatternState(ref.current.value));
       dispatch(updatingIsPatternLengthOverMaxState(false));
     }
-    if (ref.current.value.replace(/\s/g, '').length > maxPatternLength) {
+    if (ref.current.value.length > maxPatternLength) {
       dispatch(updatingIsPatternLengthOverMaxState(true));
     }
   };
 
   const fixInput = () => {
-    dispatch(updatingStringMatchingPatternState(stringMatchingPageState.stringMatchingAnimationPattern.replace(/\s+/g, ' ')));
+    dispatch(updatingStringMatchingPatternState(stringMatchingPageState.stringMatchingAnimationPattern));
     dispatch(updatingStringMatchingPatternLengthState(maxPatternLength));
     dispatch(updatingIsPatternLengthOverMaxState(false));
   };
@@ -197,10 +196,9 @@ const StringMatchingInputComponent = () => {
 
   const handleInputChange = () => {
     if (ref.current === null) return;
-    if (/[^a-zA-Z0-9\s]/.test(ref.current.value)) return;
 
     dispatch(updatingStringMatchingInputState(ref.current.value));
-    dispatch(updatingStringMatchingInputLengthState(ref.current.value.replace(/\s/g, '').length));
+    dispatch(updatingStringMatchingInputLengthState(ref.current.value.length));
   };
 
   return (
@@ -348,27 +346,43 @@ const AnimationComponent = () => {
             display: inline;
             word-break: break-all;
             align-items: flex-start;
-            margin: 0px;
             color: white;
             height: 120px;
             font-family: monospace;
+            white-space: pre-wrap;
           `}
         >
-          Pattern: {stringMatchingPageState.stringMatchingAnimationPattern}
+          <span
+            css={css`
+              font-weight: 700;
+              margin-right: 16px;
+            `}
+          >
+            Pattern:
+          </span>
+          {stringMatchingPageState.stringMatchingAnimationPattern}
         </div>
         <div
           css={css`
             display: inline;
             word-break: break-all;
             align-items: flex-start;
-            margin: 0px;
             color: white;
-            overflow-y: auto;
             max-height: 290px;
             font-family: monospace;
+            white-space: pre-wrap;
+            overflow-y: auto;
           `}
         >
-          Input: {stringMatchingPageState.stringMatchingInput}
+          <span
+            css={css`
+              font-weight: 700;
+              margin-right: 16px;
+            `}
+          >
+            Input:
+          </span>
+          {stringMatchingPageState.stringMatchingInput}
         </div>
       </div>
       <div
@@ -428,5 +442,5 @@ export const StringMatchingPage = () => {
 export let selectedStringMatchingAlgorithm: StringMatchingAlgorithmBase = new NaivePatternMatching(StringMatchingAlgorithmEnum.Naive);
 
 const getMaxInputLength = (windowWidth: number): number => {
-  return Math.floor(((Math.max(minAppWidth, windowWidth) - 40) * maxInputLinesNumber - inputTextWidth) / characterWidth / 2);
+  return Math.floor(((Math.max(minAppWidth, windowWidth) - 40) * maxInputLinesNumber - inputTextWidth) / characterWidth);
 };
