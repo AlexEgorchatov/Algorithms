@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { NaivePatternMatching } from '../Resources/Algorithms/StringMatchingAlgorithms';
 import {
-  updatingIsPatternLengthOverMaxState,
   updatingIsSearchingAlgorithmRunningStateAction,
   updatingSelectedSearchingAlgorithmState,
   updatingStringMatchingAnimationPatternState,
@@ -23,7 +22,6 @@ import { SliderComponent } from '../Components/Slider';
 import { RefreshButton } from '../Components/RefreshButton';
 import { minAppWidth } from '../App';
 
-const maxPatternLength: number = 60;
 const characterWidth: number = 16.5;
 const inputTextWidth: number = 115.5;
 const maxInputLinesNumber: number = 8;
@@ -45,7 +43,6 @@ const AlgorithmComponent = ({ title, isSelected, stringMatchingAlgorithm }: Algo
   const handleClick = () => {
     if (algorithmState.hasSortingAlgorithmStarted) return;
     selectedStringMatchingAlgorithm = stringMatchingAlgorithm;
-    dispatch(updatingSelectedSearchingAlgorithmState(stringMatchingAlgorithm.stringMatchingAlgorithm));
     dispatch(updatingSelectedSearchingAlgorithmState(stringMatchingAlgorithm.stringMatchingAlgorithm));
   };
 
@@ -103,16 +100,7 @@ const StringMatchingPatternComponent = () => {
     dispatch(updatingStringMatchingPatternState(ref.current.value));
     if (ref.current.value.length <= maxPatternLength) {
       dispatch(updatingStringMatchingAnimationPatternState(ref.current.value));
-      dispatch(updatingIsPatternLengthOverMaxState(false));
     }
-    if (ref.current.value.length > maxPatternLength) {
-      dispatch(updatingIsPatternLengthOverMaxState(true));
-    }
-  };
-
-  const fixInput = () => {
-    dispatch(updatingStringMatchingPatternState(stringMatchingPageState.stringMatchingAnimationPattern));
-    dispatch(updatingIsPatternLengthOverMaxState(false));
   };
 
   return (
@@ -174,7 +162,7 @@ const StringMatchingPatternComponent = () => {
               cursor: pointer;
               text-decoration: underline;
             `}
-            onClick={fixInput}
+            onClick={() => dispatch(updatingStringMatchingPatternState(stringMatchingPageState.stringMatchingAnimationPattern))}
           >
             Fix
           </div>
@@ -189,12 +177,6 @@ const StringMatchingInputComponent = () => {
   const windowState = useSelector((state: AppState) => state.windowState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
-
-  const handleInputChange = () => {
-    if (ref.current === null) return;
-
-    dispatch(updatingStringMatchingInputState(ref.current.value));
-  };
 
   return (
     <div
@@ -217,7 +199,7 @@ const StringMatchingInputComponent = () => {
         type="text"
         placeholder="Type some text..."
         value={stringMatchingPageState.stringMatchingInput}
-        onInput={handleInputChange}
+        onInput={() => dispatch(updatingStringMatchingInputState(ref.current?.value))}
         disabled={stringMatchingPageState.hasSearchingAlgorithmStarted}
       />
       <div
@@ -435,6 +417,7 @@ export const StringMatchingPage = () => {
 };
 
 export let selectedStringMatchingAlgorithm: StringMatchingAlgorithmBase = new NaivePatternMatching(StringMatchingAlgorithmEnum.Naive);
+export const maxPatternLength: number = 60;
 
 const getMaxInputLength = (windowWidth: number): number => {
   return Math.floor(((Math.max(minAppWidth, windowWidth) - 40) * maxInputLinesNumber - inputTextWidth) / characterWidth);

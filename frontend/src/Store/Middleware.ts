@@ -5,12 +5,16 @@ import {
   StringMatchingPageActions,
   UPDATING_STRING_MATCHING_INPUT_STATE,
   updatingStringMatchingInputLengthState,
+  updatingIsPatternLengthOverMaxState,
 } from './String Matching Page/StringMatchingPageStateManagement';
+import { maxPatternLength } from '../Pages/StringMatchingPage';
 
 export const updateStringMatchingPatternMiddleware: Middleware = (store: MiddlewareAPI) => (next: Dispatch) => (action: StringMatchingPageActions) => {
   switch (action.type) {
     case UPDATING_STRING_MATCHING_PATTERN_STATE:
-      store.dispatch(updatingStringMatchingPatternLengthState(action.stringMatchingPattern.length));
+      let patternLength: number = action.stringMatchingPattern.length;
+      store.dispatch(updatingStringMatchingPatternLengthState(patternLength));
+      store.dispatch(updatingIsPatternLengthOverMaxState(patternLength > maxPatternLength));
       break;
 
     case UPDATING_STRING_MATCHING_INPUT_STATE:

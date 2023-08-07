@@ -27,6 +27,8 @@ const initialStringMatchingPageState: StringMatchingPageState = {
 };
 //#endregion State
 
+//TODO change naming conventions for state managements
+
 //#region Actions
 const UPDATING_IS_SEARCHING_ALGORITHM_RUNNING_STATE = 'UpdatingIsAlgorithmRunningState';
 export const updatingIsSearchingAlgorithmRunningStateAction = (isSearchingAlgorithmRunning = initialStringMatchingPageState.isSearchingAlgorithmRunning) =>
@@ -70,24 +72,24 @@ export const updatingStringMatchingAnimationPatternState = (stringMatchingAnimat
     stringMatchingAnimationPattern: stringMatchingAnimationPattern,
   } as const);
 
-export const UPDATING_STRING_MATCHING_PATTERN_LENGTH_STATE = 'UpdatingStringMatchingPatternLengthState';
+const UPDATING_STRING_MATCHING_PATTERN_LENGTH_STATE = 'UpdatingStringMatchingPatternLengthState';
 export const updatingStringMatchingPatternLengthState = (stringMatchingPatternLength = initialStringMatchingPageState.stringMatchingPatternLength) =>
   ({
     type: UPDATING_STRING_MATCHING_PATTERN_LENGTH_STATE,
     stringMatchingPatternLength: stringMatchingPatternLength,
   } as const);
 
-export const UPDATINGSTRINGMATCHINGINPUTLENGTHSTATE = 'UpdatingStringMatchingInputLengthState';
+const UPDATINGSTRINGMATCHINGINPUTLENGTHSTATE = 'UpdatingStringMatchingInputLengthState';
 export const updatingStringMatchingInputLengthState = (stringMatchingInputLength = initialStringMatchingPageState.stringMatchingInputLength) =>
   ({
     type: UPDATINGSTRINGMATCHINGINPUTLENGTHSTATE,
     stringMatchingInputLength: stringMatchingInputLength,
   } as const);
 
-const UPDATINGISPATTERNLENGTHOVERMAXSTATE = 'UpdatingIsPatternLengthOverMaxState';
+const UPDATING_IS_PATTERN_LENGTH_OVER_MAX_STATE = 'UpdatingIsPatternLengthOverMaxState';
 export const updatingIsPatternLengthOverMaxState = (isPatternLengthOverMax = initialStringMatchingPageState.isPatternLengthOverMax) =>
   ({
-    type: UPDATINGISPATTERNLENGTHOVERMAXSTATE,
+    type: UPDATING_IS_PATTERN_LENGTH_OVER_MAX_STATE,
     isPatternLengthOverMax: isPatternLengthOverMax,
   } as const);
 //#endregion Actions
@@ -153,7 +155,7 @@ export const stringMatchingPageReducer = (state = initialStringMatchingPageState
         stringMatchingInputLength: action.stringMatchingInputLength,
       };
 
-    case UPDATINGISPATTERNLENGTHOVERMAXSTATE:
+    case UPDATING_IS_PATTERN_LENGTH_OVER_MAX_STATE:
       return {
         ...state,
         isPatternLengthOverMax: action.isPatternLengthOverMax,
