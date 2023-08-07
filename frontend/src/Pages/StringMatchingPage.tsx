@@ -13,9 +13,7 @@ import {
   updatingIsSearchingAlgorithmRunningStateAction,
   updatingSelectedSearchingAlgorithmState,
   updatingStringMatchingAnimationPatternState,
-  updatingStringMatchingInputLengthState,
   updatingStringMatchingInputState,
-  updatingStringMatchingPatternLengthState,
   updatingStringMatchingPatternState,
 } from '../Store/String Matching Page/StringMatchingPageStateManagement';
 import { updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
@@ -103,7 +101,6 @@ const StringMatchingPatternComponent = () => {
     if (ref.current === null) return;
 
     dispatch(updatingStringMatchingPatternState(ref.current.value));
-    dispatch(updatingStringMatchingPatternLengthState(ref.current.value.length));
     if (ref.current.value.length <= maxPatternLength) {
       dispatch(updatingStringMatchingAnimationPatternState(ref.current.value));
       dispatch(updatingIsPatternLengthOverMaxState(false));
@@ -115,7 +112,6 @@ const StringMatchingPatternComponent = () => {
 
   const fixInput = () => {
     dispatch(updatingStringMatchingPatternState(stringMatchingPageState.stringMatchingAnimationPattern));
-    dispatch(updatingStringMatchingPatternLengthState(maxPatternLength));
     dispatch(updatingIsPatternLengthOverMaxState(false));
   };
 
@@ -198,7 +194,6 @@ const StringMatchingInputComponent = () => {
     if (ref.current === null) return;
 
     dispatch(updatingStringMatchingInputState(ref.current.value));
-    dispatch(updatingStringMatchingInputLengthState(ref.current.value.length));
   };
 
   return (

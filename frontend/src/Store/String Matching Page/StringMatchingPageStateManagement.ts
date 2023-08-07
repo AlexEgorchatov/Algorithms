@@ -28,10 +28,10 @@ const initialStringMatchingPageState: StringMatchingPageState = {
 //#endregion State
 
 //#region Actions
-const UPDATINGISSEARCHINGALGORITHMRUNNINGSTATE = 'UpdatingIsAlgorithmRunningState';
+const UPDATING_IS_SEARCHING_ALGORITHM_RUNNING_STATE = 'UpdatingIsAlgorithmRunningState';
 export const updatingIsSearchingAlgorithmRunningStateAction = (isSearchingAlgorithmRunning = initialStringMatchingPageState.isSearchingAlgorithmRunning) =>
   ({
-    type: UPDATINGISSEARCHINGALGORITHMRUNNINGSTATE,
+    type: UPDATING_IS_SEARCHING_ALGORITHM_RUNNING_STATE,
     isSearchingAlgorithmRunning: isSearchingAlgorithmRunning,
   } as const);
 
@@ -49,17 +49,17 @@ export const updatingSelectedSearchingAlgorithmState = (selectedSearchingAlgorit
     selectedSearchingAlgorithm: selectedSearchingAlgorithm,
   } as const);
 
-const UPDATINGSTRINGMATCHINGINPUTSTATE = 'UpdatingStringMatchingInputState';
+export const UPDATING_STRING_MATCHING_INPUT_STATE = 'UpdatingStringMatchingInputState';
 export const updatingStringMatchingInputState = (stringMatchingInput = initialStringMatchingPageState.stringMatchingInput) =>
   ({
-    type: UPDATINGSTRINGMATCHINGINPUTSTATE,
+    type: UPDATING_STRING_MATCHING_INPUT_STATE,
     stringMatchingInput: stringMatchingInput,
   } as const);
 
-const UPDATINGSTRINGMATCHINGPATTERNSTATE = 'UpdatingStringMatchingPatternState';
+export const UPDATING_STRING_MATCHING_PATTERN_STATE = 'UpdatingStringMatchingPatternState';
 export const updatingStringMatchingPatternState = (stringMatchingPattern = initialStringMatchingPageState.stringMatchingPattern) =>
   ({
-    type: UPDATINGSTRINGMATCHINGPATTERNSTATE,
+    type: UPDATING_STRING_MATCHING_PATTERN_STATE,
     stringMatchingPattern: stringMatchingPattern,
   } as const);
 
@@ -70,14 +70,14 @@ export const updatingStringMatchingAnimationPatternState = (stringMatchingAnimat
     stringMatchingAnimationPattern: stringMatchingAnimationPattern,
   } as const);
 
-const UPDATINGSTRINGMATCHINGPATTERNLENGTHSTATE = 'UpdatingStringMatchingPatternLengthState';
+export const UPDATING_STRING_MATCHING_PATTERN_LENGTH_STATE = 'UpdatingStringMatchingPatternLengthState';
 export const updatingStringMatchingPatternLengthState = (stringMatchingPatternLength = initialStringMatchingPageState.stringMatchingPatternLength) =>
   ({
-    type: UPDATINGSTRINGMATCHINGPATTERNLENGTHSTATE,
+    type: UPDATING_STRING_MATCHING_PATTERN_LENGTH_STATE,
     stringMatchingPatternLength: stringMatchingPatternLength,
   } as const);
 
-const UPDATINGSTRINGMATCHINGINPUTLENGTHSTATE = 'UpdatingStringMatchingInputLengthState';
+export const UPDATINGSTRINGMATCHINGINPUTLENGTHSTATE = 'UpdatingStringMatchingInputLengthState';
 export const updatingStringMatchingInputLengthState = (stringMatchingInputLength = initialStringMatchingPageState.stringMatchingInputLength) =>
   ({
     type: UPDATINGSTRINGMATCHINGINPUTLENGTHSTATE,
@@ -93,7 +93,7 @@ export const updatingIsPatternLengthOverMaxState = (isPatternLengthOverMax = ini
 //#endregion Actions
 
 //#region Reducers
-type StringMatchingPageActions =
+export type StringMatchingPageActions =
   | ReturnType<typeof updatingSelectedSearchingAlgorithmState>
   | ReturnType<typeof updatingSelectedSearchingAlgorithmState>
   | ReturnType<typeof updatingHasSearchingAlgorithmStartedState>
@@ -104,9 +104,10 @@ type StringMatchingPageActions =
   | ReturnType<typeof updatingStringMatchingPatternLengthState>
   | ReturnType<typeof updatingStringMatchingInputLengthState>
   | ReturnType<typeof updatingIsPatternLengthOverMaxState>;
+
 export const stringMatchingPageReducer = (state = initialStringMatchingPageState, action: StringMatchingPageActions) => {
   switch (action.type) {
-    case UPDATINGISSEARCHINGALGORITHMRUNNINGSTATE:
+    case UPDATING_IS_SEARCHING_ALGORITHM_RUNNING_STATE:
       return {
         ...state,
         isSearchingAlgorithmRunning: action.isSearchingAlgorithmRunning,
@@ -122,13 +123,13 @@ export const stringMatchingPageReducer = (state = initialStringMatchingPageState
         selectedSearchingAlgorithm: action.selectedSearchingAlgorithm,
       };
 
-    case UPDATINGSTRINGMATCHINGINPUTSTATE:
+    case UPDATING_STRING_MATCHING_INPUT_STATE:
       return {
         ...state,
         stringMatchingInput: action.stringMatchingInput,
       };
 
-    case UPDATINGSTRINGMATCHINGPATTERNSTATE:
+    case UPDATING_STRING_MATCHING_PATTERN_STATE:
       return {
         ...state,
         stringMatchingPattern: action.stringMatchingPattern,
@@ -140,7 +141,7 @@ export const stringMatchingPageReducer = (state = initialStringMatchingPageState
         stringMatchingAnimationPattern: action.stringMatchingAnimationPattern,
       };
 
-    case UPDATINGSTRINGMATCHINGPATTERNLENGTHSTATE:
+    case UPDATING_STRING_MATCHING_PATTERN_LENGTH_STATE:
       return {
         ...state,
         stringMatchingPatternLength: action.stringMatchingPatternLength,
