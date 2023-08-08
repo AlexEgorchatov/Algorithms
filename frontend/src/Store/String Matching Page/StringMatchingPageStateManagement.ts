@@ -2,8 +2,6 @@ import { StringMatchingAlgorithmEnum } from '../../Resources/Algorithms/Algorith
 
 //#region State
 export interface StringMatchingPageState {
-  readonly isSearchingAlgorithmRunning: boolean;
-  readonly hasSearchingAlgorithmStarted: boolean;
   readonly selectedSearchingAlgorithm: StringMatchingAlgorithmEnum;
   readonly stringMatchingInput: string;
   readonly stringMatchingPattern: string;
@@ -14,8 +12,6 @@ export interface StringMatchingPageState {
 }
 
 const initialStringMatchingPageState: StringMatchingPageState = {
-  isSearchingAlgorithmRunning: false,
-  hasSearchingAlgorithmStarted: false,
   selectedSearchingAlgorithm: StringMatchingAlgorithmEnum.Naive,
   stringMatchingInput: '',
   stringMatchingPattern: '',
@@ -29,20 +25,6 @@ const initialStringMatchingPageState: StringMatchingPageState = {
 //TODO change naming conventions for state managements
 
 //#region Actions
-const UPDATING_IS_SEARCHING_ALGORITHM_RUNNING_STATE = 'UpdatingIsAlgorithmRunningState';
-export const updatingIsSearchingAlgorithmRunningStateAction = (isSearchingAlgorithmRunning = initialStringMatchingPageState.isSearchingAlgorithmRunning) =>
-  ({
-    type: UPDATING_IS_SEARCHING_ALGORITHM_RUNNING_STATE,
-    isSearchingAlgorithmRunning: isSearchingAlgorithmRunning,
-  } as const);
-
-const UPDATINGHASSEARCHINGALGORITHMSTARTEDSTATE = 'UpdatingHasSearchingAlgorithmStartedState';
-export const updatingHasSearchingAlgorithmStartedState = (hasSearchingAlgorithmStarted = initialStringMatchingPageState.hasSearchingAlgorithmStarted) =>
-  ({
-    type: UPDATINGHASSEARCHINGALGORITHMSTARTEDSTATE,
-    hasSearchingAlgorithmStarted: hasSearchingAlgorithmStarted,
-  } as const);
-
 const UPDATINGSELECTEDSEARCHINGALGORITHMSTATE = 'UpdatingSelectedStringMatchingAlgorithmState';
 export const updatingSelectedSearchingAlgorithmState = (selectedSearchingAlgorithm = initialStringMatchingPageState.selectedSearchingAlgorithm) =>
   ({
@@ -97,8 +79,6 @@ export const updatingIsPatternLengthOverMaxState = (isPatternLengthOverMax = ini
 export type StringMatchingPageActions =
   | ReturnType<typeof updatingSelectedSearchingAlgorithmState>
   | ReturnType<typeof updatingSelectedSearchingAlgorithmState>
-  | ReturnType<typeof updatingHasSearchingAlgorithmStartedState>
-  | ReturnType<typeof updatingIsSearchingAlgorithmRunningStateAction>
   | ReturnType<typeof updatingStringMatchingInputState>
   | ReturnType<typeof updatingStringMatchingPatternState>
   | ReturnType<typeof updatingStringMatchingAnimationPatternState>
@@ -108,16 +88,6 @@ export type StringMatchingPageActions =
 
 export const stringMatchingPageReducer = (state = initialStringMatchingPageState, action: StringMatchingPageActions) => {
   switch (action.type) {
-    case UPDATING_IS_SEARCHING_ALGORITHM_RUNNING_STATE:
-      return {
-        ...state,
-        isSearchingAlgorithmRunning: action.isSearchingAlgorithmRunning,
-      };
-    case UPDATINGHASSEARCHINGALGORITHMSTARTEDSTATE:
-      return {
-        ...state,
-        hasSearchingAlgorithmStarted: action.hasSearchingAlgorithmStarted,
-      };
     case UPDATINGSELECTEDSEARCHINGALGORITHMSTATE:
       return {
         ...state,

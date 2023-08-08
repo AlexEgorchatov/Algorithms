@@ -3,9 +3,23 @@ import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
 import { Fragment, useContext } from 'react';
 import { animationContext } from '../Resources/Helper';
+import { useSelector } from 'react-redux';
+import { AppState } from '../Store/Store';
+import { updateHasAlgorithmStartedStateAction, updateIsAlgorithmRunningStateAction } from '../Store/Shared/SliderComponentStateManagement';
+import { useDispatch } from 'react-redux';
 
 const PlayButton = () => {
   const { startButtonClick } = useContext(animationContext);
+  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const dispatch = useDispatch();
+
+  const handlePlayButtonClick = () => {
+    dispatch(updateIsAlgorithmRunningStateAction(true));
+    if (sliderState.hasAlgorithmStarted) return;
+
+    dispatch(updateHasAlgorithmStartedStateAction(true));
+    startButtonClick();
+  };
 
   return (
     <div
@@ -36,13 +50,13 @@ const PlayButton = () => {
           left: 6px;
         }
       `}
-      onClick={startButtonClick}
+      onClick={handlePlayButtonClick}
     ></div>
   );
 };
 
 const PauseButton = () => {
-  const { pauseButtonClick } = useContext(animationContext);
+  const dispatch = useDispatch();
 
   return (
     <div
@@ -65,7 +79,7 @@ const PauseButton = () => {
           }
         }
       `}
-      onClick={pauseButtonClick}
+      onClick={() => dispatch(updateIsAlgorithmRunningStateAction(false))}
     >
       <div
         css={css`
@@ -84,7 +98,17 @@ const PauseButton = () => {
 };
 
 const StopButton = () => {
-  const { hasAlgorithmStarted, stopButtonClick } = useContext(animationContext);
+  const { stopButtonClick } = useContext(animationContext);
+  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const dispatch = useDispatch();
+
+  const handleStopButtonClick = () => {
+    if (!sliderState.hasAlgorithmStarted) return;
+
+    dispatch(updateHasAlgorithmStartedStateAction(false));
+    dispatch(updateIsAlgorithmRunningStateAction(false));
+    stopButtonClick();
+  };
 
   return (
     <div
@@ -99,10 +123,10 @@ const StopButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${hasAlgorithmStarted ? 'pointer' : 'default'};
-        opacity: ${hasAlgorithmStarted ? '1' : '0.5'};
+        cursor: ${sliderState.hasAlgorithmStarted ? 'pointer' : 'default'};
+        opacity: ${sliderState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
-          ${hasAlgorithmStarted &&
+          ${sliderState.hasAlgorithmStarted &&
           `
               color: ${headerItemHovered};
               & > div {
@@ -111,7 +135,7 @@ const StopButton = () => {
             `}
         }
       `}
-      onClick={stopButtonClick}
+      onClick={handleStopButtonClick}
     >
       <div
         css={css`
@@ -129,7 +153,17 @@ const StopButton = () => {
 };
 
 const CompleteButton = () => {
-  const { hasAlgorithmStarted, completeButtonClick } = useContext(animationContext);
+  const { completeButtonClick } = useContext(animationContext);
+  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const dispatch = useDispatch();
+
+  const handleCompleteButtonClick = () => {
+    if (!sliderState.hasAlgorithmStarted) return;
+
+    dispatch(updateHasAlgorithmStartedStateAction(false));
+    dispatch(updateIsAlgorithmRunningStateAction(false));
+    completeButtonClick();
+  };
 
   return (
     <div
@@ -144,10 +178,10 @@ const CompleteButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${hasAlgorithmStarted ? 'pointer' : 'default'};
-        opacity: ${hasAlgorithmStarted ? '1' : '0.5'};
+        cursor: ${sliderState.hasAlgorithmStarted ? 'pointer' : 'default'};
+        opacity: ${sliderState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
-          ${hasAlgorithmStarted &&
+          ${sliderState.hasAlgorithmStarted &&
           `
               color: ${headerItemHovered};
               & > div {
@@ -156,7 +190,7 @@ const CompleteButton = () => {
             `}
         }
       `}
-      onClick={completeButtonClick}
+      onClick={handleCompleteButtonClick}
     >
       <div
         css={css`
@@ -192,11 +226,11 @@ const CompleteButton = () => {
 };
 
 export const ActionBar = () => {
-  const { isAlgorithmRunning } = useContext(animationContext);
+  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
 
   return (
     <Fragment>
-      {isAlgorithmRunning ? <PauseButton /> : <PlayButton />}
+      {sliderState.isAlgorithmRunning ? <PauseButton /> : <PlayButton />}
       <StopButton />
       <CompleteButton />
     </Fragment>

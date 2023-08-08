@@ -18,8 +18,6 @@ export interface SortingBarProps {
 export interface SortingPageState {
   readonly selectedSortingAlgorithmType: SortingAlgorithmEnum;
   readonly sortingInput: string;
-  readonly isSortingAlgorithmRunning: boolean;
-  readonly hasSortingAlgorithmStarted: boolean;
   readonly isInputNan: boolean;
   readonly isInputOverMax: boolean;
   readonly sortingBars: SortingBarProps[];
@@ -28,8 +26,6 @@ export interface SortingPageState {
 const initialSortingPageState: SortingPageState = {
   selectedSortingAlgorithmType: SortingAlgorithmEnum.BubbleSort,
   sortingInput: '',
-  isSortingAlgorithmRunning: false,
-  hasSortingAlgorithmStarted: false,
   isInputNan: false,
   isInputOverMax: false,
   sortingBars: [],
@@ -49,20 +45,6 @@ export const updatingSortingInputStateAction = (sortingInput = initialSortingPag
   ({
     type: UPDATINGSORTINGINPUTSTATE,
     sortingInput: sortingInput,
-  } as const);
-
-const UPDATINGISSORTINGALGORITHMRUNNINGSTATE = 'UpdatingIsSortingAlgorithmRunningState';
-export const updatingIsSortingAlgorithmRunningStateAction = (isSortingAlgorithmRunning = initialSortingPageState.isSortingAlgorithmRunning) =>
-  ({
-    type: UPDATINGISSORTINGALGORITHMRUNNINGSTATE,
-    isSortingAlgorithmRunning: isSortingAlgorithmRunning,
-  } as const);
-
-const UPDATINGHASSORTINGALGORITHMSTARTEDSTATE = 'UpdatingHasSortingAlgorithmStartedState';
-export const updatingHasSortingAlgorithmStartedState = (hasSortingAlgorithmStarted = initialSortingPageState.hasSortingAlgorithmStarted) =>
-  ({
-    type: UPDATINGHASSORTINGALGORITHMSTARTEDSTATE,
-    hasSortingAlgorithmStarted: hasSortingAlgorithmStarted,
   } as const);
 
 const UPDATINGISINPUTNANSTATE = 'UpdatingIsInputNanState';
@@ -92,8 +74,6 @@ export const updatingSortingBarsStateAction = (sortingBars = initialSortingPageS
 type SortingPageActions =
   | ReturnType<typeof updatingSelectedSortingAlgorithmState>
   | ReturnType<typeof updatingSortingInputStateAction>
-  | ReturnType<typeof updatingIsSortingAlgorithmRunningStateAction>
-  | ReturnType<typeof updatingHasSortingAlgorithmStartedState>
   | ReturnType<typeof updatingIsInputNanState>
   | ReturnType<typeof updatingIsInputOverMaxState>
   | ReturnType<typeof updatingSortingBarsStateAction>;
@@ -109,18 +89,6 @@ export const sortingPageReducer = (state = initialSortingPageState, action: Sort
       return {
         ...state,
         sortingInput: action.sortingInput,
-      };
-
-    case UPDATINGISSORTINGALGORITHMRUNNINGSTATE:
-      return {
-        ...state,
-        isSortingAlgorithmRunning: action.isSortingAlgorithmRunning,
-      };
-
-    case UPDATINGHASSORTINGALGORITHMSTARTEDSTATE:
-      return {
-        ...state,
-        hasSortingAlgorithmStarted: action.hasSortingAlgorithmStarted,
       };
 
     case UPDATINGISINPUTNANSTATE:
