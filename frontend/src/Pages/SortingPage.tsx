@@ -40,7 +40,7 @@ interface AlgorithmProps {
 
 const SortingInputComponent = () => {
   const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.algorithmState);
   const windowState = useSelector((state: AppState) => state.windowState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
@@ -104,7 +104,7 @@ const SortingInputComponent = () => {
         placeholder="Type several numbers..."
         value={sortingPageState.sortingInput}
         onInput={() => processInput(ref.current?.value as string)}
-        disabled={sliderState.hasAlgorithmStarted}
+        disabled={algorithmState.hasAlgorithmStarted}
       />
 
       <div>
@@ -165,7 +165,7 @@ const SortingInputComponent = () => {
 
 const GenerateInputComponent = () => {
   const windowState = useSelector((state: AppState) => state.windowState);
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.algorithmState);
   const dispatch = useDispatch();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -174,7 +174,7 @@ const GenerateInputComponent = () => {
   }, []);
 
   const handleGenerateElements = () => {
-    if (sliderState.hasAlgorithmStarted) return;
+    if (algorithmState.hasAlgorithmStarted) return;
     if (inputRef.current === null) return;
 
     let sortingBars: SortingBarProps[] = [];
@@ -240,18 +240,18 @@ const GenerateInputComponent = () => {
         defaultValue={10}
         onInput={() => validateInput(inputRef.current?.value as string)}
         onKeyUp={handleEnterKeyUp}
-        disabled={sliderState.hasAlgorithmStarted}
+        disabled={algorithmState.hasAlgorithmStarted}
       />
     </div>
   );
 };
 
 const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmProps) => {
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.algorithmState);
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    if (sliderState.hasAlgorithmStarted) return;
+    if (algorithmState.hasAlgorithmStarted) return;
     selectedSortingAlgorithm = sortingAlgorithm;
     dispatch(updatingSelectedSortingAlgorithmState(sortingAlgorithm.sortingAlgorithm));
   };
@@ -262,10 +262,10 @@ const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmPr
         font-size: 20px;
         color: ${isSelected ? '' : 'white'};
         margin-right: 10px;
-        cursor: ${sliderState.hasAlgorithmStarted && !isSelected ? 'default' : 'pointer'};
-        opacity: ${sliderState.hasAlgorithmStarted && !isSelected ? '0.5' : '1'};
+        cursor: ${algorithmState.hasAlgorithmStarted && !isSelected ? 'default' : 'pointer'};
+        opacity: ${algorithmState.hasAlgorithmStarted && !isSelected ? '0.5' : '1'};
         :hover {
-          ${!sliderState.hasAlgorithmStarted &&
+          ${!algorithmState.hasAlgorithmStarted &&
           `
             color: ${!isSelected ? `${headerItemHovered}` : ''};
           `}
@@ -302,6 +302,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
 const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselected, leftOffset: newLeftOffset }: SortingBarProps) => {
   let divRef = useRef<HTMLDivElement>(null);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.algorithmState);
 
   useEffect(() => {
     if (divRef.current === null) return;
@@ -318,7 +319,7 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
 
     divRef.current.style.transition = `transform ease-in 0ms`;
     divRef.current.style.transform = `translateX(0px)`;
-  }, [barHeight, sliderState.hasAlgorithmStarted, barState]);
+  }, [barHeight, algorithmState.hasAlgorithmStarted, barState]);
 
   const getColor = () => {
     switch (barState) {

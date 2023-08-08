@@ -5,17 +5,17 @@ import { Fragment, useContext } from 'react';
 import { animationContext } from '../Resources/Helper';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
-import { updateHasAlgorithmStartedStateAction, updateIsAlgorithmRunningStateAction } from '../Store/Shared/SliderComponentStateManagement';
 import { useDispatch } from 'react-redux';
+import { updateHasAlgorithmStartedStateAction, updateIsAlgorithmRunningStateAction } from '../Store/Shared/AlgorithmStateManagement';
 
 const PlayButton = () => {
   const { startButtonClick } = useContext(animationContext);
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.algorithmState);
   const dispatch = useDispatch();
 
   const handlePlayButtonClick = () => {
     dispatch(updateIsAlgorithmRunningStateAction(true));
-    if (sliderState.hasAlgorithmStarted) return;
+    if (algorithmState.hasAlgorithmStarted) return;
 
     dispatch(updateHasAlgorithmStartedStateAction(true));
     startButtonClick();
@@ -99,11 +99,11 @@ const PauseButton = () => {
 
 const StopButton = () => {
   const { stopButtonClick } = useContext(animationContext);
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.algorithmState);
   const dispatch = useDispatch();
 
   const handleStopButtonClick = () => {
-    if (!sliderState.hasAlgorithmStarted) return;
+    if (!algorithmState.hasAlgorithmStarted) return;
 
     dispatch(updateHasAlgorithmStartedStateAction(false));
     dispatch(updateIsAlgorithmRunningStateAction(false));
@@ -123,10 +123,10 @@ const StopButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${sliderState.hasAlgorithmStarted ? 'pointer' : 'default'};
-        opacity: ${sliderState.hasAlgorithmStarted ? '1' : '0.5'};
+        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
+        opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
-          ${sliderState.hasAlgorithmStarted &&
+          ${algorithmState.hasAlgorithmStarted &&
           `
               color: ${headerItemHovered};
               & > div {
@@ -154,11 +154,11 @@ const StopButton = () => {
 
 const CompleteButton = () => {
   const { completeButtonClick } = useContext(animationContext);
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.algorithmState);
   const dispatch = useDispatch();
 
   const handleCompleteButtonClick = () => {
-    if (!sliderState.hasAlgorithmStarted) return;
+    if (!algorithmState.hasAlgorithmStarted) return;
 
     dispatch(updateHasAlgorithmStartedStateAction(false));
     dispatch(updateIsAlgorithmRunningStateAction(false));
@@ -178,10 +178,10 @@ const CompleteButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${sliderState.hasAlgorithmStarted ? 'pointer' : 'default'};
-        opacity: ${sliderState.hasAlgorithmStarted ? '1' : '0.5'};
+        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
+        opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
-          ${sliderState.hasAlgorithmStarted &&
+          ${algorithmState.hasAlgorithmStarted &&
           `
               color: ${headerItemHovered};
               & > div {
@@ -226,11 +226,11 @@ const CompleteButton = () => {
 };
 
 export const ActionBar = () => {
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.algorithmState);
 
   return (
     <Fragment>
-      {sliderState.isAlgorithmRunning ? <PauseButton /> : <PlayButton />}
+      {algorithmState.isAlgorithmRunning ? <PauseButton /> : <PlayButton />}
       <StopButton />
       <CompleteButton />
     </Fragment>

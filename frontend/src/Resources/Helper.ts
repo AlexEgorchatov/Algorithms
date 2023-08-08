@@ -2,7 +2,7 @@ import { createContext } from 'react';
 import { store } from '../App';
 import { finalSortingBars, initialSortingBars, selectedSortingAlgorithm } from '../Pages/SortingPage';
 import { SortingBarProps, SortingBarStateEnum, updatingSortingBarsStateAction } from '../Store/Sorting Page/SortingPageStateManagement';
-import { updateHasAlgorithmStartedStateAction, updateIsAlgorithmRunningStateAction } from '../Store/Shared/SliderComponentStateManagement';
+import { updateHasAlgorithmStartedStateAction, updateIsAlgorithmRunningStateAction } from '../Store/Shared/AlgorithmStateManagement';
 
 //#region Shared helpers
 
@@ -30,10 +30,10 @@ export const algorithmAnimationBaseTime: number = 280;
 export const waitForContinuation = () => {
   return new Promise<boolean>((resolve) => {
     let unsubscribe = store.subscribe(() => {
-      if (store.getState().sliderComponentState.isAlgorithmRunning) {
+      if (store.getState().algorithmState.isAlgorithmRunning) {
         unsubscribe();
         resolve(true);
-      } else if (!store.getState().sliderComponentState.hasAlgorithmStarted) {
+      } else if (!store.getState().algorithmState.hasAlgorithmStarted) {
         unsubscribe();
         resolve(false);
       }
@@ -47,11 +47,11 @@ export const waitForContinuation = () => {
  */
 export const isAlgorithmTerminated = async (): Promise<boolean> => {
   return new Promise<boolean>(async (resolve) => {
-    if (!store.getState().sliderComponentState.hasAlgorithmStarted) {
+    if (!store.getState().algorithmState.hasAlgorithmStarted) {
       resolve(true);
       return;
     }
-    if (!store.getState().sliderComponentState.isAlgorithmRunning) {
+    if (!store.getState().algorithmState.isAlgorithmRunning) {
       if (!(await waitForContinuation())) {
         resolve(true);
         return;

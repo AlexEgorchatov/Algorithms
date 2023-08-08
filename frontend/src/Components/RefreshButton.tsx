@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
 
 export const RefreshButton = () => {
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.algorithmState);
 
   return (
     <div
@@ -21,10 +21,10 @@ export const RefreshButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${!sliderState.hasAlgorithmStarted ? 'pointer' : 'default'};
-        opacity: ${!sliderState.hasAlgorithmStarted ? '1' : '0.5'};
+        cursor: ${!algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
+        opacity: ${!algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
         :hover {
-          ${!sliderState.hasAlgorithmStarted &&
+          ${!algorithmState.hasAlgorithmStarted &&
           `
               color: ${headerItemHovered};
               & > div {

@@ -38,11 +38,11 @@ interface AlgorithmProps {
 }
 
 const AlgorithmComponent = ({ title, isSelected, stringMatchingAlgorithm }: AlgorithmProps) => {
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.algorithmState);
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    if (sliderState.hasAlgorithmStarted) return;
+    if (algorithmState.hasAlgorithmStarted) return;
     selectedStringMatchingAlgorithm = stringMatchingAlgorithm;
     dispatch(updatingSelectedSearchingAlgorithmState(stringMatchingAlgorithm.stringMatchingAlgorithm));
   };
@@ -53,10 +53,10 @@ const AlgorithmComponent = ({ title, isSelected, stringMatchingAlgorithm }: Algo
         font-size: 20px;
         color: ${isSelected ? '' : 'white'};
         margin-right: 10px;
-        cursor: ${sliderState.hasAlgorithmStarted && !isSelected ? 'default' : 'pointer'};
-        opacity: ${sliderState.hasAlgorithmStarted && !isSelected ? '0.5' : '1'};
+        cursor: ${algorithmState.hasAlgorithmStarted && !isSelected ? 'default' : 'pointer'};
+        opacity: ${algorithmState.hasAlgorithmStarted && !isSelected ? '0.5' : '1'};
         :hover {
-          ${!sliderState.hasAlgorithmStarted &&
+          ${!algorithmState.hasAlgorithmStarted &&
           `
             color: ${!isSelected ? `${headerItemHovered}` : ''};
           `}
@@ -92,7 +92,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
 
 const StringMatchingPatternComponent = () => {
   const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingPageState);
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.algorithmState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
@@ -122,7 +122,7 @@ const StringMatchingPatternComponent = () => {
         placeholder="Type a pattern to search..."
         value={stringMatchingPageState.stringMatchingPattern}
         onChange={() => dispatch(updatingStringMatchingPatternState(ref.current?.value))}
-        disabled={sliderState.hasAlgorithmStarted}
+        disabled={algorithmState.hasAlgorithmStarted}
       />
       <div
         css={css`
@@ -172,7 +172,7 @@ const StringMatchingPatternComponent = () => {
 const StringMatchingInputComponent = () => {
   const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingPageState);
   const windowState = useSelector((state: AppState) => state.windowState);
-  const sliderState = useSelector((state: AppState) => state.sliderComponentState);
+  const algorithmState = useSelector((state: AppState) => state.algorithmState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
@@ -202,7 +202,7 @@ const StringMatchingInputComponent = () => {
         placeholder="Type some text..."
         value={stringMatchingPageState.stringMatchingInput}
         onInput={() => dispatch(updatingStringMatchingInputState(ref.current?.value))}
-        disabled={sliderState.hasAlgorithmStarted}
+        disabled={algorithmState.hasAlgorithmStarted}
       />
       <div
         css={css`
