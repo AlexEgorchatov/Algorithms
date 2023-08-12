@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 import { store } from '../App';
 import { finalSortingBars, initialSortingBars, selectedSortingAlgorithm } from '../Pages/SortingPage';
-import { SortingBarProps, SortingBarStateEnum, updatingSortingBarsStateAction } from '../Store/Sorting Page/SortingPageStateManagement';
+import { SortingBarProps, SortingBarStateEnum, updateSortingBarsStateAction } from '../Store/Sorting Page/SortingPageStateManagement';
 import { updateHasAlgorithmStartedStateAction, updateIsAlgorithmRunningStateAction } from '../Store/Shared/AlgorithmStateManagement';
 
 //#region Shared helpers
@@ -66,7 +66,7 @@ export const isAlgorithmTerminated = async (): Promise<boolean> => {
 };
 
 export const awaitStepIteration = async () => {
-  await new Promise((resolve) => setTimeout(resolve, algorithmStepBaseTime - 30 * (store.getState().sliderComponentState.initialSliderValue - 1)));
+  await new Promise((resolve) => setTimeout(resolve, algorithmStepBaseTime - 30 * (store.getState().sliderComponentState.sliderValue - 1)));
 };
 
 //#endregion
@@ -75,7 +75,7 @@ export const awaitStepIteration = async () => {
 
 export const handleStartSorting = async () => {
   if (JSON.stringify(store.getState().sortingPageState.sortingBars.map((i) => i.barHeight)) === JSON.stringify(finalSortingBars.map((i) => i.barHeight))) {
-    store.dispatch(updatingSortingBarsStateAction(initialSortingBars));
+    store.dispatch(updateSortingBarsStateAction(initialSortingBars));
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
 
@@ -83,12 +83,12 @@ export const handleStartSorting = async () => {
 };
 
 export const handleCompleteSorting = async () => {
-  store.dispatch(updatingSortingBarsStateAction(finalSortingBars));
+  store.dispatch(updateSortingBarsStateAction(finalSortingBars));
   finalizeSorting(finalSortingBars, true);
 };
 
 export const handleStopSorting = async () => {
-  store.dispatch(updatingSortingBarsStateAction(initialSortingBars));
+  store.dispatch(updateSortingBarsStateAction(initialSortingBars));
 };
 
 export const finalizeSorting = async (barsCopy: SortingBarProps[], isComplete = false) => {
@@ -96,7 +96,7 @@ export const finalizeSorting = async (barsCopy: SortingBarProps[], isComplete = 
   for (let i = 0; i < barsCopy.length; i++) {
     barsCopy = [...barsCopy];
     barsCopy[i] = { ...barsCopy[i], barState: SortingBarStateEnum.Completed };
-    store.dispatch(updatingSortingBarsStateAction(barsCopy));
+    store.dispatch(updateSortingBarsStateAction(barsCopy));
     if (timeout !== 0) await new Promise((resolve) => setTimeout(resolve, timeout));
   }
 
@@ -110,21 +110,21 @@ export const swapSortingBarsVisually = (barsCopy: SortingBarProps[], index1: num
   let nextLeftOffset = document.getElementById(index2.toString())?.offsetLeft;
   barsCopy[index1] = { ...barsCopy[index1], barState: SortingBarStateEnum.Selected, leftOffset: nextLeftOffset };
   barsCopy[index2] = { ...barsCopy[index2], barState: SortingBarStateEnum.Selected, leftOffset: currentLeftOffset };
-  store.dispatch(updatingSortingBarsStateAction(barsCopy));
+  store.dispatch(updateSortingBarsStateAction(barsCopy));
 };
 
 export const selectSortingBars = (barsCopy: SortingBarProps[], index1: number, index2: number) => {
   barsCopy = [...barsCopy];
   barsCopy[index1] = { ...barsCopy[index1], barState: SortingBarStateEnum.Selected };
   barsCopy[index2] = { ...barsCopy[index2], barState: SortingBarStateEnum.Selected };
-  store.dispatch(updatingSortingBarsStateAction(barsCopy));
+  store.dispatch(updateSortingBarsStateAction(barsCopy));
 };
 
 export const unselectSortingBars = (barsCopy: SortingBarProps[], index1: number, index2: number) => {
   barsCopy = [...barsCopy];
   barsCopy[index1] = { ...barsCopy[index1], barState: SortingBarStateEnum.Unselected };
   barsCopy[index2] = { ...barsCopy[index2], barState: SortingBarStateEnum.Unselected };
-  store.dispatch(updatingSortingBarsStateAction(barsCopy));
+  store.dispatch(updateSortingBarsStateAction(barsCopy));
 };
 
 //#endregion

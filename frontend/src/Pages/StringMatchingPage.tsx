@@ -13,7 +13,7 @@ import {
   updatingStringMatchingInputState,
   updatingStringMatchingPatternState,
 } from '../Store/String Matching Page/StringMatchingPageStateManagement';
-import { updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
+import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { animationContext, handleCompleteSearch, handleStartSearch, handleStopSearch } from '../Resources/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
@@ -383,7 +383,7 @@ export const StringMatchingPage = () => {
 
   useEffect(() => {
     const handleWindowResize = () => {
-      dispatch(updatingWindowWidthStateAction(window.innerWidth));
+      dispatch(updateWindowWidthStateAction(window.innerWidth));
     };
 
     window.addEventListener('resize', handleWindowResize);

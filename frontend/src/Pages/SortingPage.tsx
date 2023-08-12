@@ -11,15 +11,15 @@ import { useDispatch } from 'react-redux';
 import {
   SortingBarProps,
   SortingBarStateEnum,
-  updatingSortingBarsStateAction,
-  updatingSortingInputStateAction,
-  updatingSelectedSortingAlgorithmState,
+  updateSortingBarsStateAction,
+  updateSortingInputStateAction,
+  updateSelectedSortingAlgorithmState,
   updatingIsInputNanState,
-  updatingIsInputOverMaxState,
+  updateIsInputOverMaxState,
 } from '../Store/Sorting Page/SortingPageStateManagement';
 import { SortingAlgorithmBase, SortingAlgorithmEnum } from '../Resources/Algorithms/AlgorithmBase';
 import { BubbleSort } from '../Resources/Algorithms/SortingAlgorithms';
-import { updatingWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
+import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { minAppWidth } from '../App';
 import { algorithmAnimationBaseTime, animationContext, handleCompleteSorting, handleStartSorting, handleStopSorting } from '../Resources/Helper';
@@ -46,7 +46,7 @@ const SortingInputComponent = () => {
   const ref = useRef<HTMLInputElement>(null);
 
   const processInput = (currentInput: string) => {
-    dispatch(updatingSortingInputStateAction(currentInput));
+    dispatch(updateSortingInputStateAction(currentInput));
     validSortingInput = '';
     let stringArrayInput = currentInput.split(' ');
     let sortingBars: SortingBarProps[] = [];
@@ -66,20 +66,20 @@ const SortingInputComponent = () => {
 
     if (!/^[0-9\s]*$/.test(currentInput)) dispatch(updatingIsInputNanState(true));
     else dispatch(updatingIsInputNanState(false));
-    if (isOverMax) dispatch(updatingIsInputOverMaxState(true));
-    else dispatch(updatingIsInputOverMaxState(false));
+    if (isOverMax) dispatch(updateIsInputOverMaxState(true));
+    else dispatch(updateIsInputOverMaxState(false));
 
     let sortingBarsCopy = [...sortingBars];
     initialSortingBars = [...sortingBars];
     finalSortingBars = sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight);
 
-    dispatch(updatingSortingBarsStateAction(sortingBars));
+    dispatch(updateSortingBarsStateAction(sortingBars));
   };
 
   const fixInput = () => {
-    dispatch(updatingSortingInputStateAction(validSortingInput));
+    dispatch(updateSortingInputStateAction(validSortingInput));
     dispatch(updatingIsInputNanState(false));
-    dispatch(updatingIsInputOverMaxState(false));
+    dispatch(updateIsInputOverMaxState(false));
   };
 
   return (
@@ -190,10 +190,10 @@ const GenerateInputComponent = () => {
     newInput = newInput.trim();
     let sortingBarsCopy = [...sortingBars];
     validSortingInput = newInput;
-    dispatch(updatingSortingInputStateAction(newInput));
-    dispatch(updatingSortingBarsStateAction(sortingBars));
+    dispatch(updateSortingInputStateAction(newInput));
+    dispatch(updateSortingBarsStateAction(sortingBars));
     dispatch(updatingIsInputNanState(false));
-    dispatch(updatingIsInputOverMaxState(false));
+    dispatch(updateIsInputOverMaxState(false));
     initialSortingBars = [...sortingBars];
     finalSortingBars = sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight);
   };
@@ -253,7 +253,7 @@ const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmPr
   const handleClick = () => {
     if (algorithmState.hasAlgorithmStarted) return;
     selectedSortingAlgorithm = sortingAlgorithm;
-    dispatch(updatingSelectedSortingAlgorithmState(sortingAlgorithm.sortingAlgorithm));
+    dispatch(updateSelectedSortingAlgorithmState(sortingAlgorithm.sortingAlgorithm));
   };
 
   return (
@@ -291,7 +291,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
         <AlgorithmComponent
           key={index}
           title={algorithm.title}
-          isSelected={algorithm.sortingAlgorithm.sortingAlgorithm === sortingPageState.selectedSortingAlgorithmType}
+          isSelected={algorithm.sortingAlgorithm.sortingAlgorithm === sortingPageState.selectedSortingAlgorithm}
           sortingAlgorithm={algorithm.sortingAlgorithm}
         />
       ))}
@@ -308,11 +308,11 @@ const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselecte
     if (divRef.current === null) return;
     if (newLeftOffset === undefined) return;
 
-    let transformTime = algorithmAnimationBaseTime - 30 * sliderState.initialSliderValue;
+    let transformTime = algorithmAnimationBaseTime - 30 * sliderState.sliderValue;
     let translateLength = newLeftOffset - divRef.current.offsetLeft;
     divRef.current.style.transition = `transform ease-in ${transformTime}ms`;
     divRef.current.style.transform = `translateX(${translateLength}px)`;
-  }, [newLeftOffset, sliderState.initialSliderValue]);
+  }, [newLeftOffset, sliderState.sliderValue]);
 
   useEffect(() => {
     if (divRef.current === null) return;
@@ -496,7 +496,7 @@ export const SortingPage = () => {
 
   useEffect(() => {
     const handleWindowResize = () => {
-      dispatch(updatingWindowWidthStateAction(window.innerWidth));
+      dispatch(updateWindowWidthStateAction(window.innerWidth));
     };
 
     window.addEventListener('resize', handleWindowResize);

@@ -16,7 +16,7 @@ export interface SortingBarProps {
 
 //#region State
 export interface SortingPageState {
-  readonly selectedSortingAlgorithmType: SortingAlgorithmEnum;
+  readonly selectedSortingAlgorithm: SortingAlgorithmEnum;
   readonly sortingInput: string;
   readonly isInputNan: boolean;
   readonly isInputOverMax: boolean;
@@ -24,7 +24,7 @@ export interface SortingPageState {
 }
 
 const initialSortingPageState: SortingPageState = {
-  selectedSortingAlgorithmType: SortingAlgorithmEnum.BubbleSort,
+  selectedSortingAlgorithm: SortingAlgorithmEnum.BubbleSort,
   sortingInput: '',
   isInputNan: false,
   isInputOverMax: false,
@@ -33,38 +33,38 @@ const initialSortingPageState: SortingPageState = {
 //#endregion State
 
 //#region Actions
-const UPDATINGSELECTEDSORTINGALGORITHMSTATE = 'UpdatingSelectedSortingAlgorithmState';
-export const updatingSelectedSortingAlgorithmState = (selectedSortingAlgorithmType = initialSortingPageState.selectedSortingAlgorithmType) =>
+const UPDATE_SELECTED_SORTING_ALGORITHM_STATE = 'updateSelectedSortingAlgorithmState';
+export const updateSelectedSortingAlgorithmState = (selectedSortingAlgorithm = initialSortingPageState.selectedSortingAlgorithm) =>
   ({
-    type: UPDATINGSELECTEDSORTINGALGORITHMSTATE,
-    selectedSortingAlgorithmType: selectedSortingAlgorithmType,
+    type: UPDATE_SELECTED_SORTING_ALGORITHM_STATE,
+    selectedSortingAlgorithm: selectedSortingAlgorithm,
   } as const);
 
-const UPDATINGSORTINGINPUTSTATE = 'UpdatingSortingInputState';
-export const updatingSortingInputStateAction = (sortingInput = initialSortingPageState.sortingInput) =>
+const UPDATE_SORTING_INPUT_STATE = 'updateSortingInputState';
+export const updateSortingInputStateAction = (sortingInput = initialSortingPageState.sortingInput) =>
   ({
-    type: UPDATINGSORTINGINPUTSTATE,
+    type: UPDATE_SORTING_INPUT_STATE,
     sortingInput: sortingInput,
   } as const);
 
-const UPDATINGISINPUTNANSTATE = 'UpdatingIsInputNanState';
+const UPDATE_IS_INPUT_NAN_STATE = 'updatingIsInputNanState';
 export const updatingIsInputNanState = (isInputNan = initialSortingPageState.isInputNan) =>
   ({
-    type: UPDATINGISINPUTNANSTATE,
+    type: UPDATE_IS_INPUT_NAN_STATE,
     isInputNan: isInputNan,
   } as const);
 
-const UPDATINGISINPUTOVERMAXSTATE = 'UpdatingIsInputOverMaxState';
-export const updatingIsInputOverMaxState = (isInputOverMax = initialSortingPageState.isInputOverMax) =>
+const UPDATE_IS_INPUT_OVER_MAX_STATE = 'updateIsInputOverMaxState';
+export const updateIsInputOverMaxState = (isInputOverMax = initialSortingPageState.isInputOverMax) =>
   ({
-    type: UPDATINGISINPUTOVERMAXSTATE,
+    type: UPDATE_IS_INPUT_OVER_MAX_STATE,
     isInputOverMax: isInputOverMax,
   } as const);
 
-const UPDATINGSORTINGBARSSTATE = 'UpdatingSortingBarsState';
-export const updatingSortingBarsStateAction = (sortingBars = initialSortingPageState.sortingBars) =>
+const UPDATE_SORTING_BARS_STATE = 'updateSortingBarsState';
+export const updateSortingBarsStateAction = (sortingBars = initialSortingPageState.sortingBars) =>
   ({
-    type: UPDATINGSORTINGBARSSTATE,
+    type: UPDATE_SORTING_BARS_STATE,
     sortingBars: sortingBars,
   } as const);
 
@@ -72,38 +72,38 @@ export const updatingSortingBarsStateAction = (sortingBars = initialSortingPageS
 
 //#region Reducers
 type SortingPageActions =
-  | ReturnType<typeof updatingSelectedSortingAlgorithmState>
-  | ReturnType<typeof updatingSortingInputStateAction>
+  | ReturnType<typeof updateSelectedSortingAlgorithmState>
+  | ReturnType<typeof updateSortingInputStateAction>
   | ReturnType<typeof updatingIsInputNanState>
-  | ReturnType<typeof updatingIsInputOverMaxState>
-  | ReturnType<typeof updatingSortingBarsStateAction>;
+  | ReturnType<typeof updateIsInputOverMaxState>
+  | ReturnType<typeof updateSortingBarsStateAction>;
 export const sortingPageReducer = (state = initialSortingPageState, action: SortingPageActions) => {
   switch (action.type) {
-    case UPDATINGSELECTEDSORTINGALGORITHMSTATE:
+    case UPDATE_SELECTED_SORTING_ALGORITHM_STATE:
       return {
         ...state,
-        selectedSortingAlgorithmType: action.selectedSortingAlgorithmType,
+        selectedSortingAlgorithm: action.selectedSortingAlgorithm,
       };
 
-    case UPDATINGSORTINGINPUTSTATE:
+    case UPDATE_SORTING_INPUT_STATE:
       return {
         ...state,
         sortingInput: action.sortingInput,
       };
 
-    case UPDATINGISINPUTNANSTATE:
+    case UPDATE_IS_INPUT_NAN_STATE:
       return {
         ...state,
         isInputNan: action.isInputNan,
       };
 
-    case UPDATINGISINPUTOVERMAXSTATE:
+    case UPDATE_IS_INPUT_OVER_MAX_STATE:
       return {
         ...state,
         isInputOverMax: action.isInputOverMax,
       };
 
-    case UPDATINGSORTINGBARSSTATE:
+    case UPDATE_SORTING_BARS_STATE:
       return {
         ...state,
         sortingBars: action.sortingBars,

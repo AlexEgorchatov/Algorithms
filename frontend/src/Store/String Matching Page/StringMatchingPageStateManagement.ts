@@ -22,8 +22,6 @@ const initialStringMatchingPageState: StringMatchingPageState = {
 };
 //#endregion State
 
-//TODO change naming conventions for state managements
-
 //#region Actions
 const UPDATINGSELECTEDSEARCHINGALGORITHMSTATE = 'UpdatingSelectedStringMatchingAlgorithmState';
 export const updatingSelectedSearchingAlgorithmState = (selectedSearchingAlgorithm = initialStringMatchingPageState.selectedSearchingAlgorithm) =>

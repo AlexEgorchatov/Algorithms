@@ -1,10 +1,10 @@
 //#region State
 export interface SliderComponentState {
-  readonly initialSliderValue: number;
+  readonly sliderValue: number;
 }
 
 const initialSliderComponentState: SliderComponentState = {
-  initialSliderValue: 1,
+  sliderValue: 1,
 };
 //#endregion State
 
@@ -25,7 +25,7 @@ export const sliderComponentReducer = (state = initialSliderComponentState, acti
     case UPDATE_SLIDER_VALUE_STATE:
       return {
         ...state,
-        initialSliderValue: action.sliderValue,
+        sliderValue: action.sliderValue,
       };
 
     default:

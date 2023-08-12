@@ -1,5 +1,5 @@
 import { store } from '../../App';
-import { SortingBarStateEnum, updatingSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
+import { SortingBarStateEnum, updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
 import {
   finalizeSorting,
   selectSortingBars,
@@ -38,7 +38,7 @@ export class BubbleSort extends SortingAlgorithmBase {
         let tempBar = { ...barsCopy[j] };
         barsCopy[j] = { ...barsCopy[j], barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Unselected };
         barsCopy[j + 1] = { ...barsCopy[j + 1], barHeight: tempBar.barHeight, barState: SortingBarStateEnum.Unselected };
-        store.dispatch(updatingSortingBarsStateAction(barsCopy));
+        store.dispatch(updateSortingBarsStateAction(barsCopy));
         if (await isAlgorithmTerminated()) return;
 
         isSwapped = true;
@@ -101,7 +101,7 @@ export class QuickSort extends SortingAlgorithmBase {
         }
 
         currentPartitionIndex--;
-        store.dispatch(updatingSortingBarsStateAction(barsCopy));
+        store.dispatch(updateSortingBarsStateAction(barsCopy));
       }
 
       selectSortingBars(barsCopy, left, currentPartitionIndex);
@@ -120,7 +120,7 @@ export class QuickSort extends SortingAlgorithmBase {
         barHeight: tempBar.barHeight,
         barState: SortingBarStateEnum.Unselected,
       };
-      store.dispatch(updatingSortingBarsStateAction(barsCopy));
+      store.dispatch(updateSortingBarsStateAction(barsCopy));
       if (await isAlgorithmTerminated()) return;
 
       resolve(currentPartitionIndex);

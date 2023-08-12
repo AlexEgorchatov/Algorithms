@@ -221,7 +221,7 @@ const Slider = () => {
         min="1"
         max="5"
         step="1"
-        value={sliderState.initialSliderValue}
+        value={sliderState.sliderValue}
         onChange={handleSliderChange}
       />
       <div
@@ -230,7 +230,7 @@ const Slider = () => {
           margin-bottom: 1px;
         `}
       >
-        <b>x{sliderState.initialSliderValue}</b>
+        <b>x{sliderState.sliderValue}</b>
       </div>
     </div>
   );
