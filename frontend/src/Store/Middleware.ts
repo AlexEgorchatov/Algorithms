@@ -1,30 +1,25 @@
 import { Dispatch, Middleware, MiddlewareAPI } from 'redux';
 import {
-  UPDATING_STRING_MATCHING_PATTERN_STATE,
-  updatingStringMatchingPatternLengthState,
+  UPDATE_STRING_MATCHING_PATTERN_STATE,
   StringMatchingPageActions,
-  UPDATING_STRING_MATCHING_INPUT_STATE,
-  updatingStringMatchingInputLengthState,
-  updatingIsPatternLengthOverMaxState,
-  updatingStringMatchingAnimationPatternState,
+  UPDATE_STRING_MATCHING_INPUT_STATE,
+  updateStringMatchingAnimationPatternState,
+  updateStringMatchingAnimationInputState,
 } from './String Matching Page/StringMatchingPageStateManagement';
-import { maxPatternLength } from '../Pages/StringMatchingPage';
+import { maxStringMatchingInputLength, maxStringMatchingPatternLength } from '../Pages/StringMatchingPage';
 
 export const updateStringMatchingPatternMiddleware: Middleware = (store: MiddlewareAPI) => (next: Dispatch) => (action: StringMatchingPageActions) => {
   switch (action.type) {
-    case UPDATING_STRING_MATCHING_PATTERN_STATE:
-      let pattern: string = action.stringMatchingPattern;
-      let patternLength: number = pattern.length;
-
-      store.dispatch(updatingStringMatchingPatternLengthState(patternLength));
-      store.dispatch(updatingIsPatternLengthOverMaxState(patternLength > maxPatternLength));
-      if (patternLength <= maxPatternLength) {
-        store.dispatch(updatingStringMatchingAnimationPatternState(pattern));
+    case UPDATE_STRING_MATCHING_INPUT_STATE:
+      if (action.stringMatchingInput.length <= maxStringMatchingInputLength) {
+        store.dispatch(updateStringMatchingAnimationInputState(action.stringMatchingInput));
       }
       break;
 
-    case UPDATING_STRING_MATCHING_INPUT_STATE:
-      store.dispatch(updatingStringMatchingInputLengthState(action.stringMatchingInput.length));
+    case UPDATE_STRING_MATCHING_PATTERN_STATE:
+      if (action.stringMatchingPattern.length <= maxStringMatchingPatternLength) {
+        store.dispatch(updateStringMatchingAnimationPatternState(action.stringMatchingPattern));
+      }
       break;
 
     default:
