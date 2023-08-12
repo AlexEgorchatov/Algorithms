@@ -9,8 +9,6 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import {
-  SortingBarProps,
-  SortingBarStateEnum,
   updateSortingBarsStateAction,
   updateSortingInputStateAction,
   updateSelectedSortingAlgorithmState,
@@ -25,8 +23,27 @@ import { minAppWidth } from '../App';
 import { algorithmAnimationBaseTime, animationContext, handleCompleteSorting, handleStartSorting, handleStopSorting } from '../Resources/Helper';
 import { RefreshButton } from '../Components/RefreshButton';
 
+export enum SortingBarStateEnum {
+  Unselected = 0,
+  Selected = 1,
+  Pivot = 2,
+  Completed = 999,
+}
+export interface SortingBarProps {
+  barHeight: number;
+  barID?: number;
+  barState?: SortingBarStateEnum;
+  leftOffset?: number;
+}
+export let selectedSortingAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmEnum.BubbleSort);
+export let initialSortingBars: SortingBarProps[];
+export let finalSortingBars: SortingBarProps[];
+
 let validSortingInput: string = '';
 const sortingBarWidth: number = 35;
+const getMaxBarsNumber = (windowWidth: number): number => {
+  return Math.floor(Math.max(windowWidth, minAppWidth) / sortingBarWidth);
+};
 
 interface AlgorithmListProps {
   data: SortingData[];
@@ -299,7 +316,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
   );
 };
 
-const SortingBar = ({ barHeight, barID, barState = SortingBarStateEnum.Unselected, leftOffset: newLeftOffset }: SortingBarProps) => {
+const SortingBarComponent = ({ barHeight, barID, barState = SortingBarStateEnum.Unselected, leftOffset: newLeftOffset }: SortingBarProps) => {
   let divRef = useRef<HTMLDivElement>(null);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const algorithmState = useSelector((state: AppState) => state.algorithmState);
@@ -466,7 +483,7 @@ const AnimationComponent = () => {
           `}
         >
           {sortingPageState.sortingBars.map((bar, index) => (
-            <SortingBar key={index} barID={bar.barID} barHeight={bar.barHeight} barState={bar.barState} leftOffset={bar.leftOffset} />
+            <SortingBarComponent key={index} barID={bar.barID} barHeight={bar.barHeight} barState={bar.barState} leftOffset={bar.leftOffset} />
           ))}
         </div>
       </div>
@@ -519,12 +536,4 @@ export const SortingPage = () => {
       <AnimationComponent />
     </div>
   );
-};
-
-export let selectedSortingAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmEnum.BubbleSort);
-export let initialSortingBars: SortingBarProps[];
-export let finalSortingBars: SortingBarProps[];
-
-const getMaxBarsNumber = (windowWidth: number): number => {
-  return Math.floor(Math.max(windowWidth, minAppWidth) / sortingBarWidth);
 };

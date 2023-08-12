@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 import { store } from '../App';
-import { finalSortingBars, initialSortingBars, selectedSortingAlgorithm } from '../Pages/SortingPage';
-import { SortingBarProps, SortingBarStateEnum, updateSortingBarsStateAction } from '../Store/Sorting Page/SortingPageStateManagement';
+import { SortingBarProps, SortingBarStateEnum, finalSortingBars, initialSortingBars, selectedSortingAlgorithm } from '../Pages/SortingPage';
+import { updateSortingBarsStateAction } from '../Store/Sorting Page/SortingPageStateManagement';
 import { updateHasAlgorithmStartedStateAction, updateIsAlgorithmRunningStateAction } from '../Store/Shared/AlgorithmStateManagement';
 
 //#region Shared helpers

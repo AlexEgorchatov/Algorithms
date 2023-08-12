@@ -1,18 +1,5 @@
+import { SortingBarProps } from '../../Pages/SortingPage';
 import { SortingAlgorithmEnum } from '../../Resources/Algorithms/AlgorithmBase';
-
-export enum SortingBarStateEnum {
-  Unselected = 0,
-  Selected = 1,
-  Pivot = 2,
-  Completed = 999,
-}
-
-export interface SortingBarProps {
-  barHeight: number;
-  barID?: number;
-  barState?: SortingBarStateEnum;
-  leftOffset?: number;
-}
 
 //#region State
 export interface SortingPageState {

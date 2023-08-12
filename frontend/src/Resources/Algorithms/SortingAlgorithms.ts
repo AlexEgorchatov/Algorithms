@@ -1,5 +1,6 @@
 import { store } from '../../App';
-import { SortingBarStateEnum, updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
+import { SortingBarStateEnum } from '../../Pages/SortingPage';
+import { updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
 import {
   finalizeSorting,
   selectSortingBars,
