@@ -5,7 +5,7 @@ import { ModuleTitle } from '../Pages/HomePage';
 import { ModulePlaceholder } from '../Components/ModulePlaceholder';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppState } from '../Store/Store';
-import { updatingSortingModuleStateAction } from '../Store/Home Page/SortingModuleStateManagement';
+import { updateSortingModuleHeightsStateAction } from '../Store/Home Page/SortingModuleStateManagement';
 
 interface Props {
   height: number;
@@ -32,7 +32,7 @@ export const SortingModule = ({ title }: ModuleTitle) => {
   const animationCompleteTime: number = 500;
 
   const resetComponentState = () => {
-    dispatch(updatingSortingModuleStateAction());
+    dispatch(updateSortingModuleHeightsStateAction());
   };
 
   const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {
@@ -40,8 +40,8 @@ export const SortingModule = ({ title }: ModuleTitle) => {
   };
 
   const handleModuleMouseEnter = async () => {
-    let length = sortingState.initialHeights.length;
-    let heightsCopy = [...sortingState.initialHeights];
+    let length = sortingState.sortingModuleHeights.length;
+    let heightsCopy = [...sortingState.sortingModuleHeights];
 
     for (let i = 0; i < length - 1; i++) {
       let isSwapped: boolean = false;
@@ -52,7 +52,7 @@ export const SortingModule = ({ title }: ModuleTitle) => {
         let tempHeight = heightsCopy[j];
         heightsCopy[j] = heightsCopy[j + 1];
         heightsCopy[j + 1] = tempHeight;
-        dispatch(updatingSortingModuleStateAction(heightsCopy));
+        dispatch(updateSortingModuleHeightsStateAction(heightsCopy));
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
         heightsCopy = [...heightsCopy];
         isSwapped = true;
@@ -63,7 +63,7 @@ export const SortingModule = ({ title }: ModuleTitle) => {
         resetComponentState();
         i = -1;
         await new Promise((resolve) => awaitCancellation(resolve, stepTime * 2));
-        heightsCopy = [...sortingState.initialHeights];
+        heightsCopy = [...sortingState.sortingModuleHeights];
       }
     }
   };
@@ -85,7 +85,7 @@ export const SortingModule = ({ title }: ModuleTitle) => {
             align-items: flex-end;
           `}
         >
-          {sortingState.initialHeights.map((height, index) => (
+          {sortingState.sortingModuleHeights.map((height, index) => (
             <SortingBar key={index} height={height} />
           ))}
         </div>

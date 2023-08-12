@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import React, { useEffect } from 'react';
 import { ModuleTitle } from '../Pages/HomePage';
 import { ModulePlaceholder } from '../Components/ModulePlaceholder';
-import { CellState, updatingPathFindingModuleStateAction } from '../Store/Home Page/PathFindingModuleStateManagement';
+import { CellState, updatePathFindingModuleStateAction } from '../Store/Home Page/PathFindingModuleStateManagement';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
@@ -60,7 +60,7 @@ export const PathFindingModule = ({ title }: ModuleTitle) => {
   const animationCompleteTime: number = 500;
 
   const resetComponentState = () => {
-    dispatch(updatingPathFindingModuleStateAction());
+    dispatch(updatePathFindingModuleStateAction());
   };
 
   const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {
@@ -68,7 +68,7 @@ export const PathFindingModule = ({ title }: ModuleTitle) => {
   };
 
   const handleModuleMouseEnter = async () => {
-    let gridCopy = [...pathFindingState.initialGrid];
+    let gridCopy = [...pathFindingState.pathFindingModuleGrid];
     let rowSource: number = 5;
     let columnSource: number = 2;
     let rowDestination: number = 0;
@@ -76,11 +76,11 @@ export const PathFindingModule = ({ title }: ModuleTitle) => {
     while (rowSource !== rowDestination) {
       while (true) {
         gridCopy[rowSource * 8 + columnSource] = CellState.Selected;
-        dispatch(updatingPathFindingModuleStateAction(gridCopy));
+        dispatch(updatePathFindingModuleStateAction(gridCopy));
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
         gridCopy = [...gridCopy];
 
-        if (columnSource + 1 >= columnNumber || pathFindingState.initialGrid[rowSource * 8 + columnSource + 1] === CellState.Wall) break;
+        if (columnSource + 1 >= columnNumber || pathFindingState.pathFindingModuleGrid[rowSource * 8 + columnSource + 1] === CellState.Wall) break;
         else columnSource++;
       }
 
@@ -90,7 +90,7 @@ export const PathFindingModule = ({ title }: ModuleTitle) => {
         rowSource = 5;
         columnSource = 2;
         await new Promise((resolve) => awaitCancellation(resolve, stepTime * 4));
-        gridCopy = [...pathFindingState.initialGrid];
+        gridCopy = [...pathFindingState.pathFindingModuleGrid];
       } else rowSource--;
     }
   };
@@ -109,7 +109,7 @@ export const PathFindingModule = ({ title }: ModuleTitle) => {
             flex-wrap: wrap;
           `}
         >
-          {pathFindingState.initialGrid.map((state: CellState, index) => (
+          {pathFindingState.pathFindingModuleGrid.map((state: CellState, index) => (
             <GridCell key={index} state={state} />
           ))}
         </div>

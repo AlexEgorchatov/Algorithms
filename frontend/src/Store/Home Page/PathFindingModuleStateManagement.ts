@@ -7,47 +7,47 @@ export enum CellState {
 }
 
 const InitializeGrid = (): CellState[] => {
-  let initialGrid: CellState[] = [];
+  let pathFindingModuleGrid: CellState[] = [];
   for (let i = 0; i < 56; i++) {
-    initialGrid.push(CellState.Unselected);
+    pathFindingModuleGrid.push(CellState.Unselected);
   }
-  initialGrid[5 * 8 + 1] = CellState.Source;
-  initialGrid[0 * 8 + 7] = CellState.Destination;
-  initialGrid[4 * 8 + 4] = CellState.Wall;
-  initialGrid[5 * 8 + 4] = CellState.Wall;
-  initialGrid[6 * 8 + 4] = CellState.Wall;
+  pathFindingModuleGrid[5 * 8 + 1] = CellState.Source;
+  pathFindingModuleGrid[0 * 8 + 7] = CellState.Destination;
+  pathFindingModuleGrid[4 * 8 + 4] = CellState.Wall;
+  pathFindingModuleGrid[5 * 8 + 4] = CellState.Wall;
+  pathFindingModuleGrid[6 * 8 + 4] = CellState.Wall;
 
-  return initialGrid;
+  return pathFindingModuleGrid;
 };
 
 //#region State
 export interface PathFindingModuleState {
-  readonly initialGrid: CellState[];
+  readonly pathFindingModuleGrid: CellState[];
 }
 
 const initialPathFindingModuleState: PathFindingModuleState = {
-  initialGrid: InitializeGrid(),
+  pathFindingModuleGrid: InitializeGrid(),
 };
 //#endregion State
 
 //#region Actions
-const UPDATINGPATHFINDINGMODULESTATE = 'UpdatingPathFindingModuleState';
-export const updatingPathFindingModuleStateAction = (grid = initialPathFindingModuleState.initialGrid) =>
+const UPDATE_PATH_FINDING_MODULE_STATE = 'UpdatePathFindingModuleState';
+export const updatePathFindingModuleStateAction = (pathFindingModuleGrid = initialPathFindingModuleState.pathFindingModuleGrid) =>
   ({
-    type: UPDATINGPATHFINDINGMODULESTATE,
-    grid: grid,
+    type: UPDATE_PATH_FINDING_MODULE_STATE,
+    pathFindingModuleGrid: pathFindingModuleGrid,
   } as const);
 
 //#endregion Actions
 
 //#region Reducers
-type PathFindingModuleActions = ReturnType<typeof updatingPathFindingModuleStateAction>;
+type PathFindingModuleActions = ReturnType<typeof updatePathFindingModuleStateAction>;
 export const pathFindingModuleReducer = (state = initialPathFindingModuleState, action: PathFindingModuleActions) => {
   switch (action.type) {
-    case UPDATINGPATHFINDINGMODULESTATE:
+    case UPDATE_PATH_FINDING_MODULE_STATE:
       return {
         ...state,
-        initialGrid: action.grid,
+        pathFindingModuleGrid: action.pathFindingModuleGrid,
       };
 
     default:

@@ -1,31 +1,31 @@
 //#region State
 export interface HeaderState {
-  readonly initialMenuButtonVisibility: boolean;
+  readonly menuButtonVisibility: boolean;
 }
 
 const initialHeaderState: HeaderState = {
-  initialMenuButtonVisibility: false,
+  menuButtonVisibility: false,
 };
 //#endregion State
 
 //#region Actions
-const UPDATINGHEADERVISIBILITYSTATE = 'UpdatingHeaderVisibilityState';
-export const updatingHeaderStateAction = (visibility = initialHeaderState.initialMenuButtonVisibility) =>
+const UPDATE_HEADER_VISIBILITY_STATE = 'updateHeaderVisibilityState';
+export const updateHeaderStateAction = (visibility = initialHeaderState.menuButtonVisibility) =>
   ({
-    type: UPDATINGHEADERVISIBILITYSTATE,
+    type: UPDATE_HEADER_VISIBILITY_STATE,
     visibility: visibility,
   } as const);
 
 //#endregion Actions
 
 //#region Reducers
-type HeaderActions = ReturnType<typeof updatingHeaderStateAction>;
+type HeaderActions = ReturnType<typeof updateHeaderStateAction>;
 export const headerReducer = (state = initialHeaderState, action: HeaderActions) => {
   switch (action.type) {
-    case UPDATINGHEADERVISIBILITYSTATE:
+    case UPDATE_HEADER_VISIBILITY_STATE:
       return {
         ...state,
-        initialMenuButtonVisibility: action.visibility,
+        menuButtonVisibility: action.visibility,
       };
 
     default:

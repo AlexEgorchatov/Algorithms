@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
-import { updatingHeaderStateAction } from '../Store/Home Page/HeaderStateManagement';
+import { updateHeaderStateAction } from '../Store/Home Page/HeaderStateManagement';
 import { minAppWidth } from '../App';
 
 interface Props {
@@ -63,8 +63,7 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
             font-size: 28px;
             border: none;
             cursor: pointer;
-            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-              sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
           `}
         >
           Modules
@@ -114,12 +113,12 @@ const HeaderMenuButton = ({ data }: Props) => {
 
   const handleOutsideMenuButtonClick = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as Node)) {
-      dispatch(updatingHeaderStateAction(false));
+      dispatch(updateHeaderStateAction(false));
     }
     document.removeEventListener('click', handleOutsideMenuButtonClick, true);
   };
   const handleMenuButtonClick = () => {
-    dispatch(updatingHeaderStateAction(!headerState.initialMenuButtonVisibility));
+    dispatch(updateHeaderStateAction(!headerState.menuButtonVisibility));
     document.addEventListener('click', handleOutsideMenuButtonClick, true);
     return () => {
       document.removeEventListener('click', handleOutsideMenuButtonClick, true);
@@ -163,7 +162,7 @@ const HeaderMenuButton = ({ data }: Props) => {
         css={css`
           position: absolute;
           margin-left: -1px;
-          display: ${headerState.initialMenuButtonVisibility ? 'block' : 'none'};
+          display: ${headerState.menuButtonVisibility ? 'block' : 'none'};
         `}
       >
         <HeaderMainComponent data={data} isVisible={false} />

@@ -6,11 +6,11 @@ export const enum CharacterState {
 
 //#region State
 export interface StringMatchingModuleState {
-  readonly initialChars: CharacterState[];
+  readonly stringMatchingModuleCharacters: CharacterState[];
 }
 
 const initialStringMatchingModuleState: StringMatchingModuleState = {
-  initialChars: [
+  stringMatchingModuleCharacters: [
     CharacterState.Unselected,
     CharacterState.Unselected,
     CharacterState.Unselected,
@@ -23,23 +23,23 @@ const initialStringMatchingModuleState: StringMatchingModuleState = {
 //#endregion State
 
 //#region Actions
-const UPDATINGSTRINGMATCHINGMODULESTATE = 'UpdatingStringMatchingModuleState';
-export const updatingStringMatchingModuleStateAction = (chars = initialStringMatchingModuleState.initialChars) =>
+const UPDATE_STRING_MATCHING_MODULE_CHARACTERS_STATE = 'updateStringMatchingModuleState';
+export const updateStringMatchingModuleStateAction = (stringMatchingModuleCharacters = initialStringMatchingModuleState.stringMatchingModuleCharacters) =>
   ({
-    type: UPDATINGSTRINGMATCHINGMODULESTATE,
-    chars: chars,
+    type: UPDATE_STRING_MATCHING_MODULE_CHARACTERS_STATE,
+    stringMatchingModuleCharacters: stringMatchingModuleCharacters,
   } as const);
 
 //#endregion Actions
 
 //#region Reducers
-type StringMatchingModuleActions = ReturnType<typeof updatingStringMatchingModuleStateAction>;
+type StringMatchingModuleActions = ReturnType<typeof updateStringMatchingModuleStateAction>;
 export const stringMatchingModuleReducer = (state = initialStringMatchingModuleState, action: StringMatchingModuleActions) => {
   switch (action.type) {
-    case UPDATINGSTRINGMATCHINGMODULESTATE:
+    case UPDATE_STRING_MATCHING_MODULE_CHARACTERS_STATE:
       return {
         ...state,
-        initialChars: action.chars,
+        stringMatchingModuleCharacters: action.stringMatchingModuleCharacters,
       };
 
     default:

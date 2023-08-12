@@ -1,31 +1,31 @@
 //#region State
 export interface SortingModuleState {
-  readonly initialHeights: number[];
+  readonly sortingModuleHeights: number[];
 }
 
 const initialSortingModuleState: SortingModuleState = {
-  initialHeights: [180, 100, 120, 140, 160],
+  sortingModuleHeights: [180, 100, 120, 140, 160],
 };
 //#endregion State
 
 //#region Actions
-const UPDATINGSORTINGMODULESTATE = 'UpdatingSortingModuleState';
-export const updatingSortingModuleStateAction = (heights = initialSortingModuleState.initialHeights) =>
+const UPDATE_SORTING_MODULE_HEIGHTS_STATE = 'updateSortingModuleHeightsState';
+export const updateSortingModuleHeightsStateAction = (sortingModuleHeights = initialSortingModuleState.sortingModuleHeights) =>
   ({
-    type: UPDATINGSORTINGMODULESTATE,
-    heights: heights,
+    type: UPDATE_SORTING_MODULE_HEIGHTS_STATE,
+    sortingModuleHeights: sortingModuleHeights,
   } as const);
 
 //#endregion Actions
 
 //#region Reducers
-type SortingModuleActions = ReturnType<typeof updatingSortingModuleStateAction>;
+type SortingModuleActions = ReturnType<typeof updateSortingModuleHeightsStateAction>;
 export const sortingModuleReducer = (state = initialSortingModuleState, action: SortingModuleActions) => {
   switch (action.type) {
-    case UPDATINGSORTINGMODULESTATE:
+    case UPDATE_SORTING_MODULE_HEIGHTS_STATE:
       return {
         ...state,
-        initialHeights: action.heights,
+        sortingModuleHeights: action.sortingModuleHeights,
       };
 
     default:
