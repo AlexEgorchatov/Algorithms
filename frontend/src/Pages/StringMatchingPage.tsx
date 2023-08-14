@@ -12,6 +12,9 @@ import {
   updateSelectedSearchingAlgorithmState,
   updateStringMatchingInputState,
   updateStringMatchingPatternState,
+  updateSelectedSearchingAlgorithmState,
+  updateStringMatchingInputState,
+  updateStringMatchingPatternState,
 } from '../Store/String Matching Page/StringMatchingPageStateManagement';
 import { animationContext, handleCompleteSearch, handleStartSearch, handleStopSearch } from '../Resources/Helper';
 import { ActionBar } from '../Components/ActionBar';
@@ -22,6 +25,7 @@ export let selectedStringMatchingAlgorithm: StringMatchingAlgorithmBase = new Na
 export const maxStringMatchingInputLength: number = 200;
 export const maxStringMatchingPatternLength: number = 60;
 
+const renderedPatter: string = 'was';
 const renderedPatter: string = 'was';
 const renderedInput: string =
   "Was it a whisper or was it the wind? He wasn't quite sure. He thought he heard a voice but at this moment all he could hear was the wind rustling the leaves of the trees all around him.";
@@ -43,6 +47,7 @@ const AlgorithmComponent = ({ title, isSelected, stringMatchingAlgorithm }: Algo
   const handleClick = () => {
     if (algorithmState.hasAlgorithmStarted) return;
     selectedStringMatchingAlgorithm = stringMatchingAlgorithm;
+    dispatch(updateSelectedSearchingAlgorithmState(stringMatchingAlgorithm.stringMatchingAlgorithm));
     dispatch(updateSelectedSearchingAlgorithmState(stringMatchingAlgorithm.stringMatchingAlgorithm));
   };
 
@@ -97,6 +102,7 @@ const StringMatchingPatternComponent = () => {
 
   useEffect(() => {
     dispatch(updateStringMatchingPatternState(renderedPatter));
+    dispatch(updateStringMatchingPatternState(renderedPatter));
   }, []);
 
   return (
@@ -121,6 +127,7 @@ const StringMatchingPatternComponent = () => {
         placeholder="Type a pattern to search..."
         value={stringMatchingPageState.stringMatchingPattern}
         onChange={() => dispatch(updateStringMatchingPatternState(ref.current?.value))}
+        onChange={() => dispatch(updateStringMatchingPatternState(ref.current?.value))}
         disabled={algorithmState.hasAlgorithmStarted}
       />
       <div
@@ -138,13 +145,16 @@ const StringMatchingPatternComponent = () => {
             color: white;
             margin-left: 3px;
             color: ${stringMatchingPageState.stringMatchingPattern.length > maxStringMatchingPatternLength ? errorMessageColor : 'white'};
+            color: ${stringMatchingPageState.stringMatchingPattern.length > maxStringMatchingPatternLength ? errorMessageColor : 'white'};
           `}
         >
+          {stringMatchingPageState.stringMatchingPattern.length}/{maxStringMatchingPatternLength}
           {stringMatchingPageState.stringMatchingPattern.length}/{maxStringMatchingPatternLength}
         </div>
         .
         <div
           css={css`
+            visibility: ${stringMatchingPageState.stringMatchingPattern.length > maxStringMatchingPatternLength ? 'visible' : 'hidden'};
             visibility: ${stringMatchingPageState.stringMatchingPattern.length > maxStringMatchingPatternLength ? 'visible' : 'hidden'};
             display: flex;
             color: ${errorMessageColor};
@@ -158,6 +168,7 @@ const StringMatchingPatternComponent = () => {
               cursor: pointer;
               text-decoration: underline;
             `}
+            onClick={() => dispatch(updateStringMatchingPatternState(stringMatchingPageState.stringMatchingAnimationPattern))}
             onClick={() => dispatch(updateStringMatchingPatternState(stringMatchingPageState.stringMatchingAnimationPattern))}
           >
             Fix
@@ -175,6 +186,7 @@ const StringMatchingInputComponent = () => {
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    dispatch(updateStringMatchingInputState(renderedInput));
     dispatch(updateStringMatchingInputState(renderedInput));
   }, []);
 
@@ -200,6 +212,7 @@ const StringMatchingInputComponent = () => {
         placeholder="Type some text..."
         value={stringMatchingPageState.stringMatchingInput}
         onInput={() => dispatch(updateStringMatchingInputState(ref.current?.value))}
+        onInput={() => dispatch(updateStringMatchingInputState(ref.current?.value))}
         disabled={algorithmState.hasAlgorithmStarted}
       />
       <div
@@ -211,6 +224,37 @@ const StringMatchingInputComponent = () => {
           font-weight: bold;
         `}
       >
+        Ex: "Input 123". Maximum number of elements:
+        <div
+          css={css`
+            color: white;
+            margin-left: 3px;
+            color: ${stringMatchingPageState.stringMatchingInput.length > maxStringMatchingInputLength ? errorMessageColor : 'white'};
+          `}
+        >
+          {stringMatchingPageState.stringMatchingInput.length}/{maxStringMatchingInputLength}
+        </div>
+        .
+        <div
+          css={css`
+            visibility: ${stringMatchingPageState.stringMatchingInput.length > maxStringMatchingInputLength ? 'visible' : 'hidden'};
+            display: flex;
+            color: ${errorMessageColor};
+            margin-left: 5px;
+          `}
+        >
+          Input has invalid format,
+          <div
+            css={css`
+              margin-left: 5px;
+              cursor: pointer;
+              text-decoration: underline;
+            `}
+            onClick={() => dispatch(updateStringMatchingInputState(stringMatchingPageState.stringMatchingAnimationInput))}
+          >
+            Fix
+          </div>
+        </div>
         Ex: "Input 123". Maximum number of elements:
         <div
           css={css`
@@ -382,6 +426,7 @@ const AnimationComponent = () => {
           >
             Input:
           </span>
+          {stringMatchingPageState.stringMatchingAnimationInput}
           {stringMatchingPageState.stringMatchingAnimationInput}
         </div>
       </div>
