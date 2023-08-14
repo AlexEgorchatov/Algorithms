@@ -6,23 +6,19 @@ import { ModulePlaceholder } from '../Components/ModulePlaceholder';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
-import { CharacterState, updateStringMatchingModuleStateAction } from '../Store/Home Page/StringMatchingModuleStateManagement';
+import { updateStringMatchingModuleStateAction } from '../Store/Home Page/StringMatchingModuleStateManagement';
+import { StringMatchingCharacterState, StringMatchingCharacterProps } from '../Pages/StringMatchingPage';
 
-interface Props {
-  character: string;
-  state: CharacterState;
-}
-
-const SearchableCharacter = ({ character, state = CharacterState.Unselected }: Props) => {
+const SearchableCharacter = ({ character, characterState: state = StringMatchingCharacterState.Unselected }: StringMatchingCharacterProps) => {
   const setFont = () => {
     switch (state) {
-      case CharacterState.Unselected:
+      case StringMatchingCharacterState.Unselected:
         return 'color: #ffffff; background-color: transparent';
 
-      case CharacterState.Selected:
+      case StringMatchingCharacterState.Selected:
         return 'color: #ffffff; background-color: #000000';
 
-      case CharacterState.Found:
+      case StringMatchingCharacterState.Found:
         return 'color: #000000; background-color: #ffff00';
     }
   };
@@ -42,13 +38,13 @@ export const StringMatchingModule = ({ title }: ModuleTitle) => {
   const stringMatchingState = useSelector((state: AppState) => state.stringMatchingModuleState);
   const dispatch = useDispatch();
   const inputRender = [
-    <SearchableCharacter key={0} character={'b'} state={stringMatchingState.stringMatchingModuleCharacters[0]} />,
-    <SearchableCharacter key={1} character={'a'} state={stringMatchingState.stringMatchingModuleCharacters[1]} />,
-    <SearchableCharacter key={2} character={'b'} state={stringMatchingState.stringMatchingModuleCharacters[2]} />,
-    <SearchableCharacter key={3} character={'b'} state={stringMatchingState.stringMatchingModuleCharacters[3]} />,
-    <SearchableCharacter key={4} character={'a'} state={stringMatchingState.stringMatchingModuleCharacters[4]} />,
-    <SearchableCharacter key={5} character={'b'} state={stringMatchingState.stringMatchingModuleCharacters[5]} />,
-    <SearchableCharacter key={6} character={'b'} state={stringMatchingState.stringMatchingModuleCharacters[6]} />,
+    <SearchableCharacter key={0} character={'b'} characterState={stringMatchingState.stringMatchingModuleCharacters[0]} />,
+    <SearchableCharacter key={1} character={'a'} characterState={stringMatchingState.stringMatchingModuleCharacters[1]} />,
+    <SearchableCharacter key={2} character={'b'} characterState={stringMatchingState.stringMatchingModuleCharacters[2]} />,
+    <SearchableCharacter key={3} character={'b'} characterState={stringMatchingState.stringMatchingModuleCharacters[3]} />,
+    <SearchableCharacter key={4} character={'a'} characterState={stringMatchingState.stringMatchingModuleCharacters[4]} />,
+    <SearchableCharacter key={5} character={'b'} characterState={stringMatchingState.stringMatchingModuleCharacters[5]} />,
+    <SearchableCharacter key={6} character={'b'} characterState={stringMatchingState.stringMatchingModuleCharacters[6]} />,
   ];
   const pattern = 'ab';
   const timeoutID = React.useRef(-1);
@@ -68,12 +64,12 @@ export const StringMatchingModule = ({ title }: ModuleTitle) => {
     let inputCopy = [...stringMatchingState.stringMatchingModuleCharacters];
 
     for (let i = 0; i < inputLength; i++) {
-      inputCopy[i] = CharacterState.Selected;
+      inputCopy[i] = StringMatchingCharacterState.Selected;
       dispatch(updateStringMatchingModuleStateAction(inputCopy));
       await new Promise((resolve) => awaitCancellation(resolve, stepTime));
       inputCopy = [...inputCopy];
 
-      inputCopy[i] = i === 1 || i === 2 || i === 4 || i === 5 ? CharacterState.Found : CharacterState.Unselected;
+      inputCopy[i] = i === 1 || i === 2 || i === 4 || i === 5 ? StringMatchingCharacterState.Found : StringMatchingCharacterState.Unselected;
       dispatch(updateStringMatchingModuleStateAction(inputCopy));
       inputCopy = [...inputCopy];
 

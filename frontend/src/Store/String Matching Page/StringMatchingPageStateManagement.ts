@@ -1,3 +1,4 @@
+import { StringMatchingCharacterProps } from '../../Pages/StringMatchingPage';
 import { StringMatchingAlgorithmEnum } from '../../Resources/Algorithms/AlgorithmBase';
 
 //#region State
@@ -5,16 +6,16 @@ export interface StringMatchingPageState {
   readonly selectedSearchingAlgorithm: StringMatchingAlgorithmEnum;
   readonly stringMatchingPattern: string;
   readonly stringMatchingInput: string;
-  readonly stringMatchingAnimationPattern: string;
-  readonly stringMatchingAnimationInput: string;
+  readonly stringMatchingAnimationPattern: StringMatchingCharacterProps[];
+  readonly stringMatchingAnimationInput: StringMatchingCharacterProps[];
 }
 
 const initialStringMatchingPageState: StringMatchingPageState = {
   selectedSearchingAlgorithm: StringMatchingAlgorithmEnum.Naive,
   stringMatchingPattern: '',
   stringMatchingInput: '',
-  stringMatchingAnimationPattern: '',
-  stringMatchingAnimationInput: '',
+  stringMatchingAnimationPattern: [],
+  stringMatchingAnimationInput: [],
 };
 //#endregion State
 

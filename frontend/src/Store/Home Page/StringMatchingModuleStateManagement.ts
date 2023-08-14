@@ -1,23 +1,19 @@
-export const enum CharacterState {
-  Unselected = 0,
-  Selected = 1,
-  Found = 2,
-}
+import { StringMatchingCharacterState } from '../../Pages/StringMatchingPage';
 
 //#region State
 export interface StringMatchingModuleState {
-  readonly stringMatchingModuleCharacters: CharacterState[];
+  readonly stringMatchingModuleCharacters: StringMatchingCharacterState[];
 }
 
 const initialStringMatchingModuleState: StringMatchingModuleState = {
   stringMatchingModuleCharacters: [
-    CharacterState.Unselected,
-    CharacterState.Unselected,
-    CharacterState.Unselected,
-    CharacterState.Unselected,
-    CharacterState.Unselected,
-    CharacterState.Unselected,
-    CharacterState.Unselected,
+    StringMatchingCharacterState.Unselected,
+    StringMatchingCharacterState.Unselected,
+    StringMatchingCharacterState.Unselected,
+    StringMatchingCharacterState.Unselected,
+    StringMatchingCharacterState.Unselected,
+    StringMatchingCharacterState.Unselected,
+    StringMatchingCharacterState.Unselected,
   ],
 };
 //#endregion State

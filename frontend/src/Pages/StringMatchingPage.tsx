@@ -18,12 +18,20 @@ import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
 import { RefreshButton } from '../Components/RefreshButton';
 
+export enum StringMatchingCharacterState {
+  Unselected = 0,
+  Selected = 1,
+  Found = 2,
+}
+export interface StringMatchingCharacterProps {
+  character: string;
+  characterState?: StringMatchingCharacterState;
+}
 export let selectedStringMatchingAlgorithm: StringMatchingAlgorithmBase = new NaivePatternMatching(StringMatchingAlgorithmEnum.Naive);
 export const maxStringMatchingInputLength: number = 200;
 export const maxStringMatchingPatternLength: number = 60;
-
-const renderedPatter: string = 'was';
-const renderedInput: string =
+export const renderedPatter: string = 'was';
+export const renderedInput: string =
   "Was it a whisper or was it the wind? He wasn't quite sure. He thought he heard a voice but at this moment all he could hear was the wind rustling the leaves of the trees all around him.";
 
 interface AlgorithmListProps {
@@ -159,7 +167,7 @@ const StringMatchingPatternComponent = () => {
               cursor: pointer;
               text-decoration: underline;
             `}
-            onClick={() => dispatch(updateStringMatchingPatternState(stringMatchingPageState.stringMatchingAnimationPattern))}
+            onClick={() => dispatch(updateStringMatchingPatternState(stringMatchingPageState.stringMatchingAnimationPattern.map((i) => i.character).join('')))}
           >
             Fix
           </div>
@@ -238,7 +246,7 @@ const StringMatchingInputComponent = () => {
               cursor: pointer;
               text-decoration: underline;
             `}
-            onClick={() => dispatch(updateStringMatchingInputState(stringMatchingPageState.stringMatchingAnimationInput))}
+            onClick={() => dispatch(updateStringMatchingInputState(stringMatchingPageState.stringMatchingAnimationInput.map((i) => i.character).join('')))}
           >
             Fix
           </div>
@@ -340,50 +348,49 @@ const AnimationComponent = () => {
           height: 70%;
           min-height: 425px;
           padding: 0px 20px;
+          color: white;
         `}
       >
         <div
           css={css`
-            display: inline;
-            word-break: break-all;
-            align-items: flex-start;
-            color: white;
-            height: 120px;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            min-height: 120px;
             font-family: monospace;
-            white-space: pre-wrap;
           `}
         >
           <span
             css={css`
               font-weight: 700;
-              margin-right: 16px;
+              width: 148.5px;
             `}
           >
             Pattern:
           </span>
-          {stringMatchingPageState.stringMatchingAnimationPattern}
+          {stringMatchingPageState.stringMatchingAnimationPattern.map((character, index) => (
+            <StringMatchingCharacterComponent key={index} character={character.character} characterState={character.characterState} />
+          ))}
         </div>
         <div
           css={css`
-            display: inline;
-            word-break: break-all;
-            align-items: flex-start;
-            color: white;
+            display: flex;
+            flex-wrap: wrap;
             max-height: 290px;
             font-family: monospace;
-            white-space: pre-wrap;
-            overflow-y: auto;
           `}
         >
           <span
             css={css`
               font-weight: 700;
-              margin-right: 16px;
+              width: 115.5px;
             `}
           >
             Input:
           </span>
-          {stringMatchingPageState.stringMatchingAnimationInput}
+          {stringMatchingPageState.stringMatchingAnimationInput.map((character, index) => (
+            <StringMatchingCharacterComponent key={index} character={character.character} characterState={character.characterState} />
+          ))}
         </div>
       </div>
       <div
@@ -403,6 +410,32 @@ const AnimationComponent = () => {
           <SliderComponent />
         </animationContext.Provider>
       </div>
+    </div>
+  );
+};
+
+const StringMatchingCharacterComponent = ({ character, characterState = StringMatchingCharacterState.Unselected }: StringMatchingCharacterProps) => {
+  const setFont = () => {
+    switch (characterState) {
+      case StringMatchingCharacterState.Unselected:
+        return 'color: #ffffff; background-color: transparent';
+
+      case StringMatchingCharacterState.Selected:
+        return 'color: #ffffff; background-color: #000000';
+
+      case StringMatchingCharacterState.Found:
+        return 'color: #000000; background-color: #ffff00';
+    }
+  };
+
+  return (
+    <div
+      css={css`
+        width: 16.5px;
+        ${setFont()}
+      `}
+    >
+      {character}
     </div>
   );
 };
