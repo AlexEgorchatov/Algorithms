@@ -15,7 +15,7 @@ const SearchableCharacter = ({ character, characterState: state = StringMatching
       case StringMatchingCharacterState.Unselected:
         return 'color: #ffffff; background-color: transparent';
 
-      case StringMatchingCharacterState.Selected:
+      case StringMatchingCharacterState.Checked:
         return 'color: #ffffff; background-color: #000000';
 
       case StringMatchingCharacterState.Found:
@@ -64,7 +64,7 @@ export const StringMatchingModule = ({ title }: ModuleTitle) => {
     let inputCopy = [...stringMatchingState.stringMatchingModuleCharacters];
 
     for (let i = 0; i < inputLength; i++) {
-      inputCopy[i] = StringMatchingCharacterState.Selected;
+      inputCopy[i] = StringMatchingCharacterState.Checked;
       dispatch(updateStringMatchingModuleStateAction(inputCopy));
       await new Promise((resolve) => awaitCancellation(resolve, stepTime));
       inputCopy = [...inputCopy];

@@ -3,6 +3,7 @@ import { store } from '../App';
 import { SortingBarProps, SortingBarStateEnum, finalSortingBars, initialSortingBars, selectedSortingAlgorithm } from '../Pages/SortingPage';
 import { updateSortingBarsStateAction } from '../Store/Sorting Page/SortingPageStateManagement';
 import { updateHasAlgorithmStartedStateAction, updateIsAlgorithmRunningStateAction } from '../Store/Shared/AlgorithmStateManagement';
+import { selectedStringMatchingAlgorithm } from '../Pages/StringMatchingPage';
 
 //#region Shared helpers
 
@@ -65,7 +66,7 @@ export const isAlgorithmTerminated = async (): Promise<boolean> => {
   });
 };
 
-export const awaitStepIteration = async () => {
+export const pauseForStepIteration = async () => {
   await new Promise((resolve) => setTimeout(resolve, algorithmStepBaseTime - 30 * (store.getState().sliderComponentState.sliderValue - 1)));
 };
 
@@ -120,7 +121,7 @@ export const selectSortingBars = (barsCopy: SortingBarProps[], index1: number, i
   store.dispatch(updateSortingBarsStateAction(barsCopy));
 };
 
-export const unselectSortingBars = (barsCopy: SortingBarProps[], index1: number, index2: number) => {
+export const deselectSortingBars = (barsCopy: SortingBarProps[], index1: number, index2: number) => {
   barsCopy = [...barsCopy];
   barsCopy[index1] = { ...barsCopy[index1], barState: SortingBarStateEnum.Unselected };
   barsCopy[index2] = { ...barsCopy[index2], barState: SortingBarStateEnum.Unselected };
@@ -131,7 +132,9 @@ export const unselectSortingBars = (barsCopy: SortingBarProps[], index1: number,
 
 //#region String Matching helpers
 
-export const handleStartSearch = async () => {};
+export const handleStartSearch = async () => {
+  selectedStringMatchingAlgorithm.executeAlgorithm();
+};
 
 export const handleCompleteSearch = async () => {};
 

@@ -2,7 +2,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useEffect, useRef } from 'react';
-import { errorMessageColor, headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
+import { completionColor, errorMessageColor, headerItemHovered, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
 import { StringMatchingData, stringMatchingAlgorithms } from '../Resources/String Matching Page Resources/StringMatchingData';
 import { StringMatchingAlgorithmBase, StringMatchingAlgorithmEnum } from '../Resources/Algorithms/AlgorithmBase';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,8 +20,9 @@ import { RefreshButton } from '../Components/RefreshButton';
 
 export enum StringMatchingCharacterState {
   Unselected = 0,
-  Selected = 1,
-  Found = 2,
+  Checked = 1,
+  Current = 2,
+  Found = 3,
 }
 export interface StringMatchingCharacterProps {
   character: string;
@@ -418,13 +419,16 @@ const StringMatchingCharacterComponent = ({ character, characterState = StringMa
   const setFont = () => {
     switch (characterState) {
       case StringMatchingCharacterState.Unselected:
-        return 'color: #ffffff; background-color: transparent';
+        return 'color: white; background-color: transparent';
 
-      case StringMatchingCharacterState.Selected:
-        return 'color: #ffffff; background-color: #000000';
+      case StringMatchingCharacterState.Checked:
+        return 'color: white; background-color: orange';
+
+      case StringMatchingCharacterState.Current:
+        return `color: black; background-color: ${pivotColor}`;
 
       case StringMatchingCharacterState.Found:
-        return 'color: #000000; background-color: #ffff00';
+        return 'color: black; background-color: #ffff00';
     }
   };
 

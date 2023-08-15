@@ -1,14 +1,7 @@
 import { store } from '../../App';
 import { SortingBarStateEnum } from '../../Pages/SortingPage';
 import { updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
-import {
-  finalizeSorting,
-  selectSortingBars,
-  swapSortingBarsVisually,
-  unselectSortingBars as deselectSortingBars,
-  isAlgorithmTerminated,
-  awaitStepIteration as pauseForStepIteration,
-} from '../Helper';
+import { finalizeSorting, selectSortingBars, swapSortingBarsVisually, deselectSortingBars, isAlgorithmTerminated, pauseForStepIteration } from '../Helper';
 import { SortingAlgorithmBase } from './AlgorithmBase';
 
 export class BubbleSort extends SortingAlgorithmBase {
