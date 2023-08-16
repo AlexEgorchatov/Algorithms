@@ -4,7 +4,6 @@ import { updateStringMatchingAnimationInputState, updateStringMatchingAnimationP
 import { pauseForStepIteration } from '../Helper';
 import { StringMatchingAlgorithmBase } from './AlgorithmBase';
 
-//TODO: complete the implementation
 export class NaivePatternMatching extends StringMatchingAlgorithmBase {
   async executeAlgorithm(): Promise<void> {
     let animationPatternCopy = [...store.getState().stringMatchingPageState.stringMatchingAnimationPattern];
@@ -15,7 +14,7 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
     for (let i = 0; i <= inputLength - patternLength; i++) {
       let j = 0;
       let isPreviouslyFound: boolean = false;
-      for (j = 0; j < patternLength; j++) {
+      for (j = 0; j < patternLength; ++j) {
         if (!isPreviouslyFound && animationInputCopy[i + j].characterState === StringMatchingCharacterState.Found) isPreviouslyFound = true;
 
         animationPatternCopy = [...animationPatternCopy];
@@ -28,6 +27,7 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
         await pauseForStepIteration();
 
         if (animationInputCopy[i + j].character.toLowerCase() !== animationPatternCopy[j].character.toLowerCase()) {
+          j++;
           break;
         } else {
           animationPatternCopy = [...animationPatternCopy];
@@ -38,6 +38,8 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
           store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
         }
       }
+
+      console.log(j);
 
       animationPatternCopy = [...animationPatternCopy];
       animationInputCopy = [...animationInputCopy];
@@ -54,7 +56,6 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
 
       store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
       store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
-      await pauseForStepIteration();
     }
   }
 }
