@@ -2,11 +2,13 @@
 export interface AlgorithmState {
   readonly hasAlgorithmStarted: boolean;
   readonly isAlgorithmRunning: boolean;
+  readonly isAlgorithmCompleted: boolean;
 }
 
 const initialAlgorithmState: AlgorithmState = {
   hasAlgorithmStarted: false,
   isAlgorithmRunning: false,
+  isAlgorithmCompleted: false,
 };
 //#endregion State
 
@@ -24,10 +26,20 @@ export const updateIsAlgorithmRunningStateAction = (isAlgorithmRunning: boolean)
     type: UPDATE_IS_ALGORITHM_RUNNING_STATE,
     isAlgorithmRunning: isAlgorithmRunning,
   } as const);
+
+const UPDATE_IS_ALGORITHM_COMPLETED_STATE = 'UpdateIsAlgorithmCompletedState';
+export const updateIsAlgorithmCompletedStateAction = (isAlgorithmCompleted: boolean) =>
+  ({
+    type: UPDATE_IS_ALGORITHM_COMPLETED_STATE,
+    isAlgorithmCompleted: isAlgorithmCompleted,
+  } as const);
 //#endregion Actions
 
 //#region Reducers
-type AlgorithmActions = ReturnType<typeof updateHasAlgorithmStartedStateAction> | ReturnType<typeof updateIsAlgorithmRunningStateAction>;
+type AlgorithmActions =
+  | ReturnType<typeof updateHasAlgorithmStartedStateAction>
+  | ReturnType<typeof updateIsAlgorithmRunningStateAction>
+  | ReturnType<typeof updateIsAlgorithmCompletedStateAction>;
 export const algorithmReducer = (state = initialAlgorithmState, action: AlgorithmActions) => {
   switch (action.type) {
     case UPDATE_HAS_ALGORITHM_STARTED_STATE:
@@ -40,6 +52,12 @@ export const algorithmReducer = (state = initialAlgorithmState, action: Algorith
       return {
         ...state,
         isAlgorithmRunning: action.isAlgorithmRunning,
+      };
+
+    case UPDATE_IS_ALGORITHM_COMPLETED_STATE:
+      return {
+        ...state,
+        isAlgorithmCompleted: action.isAlgorithmCompleted,
       };
 
     default:

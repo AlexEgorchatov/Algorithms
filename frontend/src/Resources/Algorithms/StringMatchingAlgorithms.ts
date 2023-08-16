@@ -39,8 +39,6 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
         }
       }
 
-      console.log(j);
-
       animationPatternCopy = [...animationPatternCopy];
       animationInputCopy = [...animationInputCopy];
 

@@ -2,7 +2,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useEffect, useRef } from 'react';
-import { completionColor, errorMessageColor, headerItemHovered, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
+import { errorMessageColor, headerItemHovered, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
 import { StringMatchingData, stringMatchingAlgorithms } from '../Resources/String Matching Page Resources/StringMatchingData';
 import { StringMatchingAlgorithmBase, StringMatchingAlgorithmEnum } from '../Resources/Algorithms/AlgorithmBase';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,7 +13,7 @@ import {
   updateStringMatchingInputState,
   updateStringMatchingPatternState,
 } from '../Store/String Matching Page/StringMatchingPageStateManagement';
-import { animationContext, handleCompleteSearch, handleStartSearch, handleStopSearch } from '../Resources/Helper';
+import { algorithmContext, handleCompleteSearch, handleStartSearch, handleStopSearch } from '../Resources/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
 import { RefreshButton } from '../Components/RefreshButton';
@@ -309,15 +309,15 @@ const SettingsComponent = () => {
                 width: 72px;
               `}
             >
-              <animationContext.Provider
+              <algorithmContext.Provider
                 value={{
-                  startButtonClick: handleStartSearch,
-                  stopButtonClick: handleStopSearch,
-                  completeButtonClick: handleCompleteSearch,
+                  startAlgorithm: handleStartSearch,
+                  stopAlgorithm: handleStopSearch,
+                  completeAlgorithm: handleCompleteSearch,
                 }}
               >
                 <ActionBar />
-              </animationContext.Provider>
+              </algorithmContext.Provider>
             </div>
             <RefreshButton />
           </div>
@@ -401,15 +401,15 @@ const AnimationComponent = () => {
           align-items: flex-end;
         `}
       >
-        <animationContext.Provider
+        <algorithmContext.Provider
           value={{
-            startButtonClick: handleStartSearch,
-            stopButtonClick: handleStopSearch,
-            completeButtonClick: handleCompleteSearch,
+            startAlgorithm: handleStartSearch,
+            stopAlgorithm: handleStopSearch,
+            completeAlgorithm: handleCompleteSearch,
           }}
         >
           <SliderComponent />
-        </animationContext.Provider>
+        </algorithmContext.Provider>
       </div>
     </div>
   );

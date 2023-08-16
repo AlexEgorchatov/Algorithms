@@ -20,7 +20,7 @@ import { BubbleSort } from '../Resources/Algorithms/SortingAlgorithms';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { minAppWidth } from '../App';
-import { algorithmAnimationBaseTime, animationContext, handleCompleteSorting, handleStartSorting, handleStopSorting } from '../Resources/Helper';
+import { algorithmAnimationBaseTime, algorithmContext, handleCompleteSorting, handleStartSorting, handleStopSorting } from '../Resources/Helper';
 import { RefreshButton } from '../Components/RefreshButton';
 
 export enum SortingBarStateEnum {
@@ -433,15 +433,15 @@ const SettingsComponent = () => {
               width: 72px;
             `}
           >
-            <animationContext.Provider
+            <algorithmContext.Provider
               value={{
-                startButtonClick: handleStartSorting,
-                stopButtonClick: handleStopSorting,
-                completeButtonClick: handleCompleteSorting,
+                startAlgorithm: handleStartSorting,
+                stopAlgorithm: handleStopSorting,
+                completeAlgorithm: handleCompleteSorting,
               }}
             >
               <ActionBar />
-            </animationContext.Provider>
+            </algorithmContext.Provider>
           </div>
           <GenerateInputComponent />
         </div>
@@ -494,15 +494,15 @@ const AnimationComponent = () => {
           align-items: flex-end;
         `}
       >
-        <animationContext.Provider
+        <algorithmContext.Provider
           value={{
-            startButtonClick: handleStartSorting,
-            stopButtonClick: handleStopSorting,
-            completeButtonClick: handleCompleteSorting,
+            startAlgorithm: handleStartSorting,
+            stopAlgorithm: handleStopSorting,
+            completeAlgorithm: handleCompleteSorting,
           }}
         >
           <SliderComponent />
-        </animationContext.Provider>
+        </algorithmContext.Provider>
       </div>
     </div>
   );

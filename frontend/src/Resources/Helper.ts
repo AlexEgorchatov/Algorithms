@@ -2,23 +2,27 @@ import { createContext } from 'react';
 import { store } from '../App';
 import { SortingBarProps, SortingBarStateEnum, finalSortingBars, initialSortingBars, selectedSortingAlgorithm } from '../Pages/SortingPage';
 import { updateSortingBarsStateAction } from '../Store/Sorting Page/SortingPageStateManagement';
-import { updateHasAlgorithmStartedStateAction, updateIsAlgorithmRunningStateAction } from '../Store/Shared/AlgorithmStateManagement';
+import {
+  updateHasAlgorithmStartedStateAction,
+  updateIsAlgorithmCompletedStateAction,
+  updateIsAlgorithmRunningStateAction,
+} from '../Store/Shared/AlgorithmStateManagement';
 import { selectedStringMatchingAlgorithm } from '../Pages/StringMatchingPage';
 
-//#region Shared helpers
+//#region Algorithm helpers
 
-interface animationProps {
-  startButtonClick: () => Promise<void>;
-  pauseButtonClick?: () => Promise<void>;
-  stopButtonClick: () => Promise<void>;
-  completeButtonClick: () => Promise<void>;
+interface algorithmProps {
+  startAlgorithm: () => Promise<void>;
+  pauseAlgorithm?: () => Promise<void>;
+  stopAlgorithm: () => Promise<void>;
+  completeAlgorithm: () => Promise<void>;
 }
 
-export const animationContext = createContext<animationProps>({
-  startButtonClick: () => Promise.resolve(),
-  pauseButtonClick: () => Promise.resolve(),
-  stopButtonClick: () => Promise.resolve(),
-  completeButtonClick: () => Promise.resolve(),
+export const algorithmContext = createContext<algorithmProps>({
+  startAlgorithm: () => Promise.resolve(),
+  pauseAlgorithm: () => Promise.resolve(),
+  stopAlgorithm: () => Promise.resolve(),
+  completeAlgorithm: () => Promise.resolve(),
 });
 
 export const algorithmStepBaseTime: number = 400;
@@ -70,13 +74,39 @@ export const pauseForStepIteration = async () => {
   await new Promise((resolve) => setTimeout(resolve, algorithmStepBaseTime - 30 * (store.getState().sliderComponentState.sliderValue - 1)));
 };
 
+export const handlePlayButtonClick = (startAlgorithm: () => Promise<void>) => {
+  store.dispatch(updateIsAlgorithmRunningStateAction(true));
+  if (store.getState().algorithmState.hasAlgorithmStarted) return;
+
+  store.dispatch(updateHasAlgorithmStartedStateAction(true));
+  startAlgorithm();
+};
+
+export const handleStopButtonClick = (stopAlgorithm: () => Promise<void>) => {
+  if (!store.getState().algorithmState.hasAlgorithmStarted) return;
+
+  store.dispatch(updateHasAlgorithmStartedStateAction(false));
+  store.dispatch(updateIsAlgorithmRunningStateAction(false));
+  stopAlgorithm();
+};
+
+export const handleCompleteButtonClick = (completeAlgorithm: () => Promise<void>) => {
+  if (!store.getState().algorithmState.hasAlgorithmStarted) return;
+
+  store.dispatch(updateHasAlgorithmStartedStateAction(false));
+  store.dispatch(updateIsAlgorithmRunningStateAction(false));
+  store.dispatch(updateIsAlgorithmCompletedStateAction(true));
+  completeAlgorithm();
+};
+
 //#endregion
 
 //#region Sorting Page helpers
 
 export const handleStartSorting = async () => {
-  if (JSON.stringify(store.getState().sortingPageState.sortingBars.map((i) => i.barHeight)) === JSON.stringify(finalSortingBars.map((i) => i.barHeight))) {
+  if (store.getState().algorithmState.isAlgorithmCompleted) {
     store.dispatch(updateSortingBarsStateAction(initialSortingBars));
+    store.dispatch(updateIsAlgorithmCompletedStateAction(false));
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
 
@@ -85,6 +115,7 @@ export const handleStartSorting = async () => {
 
 export const handleCompleteSorting = async () => {
   store.dispatch(updateSortingBarsStateAction(finalSortingBars));
+  store.dispatch(updateIsAlgorithmCompletedStateAction(true));
   finalizeSorting(finalSortingBars, true);
 };
 

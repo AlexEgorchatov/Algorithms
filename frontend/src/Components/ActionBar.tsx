@@ -2,24 +2,14 @@
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
 import { Fragment, useContext } from 'react';
-import { animationContext } from '../Resources/Helper';
+import { algorithmContext, handleCompleteButtonClick, handlePlayButtonClick, handleStopButtonClick } from '../Resources/Helper';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
-import { updateHasAlgorithmStartedStateAction, updateIsAlgorithmRunningStateAction } from '../Store/Shared/AlgorithmStateManagement';
+import { updateIsAlgorithmRunningStateAction } from '../Store/Shared/AlgorithmStateManagement';
 
 const PlayButton = () => {
-  const { startButtonClick } = useContext(animationContext);
-  const algorithmState = useSelector((state: AppState) => state.algorithmState);
-  const dispatch = useDispatch();
-
-  const handlePlayButtonClick = () => {
-    dispatch(updateIsAlgorithmRunningStateAction(true));
-    if (algorithmState.hasAlgorithmStarted) return;
-
-    dispatch(updateHasAlgorithmStartedStateAction(true));
-    startButtonClick();
-  };
+  const { startAlgorithm } = useContext(algorithmContext);
 
   return (
     <div
@@ -50,7 +40,7 @@ const PlayButton = () => {
           left: 6px;
         }
       `}
-      onClick={handlePlayButtonClick}
+      onClick={() => handlePlayButtonClick(startAlgorithm)}
     ></div>
   );
 };
@@ -98,17 +88,8 @@ const PauseButton = () => {
 };
 
 const StopButton = () => {
-  const { stopButtonClick } = useContext(animationContext);
+  const { stopAlgorithm } = useContext(algorithmContext);
   const algorithmState = useSelector((state: AppState) => state.algorithmState);
-  const dispatch = useDispatch();
-
-  const handleStopButtonClick = () => {
-    if (!algorithmState.hasAlgorithmStarted) return;
-
-    dispatch(updateHasAlgorithmStartedStateAction(false));
-    dispatch(updateIsAlgorithmRunningStateAction(false));
-    stopButtonClick();
-  };
 
   return (
     <div
@@ -135,7 +116,7 @@ const StopButton = () => {
             `}
         }
       `}
-      onClick={handleStopButtonClick}
+      onClick={() => handleStopButtonClick(stopAlgorithm)}
     >
       <div
         css={css`
@@ -153,17 +134,8 @@ const StopButton = () => {
 };
 
 const CompleteButton = () => {
-  const { completeButtonClick } = useContext(animationContext);
+  const { completeAlgorithm } = useContext(algorithmContext);
   const algorithmState = useSelector((state: AppState) => state.algorithmState);
-  const dispatch = useDispatch();
-
-  const handleCompleteButtonClick = () => {
-    if (!algorithmState.hasAlgorithmStarted) return;
-
-    dispatch(updateHasAlgorithmStartedStateAction(false));
-    dispatch(updateIsAlgorithmRunningStateAction(false));
-    completeButtonClick();
-  };
 
   return (
     <div
@@ -190,7 +162,7 @@ const CompleteButton = () => {
             `}
         }
       `}
-      onClick={handleCompleteButtonClick}
+      onClick={() => handleCompleteButtonClick(completeAlgorithm)}
     >
       <div
         css={css`
