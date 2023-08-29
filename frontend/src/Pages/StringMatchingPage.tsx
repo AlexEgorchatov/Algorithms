@@ -3,11 +3,10 @@
 import { css } from '@emotion/react';
 import { useEffect, useRef } from 'react';
 import { errorMessageColor, headerItemHovered, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
-import { StringMatchingData, stringMatchingAlgorithms } from '../Resources/String Matching Page Resources/StringMatchingData';
-import { StringMatchingAlgorithmBase, StringMatchingAlgorithmEnum } from '../Resources/Algorithms/AlgorithmBase';
+import { StringMatchingData, stringMatchingAlgorithmsData } from '../Resources/String Matching Page Resources/StringMatchingData';
+import { StringMatchingAlgorithmBase } from '../Resources/Algorithms/AlgorithmBase';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
-import { NaivePatternMatching } from '../Resources/Algorithms/StringMatchingAlgorithms';
 import {
   updateSelectedSearchingAlgorithmState,
   updateStringMatchingInputState,
@@ -28,7 +27,7 @@ export interface StringMatchingCharacterProps {
   character: string;
   characterState?: StringMatchingCharacterState;
 }
-export let selectedStringMatchingAlgorithm: StringMatchingAlgorithmBase = new NaivePatternMatching(StringMatchingAlgorithmEnum.Naive);
+export let selectedStringMatchingAlgorithm: StringMatchingAlgorithmBase = stringMatchingAlgorithmsData[0].stringMatchingAlgorithm;
 export const maxStringMatchingInputLength: number = 200;
 export const maxStringMatchingPatternLength: number = 60;
 export const renderedPatter: string = 'was';
@@ -46,13 +45,12 @@ interface AlgorithmProps {
 }
 
 const AlgorithmComponent = ({ title, isSelected, stringMatchingAlgorithm }: AlgorithmProps) => {
-  const algorithmState = useSelector((state: AppState) => state.algorithmState);
+  const algorithmState = useSelector((state: AppState) => state.animationState);
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    if (algorithmState.hasAlgorithmStarted) return;
+    if (algorithmState.hasAnimationStarted) return;
     selectedStringMatchingAlgorithm = stringMatchingAlgorithm;
-    dispatch(updateSelectedSearchingAlgorithmState(stringMatchingAlgorithm.stringMatchingAlgorithm));
     dispatch(updateSelectedSearchingAlgorithmState(stringMatchingAlgorithm.stringMatchingAlgorithm));
   };
 
@@ -62,10 +60,10 @@ const AlgorithmComponent = ({ title, isSelected, stringMatchingAlgorithm }: Algo
         font-size: 20px;
         color: ${isSelected ? '' : 'white'};
         margin-right: 10px;
-        cursor: ${algorithmState.hasAlgorithmStarted && !isSelected ? 'default' : 'pointer'};
-        opacity: ${algorithmState.hasAlgorithmStarted && !isSelected ? '0.5' : '1'};
+        cursor: ${algorithmState.hasAnimationStarted && !isSelected ? 'default' : 'pointer'};
+        opacity: ${algorithmState.hasAnimationStarted && !isSelected ? '0.5' : '1'};
         :hover {
-          ${!algorithmState.hasAlgorithmStarted &&
+          ${!algorithmState.hasAnimationStarted &&
           `
             color: ${!isSelected ? `${headerItemHovered}` : ''};
           `}
@@ -101,7 +99,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
 
 const StringMatchingPatternComponent = () => {
   const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingPageState);
-  const algorithmState = useSelector((state: AppState) => state.algorithmState);
+  const algorithmState = useSelector((state: AppState) => state.animationState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
@@ -131,7 +129,7 @@ const StringMatchingPatternComponent = () => {
         placeholder="Type a pattern to search..."
         value={stringMatchingPageState.stringMatchingPattern}
         onChange={() => dispatch(updateStringMatchingPatternState(ref.current?.value))}
-        disabled={algorithmState.hasAlgorithmStarted}
+        disabled={algorithmState.hasAnimationStarted}
       />
       <div
         css={css`
@@ -180,7 +178,7 @@ const StringMatchingPatternComponent = () => {
 
 const StringMatchingInputComponent = () => {
   const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingPageState);
-  const algorithmState = useSelector((state: AppState) => state.algorithmState);
+  const algorithmState = useSelector((state: AppState) => state.animationState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
@@ -210,7 +208,7 @@ const StringMatchingInputComponent = () => {
         placeholder="Type some text..."
         value={stringMatchingPageState.stringMatchingInput}
         onInput={() => dispatch(updateStringMatchingInputState(ref.current?.value))}
-        disabled={algorithmState.hasAlgorithmStarted}
+        disabled={algorithmState.hasAnimationStarted}
       />
       <div
         css={css`
@@ -321,7 +319,7 @@ const SettingsComponent = () => {
             </div>
             <RefreshButton />
           </div>
-          <AlgorithmsList data={stringMatchingAlgorithms} />
+          <AlgorithmsList data={stringMatchingAlgorithmsData} />
         </div>
       </div>
     </div>

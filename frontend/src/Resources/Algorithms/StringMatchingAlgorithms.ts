@@ -2,10 +2,12 @@ import { store } from '../../App';
 import { StringMatchingCharacterState } from '../../Pages/StringMatchingPage';
 import { updateStringMatchingAnimationInputState, updateStringMatchingAnimationPatternState } from '../../Store/String Matching Page/StringMatchingPageStateManagement';
 import { pauseForStepIteration } from '../Helper';
-import { StringMatchingAlgorithmBase } from './AlgorithmBase';
+import { StringMatchingAlgorithmBase, StringMatchingAlgorithmEnum } from './AlgorithmBase';
 
 export class NaivePatternMatching extends StringMatchingAlgorithmBase {
-  async executeAlgorithm(): Promise<void> {
+  public stringMatchingAlgorithm = StringMatchingAlgorithmEnum.Naive;
+
+  public async executeAlgorithm(): Promise<void> {
     let animationPatternCopy = [...store.getState().stringMatchingPageState.stringMatchingAnimationPattern];
     let animationInputCopy = [...store.getState().stringMatchingPageState.stringMatchingAnimationInput];
     let patternLength: number = animationPatternCopy.length;
@@ -59,5 +61,7 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
 }
 
 export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase {
-  async executeAlgorithm(): Promise<void> {}
+  public stringMatchingAlgorithm = StringMatchingAlgorithmEnum.KnuthMorrisPratt;
+
+  public async executeAlgorithm(): Promise<void> {}
 }

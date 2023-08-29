@@ -2,11 +2,11 @@
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
 import { Fragment, useContext } from 'react';
-import { algorithmContext, handleCompleteButtonClick, handlePlayButtonClick, handleStopButtonClick } from '../Resources/Helper';
+import { algorithmContext, completeAnimation, startAnimation, stopAnimation } from '../Resources/Helper';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
-import { updateIsAlgorithmRunningStateAction } from '../Store/Shared/AlgorithmStateManagement';
+import { updateIsAnimationRunningStateAction } from '../Store/Shared/AnimationStateManagement';
 
 const PlayButton = () => {
   const { startAlgorithm } = useContext(algorithmContext);
@@ -40,7 +40,7 @@ const PlayButton = () => {
           left: 6px;
         }
       `}
-      onClick={() => handlePlayButtonClick(startAlgorithm)}
+      onClick={() => startAnimation(startAlgorithm)}
     ></div>
   );
 };
@@ -69,7 +69,7 @@ const PauseButton = () => {
           }
         }
       `}
-      onClick={() => dispatch(updateIsAlgorithmRunningStateAction(false))}
+      onClick={() => dispatch(updateIsAnimationRunningStateAction(false))}
     >
       <div
         css={css`
@@ -89,7 +89,7 @@ const PauseButton = () => {
 
 const StopButton = () => {
   const { stopAlgorithm } = useContext(algorithmContext);
-  const algorithmState = useSelector((state: AppState) => state.algorithmState);
+  const algorithmState = useSelector((state: AppState) => state.animationState);
 
   return (
     <div
@@ -104,10 +104,10 @@ const StopButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
-        opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
+        cursor: ${algorithmState.hasAnimationStarted ? 'pointer' : 'default'};
+        opacity: ${algorithmState.hasAnimationStarted ? '1' : '0.5'};
         :hover {
-          ${algorithmState.hasAlgorithmStarted &&
+          ${algorithmState.hasAnimationStarted &&
           `
               color: ${headerItemHovered};
               & > div {
@@ -116,7 +116,7 @@ const StopButton = () => {
             `}
         }
       `}
-      onClick={() => handleStopButtonClick(stopAlgorithm)}
+      onClick={() => stopAnimation(stopAlgorithm)}
     >
       <div
         css={css`
@@ -135,7 +135,7 @@ const StopButton = () => {
 
 const CompleteButton = () => {
   const { completeAlgorithm } = useContext(algorithmContext);
-  const algorithmState = useSelector((state: AppState) => state.algorithmState);
+  const algorithmState = useSelector((state: AppState) => state.animationState);
 
   return (
     <div
@@ -150,10 +150,10 @@ const CompleteButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${algorithmState.hasAlgorithmStarted ? 'pointer' : 'default'};
-        opacity: ${algorithmState.hasAlgorithmStarted ? '1' : '0.5'};
+        cursor: ${algorithmState.hasAnimationStarted ? 'pointer' : 'default'};
+        opacity: ${algorithmState.hasAnimationStarted ? '1' : '0.5'};
         :hover {
-          ${algorithmState.hasAlgorithmStarted &&
+          ${algorithmState.hasAnimationStarted &&
           `
               color: ${headerItemHovered};
               & > div {
@@ -162,7 +162,7 @@ const CompleteButton = () => {
             `}
         }
       `}
-      onClick={() => handleCompleteButtonClick(completeAlgorithm)}
+      onClick={() => completeAnimation(completeAlgorithm)}
     >
       <div
         css={css`
@@ -198,11 +198,11 @@ const CompleteButton = () => {
 };
 
 export const ActionBar = () => {
-  const algorithmState = useSelector((state: AppState) => state.algorithmState);
+  const algorithmState = useSelector((state: AppState) => state.animationState);
 
   return (
     <Fragment>
-      {algorithmState.isAlgorithmRunning ? <PauseButton /> : <PlayButton />}
+      {algorithmState.isAnimationRunning ? <PauseButton /> : <PlayButton />}
       <StopButton />
       <CompleteButton />
     </Fragment>

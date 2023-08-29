@@ -12,19 +12,9 @@ abstract class AlgorithmBase {
 }
 
 export abstract class SortingAlgorithmBase extends AlgorithmBase {
-  public readonly sortingAlgorithm: SortingAlgorithmEnum;
-
-  constructor(sortingAlgorithm: SortingAlgorithmEnum) {
-    super();
-    this.sortingAlgorithm = sortingAlgorithm;
-  }
+  public abstract readonly sortingAlgorithm: SortingAlgorithmEnum;
 }
 
 export abstract class StringMatchingAlgorithmBase extends AlgorithmBase {
-  public readonly stringMatchingAlgorithm: StringMatchingAlgorithmEnum;
-
-  constructor(stringMatchingAlgorithm: StringMatchingAlgorithmEnum) {
-    super();
-    this.stringMatchingAlgorithm = stringMatchingAlgorithm;
-  }
+  public abstract readonly stringMatchingAlgorithm: StringMatchingAlgorithmEnum;
 }

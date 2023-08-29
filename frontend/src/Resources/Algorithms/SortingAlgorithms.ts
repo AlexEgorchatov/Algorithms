@@ -1,11 +1,13 @@
 import { store } from '../../App';
 import { SortingBarStateEnum } from '../../Pages/SortingPage';
 import { updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
-import { finalizeSorting, selectSortingBars, swapSortingBarsVisually, deselectSortingBars, isAlgorithmTerminated, pauseForStepIteration } from '../Helper';
-import { SortingAlgorithmBase } from './AlgorithmBase';
+import { selectSortingBars, swapSortingBarsVisually, deselectSortingBars, isAnimationTerminated, pauseForStepIteration } from '../Helper';
+import { SortingAlgorithmBase, SortingAlgorithmEnum } from './AlgorithmBase';
 
 export class BubbleSort extends SortingAlgorithmBase {
-  async executeAlgorithm(): Promise<void> {
+  public sortingAlgorithm = SortingAlgorithmEnum.BubbleSort;
+
+  public async executeAlgorithm(): Promise<void> {
     let length = store.getState().sortingPageState.sortingBars.length;
     let barsCopy = [...store.getState().sortingPageState.sortingBars];
 
@@ -15,17 +17,17 @@ export class BubbleSort extends SortingAlgorithmBase {
       for (let j = 0; j < length - i - 1; j++) {
         selectSortingBars(barsCopy, j, j + 1);
         await pauseForStepIteration();
-        if (await isAlgorithmTerminated()) return;
+        if (await isAnimationTerminated()) return;
 
         if (barsCopy[j].barHeight <= barsCopy[j + 1].barHeight) {
           deselectSortingBars(barsCopy, j, j + 1);
-          if (await isAlgorithmTerminated()) return;
+          if (await isAnimationTerminated()) return;
           continue;
         }
 
         swapSortingBarsVisually(barsCopy, j, j + 1);
         await pauseForStepIteration();
-        if (await isAlgorithmTerminated()) return;
+        if (await isAnimationTerminated()) return;
 
         //TODO: Figure out why putting this code in a function breaks the algorithm
         barsCopy = [...barsCopy];
@@ -33,7 +35,7 @@ export class BubbleSort extends SortingAlgorithmBase {
         barsCopy[j] = { ...barsCopy[j], barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Unselected };
         barsCopy[j + 1] = { ...barsCopy[j + 1], barHeight: tempBar.barHeight, barState: SortingBarStateEnum.Unselected };
         store.dispatch(updateSortingBarsStateAction(barsCopy));
-        if (await isAlgorithmTerminated()) return;
+        if (await isAnimationTerminated()) return;
 
         isSwapped = true;
       }
@@ -41,19 +43,18 @@ export class BubbleSort extends SortingAlgorithmBase {
         break;
       }
     }
-
-    finalizeSorting(barsCopy);
   }
 }
 
 export class QuickSort extends SortingAlgorithmBase {
-  async executeAlgorithm(): Promise<void> {
+  public sortingAlgorithm = SortingAlgorithmEnum.QuickSort;
+
+  public async executeAlgorithm(): Promise<void> {
     let length = store.getState().sortingPageState.sortingBars.length;
     await this.quickSort(0, length - 1);
-    finalizeSorting(store.getState().sortingPageState.sortingBars);
   }
 
-  async quickSort(left: number, right: number): Promise<void> {
+  private async quickSort(left: number, right: number): Promise<void> {
     if (left >= right) return;
 
     let partitionIndex: number = await this.partition(left, right);
@@ -61,7 +62,7 @@ export class QuickSort extends SortingAlgorithmBase {
     await this.quickSort(partitionIndex + 1, right);
   }
 
-  async partition(left: number, right: number): Promise<number> {
+  private async partition(left: number, right: number): Promise<number> {
     return new Promise<number>(async (resolve) => {
       let barsCopy = [...store.getState().sortingPageState.sortingBars];
       let pivot: number = barsCopy[left].barHeight;
@@ -71,18 +72,18 @@ export class QuickSort extends SortingAlgorithmBase {
       for (let i: number = right; i > left; i--) {
         selectSortingBars(barsCopy, i, currentPartitionIndex);
         await pauseForStepIteration();
-        if (await isAlgorithmTerminated()) return;
+        if (await isAnimationTerminated()) return;
 
         if (barsCopy[i].barHeight <= pivot) {
           deselectSortingBars(barsCopy, i, currentPartitionIndex);
-          if (await isAlgorithmTerminated()) return;
+          if (await isAnimationTerminated()) return;
           continue;
         }
 
         if (i !== currentPartitionIndex) {
           swapSortingBarsVisually(barsCopy, i, currentPartitionIndex);
           await pauseForStepIteration();
-          if (await isAlgorithmTerminated()) return;
+          if (await isAnimationTerminated()) return;
           barsCopy = [...barsCopy];
           let tempBar = { ...barsCopy[i] };
           barsCopy[i] = { ...barsCopy[i], barHeight: barsCopy[currentPartitionIndex].barHeight, barState: SortingBarStateEnum.Unselected };
@@ -91,7 +92,7 @@ export class QuickSort extends SortingAlgorithmBase {
             barHeight: tempBar.barHeight,
             barState: SortingBarStateEnum.Unselected,
           };
-          if (await isAlgorithmTerminated()) return;
+          if (await isAnimationTerminated()) return;
         }
 
         currentPartitionIndex--;
@@ -100,11 +101,11 @@ export class QuickSort extends SortingAlgorithmBase {
 
       selectSortingBars(barsCopy, left, currentPartitionIndex);
       await pauseForStepIteration();
-      if (await isAlgorithmTerminated()) return;
+      if (await isAnimationTerminated()) return;
 
       swapSortingBarsVisually(barsCopy, left, currentPartitionIndex);
       await pauseForStepIteration();
-      if (await isAlgorithmTerminated()) return;
+      if (await isAnimationTerminated()) return;
 
       let tempBar = { ...barsCopy[left] };
       barsCopy = [...barsCopy];
@@ -115,7 +116,7 @@ export class QuickSort extends SortingAlgorithmBase {
         barState: SortingBarStateEnum.Unselected,
       };
       store.dispatch(updateSortingBarsStateAction(barsCopy));
-      if (await isAlgorithmTerminated()) return;
+      if (await isAnimationTerminated()) return;
 
       resolve(currentPartitionIndex);
     });

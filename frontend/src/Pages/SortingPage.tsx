@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import React, { useEffect, useRef } from 'react';
 import { completionColor, errorMessageColor, headerItemHovered, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
-import { SortingData, sortingAlgorithms } from '../Resources/Sorting Page Resources/SortingData';
+import { SortingData, sortingAlgorithmsData } from '../Resources/Sorting Page Resources/SortingData';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
@@ -15,12 +15,11 @@ import {
   updatingIsInputNanState,
   updateIsInputOverMaxState,
 } from '../Store/Sorting Page/SortingPageStateManagement';
-import { SortingAlgorithmBase, SortingAlgorithmEnum } from '../Resources/Algorithms/AlgorithmBase';
-import { BubbleSort } from '../Resources/Algorithms/SortingAlgorithms';
+import { SortingAlgorithmBase } from '../Resources/Algorithms/AlgorithmBase';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { minAppWidth } from '../App';
-import { algorithmAnimationBaseTime, algorithmContext, handleCompleteSorting, handleStartSorting, handleStopSorting } from '../Resources/Helper';
+import { algorithmAnimationBaseTime, algorithmContext, completeSorting, startSorting, stopSorting } from '../Resources/Helper';
 import { RefreshButton } from '../Components/RefreshButton';
 
 export enum SortingBarStateEnum {
@@ -35,7 +34,7 @@ export interface SortingBarProps {
   barState?: SortingBarStateEnum;
   leftOffset?: number;
 }
-export let selectedSortingAlgorithm: SortingAlgorithmBase = new BubbleSort(SortingAlgorithmEnum.BubbleSort);
+export let selectedSortingAlgorithm: SortingAlgorithmBase = sortingAlgorithmsData[0].sortingAlgorithm;
 export let initialSortingBars: SortingBarProps[];
 export let finalSortingBars: SortingBarProps[];
 
@@ -57,7 +56,7 @@ interface AlgorithmProps {
 
 const SortingInputComponent = () => {
   const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
-  const algorithmState = useSelector((state: AppState) => state.algorithmState);
+  const algorithmState = useSelector((state: AppState) => state.animationState);
   const windowState = useSelector((state: AppState) => state.windowState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
@@ -68,10 +67,14 @@ const SortingInputComponent = () => {
     let stringArrayInput = currentInput.split(' ');
     let sortingBars: SortingBarProps[] = [];
     let isOverMax: boolean = false;
+    let isNotDigit: boolean = false;
     let ID: number = 0;
     for (let i = 0; i < stringArrayInput.length; i++) {
       let currentNumber: number = parseInt(stringArrayInput[i]);
-      if (isNaN(currentNumber)) continue;
+      if (isNaN(currentNumber)) {
+        isNotDigit = true;
+        continue;
+      }
       if (currentNumber > 99) {
         isOverMax = true;
         currentNumber = 99;
@@ -81,15 +84,10 @@ const SortingInputComponent = () => {
       sortingBars.push({ barHeight: currentNumber, barID: ID++ });
     }
 
-    if (!/^[0-9\s]*$/.test(currentInput)) dispatch(updatingIsInputNanState(true));
+    if (isNotDigit) dispatch(updatingIsInputNanState(true));
     else dispatch(updatingIsInputNanState(false));
     if (isOverMax) dispatch(updateIsInputOverMaxState(true));
     else dispatch(updateIsInputOverMaxState(false));
-
-    let sortingBarsCopy = [...sortingBars];
-    initialSortingBars = [...sortingBars];
-    finalSortingBars = sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight);
-
     dispatch(updateSortingBarsStateAction(sortingBars));
   };
 
@@ -121,7 +119,7 @@ const SortingInputComponent = () => {
         placeholder="Type several numbers..."
         value={sortingPageState.sortingInput}
         onInput={() => processInput(ref.current?.value as string)}
-        disabled={algorithmState.hasAlgorithmStarted}
+        disabled={algorithmState.hasAnimationStarted}
       />
 
       <div>
@@ -182,7 +180,7 @@ const SortingInputComponent = () => {
 
 const GenerateInputComponent = () => {
   const windowState = useSelector((state: AppState) => state.windowState);
-  const algorithmState = useSelector((state: AppState) => state.algorithmState);
+  const algorithmState = useSelector((state: AppState) => state.animationState);
   const dispatch = useDispatch();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -191,7 +189,7 @@ const GenerateInputComponent = () => {
   }, []);
 
   const handleGenerateElements = () => {
-    if (algorithmState.hasAlgorithmStarted) return;
+    if (algorithmState.hasAnimationStarted) return;
     if (inputRef.current === null) return;
 
     let sortingBars: SortingBarProps[] = [];
@@ -205,14 +203,11 @@ const GenerateInputComponent = () => {
     }
 
     newInput = newInput.trim();
-    let sortingBarsCopy = [...sortingBars];
     validSortingInput = newInput;
     dispatch(updateSortingInputStateAction(newInput));
     dispatch(updateSortingBarsStateAction(sortingBars));
     dispatch(updatingIsInputNanState(false));
     dispatch(updateIsInputOverMaxState(false));
-    initialSortingBars = [...sortingBars];
-    finalSortingBars = sortingBarsCopy.sort((a, b) => a.barHeight - b.barHeight);
   };
 
   const handleEnterKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -257,18 +252,18 @@ const GenerateInputComponent = () => {
         defaultValue={10}
         onInput={() => validateInput(inputRef.current?.value as string)}
         onKeyUp={handleEnterKeyUp}
-        disabled={algorithmState.hasAlgorithmStarted}
+        disabled={algorithmState.hasAnimationStarted}
       />
     </div>
   );
 };
 
 const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmProps) => {
-  const algorithmState = useSelector((state: AppState) => state.algorithmState);
+  const algorithmState = useSelector((state: AppState) => state.animationState);
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    if (algorithmState.hasAlgorithmStarted) return;
+    if (algorithmState.hasAnimationStarted) return;
     selectedSortingAlgorithm = sortingAlgorithm;
     dispatch(updateSelectedSortingAlgorithmState(sortingAlgorithm.sortingAlgorithm));
   };
@@ -279,10 +274,10 @@ const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmPr
         font-size: 20px;
         color: ${isSelected ? '' : 'white'};
         margin-right: 10px;
-        cursor: ${algorithmState.hasAlgorithmStarted && !isSelected ? 'default' : 'pointer'};
-        opacity: ${algorithmState.hasAlgorithmStarted && !isSelected ? '0.5' : '1'};
+        cursor: ${algorithmState.hasAnimationStarted && !isSelected ? 'default' : 'pointer'};
+        opacity: ${algorithmState.hasAnimationStarted && !isSelected ? '0.5' : '1'};
         :hover {
-          ${!algorithmState.hasAlgorithmStarted &&
+          ${!algorithmState.hasAnimationStarted &&
           `
             color: ${!isSelected ? `${headerItemHovered}` : ''};
           `}
@@ -319,7 +314,7 @@ const AlgorithmsList = ({ data }: AlgorithmListProps) => {
 const SortingBarComponent = ({ barHeight, barID, barState = SortingBarStateEnum.Unselected, leftOffset: newLeftOffset }: SortingBarProps) => {
   let divRef = useRef<HTMLDivElement>(null);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
-  const algorithmState = useSelector((state: AppState) => state.algorithmState);
+  const algorithmState = useSelector((state: AppState) => state.animationState);
 
   useEffect(() => {
     if (divRef.current === null) return;
@@ -336,7 +331,7 @@ const SortingBarComponent = ({ barHeight, barID, barState = SortingBarStateEnum.
 
     divRef.current.style.transition = `transform ease-in 0ms`;
     divRef.current.style.transform = `translateX(0px)`;
-  }, [barHeight, algorithmState.hasAlgorithmStarted, barState]);
+  }, [barHeight, algorithmState.hasAnimationStarted, barState]);
 
   const getColor = () => {
     switch (barState) {
@@ -435,9 +430,9 @@ const SettingsComponent = () => {
           >
             <algorithmContext.Provider
               value={{
-                startAlgorithm: handleStartSorting,
-                stopAlgorithm: handleStopSorting,
-                completeAlgorithm: handleCompleteSorting,
+                startAlgorithm: startSorting,
+                stopAlgorithm: stopSorting,
+                completeAlgorithm: completeSorting,
               }}
             >
               <ActionBar />
@@ -445,7 +440,7 @@ const SettingsComponent = () => {
           </div>
           <GenerateInputComponent />
         </div>
-        <AlgorithmsList data={sortingAlgorithms} />
+        <AlgorithmsList data={sortingAlgorithmsData} />
       </div>
     </div>
   );
@@ -496,9 +491,9 @@ const AnimationComponent = () => {
       >
         <algorithmContext.Provider
           value={{
-            startAlgorithm: handleStartSorting,
-            stopAlgorithm: handleStopSorting,
-            completeAlgorithm: handleCompleteSorting,
+            startAlgorithm: startSorting,
+            stopAlgorithm: stopSorting,
+            completeAlgorithm: completeSorting,
           }}
         >
           <SliderComponent />

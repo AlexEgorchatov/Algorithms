@@ -1,18 +1,18 @@
-import { StringMatchingAlgorithmBase, StringMatchingAlgorithmEnum } from '../Algorithms/AlgorithmBase';
-import { NaivePatternMatching } from '../Algorithms/StringMatchingAlgorithms';
+import { StringMatchingAlgorithmBase } from '../Algorithms/AlgorithmBase';
+import { KnuthMorrisPrattPatternMatching, NaivePatternMatching } from '../Algorithms/StringMatchingAlgorithms';
 
 export interface StringMatchingData {
   stringMatchingAlgorithm: StringMatchingAlgorithmBase;
   title: string;
 }
 
-export const stringMatchingAlgorithms: StringMatchingData[] = [
+export const stringMatchingAlgorithmsData: StringMatchingData[] = [
   {
-    stringMatchingAlgorithm: new NaivePatternMatching(StringMatchingAlgorithmEnum.Naive),
+    stringMatchingAlgorithm: new NaivePatternMatching(),
     title: 'Naive',
   },
   {
-    stringMatchingAlgorithm: new NaivePatternMatching(StringMatchingAlgorithmEnum.KnuthMorrisPratt),
+    stringMatchingAlgorithm: new KnuthMorrisPrattPatternMatching(),
     title: 'Knuth-Morris-Pratt',
   },
 ];

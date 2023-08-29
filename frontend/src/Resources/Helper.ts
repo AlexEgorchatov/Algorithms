@@ -3,22 +3,22 @@ import { store } from '../App';
 import { SortingBarProps, SortingBarStateEnum, finalSortingBars, initialSortingBars, selectedSortingAlgorithm } from '../Pages/SortingPage';
 import { updateSortingBarsStateAction } from '../Store/Sorting Page/SortingPageStateManagement';
 import {
-  updateHasAlgorithmStartedStateAction,
+  updateHasAnimationStartedStateAction,
   updateIsAlgorithmCompletedStateAction,
-  updateIsAlgorithmRunningStateAction,
-} from '../Store/Shared/AlgorithmStateManagement';
+  updateIsAnimationRunningStateAction,
+} from '../Store/Shared/AnimationStateManagement';
 import { selectedStringMatchingAlgorithm } from '../Pages/StringMatchingPage';
 
 //#region Algorithm helpers
 
-interface algorithmProps {
+interface animationProps {
   startAlgorithm: () => Promise<void>;
   pauseAlgorithm?: () => Promise<void>;
   stopAlgorithm: () => Promise<void>;
   completeAlgorithm: () => Promise<void>;
 }
 
-export const algorithmContext = createContext<algorithmProps>({
+export const algorithmContext = createContext<animationProps>({
   startAlgorithm: () => Promise.resolve(),
   pauseAlgorithm: () => Promise.resolve(),
   stopAlgorithm: () => Promise.resolve(),
@@ -29,41 +29,46 @@ export const algorithmStepBaseTime: number = 400;
 export const algorithmAnimationBaseTime: number = 280;
 
 /**
- * Waits for the next action after the algorithm was paused.
- * @returns true if the algorithm continues execution, false if the algorithm was stopped or animation was skipped.
+ * Waits for the next action after the animation is paused.
+ * @returns If animation was stopped (hasAlgorithmStarted == false) or was completed (isAlgorithmCompleted == true) return false.
+ * If animation was resumed (isAlgorithmRunning == true) return true.
  */
-export const waitForContinuation = () => {
+export const isAnimationContinued = () => {
   return new Promise<boolean>((resolve) => {
     let unsubscribe = store.subscribe(() => {
-      if (store.getState().algorithmState.isAlgorithmRunning) {
-        unsubscribe();
-        resolve(true);
-      } else if (!store.getState().algorithmState.hasAlgorithmStarted) {
-        unsubscribe();
+      if (!store.getState().animationState.hasAnimationStarted || store.getState().animationState.isAnimationCompleted) {
         resolve(false);
+        unsubscribe();
+        return;
+      }
+      if (store.getState().animationState.isAnimationRunning) {
+        resolve(true);
+        unsubscribe();
+        return;
       }
     });
   });
 };
 
 /**
- * Checks if the algorithm is terminated or not.
- * @returns true if an algorithm was terminated, false otherwise.
+ * Checks if the animation is terminated.
+ * @returns If animation was stopped (hasAlgorithmStarted == false) or was completed (isAlgorithmCompleted == true) return true.
+ * If animation was not paused (isAlgorithmRunning == true) return false.
+ * Otherwise, wait for the next action after the animation is paused.
  */
-export const isAlgorithmTerminated = async (): Promise<boolean> => {
+export const isAnimationTerminated = async (): Promise<boolean> => {
   return new Promise<boolean>(async (resolve) => {
-    if (!store.getState().algorithmState.hasAlgorithmStarted) {
+    if (!store.getState().animationState.hasAnimationStarted || store.getState().animationState.isAnimationCompleted) {
       resolve(true);
       return;
     }
-    if (!store.getState().algorithmState.isAlgorithmRunning) {
-      if (!(await waitForContinuation())) {
-        resolve(true);
-        return;
-      } else {
-        resolve(false);
-        return;
-      }
+    if (store.getState().animationState.isAnimationRunning) {
+      resolve(false);
+      return;
+    }
+    if (!(await isAnimationContinued())) {
+      resolve(true);
+      return;
     }
 
     resolve(false);
@@ -74,66 +79,66 @@ export const pauseForStepIteration = async () => {
   await new Promise((resolve) => setTimeout(resolve, algorithmStepBaseTime - 30 * (store.getState().sliderComponentState.sliderValue - 1)));
 };
 
-export const handlePlayButtonClick = (startAlgorithm: () => Promise<void>) => {
-  store.dispatch(updateIsAlgorithmRunningStateAction(true));
-  if (store.getState().algorithmState.hasAlgorithmStarted) return;
+export const startAnimation = async (startAlgorithm: () => Promise<void>) => {
+  store.dispatch(updateIsAnimationRunningStateAction(true));
+  if (store.getState().animationState.hasAnimationStarted) return;
 
-  store.dispatch(updateHasAlgorithmStartedStateAction(true));
-  startAlgorithm();
+  if (store.getState().animationState.isAnimationCompleted) {
+    store.dispatch(updateSortingBarsStateAction(initialSortingBars));
+    store.dispatch(updateIsAlgorithmCompletedStateAction(false));
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+
+  store.dispatch(updateHasAnimationStartedStateAction(true));
+  await startAlgorithm();
+
+  store.dispatch(updateIsAnimationRunningStateAction(false));
+  if (store.getState().animationState.hasAnimationStarted) store.dispatch(updateHasAnimationStartedStateAction(false));
+  if (!store.getState().animationState.isAnimationCompleted) store.dispatch(updateIsAlgorithmCompletedStateAction(true));
 };
 
-export const handleStopButtonClick = (stopAlgorithm: () => Promise<void>) => {
-  if (!store.getState().algorithmState.hasAlgorithmStarted) return;
+export const stopAnimation = (stopAlgorithm: () => Promise<void>) => {
+  if (!store.getState().animationState.hasAnimationStarted) return;
 
-  store.dispatch(updateHasAlgorithmStartedStateAction(false));
-  store.dispatch(updateIsAlgorithmRunningStateAction(false));
   stopAlgorithm();
+  store.dispatch(updateHasAnimationStartedStateAction(false));
 };
 
-export const handleCompleteButtonClick = (completeAlgorithm: () => Promise<void>) => {
-  if (!store.getState().algorithmState.hasAlgorithmStarted) return;
+export const completeAnimation = (completeAlgorithm: () => Promise<void>) => {
+  if (!store.getState().animationState.hasAnimationStarted) return;
 
-  store.dispatch(updateHasAlgorithmStartedStateAction(false));
-  store.dispatch(updateIsAlgorithmRunningStateAction(false));
-  store.dispatch(updateIsAlgorithmCompletedStateAction(true));
   completeAlgorithm();
+  store.dispatch(updateIsAlgorithmCompletedStateAction(true));
 };
 
 //#endregion
 
 //#region Sorting Page helpers
 
-export const handleStartSorting = async () => {
-  if (store.getState().algorithmState.isAlgorithmCompleted) {
-    store.dispatch(updateSortingBarsStateAction(initialSortingBars));
-    store.dispatch(updateIsAlgorithmCompletedStateAction(false));
-    await new Promise((resolve) => setTimeout(resolve, 250));
-  }
-
-  selectedSortingAlgorithm.executeAlgorithm();
+export const startSorting = async () => {
+  //obtain initial and final states. must be asynchronous
+  await selectedSortingAlgorithm.executeAlgorithm();
+  await finalizeSorting();
 };
 
-export const handleCompleteSorting = async () => {
-  store.dispatch(updateSortingBarsStateAction(finalSortingBars));
-  store.dispatch(updateIsAlgorithmCompletedStateAction(true));
-  finalizeSorting(finalSortingBars, true);
-};
-
-export const handleStopSorting = async () => {
+export const stopSorting = async () => {
   store.dispatch(updateSortingBarsStateAction(initialSortingBars));
 };
 
-export const finalizeSorting = async (barsCopy: SortingBarProps[], isComplete = false) => {
-  let timeout = isComplete ? 0 : 300 / barsCopy.length;
+export const completeSorting = async () => {
+  store.dispatch(updateSortingBarsStateAction(finalSortingBars));
+};
+
+const finalizeSorting = async () => {
+  let barsCopy = [...store.getState().sortingPageState.sortingBars];
+  let timeout = 300 / barsCopy.length;
+
   for (let i = 0; i < barsCopy.length; i++) {
     barsCopy = [...barsCopy];
     barsCopy[i] = { ...barsCopy[i], barState: SortingBarStateEnum.Completed };
     store.dispatch(updateSortingBarsStateAction(barsCopy));
-    if (timeout !== 0) await new Promise((resolve) => setTimeout(resolve, timeout));
+    await new Promise((resolve) => setTimeout(resolve, timeout));
   }
-
-  store.dispatch(updateHasAlgorithmStartedStateAction(false));
-  store.dispatch(updateIsAlgorithmRunningStateAction(false));
 };
 
 export const swapSortingBarsVisually = (barsCopy: SortingBarProps[], index1: number, index2: number) => {
@@ -158,6 +163,19 @@ export const deselectSortingBars = (barsCopy: SortingBarProps[], index1: number,
   barsCopy[index2] = { ...barsCopy[index2], barState: SortingBarStateEnum.Unselected };
   store.dispatch(updateSortingBarsStateAction(barsCopy));
 };
+
+//TODO: put each function into corresponding static class
+export class Test {
+  public static handleStartSorting = async () => {
+    if (store.getState().animationState.isAnimationCompleted) {
+      store.dispatch(updateSortingBarsStateAction(initialSortingBars));
+      store.dispatch(updateIsAlgorithmCompletedStateAction(false));
+      await new Promise((resolve) => setTimeout(resolve, 250));
+    }
+
+    selectedSortingAlgorithm.executeAlgorithm();
+  };
+}
 
 //#endregion
 

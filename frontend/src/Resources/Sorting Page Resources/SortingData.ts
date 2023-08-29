@@ -1,4 +1,4 @@
-import { SortingAlgorithmBase, SortingAlgorithmEnum } from '../Algorithms/AlgorithmBase';
+import { SortingAlgorithmBase } from '../Algorithms/AlgorithmBase';
 import { BubbleSort, QuickSort } from '../Algorithms/SortingAlgorithms';
 
 export interface SortingData {
@@ -6,13 +6,13 @@ export interface SortingData {
   title: string;
 }
 
-export const sortingAlgorithms: SortingData[] = [
+export const sortingAlgorithmsData: SortingData[] = [
   {
-    sortingAlgorithm: new BubbleSort(SortingAlgorithmEnum.BubbleSort),
+    sortingAlgorithm: new BubbleSort(),
     title: 'Bubble Sort',
   },
   {
-    sortingAlgorithm: new QuickSort(SortingAlgorithmEnum.QuickSort),
+    sortingAlgorithm: new QuickSort(),
     title: 'Quick Sort',
   },
 ];

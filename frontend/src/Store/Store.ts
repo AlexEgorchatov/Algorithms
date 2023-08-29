@@ -9,7 +9,7 @@ import { sortingPageReducer, SortingPageState } from './Sorting Page/SortingPage
 import { windowReducer, WindowState } from './Shared/WindowStateManagement';
 import { stringMatchingPageReducer, StringMatchingPageState } from './String Matching Page/StringMatchingPageStateManagement';
 import { updateStringMatchingPatternMiddleware } from './Middleware';
-import { algorithmReducer, AlgorithmState } from './Shared/AlgorithmStateManagement';
+import { animationReducer, AnimationState } from './Shared/AnimationStateManagement';
 
 const rootReducer = combineReducers<AppState>({
   sortingModuleState: sortingModuleReducer,
@@ -20,7 +20,7 @@ const rootReducer = combineReducers<AppState>({
   sortingPageState: sortingPageReducer,
   stringMatchingPageState: stringMatchingPageReducer,
   windowState: windowReducer,
-  algorithmState: algorithmReducer,
+  animationState: animationReducer,
 });
 
 export function createStore(): Store<AppState> {
@@ -37,5 +37,5 @@ export interface AppState {
   readonly sortingPageState: SortingPageState;
   readonly stringMatchingPageState: StringMatchingPageState;
   readonly windowState: WindowState;
-  readonly algorithmState: AlgorithmState;
+  readonly animationState: AnimationState;
 }
