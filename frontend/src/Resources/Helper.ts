@@ -81,13 +81,8 @@ export const pauseForStepIteration = async () => {
 
 export const startAnimation = async (startAlgorithm: () => Promise<void>) => {
   store.dispatch(updateIsAnimationRunningStateAction(true));
+  //If animation has started, this function only continues animation and should not proceed forward
   if (store.getState().animationState.hasAnimationStarted) return;
-
-  if (store.getState().animationState.isAnimationCompleted) {
-    store.dispatch(updateSortingBarsStateAction(initialSortingBars));
-    store.dispatch(updateIsAlgorithmCompletedStateAction(false));
-    await new Promise((resolve) => setTimeout(resolve, 250));
-  }
 
   store.dispatch(updateHasAnimationStartedStateAction(true));
   await startAlgorithm();
@@ -116,6 +111,12 @@ export const completeAnimation = (completeAlgorithm: () => Promise<void>) => {
 //#region Sorting Page helpers
 
 export const startSorting = async () => {
+  //If animation is completed, reset its state
+  if (store.getState().animationState.isAnimationCompleted) {
+    store.dispatch(updateSortingBarsStateAction(initialSortingBars));
+    store.dispatch(updateIsAlgorithmCompletedStateAction(false));
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
   //obtain initial and final states. must be asynchronous
   await selectedSortingAlgorithm.executeAlgorithm();
   await finalizeSorting();
