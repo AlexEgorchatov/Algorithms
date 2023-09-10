@@ -35,8 +35,6 @@ export interface SortingBarProps {
   leftOffset?: number;
 }
 export let selectedSortingAlgorithm: SortingAlgorithmBase = sortingAlgorithmsData[0].sortingAlgorithm;
-export let initialSortingBars: SortingBarProps[];
-export let finalSortingBars: SortingBarProps[];
 
 let validSortingInput: string = '';
 const sortingBarWidth: number = 35;
@@ -89,6 +87,7 @@ const SortingInputComponent = () => {
     if (isOverMax) dispatch(updateIsInputOverMaxState(true));
     else dispatch(updateIsInputOverMaxState(false));
     dispatch(updateSortingBarsStateAction(sortingBars));
+    // dispatch(updateIsAlgorithmCompletedStateAction(false));
   };
 
   const fixInput = () => {
@@ -208,6 +207,7 @@ const GenerateInputComponent = () => {
     dispatch(updateSortingBarsStateAction(sortingBars));
     dispatch(updatingIsInputNanState(false));
     dispatch(updateIsInputOverMaxState(false));
+    // dispatch(updateIsAlgorithmCompletedStateAction(false));
   };
 
   const handleEnterKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
