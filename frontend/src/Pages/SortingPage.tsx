@@ -14,6 +14,7 @@ import {
   updateSelectedSortingAlgorithmState,
   updatingIsInputNanState,
   updateIsInputOverMaxState,
+  updateIsStateUpdatedState,
 } from '../Store/Sorting Page/SortingPageStateManagement';
 import { SortingAlgorithmBase } from '../Resources/Algorithms/AlgorithmBase';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
@@ -68,6 +69,7 @@ const SortingInputComponent = () => {
     let isNotDigit: boolean = false;
     let ID: number = 0;
     for (let i = 0; i < stringArrayInput.length; i++) {
+      if (stringArrayInput[i] === '') continue;
       let currentNumber: number = parseInt(stringArrayInput[i]);
       if (isNaN(currentNumber)) {
         isNotDigit = true;
@@ -87,7 +89,7 @@ const SortingInputComponent = () => {
     if (isOverMax) dispatch(updateIsInputOverMaxState(true));
     else dispatch(updateIsInputOverMaxState(false));
     dispatch(updateSortingBarsStateAction(sortingBars));
-    // dispatch(updateIsAlgorithmCompletedStateAction(false));
+    dispatch(updateIsStateUpdatedState(true));
   };
 
   const fixInput = () => {
@@ -207,7 +209,7 @@ const GenerateInputComponent = () => {
     dispatch(updateSortingBarsStateAction(sortingBars));
     dispatch(updatingIsInputNanState(false));
     dispatch(updateIsInputOverMaxState(false));
-    // dispatch(updateIsAlgorithmCompletedStateAction(false));
+    dispatch(updateIsStateUpdatedState(true));
   };
 
   const handleEnterKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {

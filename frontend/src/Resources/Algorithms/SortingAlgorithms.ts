@@ -58,6 +58,7 @@ export class QuickSort extends SortingAlgorithmBase {
     if (left >= right) return;
 
     let partitionIndex: number = await this.partition(left, right);
+    if (await isAnimationTerminated()) return;
     await this.quickSort(left, partitionIndex - 1);
     await this.quickSort(partitionIndex + 1, right);
   }
@@ -72,18 +73,27 @@ export class QuickSort extends SortingAlgorithmBase {
       for (let i: number = right; i > left; i--) {
         selectSortingBars(barsCopy, i, currentPartitionIndex);
         await pauseForStepIteration();
-        if (await isAnimationTerminated()) return;
+        if (await isAnimationTerminated()) {
+          resolve(0);
+          return;
+        }
 
         if (barsCopy[i].barHeight <= pivot) {
           deselectSortingBars(barsCopy, i, currentPartitionIndex);
-          if (await isAnimationTerminated()) return;
+          if (await isAnimationTerminated()) {
+            resolve(0);
+            return;
+          }
           continue;
         }
 
         if (i !== currentPartitionIndex) {
           swapSortingBarsVisually(barsCopy, i, currentPartitionIndex);
           await pauseForStepIteration();
-          if (await isAnimationTerminated()) return;
+          if (await isAnimationTerminated()) {
+            resolve(0);
+            return;
+          }
           barsCopy = [...barsCopy];
           let tempBar = { ...barsCopy[i] };
           barsCopy[i] = { ...barsCopy[i], barHeight: barsCopy[currentPartitionIndex].barHeight, barState: SortingBarStateEnum.Unselected };
@@ -92,7 +102,10 @@ export class QuickSort extends SortingAlgorithmBase {
             barHeight: tempBar.barHeight,
             barState: SortingBarStateEnum.Unselected,
           };
-          if (await isAnimationTerminated()) return;
+          if (await isAnimationTerminated()) {
+            resolve(0);
+            return;
+          }
         }
 
         currentPartitionIndex--;
@@ -101,11 +114,17 @@ export class QuickSort extends SortingAlgorithmBase {
 
       selectSortingBars(barsCopy, left, currentPartitionIndex);
       await pauseForStepIteration();
-      if (await isAnimationTerminated()) return;
+      if (await isAnimationTerminated()) {
+        resolve(0);
+        return;
+      }
 
       swapSortingBarsVisually(barsCopy, left, currentPartitionIndex);
       await pauseForStepIteration();
-      if (await isAnimationTerminated()) return;
+      if (await isAnimationTerminated()) {
+        resolve(0);
+        return;
+      }
 
       let tempBar = { ...barsCopy[left] };
       barsCopy = [...barsCopy];
@@ -116,7 +135,10 @@ export class QuickSort extends SortingAlgorithmBase {
         barState: SortingBarStateEnum.Unselected,
       };
       store.dispatch(updateSortingBarsStateAction(barsCopy));
-      if (await isAnimationTerminated()) return;
+      if (await isAnimationTerminated()) {
+        resolve(0);
+        return;
+      }
 
       resolve(currentPartitionIndex);
     });

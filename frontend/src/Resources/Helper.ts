@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 import { store } from '../App';
 import { SortingBarProps, SortingBarStateEnum, selectedSortingAlgorithm } from '../Pages/SortingPage';
-import { updateSortingBarsStateAction } from '../Store/Sorting Page/SortingPageStateManagement';
+import { updateIsStateUpdatedState, updateSortingBarsStateAction } from '../Store/Sorting Page/SortingPageStateManagement';
 import { updateHasAnimationStartedStateAction, updateIsAnimationRunningStateAction } from '../Store/Shared/AnimationStateManagement';
 import { selectedStringMatchingAlgorithm } from '../Pages/StringMatchingPage';
 
@@ -49,8 +49,8 @@ export const isAnimationContinued = () => {
 
 /**
  * Checks if the animation is terminated.
- * @returns If animation was stopped (hasAlgorithmStarted == false) or was completed (isAlgorithmCompleted == true) return true.
- * If animation was not paused (isAlgorithmRunning == true) return false.
+ * @returns If animation was stopped (hasAnimationStarted == false) or was completed (isAnimationCompleted == true) return true.
+ * If animation was not paused (isAnimationRunning == true) return false.
  * Otherwise, wait for the next action after the animation is paused.
  */
 export const isAnimationTerminated = async (): Promise<boolean> => {
@@ -78,23 +78,21 @@ export const pauseForStepIteration = async () => {
 
 export const startAnimation = async (startAlgorithm: () => Promise<void>) => {
   store.dispatch(updateIsAnimationRunningStateAction(true));
-  //If animation has started, this function only continues animation and should not proceed forward
   if (store.getState().animationState.hasAnimationStarted) return;
 
-  //Update start animation state and start algorithm
   store.dispatch(updateHasAnimationStartedStateAction(true));
   await startAlgorithm();
 
-  //Update states to finish animation
-  store.dispatch(updateIsAnimationRunningStateAction(false));
-  if (store.getState().animationState.hasAnimationStarted) store.dispatch(updateHasAnimationStartedStateAction(false));
   isAnimationCompleted = true;
+  store.dispatch(updateIsAnimationRunningStateAction(false));
+  store.dispatch(updateHasAnimationStartedStateAction(false));
 };
 
 export const stopAnimation = (stopAlgorithm: () => Promise<void>) => {
   if (!store.getState().animationState.hasAnimationStarted) return;
 
   store.dispatch(updateHasAnimationStartedStateAction(false));
+  store.dispatch(updateIsAnimationRunningStateAction(false));
   stopAlgorithm();
 };
 
@@ -109,32 +107,42 @@ export const completeAnimation = (completeAlgorithm: () => Promise<void>) => {
 
 //#region Sorting Page helpers
 
-let initialSortingBars: SortingBarProps[];
+let initialState: SortingBarProps[] = [];
+let finalState: SortingBarProps[] = [];
+const setInitialState = () => {
+  initialState = store.getState().sortingPageState.sortingBars;
+};
+const setFinalState = () => {
+  let barsCopy = [...store.getState().sortingPageState.sortingBars];
+  finalState = barsCopy.sort((a, b) => a.barHeight - b.barHeight);
+};
 
 export const startSorting = async () => {
-  //If animation is completed, reset its state
-  if (JSON.stringify(store.getState().sortingPageState.sortingBars) === JSON.stringify(selectedSortingAlgorithm.finalState)) {
-    store.dispatch(updateSortingBarsStateAction(initialSortingBars));
-    isAnimationCompleted = false;
+  console.log(selectedSortingAlgorithm);
+  if (store.getState().sortingPageState.isStateUpdated) {
+    setInitialState();
+    setFinalState();
+    store.dispatch(updateIsStateUpdatedState(false));
+  }
+
+  if (isAnimationCompleted) {
+    store.dispatch(updateSortingBarsStateAction(initialState));
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
 
-  setInitialState();
-  selectedSortingAlgorithm.setFinalState();
+  isAnimationCompleted = false;
+
   await selectedSortingAlgorithm.executeAlgorithm();
+  if (!store.getState().animationState.hasAnimationStarted) return;
   await finalizeSorting();
 };
 
-const setInitialState = () => {
-  initialSortingBars = [...store.getState().sortingPageState.sortingBars];
-};
-
 export const stopSorting = async () => {
-  store.dispatch(updateSortingBarsStateAction(initialSortingBars));
+  store.dispatch(updateSortingBarsStateAction(initialState));
 };
 
 export const completeSorting = async () => {
-  store.dispatch(updateSortingBarsStateAction(selectedSortingAlgorithm.finalState));
+  store.dispatch(updateSortingBarsStateAction(finalState));
 };
 
 const finalizeSorting = async () => {
