@@ -107,21 +107,15 @@ export const completeAnimation = (completeAlgorithm: () => Promise<void>) => {
 
 //#region Sorting Page helpers
 
-let initialState: SortingBarProps[] = [];
-let finalState: SortingBarProps[] = [];
+export let initialState: SortingBarProps[] = [];
 const setInitialState = () => {
   initialState = store.getState().sortingPageState.sortingBars;
 };
-const setFinalState = () => {
-  let barsCopy = [...store.getState().sortingPageState.sortingBars];
-  finalState = barsCopy.sort((a, b) => a.barHeight - b.barHeight);
-};
 
 export const startSorting = async () => {
-  console.log(selectedSortingAlgorithm);
   if (store.getState().sortingPageState.isStateUpdated) {
     setInitialState();
-    setFinalState();
+    selectedSortingAlgorithm.setFinalState();
     store.dispatch(updateIsStateUpdatedState(false));
   }
 
@@ -142,7 +136,7 @@ export const stopSorting = async () => {
 };
 
 export const completeSorting = async () => {
-  store.dispatch(updateSortingBarsStateAction(finalState));
+  store.dispatch(updateSortingBarsStateAction(selectedSortingAlgorithm.finalState));
 };
 
 const finalizeSorting = async () => {

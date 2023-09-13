@@ -20,7 +20,7 @@ import { SortingAlgorithmBase } from '../Resources/Algorithms/AlgorithmBase';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { minAppWidth } from '../App';
-import { algorithmAnimationBaseTime, algorithmContext, completeSorting, startSorting, stopSorting } from '../Resources/Helper';
+import { algorithmAnimationBaseTime, algorithmContext, completeSorting, initialState, startSorting, stopSorting } from '../Resources/Helper';
 import { RefreshButton } from '../Components/RefreshButton';
 
 export enum SortingBarStateEnum {
@@ -262,12 +262,17 @@ const GenerateInputComponent = () => {
 
 const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmProps) => {
   const algorithmState = useSelector((state: AppState) => state.animationState);
+  const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
   const dispatch = useDispatch();
 
   const handleClick = () => {
     if (algorithmState.hasAnimationStarted) return;
-    selectedSortingAlgorithm = sortingAlgorithm;
     dispatch(updateSelectedSortingAlgorithmState(sortingAlgorithm.sortingAlgorithm));
+    selectedSortingAlgorithm = sortingAlgorithm;
+    if (!sortingPageState.isStateUpdated) {
+      dispatch(updateSortingBarsStateAction(initialState));
+      selectedSortingAlgorithm.setFinalState();
+    }
   };
 
   return (
