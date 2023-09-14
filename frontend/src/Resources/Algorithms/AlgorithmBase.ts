@@ -28,11 +28,7 @@ export abstract class SortingAlgorithmBase extends AlgorithmBase<SortingBarProps
 
 export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<StringMatchingCharacterProps> {
   public abstract readonly stringMatchingAlgorithm: StringMatchingAlgorithmEnum;
-  // public initialState: StringMatchingCharacterProps[] = [];
   public finalState: StringMatchingCharacterProps[] = [];
-  // public setInitialState(): void {
-  //   this.initialState = store.getState().stringMatchingPageState.stringMatchingAnimationInput;
-  // }
   public setFinalState(): void {
     let input = store.getState().stringMatchingPageState.stringMatchingInput;
     let pattern = store.getState().stringMatchingPageState.stringMatchingPattern;
@@ -51,6 +47,7 @@ export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<StringMa
     this.finalState = [...animationInputCopy];
   }
 
+  //TODO work on it, maybe not needed here
   public initialPatternState: StringMatchingCharacterProps[] = [];
   public finalPatternState: StringMatchingCharacterProps[] = [];
   public setInitialPatternState(): void {

@@ -20,7 +20,7 @@ import { SortingAlgorithmBase } from '../Resources/Algorithms/AlgorithmBase';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { minAppWidth } from '../App';
-import { algorithmAnimationBaseTime, algorithmContext, completeSorting, initialState, startSorting, stopSorting } from '../Resources/Helper';
+import { SortingAlgorithmManager, animationContext } from '../Resources/Helper';
 import { RefreshButton } from '../Components/RefreshButton';
 
 export enum SortingBarStateEnum {
@@ -270,7 +270,7 @@ const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmPr
     dispatch(updateSelectedSortingAlgorithmState(sortingAlgorithm.sortingAlgorithm));
     selectedSortingAlgorithm = sortingAlgorithm;
     if (!sortingPageState.isStateUpdated) {
-      dispatch(updateSortingBarsStateAction(initialState));
+      dispatch(updateSortingBarsStateAction(SortingAlgorithmManager.initialState));
       selectedSortingAlgorithm.setFinalState();
     }
   };
@@ -322,6 +322,7 @@ const SortingBarComponent = ({ barHeight, barID, barState = SortingBarStateEnum.
   let divRef = useRef<HTMLDivElement>(null);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const algorithmState = useSelector((state: AppState) => state.animationState);
+  const algorithmAnimationBaseTime: number = 280;
 
   useEffect(() => {
     if (divRef.current === null) return;
@@ -435,15 +436,15 @@ const SettingsComponent = () => {
               width: 72px;
             `}
           >
-            <algorithmContext.Provider
+            <animationContext.Provider
               value={{
-                startAlgorithm: startSorting,
-                stopAlgorithm: stopSorting,
-                completeAlgorithm: completeSorting,
+                startAlgorithm: () => SortingAlgorithmManager.startAlgorithm(),
+                stopAlgorithm: () => SortingAlgorithmManager.stopAlgorithm(),
+                completeAlgorithm: () => SortingAlgorithmManager.completeAlgorithm(),
               }}
             >
               <ActionBar />
-            </algorithmContext.Provider>
+            </animationContext.Provider>
           </div>
           <GenerateInputComponent />
         </div>
@@ -496,15 +497,15 @@ const AnimationComponent = () => {
           align-items: flex-end;
         `}
       >
-        <algorithmContext.Provider
+        <animationContext.Provider
           value={{
-            startAlgorithm: startSorting,
-            stopAlgorithm: stopSorting,
-            completeAlgorithm: completeSorting,
+            startAlgorithm: () => SortingAlgorithmManager.startAlgorithm(),
+            stopAlgorithm: () => SortingAlgorithmManager.stopAlgorithm(),
+            completeAlgorithm: () => SortingAlgorithmManager.completeAlgorithm(),
           }}
         >
           <SliderComponent />
-        </algorithmContext.Provider>
+        </animationContext.Provider>
       </div>
     </div>
   );

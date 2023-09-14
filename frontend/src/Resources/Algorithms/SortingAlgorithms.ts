@@ -1,7 +1,7 @@
 import { store } from '../../App';
 import { SortingBarStateEnum } from '../../Pages/SortingPage';
 import { updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
-import { selectSortingBars, swapSortingBarsVisually, deselectSortingBars, isAnimationTerminated, pauseForStepIteration } from '../Helper';
+import { AnimationManager, SortingAlgorithmManager } from '../Helper';
 import { SortingAlgorithmBase, SortingAlgorithmEnum } from './AlgorithmBase';
 
 export class BubbleSort extends SortingAlgorithmBase {
@@ -15,19 +15,19 @@ export class BubbleSort extends SortingAlgorithmBase {
     for (let i = 0; i < length - 1 && isSwapped; i++) {
       isSwapped = false;
       for (let j = 0; j < length - i - 1; j++) {
-        selectSortingBars(barsCopy, j, j + 1);
-        await pauseForStepIteration();
-        if (await isAnimationTerminated()) return;
+        SortingAlgorithmManager.selectSortingBars(barsCopy, j, j + 1);
+        await AnimationManager.pauseForStepIteration();
+        if (await AnimationManager.isAnimationTerminated()) return;
 
         if (barsCopy[j].barHeight <= barsCopy[j + 1].barHeight) {
-          deselectSortingBars(barsCopy, j, j + 1);
-          if (await isAnimationTerminated()) return;
+          SortingAlgorithmManager.deselectSortingBars(barsCopy, j, j + 1);
+          if (await AnimationManager.isAnimationTerminated()) return;
           continue;
         }
 
-        swapSortingBarsVisually(barsCopy, j, j + 1);
-        await pauseForStepIteration();
-        if (await isAnimationTerminated()) return;
+        SortingAlgorithmManager.swapSortingBarsVisually(barsCopy, j, j + 1);
+        await AnimationManager.pauseForStepIteration();
+        if (await AnimationManager.isAnimationTerminated()) return;
 
         //TODO: Figure out why putting this code in a function breaks the algorithm
         barsCopy = [...barsCopy];
@@ -35,7 +35,7 @@ export class BubbleSort extends SortingAlgorithmBase {
         barsCopy[j] = { ...barsCopy[j], barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Unselected };
         barsCopy[j + 1] = { ...barsCopy[j + 1], barHeight: tempBar.barHeight, barState: SortingBarStateEnum.Unselected };
         store.dispatch(updateSortingBarsStateAction(barsCopy));
-        if (await isAnimationTerminated()) return;
+        if (await AnimationManager.isAnimationTerminated()) return;
 
         isSwapped = true;
       }
@@ -58,7 +58,7 @@ export class QuickSort extends SortingAlgorithmBase {
     if (left >= right) return;
 
     let partitionIndex: number = await this.partition(left, right);
-    if (await isAnimationTerminated()) return;
+    if (await AnimationManager.isAnimationTerminated()) return;
     await this.quickSort(left, partitionIndex - 1);
     await this.quickSort(partitionIndex + 1, right);
   }
@@ -71,16 +71,16 @@ export class QuickSort extends SortingAlgorithmBase {
       let currentPartitionIndex: number = right;
 
       for (let i: number = right; i > left; i--) {
-        selectSortingBars(barsCopy, i, currentPartitionIndex);
-        await pauseForStepIteration();
-        if (await isAnimationTerminated()) {
+        SortingAlgorithmManager.selectSortingBars(barsCopy, i, currentPartitionIndex);
+        await AnimationManager.pauseForStepIteration();
+        if (await AnimationManager.isAnimationTerminated()) {
           resolve(0);
           return;
         }
 
         if (barsCopy[i].barHeight <= pivot) {
-          deselectSortingBars(barsCopy, i, currentPartitionIndex);
-          if (await isAnimationTerminated()) {
+          SortingAlgorithmManager.deselectSortingBars(barsCopy, i, currentPartitionIndex);
+          if (await AnimationManager.isAnimationTerminated()) {
             resolve(0);
             return;
           }
@@ -88,9 +88,9 @@ export class QuickSort extends SortingAlgorithmBase {
         }
 
         if (i !== currentPartitionIndex) {
-          swapSortingBarsVisually(barsCopy, i, currentPartitionIndex);
-          await pauseForStepIteration();
-          if (await isAnimationTerminated()) {
+          SortingAlgorithmManager.swapSortingBarsVisually(barsCopy, i, currentPartitionIndex);
+          await AnimationManager.pauseForStepIteration();
+          if (await AnimationManager.isAnimationTerminated()) {
             resolve(0);
             return;
           }
@@ -102,7 +102,7 @@ export class QuickSort extends SortingAlgorithmBase {
             barHeight: tempBar.barHeight,
             barState: SortingBarStateEnum.Unselected,
           };
-          if (await isAnimationTerminated()) {
+          if (await AnimationManager.isAnimationTerminated()) {
             resolve(0);
             return;
           }
@@ -112,16 +112,16 @@ export class QuickSort extends SortingAlgorithmBase {
         store.dispatch(updateSortingBarsStateAction(barsCopy));
       }
 
-      selectSortingBars(barsCopy, left, currentPartitionIndex);
-      await pauseForStepIteration();
-      if (await isAnimationTerminated()) {
+      SortingAlgorithmManager.selectSortingBars(barsCopy, left, currentPartitionIndex);
+      await AnimationManager.pauseForStepIteration();
+      if (await AnimationManager.isAnimationTerminated()) {
         resolve(0);
         return;
       }
 
-      swapSortingBarsVisually(barsCopy, left, currentPartitionIndex);
-      await pauseForStepIteration();
-      if (await isAnimationTerminated()) {
+      SortingAlgorithmManager.swapSortingBarsVisually(barsCopy, left, currentPartitionIndex);
+      await AnimationManager.pauseForStepIteration();
+      if (await AnimationManager.isAnimationTerminated()) {
         resolve(0);
         return;
       }
@@ -135,7 +135,7 @@ export class QuickSort extends SortingAlgorithmBase {
         barState: SortingBarStateEnum.Unselected,
       };
       store.dispatch(updateSortingBarsStateAction(barsCopy));
-      if (await isAnimationTerminated()) {
+      if (await AnimationManager.isAnimationTerminated()) {
         resolve(0);
         return;
       }

@@ -2,14 +2,14 @@
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
 import { Fragment, useContext } from 'react';
-import { algorithmContext, completeAnimation, startAnimation, stopAnimation } from '../Resources/Helper';
+import { AnimationManager, animationContext } from '../Resources/Helper';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import { updateIsAnimationRunningStateAction } from '../Store/Shared/AnimationStateManagement';
 
 const PlayButton = () => {
-  const { startAlgorithm } = useContext(algorithmContext);
+  const { startAlgorithm } = useContext(animationContext);
 
   return (
     <div
@@ -40,7 +40,7 @@ const PlayButton = () => {
           left: 6px;
         }
       `}
-      onClick={() => startAnimation(startAlgorithm)}
+      onClick={() => AnimationManager.startAnimation(startAlgorithm)}
     ></div>
   );
 };
@@ -88,7 +88,7 @@ const PauseButton = () => {
 };
 
 const StopButton = () => {
-  const { stopAlgorithm } = useContext(algorithmContext);
+  const { stopAlgorithm } = useContext(animationContext);
   const algorithmState = useSelector((state: AppState) => state.animationState);
 
   return (
@@ -116,7 +116,7 @@ const StopButton = () => {
             `}
         }
       `}
-      onClick={() => stopAnimation(stopAlgorithm)}
+      onClick={() => AnimationManager.stopAnimation(stopAlgorithm)}
     >
       <div
         css={css`
@@ -134,7 +134,7 @@ const StopButton = () => {
 };
 
 const CompleteButton = () => {
-  const { completeAlgorithm } = useContext(algorithmContext);
+  const { completeAlgorithm } = useContext(animationContext);
   const algorithmState = useSelector((state: AppState) => state.animationState);
 
   return (
@@ -162,7 +162,7 @@ const CompleteButton = () => {
             `}
         }
       `}
-      onClick={() => completeAnimation(completeAlgorithm)}
+      onClick={() => AnimationManager.completeAnimation(completeAlgorithm)}
     >
       <div
         css={css`

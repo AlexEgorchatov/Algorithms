@@ -1,7 +1,7 @@
 import { store } from '../../App';
 import { StringMatchingCharacterState } from '../../Pages/StringMatchingPage';
 import { updateStringMatchingAnimationInputState, updateStringMatchingAnimationPatternState } from '../../Store/String Matching Page/StringMatchingPageStateManagement';
-import { pauseForStepIteration } from '../Helper';
+import { AnimationManager } from '../Helper';
 import { StringMatchingAlgorithmBase, StringMatchingAlgorithmEnum } from './AlgorithmBase';
 
 export class NaivePatternMatching extends StringMatchingAlgorithmBase {
@@ -26,7 +26,7 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
         animationInputCopy[i + j] = { ...animationInputCopy[i + j], characterState: StringMatchingCharacterState.Current };
         store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
 
-        await pauseForStepIteration();
+        await AnimationManager.pauseForStepIteration();
 
         if (animationInputCopy[i + j].character.toLowerCase() !== animationPatternCopy[j].character.toLowerCase()) {
           j++;

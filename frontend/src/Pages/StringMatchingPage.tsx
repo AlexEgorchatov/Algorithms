@@ -12,7 +12,7 @@ import {
   updateStringMatchingInputState,
   updateStringMatchingPatternState,
 } from '../Store/String Matching Page/StringMatchingPageStateManagement';
-import { algorithmContext, handleCompleteSearch, handleStartSearch, handleStopSearch } from '../Resources/Helper';
+import { StringMatchingAlgorithmManager, animationContext } from '../Resources/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
 import { RefreshButton } from '../Components/RefreshButton';
@@ -307,15 +307,15 @@ const SettingsComponent = () => {
                 width: 72px;
               `}
             >
-              <algorithmContext.Provider
+              <animationContext.Provider
                 value={{
-                  startAlgorithm: handleStartSearch,
-                  stopAlgorithm: handleStopSearch,
-                  completeAlgorithm: handleCompleteSearch,
+                  startAlgorithm: () => StringMatchingAlgorithmManager.startAlgorithm(),
+                  stopAlgorithm: () => StringMatchingAlgorithmManager.stopAlgorithm(),
+                  completeAlgorithm: () => StringMatchingAlgorithmManager.completeAlgorithm(),
                 }}
               >
                 <ActionBar />
-              </algorithmContext.Provider>
+              </animationContext.Provider>
             </div>
             <RefreshButton />
           </div>
@@ -399,15 +399,15 @@ const AnimationComponent = () => {
           align-items: flex-end;
         `}
       >
-        <algorithmContext.Provider
+        <animationContext.Provider
           value={{
-            startAlgorithm: handleStartSearch,
-            stopAlgorithm: handleStopSearch,
-            completeAlgorithm: handleCompleteSearch,
+            startAlgorithm: () => StringMatchingAlgorithmManager.startAlgorithm(),
+            stopAlgorithm: () => StringMatchingAlgorithmManager.stopAlgorithm(),
+            completeAlgorithm: () => StringMatchingAlgorithmManager.completeAlgorithm(),
           }}
         >
           <SliderComponent />
-        </algorithmContext.Provider>
+        </animationContext.Provider>
       </div>
     </div>
   );

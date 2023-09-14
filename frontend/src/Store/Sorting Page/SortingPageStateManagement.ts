@@ -1,4 +1,3 @@
-import { act } from 'react-dom/test-utils';
 import { SortingBarProps } from '../../Pages/SortingPage';
 import { SortingAlgorithmEnum } from '../../Resources/Algorithms/AlgorithmBase';
 
