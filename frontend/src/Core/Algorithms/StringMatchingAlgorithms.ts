@@ -1,8 +1,8 @@
 import { store } from '../../App';
+import { StringMatchingAlgorithmBase, StringMatchingAlgorithmEnum } from '../Abstractions/AlgorithmBase';
 import { StringMatchingCharacterState } from '../../Pages/StringMatchingPage';
 import { updateStringMatchingAnimationInputState, updateStringMatchingAnimationPatternState } from '../../Store/String Matching Page/StringMatchingPageStateManagement';
-import { AnimationManager } from '../Helper';
-import { StringMatchingAlgorithmBase, StringMatchingAlgorithmEnum } from './AlgorithmBase';
+import { AnimationManager } from '../Other/AnimationManager';
 
 export class NaivePatternMatching extends StringMatchingAlgorithmBase {
   public stringMatchingAlgorithm = StringMatchingAlgorithmEnum.Naive;

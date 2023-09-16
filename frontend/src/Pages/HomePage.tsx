@@ -1,6 +1,6 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { ModuleData, ModuleEnumeration, modules } from '../Resources/Home Page Resources/ModuleData';
+import { ModuleData, ModuleEnumeration, modules } from '../Core/Data/ModuleData';
 import { mainFontColor } from '../Resources/Colors';
 import { Link } from 'react-router-dom';
 import { SortingModule } from '../Modules/SortingModule';

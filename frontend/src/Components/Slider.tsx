@@ -5,8 +5,9 @@ import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import { updateSliderValueStateAction } from '../Store/Shared/SliderComponentStateManagement';
 import { useContext, useRef } from 'react';
-import { AnimationManager, animationContext } from '../Resources/Helper';
+import { animationContext } from '../Core/Helper';
 import { updateIsAnimationRunningStateAction } from '../Store/Shared/AnimationStateManagement';
+import { AnimationManager } from '../Core/Other/AnimationManager';
 
 const PlayButton = () => {
   const { startAlgorithm } = useContext(animationContext);

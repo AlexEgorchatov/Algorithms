@@ -1,5 +1,5 @@
+import { StringMatchingAlgorithmEnum } from '../../Core/Abstractions/AlgorithmBase';
 import { StringMatchingCharacterProps } from '../../Pages/StringMatchingPage';
-import { StringMatchingAlgorithmEnum } from '../../Resources/Algorithms/AlgorithmBase';
 
 //#region State
 export interface StringMatchingPageState {

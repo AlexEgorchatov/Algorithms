@@ -1,4 +1,4 @@
-import { SortingAlgorithmBase } from '../Algorithms/AlgorithmBase';
+import { SortingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { BubbleSort, QuickSort } from '../Algorithms/SortingAlgorithms';
 
 export interface SortingData {

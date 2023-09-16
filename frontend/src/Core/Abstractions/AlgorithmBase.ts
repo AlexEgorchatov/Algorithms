@@ -6,6 +6,7 @@ export enum SortingAlgorithmEnum {
   BubbleSort = 0,
   QuickSort = 1,
 }
+
 export enum StringMatchingAlgorithmEnum {
   Naive = 0,
   KnuthMorrisPratt = 1,

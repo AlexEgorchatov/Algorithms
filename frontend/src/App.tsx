@@ -10,7 +10,7 @@ import { Provider } from 'react-redux';
 import { createStore } from './Store/Store';
 import { Header } from './Components/Header';
 import { mainBackground, mainFontColor, pageBackground } from './Resources/Colors';
-import { modules } from './Resources/Home Page Resources/ModuleData';
+import { modules } from './Core/Data/ModuleData';
 
 export const store = createStore();
 export const minAppWidth: number = 580;

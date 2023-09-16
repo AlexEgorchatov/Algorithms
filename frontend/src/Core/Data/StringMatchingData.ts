@@ -1,4 +1,4 @@
-import { StringMatchingAlgorithmBase } from '../Algorithms/AlgorithmBase';
+import { StringMatchingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { KnuthMorrisPrattPatternMatching, NaivePatternMatching } from '../Algorithms/StringMatchingAlgorithms';
 
 export interface StringMatchingData {

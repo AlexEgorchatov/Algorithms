@@ -3,8 +3,7 @@
 import { css } from '@emotion/react';
 import { useEffect, useRef } from 'react';
 import { errorMessageColor, headerItemHovered, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
-import { StringMatchingData, stringMatchingAlgorithmsData } from '../Resources/String Matching Page Resources/StringMatchingData';
-import { StringMatchingAlgorithmBase } from '../Resources/Algorithms/AlgorithmBase';
+import { StringMatchingData, stringMatchingAlgorithmsData } from '../Core/Data/StringMatchingData';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import {
@@ -12,10 +11,12 @@ import {
   updateStringMatchingInputState,
   updateStringMatchingPatternState,
 } from '../Store/String Matching Page/StringMatchingPageStateManagement';
-import { StringMatchingAlgorithmManager, animationContext } from '../Resources/Helper';
+import { animationContext } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
 import { RefreshButton } from '../Components/RefreshButton';
+import { StringMatchingAlgorithmBase } from '../Core/Abstractions/AlgorithmBase';
+import { StringMatchingAlgorithmManager } from '../Core/Other/StringMatchingAlgorithmManager';
 
 export enum StringMatchingCharacterState {
   Unselected = 0,

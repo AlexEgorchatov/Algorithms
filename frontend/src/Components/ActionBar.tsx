@@ -2,11 +2,12 @@
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
 import { Fragment, useContext } from 'react';
-import { AnimationManager, animationContext } from '../Resources/Helper';
+import { animationContext } from '../Core/Helper';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import { updateIsAnimationRunningStateAction } from '../Store/Shared/AnimationStateManagement';
+import { AnimationManager } from '../Core/Other/AnimationManager';
 
 const PlayButton = () => {
   const { startAlgorithm } = useContext(animationContext);

@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import React, { useEffect, useRef } from 'react';
 import { completionColor, errorMessageColor, headerItemHovered, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
-import { SortingData, sortingAlgorithmsData } from '../Resources/Sorting Page Resources/SortingData';
+import { SortingData, sortingAlgorithmsData } from '../Core/Data/SortingData';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
@@ -16,12 +16,13 @@ import {
   updateIsInputOverMaxState,
   updateIsStateUpdatedState,
 } from '../Store/Sorting Page/SortingPageStateManagement';
-import { SortingAlgorithmBase } from '../Resources/Algorithms/AlgorithmBase';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { minAppWidth } from '../App';
-import { SortingAlgorithmManager, animationContext } from '../Resources/Helper';
+import { animationContext } from '../Core/Helper';
 import { RefreshButton } from '../Components/RefreshButton';
+import { SortingAlgorithmBase } from '../Core/Abstractions/AlgorithmBase';
+import { SortingAlgorithmManager } from '../Core/Other/SortingAlgorithmManager';
 
 export enum SortingBarStateEnum {
   Unselected = 0,

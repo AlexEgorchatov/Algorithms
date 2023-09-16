@@ -1,5 +1,5 @@
+import { SortingAlgorithmEnum } from '../../Core/Abstractions/AlgorithmBase';
 import { SortingBarProps } from '../../Pages/SortingPage';
-import { SortingAlgorithmEnum } from '../../Resources/Algorithms/AlgorithmBase';
 
 //#region State
 export interface SortingPageState {
