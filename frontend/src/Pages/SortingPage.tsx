@@ -18,20 +18,13 @@ import {
 } from '../Store/Sorting Page/SortingPageStateManagement';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
-import { minAppWidth } from '../App';
-import { animationContext } from '../Core/Helper';
+import { animationContext, minAppWidth } from '../Core/Helper';
 import { RefreshButton } from '../Components/RefreshButton';
 import { SortingAlgorithmBase } from '../Core/Abstractions/AlgorithmBase';
 import { SortingAlgorithmManager } from '../Core/Other/SortingAlgorithmManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
 import { SortingBarStateEnum } from '../Resources/Enumerations';
-
-export interface SortingBarProps {
-  barHeight: number;
-  barID?: number;
-  barState?: SortingBarStateEnum;
-  leftOffset?: number;
-}
+import { SortingBarProps } from '../Resources/SharedProps';
 
 let sortingAlgorithmManager: SortingAlgorithmManager = new SortingAlgorithmManager(sortingAlgorithmsData[0].sortingAlgorithm);
 let sortingAnimationManager: AnimationManager = new AnimationManager(sortingAlgorithmManager);

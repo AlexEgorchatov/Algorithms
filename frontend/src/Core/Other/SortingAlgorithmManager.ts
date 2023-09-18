@@ -1,7 +1,7 @@
-import { store } from '../../App';
-import { SortingBarProps } from '../../Pages/SortingPage';
 import { SortingBarStateEnum } from '../../Resources/Enumerations';
+import { SortingBarProps } from '../../Resources/SharedProps';
 import { updateIsStateUpdatedState, updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
+import { store } from '../../Store/Store';
 import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmManagerBase } from '../Abstractions/AlgorithmManagerBase';
 

@@ -7,13 +7,11 @@ import { StringMatchingPage } from './Pages/StringMatchingPage';
 import { PathFindingPage } from './Pages/PathFindingPage';
 import { NotFoundPage } from './Pages/NotFoundPage';
 import { Provider } from 'react-redux';
-import { createStore } from './Store/Store';
 import { Header } from './Components/Header';
 import { mainBackground, mainFontColor, pageBackground } from './Resources/Colors';
 import { modules } from './Core/Data/ModuleData';
-
-export const store = createStore();
-export const minAppWidth: number = 580;
+import { store } from './Store/Store';
+import { minAppWidth } from './Core/Helper';
 
 function App() {
   return (

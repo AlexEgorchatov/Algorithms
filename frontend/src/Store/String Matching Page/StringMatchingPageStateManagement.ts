@@ -1,5 +1,5 @@
-import { StringMatchingCharacterProps } from '../../Pages/StringMatchingPage';
 import { StringMatchingAlgorithmEnum } from '../../Resources/Enumerations';
+import { StringMatchingCharacterProps } from '../../Resources/SharedProps';
 
 //#region State
 export interface StringMatchingPageState {
@@ -57,7 +57,7 @@ export const updateStringMatchingAnimationInputState = (stringMatchingAnimationI
 //#endregion Actions
 
 //#region Reducers
-export type StringMatchingPageActions =
+type StringMatchingPageActions =
   | ReturnType<typeof updateSelectedSearchingAlgorithmState>
   | ReturnType<typeof updateStringMatchingPatternState>
   | ReturnType<typeof updateStringMatchingInputState>

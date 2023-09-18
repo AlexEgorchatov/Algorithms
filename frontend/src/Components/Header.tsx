@@ -7,7 +7,7 @@ import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { updateHeaderStateAction } from '../Store/Home Page/HeaderStateManagement';
-import { minAppWidth } from '../App';
+import { minAppWidth } from '../Core/Helper';
 
 interface Props {
   data: ModuleData[];

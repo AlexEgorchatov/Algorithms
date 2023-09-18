@@ -1,6 +1,9 @@
 import { createContext } from 'react';
-import { store } from '../App';
 import { AnimationManager, isAnimationCompleted } from './Other/AnimationManager';
+import { store } from '../Store/Store';
+
+export const minAppWidth: number = 580;
+
 interface animationProps {
   animationManager: AnimationManager;
 }

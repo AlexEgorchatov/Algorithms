@@ -9,10 +9,6 @@ import { PathFindingModule } from '../Modules/PathFindingModule';
 import React from 'react';
 import { ModuleEnum } from '../Resources/Enumerations';
 
-export interface ModuleTitle {
-  title: string;
-}
-
 interface ModuleProps {
   data: ModuleData;
 }

@@ -19,11 +19,7 @@ import { StringMatchingAlgorithmBase } from '../Core/Abstractions/AlgorithmBase'
 import { StringMatchingAlgorithmManager } from '../Core/Other/StringMatchingAlgorithmManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
 import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
-
-export interface StringMatchingCharacterProps {
-  character: string;
-  characterState?: StringMatchingCharacterStateEnum;
-}
+import { StringMatchingCharacterProps } from '../Resources/SharedProps';
 
 let stringMatchingAlgorithmManager: StringMatchingAlgorithmManager = new StringMatchingAlgorithmManager(stringMatchingAlgorithmsData[0].stringMatchingAlgorithm);
 let stringMatchingAnimationManager: AnimationManager = new AnimationManager(stringMatchingAlgorithmManager);

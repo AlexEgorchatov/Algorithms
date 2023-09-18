@@ -1,4 +1,4 @@
-import { StringMatchingCharacterProps } from '../../Pages/StringMatchingPage';
+import { StringMatchingCharacterProps } from '../../Resources/SharedProps';
 import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmManagerBase } from '../Abstractions/AlgorithmManagerBase';
 

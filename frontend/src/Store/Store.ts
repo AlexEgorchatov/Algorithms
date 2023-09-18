@@ -22,11 +22,6 @@ const rootReducer = combineReducers<AppState>({
   animationState: animationReducer,
 });
 
-export function createStore(): Store<AppState> {
-  const store = configureStore({ reducer: rootReducer });
-  return store;
-}
-
 export interface AppState {
   readonly sortingModuleState: SortingModuleState;
   readonly stringMatchingModuleState: StringMatchingModuleState;
@@ -38,3 +33,10 @@ export interface AppState {
   readonly windowState: WindowState;
   readonly animationState: AnimationState;
 }
+
+const createStore = (): Store<AppState> => {
+  const store = configureStore({ reducer: rootReducer });
+  return store;
+};
+
+export const store = createStore();

@@ -1,8 +1,7 @@
-import { store } from '../../App';
-import { SortingBarProps } from '../../Pages/SortingPage';
-import { StringMatchingCharacterProps } from '../../Pages/StringMatchingPage';
 import { SortingAlgorithmEnum, SortingBarStateEnum, StringMatchingAlgorithmEnum, StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
+import { SortingBarProps, StringMatchingCharacterProps } from '../../Resources/SharedProps';
 import { updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
+import { store } from '../../Store/Store';
 
 export abstract class AlgorithmBase<T> {
   abstract executeAlgorithm(): Promise<void>;

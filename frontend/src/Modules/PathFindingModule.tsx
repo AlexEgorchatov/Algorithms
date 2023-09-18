@@ -1,13 +1,13 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect } from 'react';
-import { ModuleTitle } from '../Pages/HomePage';
 import { ModulePlaceholder } from '../Components/ModulePlaceHolder';
 import { updatePathFindingModuleStateAction } from '../Store/Home Page/PathFindingModuleStateManagement';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import { CellStateEnum } from '../Resources/Enumerations';
+import { ModuleTitle } from '../Resources/SharedProps';
 
 interface Props {
   state: CellStateEnum;

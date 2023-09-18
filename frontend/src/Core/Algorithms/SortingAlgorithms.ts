@@ -1,8 +1,8 @@
-import { store } from '../../App';
 import { SortingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
 import { isAnimationTerminated, pauseForStepIteration } from '../Helper';
 import { SortingAlgorithmEnum, SortingBarStateEnum } from '../../Resources/Enumerations';
+import { store } from '../../Store/Store';
 
 export class BubbleSort extends SortingAlgorithmBase {
   public sortingAlgorithm = SortingAlgorithmEnum.BubbleSort;

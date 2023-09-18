@@ -1,5 +1,5 @@
-import { store } from '../../App';
 import { updateHasAnimationStartedStateAction, updateIsAnimationRunningStateAction } from '../../Store/Shared/AnimationStateManagement';
+import { store } from '../../Store/Store';
 import { AlgorithmManagerBase } from '../Abstractions/AlgorithmManagerBase';
 
 export let isAnimationCompleted: boolean = false;

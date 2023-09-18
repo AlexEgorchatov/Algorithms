@@ -1,5 +1,5 @@
-import { SortingBarProps } from '../../Pages/SortingPage';
 import { SortingAlgorithmEnum } from '../../Resources/Enumerations';
+import { SortingBarProps } from '../../Resources/SharedProps';
 
 //#region State
 export interface SortingPageState {
