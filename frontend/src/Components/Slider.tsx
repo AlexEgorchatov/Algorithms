@@ -1,16 +1,15 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useSelector } from 'react-redux';
-import { AppState } from '../Store/Store';
-import { useDispatch } from 'react-redux';
-import { updateSliderValueStateAction } from '../Store/Shared/SliderComponentStateManagement';
 import { useContext, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { AppState } from '../Store/Store';
+import { updateSliderValueStateAction } from '../Store/Shared/SliderComponentStateManagement';
 import { animationContext } from '../Core/Helper';
 import { updateIsAnimationRunningStateAction } from '../Store/Shared/AnimationStateManagement';
-import { AnimationManager } from '../Core/Other/AnimationManager';
 
 const PlayButton = () => {
-  const { startAlgorithm } = useContext(animationContext);
+  const { animationManager } = useContext(animationContext);
 
   return (
     <div
@@ -26,7 +25,7 @@ const PlayButton = () => {
           color: black;
         }
       `}
-      onClick={() => AnimationManager.startAnimation(startAlgorithm)}
+      onClick={() => animationManager.startAnimation}
     >
       <div
         css={css`
@@ -71,7 +70,8 @@ const PauseButton = () => {
 };
 
 const StopButton = () => {
-  const { stopAlgorithm } = useContext(animationContext);
+  const { animationManager } = useContext(animationContext);
+
   const algorithmState = useSelector((state: AppState) => state.animationState);
 
   return (
@@ -93,13 +93,13 @@ const StopButton = () => {
           `}
         }
       `}
-      onClick={() => AnimationManager.stopAnimation(stopAlgorithm)}
+      onClick={() => animationManager.stopAnimation}
     ></div>
   );
 };
 
 const CompleteButton = () => {
-  const { completeAlgorithm } = useContext(animationContext);
+  const { animationManager } = useContext(animationContext);
   const algorithmState = useSelector((state: AppState) => state.animationState);
 
   return (
@@ -120,7 +120,7 @@ const CompleteButton = () => {
           `}
         }
       `}
-      onClick={() => AnimationManager.completeAnimation(completeAlgorithm)}
+      onClick={() => animationManager.completeAnimation}
     >
       <div
         css={css`

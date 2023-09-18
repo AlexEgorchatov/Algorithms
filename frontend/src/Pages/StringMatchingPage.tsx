@@ -17,18 +17,17 @@ import { SliderComponent } from '../Components/Slider';
 import { RefreshButton } from '../Components/RefreshButton';
 import { StringMatchingAlgorithmBase } from '../Core/Abstractions/AlgorithmBase';
 import { StringMatchingAlgorithmManager } from '../Core/Other/StringMatchingAlgorithmManager';
+import { AnimationManager } from '../Core/Other/AnimationManager';
+import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
 
-export enum StringMatchingCharacterState {
-  Unselected = 0,
-  Checked = 1,
-  Current = 2,
-  Found = 3,
-}
 export interface StringMatchingCharacterProps {
   character: string;
-  characterState?: StringMatchingCharacterState;
+  characterState?: StringMatchingCharacterStateEnum;
 }
-export let selectedStringMatchingAlgorithm: StringMatchingAlgorithmBase = stringMatchingAlgorithmsData[0].stringMatchingAlgorithm;
+
+let stringMatchingAlgorithmManager: StringMatchingAlgorithmManager = new StringMatchingAlgorithmManager(stringMatchingAlgorithmsData[0].stringMatchingAlgorithm);
+let stringMatchingAnimationManager: AnimationManager = new AnimationManager(stringMatchingAlgorithmManager);
+
 export const maxStringMatchingInputLength: number = 200;
 export const maxStringMatchingPatternLength: number = 60;
 export const renderedPatter: string = 'was';
@@ -51,7 +50,7 @@ const AlgorithmComponent = ({ title, isSelected, stringMatchingAlgorithm }: Algo
 
   const handleClick = () => {
     if (algorithmState.hasAnimationStarted) return;
-    selectedStringMatchingAlgorithm = stringMatchingAlgorithm;
+    stringMatchingAlgorithmManager.selectedAlgorithm = stringMatchingAlgorithm;
     dispatch(updateSelectedSearchingAlgorithmState(stringMatchingAlgorithm.stringMatchingAlgorithm));
   };
 
@@ -308,13 +307,7 @@ const SettingsComponent = () => {
                 width: 72px;
               `}
             >
-              <animationContext.Provider
-                value={{
-                  startAlgorithm: () => StringMatchingAlgorithmManager.startAlgorithm(),
-                  stopAlgorithm: () => StringMatchingAlgorithmManager.stopAlgorithm(),
-                  completeAlgorithm: () => StringMatchingAlgorithmManager.completeAlgorithm(),
-                }}
-              >
+              <animationContext.Provider value={{ animationManager: stringMatchingAnimationManager }}>
                 <ActionBar />
               </animationContext.Provider>
             </div>
@@ -400,13 +393,7 @@ const AnimationComponent = () => {
           align-items: flex-end;
         `}
       >
-        <animationContext.Provider
-          value={{
-            startAlgorithm: () => StringMatchingAlgorithmManager.startAlgorithm(),
-            stopAlgorithm: () => StringMatchingAlgorithmManager.stopAlgorithm(),
-            completeAlgorithm: () => StringMatchingAlgorithmManager.completeAlgorithm(),
-          }}
-        >
+        <animationContext.Provider value={{ animationManager: stringMatchingAnimationManager }}>
           <SliderComponent />
         </animationContext.Provider>
       </div>
@@ -414,19 +401,19 @@ const AnimationComponent = () => {
   );
 };
 
-const StringMatchingCharacterComponent = ({ character, characterState = StringMatchingCharacterState.Unselected }: StringMatchingCharacterProps) => {
+const StringMatchingCharacterComponent = ({ character, characterState = StringMatchingCharacterStateEnum.Unselected }: StringMatchingCharacterProps) => {
   const setFont = () => {
     switch (characterState) {
-      case StringMatchingCharacterState.Unselected:
+      case StringMatchingCharacterStateEnum.Unselected:
         return 'color: white; background-color: transparent';
 
-      case StringMatchingCharacterState.Checked:
+      case StringMatchingCharacterStateEnum.Checked:
         return 'color: white; background-color: orange';
 
-      case StringMatchingCharacterState.Current:
+      case StringMatchingCharacterStateEnum.Current:
         return `color: black; background-color: ${pivotColor}`;
 
-      case StringMatchingCharacterState.Found:
+      case StringMatchingCharacterStateEnum.Found:
         return 'color: black; background-color: #ffff00';
     }
   };
@@ -459,3 +446,36 @@ export const StringMatchingPage = () => {
     </div>
   );
 };
+
+//TODO implement this logic in useEffect
+// const ProcessStringMatchingAction = (input: string): StringMatchingCharacterProps[] => {
+//   let stringArrayInput = input.split('');
+//   let stringMatchingCharacters: StringMatchingCharacterProps[] = [];
+
+//   for (let i = 0; i < stringArrayInput.length; i++) {
+//     stringMatchingCharacters.push({ character: stringArrayInput[i] });
+//   }
+
+//   return stringMatchingCharacters;
+// };
+
+// export const updateStringMatchingPatternMiddleware: Middleware = (store: MiddlewareAPI) => (next: Dispatch) => (action: StringMatchingPageActions) => {
+//   switch (action.type) {
+//     case UPDATE_STRING_MATCHING_INPUT_STATE:
+//       if (action.stringMatchingInput.length <= maxStringMatchingInputLength) {
+//         store.dispatch(updateStringMatchingAnimationInputState(ProcessStringMatchingAction(action.stringMatchingInput)));
+//       }
+//       break;
+
+//     case UPDATE_STRING_MATCHING_PATTERN_STATE:
+//       if (action.stringMatchingPattern.length <= maxStringMatchingPatternLength) {
+//         store.dispatch(updateStringMatchingAnimationPatternState(ProcessStringMatchingAction(action.stringMatchingPattern)));
+//       }
+//       break;
+
+//     default:
+//       break;
+//   }
+
+//   return next(action);
+// };

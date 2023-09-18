@@ -7,10 +7,9 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import { updateIsAnimationRunningStateAction } from '../Store/Shared/AnimationStateManagement';
-import { AnimationManager } from '../Core/Other/AnimationManager';
 
 const PlayButton = () => {
-  const { startAlgorithm } = useContext(animationContext);
+  const { animationManager } = useContext(animationContext);
 
   return (
     <div
@@ -41,7 +40,7 @@ const PlayButton = () => {
           left: 6px;
         }
       `}
-      onClick={() => AnimationManager.startAnimation(startAlgorithm)}
+      onClick={() => animationManager.startAnimation}
     ></div>
   );
 };
@@ -89,7 +88,7 @@ const PauseButton = () => {
 };
 
 const StopButton = () => {
-  const { stopAlgorithm } = useContext(animationContext);
+  const { animationManager } = useContext(animationContext);
   const algorithmState = useSelector((state: AppState) => state.animationState);
 
   return (
@@ -117,7 +116,7 @@ const StopButton = () => {
             `}
         }
       `}
-      onClick={() => AnimationManager.stopAnimation(stopAlgorithm)}
+      onClick={() => animationManager.stopAnimation}
     >
       <div
         css={css`
@@ -135,7 +134,7 @@ const StopButton = () => {
 };
 
 const CompleteButton = () => {
-  const { completeAlgorithm } = useContext(animationContext);
+  const { animationManager } = useContext(animationContext);
   const algorithmState = useSelector((state: AppState) => state.animationState);
 
   return (
@@ -163,7 +162,7 @@ const CompleteButton = () => {
             `}
         }
       `}
-      onClick={() => AnimationManager.completeAnimation(completeAlgorithm)}
+      onClick={() => animationManager.completeAnimation}
     >
       <div
         css={css`

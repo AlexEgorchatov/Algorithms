@@ -7,18 +7,19 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import { updateStringMatchingModuleStateAction } from '../Store/Home Page/StringMatchingModuleStateManagement';
-import { StringMatchingCharacterState, StringMatchingCharacterProps } from '../Pages/StringMatchingPage';
+import { StringMatchingCharacterProps } from '../Pages/StringMatchingPage';
+import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
 
-const SearchableCharacter = ({ character, characterState: state = StringMatchingCharacterState.Unselected }: StringMatchingCharacterProps) => {
+const SearchableCharacter = ({ character, characterState: state = StringMatchingCharacterStateEnum.Unselected }: StringMatchingCharacterProps) => {
   const setFont = () => {
     switch (state) {
-      case StringMatchingCharacterState.Unselected:
+      case StringMatchingCharacterStateEnum.Unselected:
         return 'color: #ffffff; background-color: transparent';
 
-      case StringMatchingCharacterState.Checked:
+      case StringMatchingCharacterStateEnum.Checked:
         return 'color: #ffffff; background-color: #000000';
 
-      case StringMatchingCharacterState.Found:
+      case StringMatchingCharacterStateEnum.Found:
         return 'color: #000000; background-color: #ffff00';
     }
   };
@@ -64,12 +65,12 @@ export const StringMatchingModule = ({ title }: ModuleTitle) => {
     let inputCopy = [...stringMatchingState.stringMatchingModuleCharacters];
 
     for (let i = 0; i < inputLength; i++) {
-      inputCopy[i] = StringMatchingCharacterState.Checked;
+      inputCopy[i] = StringMatchingCharacterStateEnum.Checked;
       dispatch(updateStringMatchingModuleStateAction(inputCopy));
       await new Promise((resolve) => awaitCancellation(resolve, stepTime));
       inputCopy = [...inputCopy];
 
-      inputCopy[i] = i === 1 || i === 2 || i === 4 || i === 5 ? StringMatchingCharacterState.Found : StringMatchingCharacterState.Unselected;
+      inputCopy[i] = i === 1 || i === 2 || i === 4 || i === 5 ? StringMatchingCharacterStateEnum.Found : StringMatchingCharacterStateEnum.Unselected;
       dispatch(updateStringMatchingModuleStateAction(inputCopy));
       inputCopy = [...inputCopy];
 

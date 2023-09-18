@@ -1,9 +1,8 @@
 import { store } from '../../App';
-import { SortingAlgorithmBase, SortingAlgorithmEnum } from '../Abstractions/AlgorithmBase';
-import { SortingBarStateEnum } from '../../Pages/SortingPage';
+import { SortingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
-import { AnimationManager } from '../Other/AnimationManager';
-import { SortingAlgorithmManager } from '../Other/SortingAlgorithmManager';
+import { isAnimationTerminated, pauseForStepIteration } from '../Helper';
+import { SortingAlgorithmEnum, SortingBarStateEnum } from '../../Resources/Enumerations';
 
 export class BubbleSort extends SortingAlgorithmBase {
   public sortingAlgorithm = SortingAlgorithmEnum.BubbleSort;
@@ -16,19 +15,19 @@ export class BubbleSort extends SortingAlgorithmBase {
     for (let i = 0; i < length - 1 && isSwapped; i++) {
       isSwapped = false;
       for (let j = 0; j < length - i - 1; j++) {
-        SortingAlgorithmManager.selectSortingBars(barsCopy, j, j + 1);
-        await AnimationManager.pauseForStepIteration();
-        if (await AnimationManager.isAnimationTerminated()) return;
+        this.selectSortingBars(barsCopy, j, j + 1);
+        await pauseForStepIteration();
+        if (await isAnimationTerminated()) return;
 
         if (barsCopy[j].barHeight <= barsCopy[j + 1].barHeight) {
-          SortingAlgorithmManager.deselectSortingBars(barsCopy, j, j + 1);
-          if (await AnimationManager.isAnimationTerminated()) return;
+          this.deselectSortingBars(barsCopy, j, j + 1);
+          if (await isAnimationTerminated()) return;
           continue;
         }
 
-        SortingAlgorithmManager.swapSortingBarsVisually(barsCopy, j, j + 1);
-        await AnimationManager.pauseForStepIteration();
-        if (await AnimationManager.isAnimationTerminated()) return;
+        this.swapSortingBarsVisually(barsCopy, j, j + 1);
+        await pauseForStepIteration();
+        if (await isAnimationTerminated()) return;
 
         //TODO: Figure out why putting this code in a function breaks the algorithm
         barsCopy = [...barsCopy];
@@ -36,7 +35,7 @@ export class BubbleSort extends SortingAlgorithmBase {
         barsCopy[j] = { ...barsCopy[j], barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Unselected };
         barsCopy[j + 1] = { ...barsCopy[j + 1], barHeight: tempBar.barHeight, barState: SortingBarStateEnum.Unselected };
         store.dispatch(updateSortingBarsStateAction(barsCopy));
-        if (await AnimationManager.isAnimationTerminated()) return;
+        if (await isAnimationTerminated()) return;
 
         isSwapped = true;
       }
@@ -59,7 +58,7 @@ export class QuickSort extends SortingAlgorithmBase {
     if (left >= right) return;
 
     let partitionIndex: number = await this.partition(left, right);
-    if (await AnimationManager.isAnimationTerminated()) return;
+    if (await isAnimationTerminated()) return;
     await this.quickSort(left, partitionIndex - 1);
     await this.quickSort(partitionIndex + 1, right);
   }
@@ -72,16 +71,16 @@ export class QuickSort extends SortingAlgorithmBase {
       let currentPartitionIndex: number = right;
 
       for (let i: number = right; i > left; i--) {
-        SortingAlgorithmManager.selectSortingBars(barsCopy, i, currentPartitionIndex);
-        await AnimationManager.pauseForStepIteration();
-        if (await AnimationManager.isAnimationTerminated()) {
+        this.selectSortingBars(barsCopy, i, currentPartitionIndex);
+        await pauseForStepIteration();
+        if (await isAnimationTerminated()) {
           resolve(0);
           return;
         }
 
         if (barsCopy[i].barHeight <= pivot) {
-          SortingAlgorithmManager.deselectSortingBars(barsCopy, i, currentPartitionIndex);
-          if (await AnimationManager.isAnimationTerminated()) {
+          this.deselectSortingBars(barsCopy, i, currentPartitionIndex);
+          if (await isAnimationTerminated()) {
             resolve(0);
             return;
           }
@@ -89,9 +88,9 @@ export class QuickSort extends SortingAlgorithmBase {
         }
 
         if (i !== currentPartitionIndex) {
-          SortingAlgorithmManager.swapSortingBarsVisually(barsCopy, i, currentPartitionIndex);
-          await AnimationManager.pauseForStepIteration();
-          if (await AnimationManager.isAnimationTerminated()) {
+          this.swapSortingBarsVisually(barsCopy, i, currentPartitionIndex);
+          await pauseForStepIteration();
+          if (await isAnimationTerminated()) {
             resolve(0);
             return;
           }
@@ -103,7 +102,7 @@ export class QuickSort extends SortingAlgorithmBase {
             barHeight: tempBar.barHeight,
             barState: SortingBarStateEnum.Unselected,
           };
-          if (await AnimationManager.isAnimationTerminated()) {
+          if (await isAnimationTerminated()) {
             resolve(0);
             return;
           }
@@ -113,16 +112,16 @@ export class QuickSort extends SortingAlgorithmBase {
         store.dispatch(updateSortingBarsStateAction(barsCopy));
       }
 
-      SortingAlgorithmManager.selectSortingBars(barsCopy, left, currentPartitionIndex);
-      await AnimationManager.pauseForStepIteration();
-      if (await AnimationManager.isAnimationTerminated()) {
+      this.selectSortingBars(barsCopy, left, currentPartitionIndex);
+      await pauseForStepIteration();
+      if (await isAnimationTerminated()) {
         resolve(0);
         return;
       }
 
-      SortingAlgorithmManager.swapSortingBarsVisually(barsCopy, left, currentPartitionIndex);
-      await AnimationManager.pauseForStepIteration();
-      if (await AnimationManager.isAnimationTerminated()) {
+      this.swapSortingBarsVisually(barsCopy, left, currentPartitionIndex);
+      await pauseForStepIteration();
+      if (await isAnimationTerminated()) {
         resolve(0);
         return;
       }
@@ -136,7 +135,7 @@ export class QuickSort extends SortingAlgorithmBase {
         barState: SortingBarStateEnum.Unselected,
       };
       store.dispatch(updateSortingBarsStateAction(barsCopy));
-      if (await AnimationManager.isAnimationTerminated()) {
+      if (await isAnimationTerminated()) {
         resolve(0);
         return;
       }

@@ -8,7 +8,6 @@ import { sliderComponentReducer, SliderComponentState } from './Shared/SliderCom
 import { sortingPageReducer, SortingPageState } from './Sorting Page/SortingPageStateManagement';
 import { windowReducer, WindowState } from './Shared/WindowStateManagement';
 import { stringMatchingPageReducer, StringMatchingPageState } from './String Matching Page/StringMatchingPageStateManagement';
-import { updateStringMatchingPatternMiddleware } from './Middleware';
 import { animationReducer, AnimationState } from './Shared/AnimationStateManagement';
 
 const rootReducer = combineReducers<AppState>({
@@ -24,7 +23,7 @@ const rootReducer = combineReducers<AppState>({
 });
 
 export function createStore(): Store<AppState> {
-  const store = configureStore({ reducer: rootReducer, middleware: [updateStringMatchingPatternMiddleware] });
+  const store = configureStore({ reducer: rootReducer });
   return store;
 }
 

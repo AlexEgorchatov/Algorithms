@@ -1,28 +1,22 @@
-export enum CellState {
-  Unselected = 0,
-  Selected = 1,
-  Source = 2,
-  Destination = 3,
-  Wall = 4,
-}
+import { CellStateEnum } from '../../Resources/Enumerations';
 
-const InitializeGrid = (): CellState[] => {
-  let pathFindingModuleGrid: CellState[] = [];
+const InitializeGrid = (): CellStateEnum[] => {
+  let pathFindingModuleGrid: CellStateEnum[] = [];
   for (let i = 0; i < 56; i++) {
-    pathFindingModuleGrid.push(CellState.Unselected);
+    pathFindingModuleGrid.push(CellStateEnum.Unselected);
   }
-  pathFindingModuleGrid[5 * 8 + 1] = CellState.Source;
-  pathFindingModuleGrid[0 * 8 + 7] = CellState.Destination;
-  pathFindingModuleGrid[4 * 8 + 4] = CellState.Wall;
-  pathFindingModuleGrid[5 * 8 + 4] = CellState.Wall;
-  pathFindingModuleGrid[6 * 8 + 4] = CellState.Wall;
+  pathFindingModuleGrid[5 * 8 + 1] = CellStateEnum.Source;
+  pathFindingModuleGrid[0 * 8 + 7] = CellStateEnum.Destination;
+  pathFindingModuleGrid[4 * 8 + 4] = CellStateEnum.Wall;
+  pathFindingModuleGrid[5 * 8 + 4] = CellStateEnum.Wall;
+  pathFindingModuleGrid[6 * 8 + 4] = CellStateEnum.Wall;
 
   return pathFindingModuleGrid;
 };
 
 //#region State
 export interface PathFindingModuleState {
-  readonly pathFindingModuleGrid: CellState[];
+  readonly pathFindingModuleGrid: CellStateEnum[];
 }
 
 const initialPathFindingModuleState: PathFindingModuleState = {

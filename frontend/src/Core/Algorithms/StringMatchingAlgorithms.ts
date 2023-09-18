@@ -1,8 +1,8 @@
 import { store } from '../../App';
-import { StringMatchingAlgorithmBase, StringMatchingAlgorithmEnum } from '../Abstractions/AlgorithmBase';
-import { StringMatchingCharacterState } from '../../Pages/StringMatchingPage';
+import { StringMatchingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { updateStringMatchingAnimationInputState, updateStringMatchingAnimationPatternState } from '../../Store/String Matching Page/StringMatchingPageStateManagement';
-import { AnimationManager } from '../Other/AnimationManager';
+import { pauseForStepIteration } from '../Helper';
+import { StringMatchingAlgorithmEnum, StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 
 export class NaivePatternMatching extends StringMatchingAlgorithmBase {
   public stringMatchingAlgorithm = StringMatchingAlgorithmEnum.Naive;
@@ -17,26 +17,26 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
       let j = 0;
       let isPreviouslyFound: boolean = false;
       for (j = 0; j < patternLength; ++j) {
-        if (!isPreviouslyFound && animationInputCopy[i + j].characterState === StringMatchingCharacterState.Found) isPreviouslyFound = true;
+        if (!isPreviouslyFound && animationInputCopy[i + j].characterState === StringMatchingCharacterStateEnum.Found) isPreviouslyFound = true;
 
         animationPatternCopy = [...animationPatternCopy];
-        animationPatternCopy[j] = { ...animationPatternCopy[j], characterState: StringMatchingCharacterState.Current };
+        animationPatternCopy[j] = { ...animationPatternCopy[j], characterState: StringMatchingCharacterStateEnum.Current };
         store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
         animationInputCopy = [...animationInputCopy];
-        animationInputCopy[i + j] = { ...animationInputCopy[i + j], characterState: StringMatchingCharacterState.Current };
+        animationInputCopy[i + j] = { ...animationInputCopy[i + j], characterState: StringMatchingCharacterStateEnum.Current };
         store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
 
-        await AnimationManager.pauseForStepIteration();
+        await pauseForStepIteration();
 
         if (animationInputCopy[i + j].character.toLowerCase() !== animationPatternCopy[j].character.toLowerCase()) {
           j++;
           break;
         } else {
           animationPatternCopy = [...animationPatternCopy];
-          animationPatternCopy[j] = { ...animationPatternCopy[j], characterState: StringMatchingCharacterState.Checked };
+          animationPatternCopy[j] = { ...animationPatternCopy[j], characterState: StringMatchingCharacterStateEnum.Checked };
           store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
           animationInputCopy = [...animationInputCopy];
-          animationInputCopy[i + j] = { ...animationInputCopy[i + j], characterState: StringMatchingCharacterState.Checked };
+          animationInputCopy[i + j] = { ...animationInputCopy[i + j], characterState: StringMatchingCharacterStateEnum.Checked };
           store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
         }
       }
@@ -46,11 +46,11 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
 
       let isPatternFound: boolean = --j === patternLength - 1;
       for (; j >= 0; j--) {
-        animationPatternCopy[j] = { ...animationPatternCopy[j], characterState: StringMatchingCharacterState.Unselected };
+        animationPatternCopy[j] = { ...animationPatternCopy[j], characterState: StringMatchingCharacterStateEnum.Unselected };
 
         animationInputCopy[i + j] = {
           ...animationInputCopy[i + j],
-          characterState: isPatternFound || isPreviouslyFound ? StringMatchingCharacterState.Found : StringMatchingCharacterState.Unselected,
+          characterState: isPatternFound || isPreviouslyFound ? StringMatchingCharacterStateEnum.Found : StringMatchingCharacterStateEnum.Unselected,
         };
       }
 

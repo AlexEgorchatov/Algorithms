@@ -1,20 +1,28 @@
-import { store } from '../../App';
-import { StringMatchingCharacterProps, selectedStringMatchingAlgorithm } from '../../Pages/StringMatchingPage';
+import { StringMatchingCharacterProps } from '../../Pages/StringMatchingPage';
+import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
+import { AlgorithmManagerBase } from '../Abstractions/AlgorithmManagerBase';
 
-export class StringMatchingAlgorithmManager {
-  public static initialState: StringMatchingCharacterProps[] = [];
+export class StringMatchingAlgorithmManager implements AlgorithmManagerBase<StringMatchingCharacterProps> {
+  public selectedAlgorithm: AlgorithmBase<any>;
+  public initialState: StringMatchingCharacterProps[] = [];
 
-  private constructor() {}
-
-  public static setInitialState(): void {
-    this.initialState = store.getState().stringMatchingPageState.stringMatchingAnimationInput;
+  public constructor(selectedAlgorithm: AlgorithmBase<any>) {
+    this.selectedAlgorithm = selectedAlgorithm;
   }
 
-  public static async startAlgorithm(): Promise<void> {
-    selectedStringMatchingAlgorithm.executeAlgorithm();
+  public setInitialState(): void {
+    throw new Error('Method not implemented.');
   }
-
-  public static async stopAlgorithm(): Promise<void> {}
-
-  public static async completeAlgorithm(): Promise<void> {}
+  public resetToInitialState(): void {
+    throw new Error('Method not implemented.');
+  }
+  public startAlgorithm(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  public stopAlgorithm(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  public completeAlgorithm(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
 }

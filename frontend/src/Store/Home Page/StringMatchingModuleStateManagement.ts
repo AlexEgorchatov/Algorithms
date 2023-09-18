@@ -1,19 +1,19 @@
-import { StringMatchingCharacterState } from '../../Pages/StringMatchingPage';
+import { StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 
 //#region State
 export interface StringMatchingModuleState {
-  readonly stringMatchingModuleCharacters: StringMatchingCharacterState[];
+  readonly stringMatchingModuleCharacters: StringMatchingCharacterStateEnum[];
 }
 
 const initialStringMatchingModuleState: StringMatchingModuleState = {
   stringMatchingModuleCharacters: [
-    StringMatchingCharacterState.Unselected,
-    StringMatchingCharacterState.Unselected,
-    StringMatchingCharacterState.Unselected,
-    StringMatchingCharacterState.Unselected,
-    StringMatchingCharacterState.Unselected,
-    StringMatchingCharacterState.Unselected,
-    StringMatchingCharacterState.Unselected,
+    StringMatchingCharacterStateEnum.Unselected,
+    StringMatchingCharacterStateEnum.Unselected,
+    StringMatchingCharacterStateEnum.Unselected,
+    StringMatchingCharacterStateEnum.Unselected,
+    StringMatchingCharacterStateEnum.Unselected,
+    StringMatchingCharacterStateEnum.Unselected,
+    StringMatchingCharacterStateEnum.Unselected,
   ],
 };
 //#endregion State

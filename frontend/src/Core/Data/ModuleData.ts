@@ -1,28 +1,24 @@
-export enum ModuleEnumeration {
-  Sorting = 0,
-  StringMatching = 1,
-  PathFinding = 2,
-}
+import { ModuleEnum } from '../../Resources/Enumerations';
 
 export interface ModuleData {
-  moduleType: ModuleEnumeration;
+  moduleType: ModuleEnum;
   title: string;
   link: string;
 }
 
 export const modules: ModuleData[] = [
   {
-    moduleType: ModuleEnumeration.Sorting,
+    moduleType: ModuleEnum.Sorting,
     title: 'Sorting',
     link: 'sort',
   },
   {
-    moduleType: ModuleEnumeration.StringMatching,
+    moduleType: ModuleEnum.StringMatching,
     title: 'String Matching',
     link: 'search',
   },
   {
-    moduleType: ModuleEnumeration.PathFinding,
+    moduleType: ModuleEnum.PathFinding,
     title: 'Path Finding',
     link: 'pathfinding',
   },

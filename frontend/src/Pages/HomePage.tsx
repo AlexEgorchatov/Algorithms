@@ -1,12 +1,13 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { ModuleData, ModuleEnumeration, modules } from '../Core/Data/ModuleData';
+import { ModuleData, modules } from '../Core/Data/ModuleData';
 import { mainFontColor } from '../Resources/Colors';
 import { Link } from 'react-router-dom';
 import { SortingModule } from '../Modules/SortingModule';
 import { StringMatchingModule } from '../Modules/StringMatchingModule';
 import { PathFindingModule } from '../Modules/PathFindingModule';
 import React from 'react';
+import { ModuleEnum } from '../Resources/Enumerations';
 
 export interface ModuleTitle {
   title: string;
@@ -23,21 +24,21 @@ interface ModuleListProps {
 const Module = ({ data }: ModuleProps) => {
   const GetCurrentModule = () => {
     switch (data.moduleType) {
-      case ModuleEnumeration.Sorting:
+      case ModuleEnum.Sorting:
         return (
           <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
             <SortingModule title={data.title} />
           </Link>
         );
 
-      case ModuleEnumeration.StringMatching:
+      case ModuleEnum.StringMatching:
         return (
           <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
             <StringMatchingModule title={data.title} />
           </Link>
         );
 
-      case ModuleEnumeration.PathFinding:
+      case ModuleEnum.PathFinding:
         return (
           <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
             <PathFindingModule title={data.title} />

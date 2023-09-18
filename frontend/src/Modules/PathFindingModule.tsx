@@ -3,35 +3,36 @@ import { css } from '@emotion/react';
 import React, { useEffect } from 'react';
 import { ModuleTitle } from '../Pages/HomePage';
 import { ModulePlaceholder } from '../Components/ModulePlaceHolder';
-import { CellState, updatePathFindingModuleStateAction } from '../Store/Home Page/PathFindingModuleStateManagement';
+import { updatePathFindingModuleStateAction } from '../Store/Home Page/PathFindingModuleStateManagement';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
+import { CellStateEnum } from '../Resources/Enumerations';
 
 interface Props {
-  state: CellState;
+  state: CellStateEnum;
 }
 
-const GridCell = ({ state = CellState.Unselected }: Props) => {
+const GridCell = ({ state = CellStateEnum.Unselected }: Props) => {
   useEffect(() => {
     setBackground();
   });
 
   const setBackground = () => {
     switch (state) {
-      case CellState.Unselected:
+      case CellStateEnum.Unselected:
         return 'background-color: #ffffff';
 
-      case CellState.Selected:
+      case CellStateEnum.Selected:
         return 'background-color: #1100ff';
 
-      case CellState.Source:
+      case CellStateEnum.Source:
         return 'background-color: green';
 
-      case CellState.Destination:
+      case CellStateEnum.Destination:
         return 'background-color: red';
 
-      case CellState.Wall:
+      case CellStateEnum.Wall:
         return 'background-color: gray';
     }
   };
@@ -75,12 +76,12 @@ export const PathFindingModule = ({ title }: ModuleTitle) => {
 
     while (rowSource !== rowDestination) {
       while (true) {
-        gridCopy[rowSource * 8 + columnSource] = CellState.Selected;
+        gridCopy[rowSource * 8 + columnSource] = CellStateEnum.Selected;
         dispatch(updatePathFindingModuleStateAction(gridCopy));
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
         gridCopy = [...gridCopy];
 
-        if (columnSource + 1 >= columnNumber || pathFindingState.pathFindingModuleGrid[rowSource * 8 + columnSource + 1] === CellState.Wall) break;
+        if (columnSource + 1 >= columnNumber || pathFindingState.pathFindingModuleGrid[rowSource * 8 + columnSource + 1] === CellStateEnum.Wall) break;
         else columnSource++;
       }
 
@@ -109,7 +110,7 @@ export const PathFindingModule = ({ title }: ModuleTitle) => {
             flex-wrap: wrap;
           `}
         >
-          {pathFindingState.pathFindingModuleGrid.map((state: CellState, index) => (
+          {pathFindingState.pathFindingModuleGrid.map((state: CellStateEnum, index) => (
             <GridCell key={index} state={state} />
           ))}
         </div>
