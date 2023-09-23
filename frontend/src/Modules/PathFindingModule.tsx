@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import { CellStateEnum } from '../Resources/Enumerations';
-import { ModuleTitle } from '../Resources/SharedProps';
+import { ModuleTitle } from '../Core/Abstractions/ModuleTitleInterface';
 
 interface Props {
   state: CellStateEnum;

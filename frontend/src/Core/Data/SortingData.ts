@@ -1,4 +1,4 @@
-import { ModuleData } from '../Abstractions/ModuleData';
+import { ModuleData } from '../Interfaces/ModuleDataInterface';
 import { BubbleSort, QuickSort } from '../Algorithms/SortingAlgorithms';
 
 export const sortingAlgorithmsData: ModuleData[] = [

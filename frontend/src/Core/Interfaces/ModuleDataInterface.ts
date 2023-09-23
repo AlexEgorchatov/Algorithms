@@ -1,4 +1,4 @@
-import { AlgorithmBase } from './AlgorithmBase';
+import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 
 export interface ModuleData {
   algorithm: AlgorithmBase<any>;

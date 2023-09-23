@@ -1,5 +1,5 @@
+import { StoreModule } from '../Interfaces/StoreModuleInterface';
 import { AlgorithmBase } from './AlgorithmBase';
-import { StoreModule } from './StoreModuleInterface';
 
 export abstract class AlgorithmsManagerBase<T> {
   public abstract selectedAlgorithm: AlgorithmBase<any>;

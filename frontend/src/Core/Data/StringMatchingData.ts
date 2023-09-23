@@ -1,4 +1,4 @@
-import { ModuleData } from '../Abstractions/ModuleData';
+import { ModuleData } from '../Interfaces/ModuleDataInterface';
 import { KnuthMorrisPrattPatternMatching, NaivePatternMatching } from '../Algorithms/StringMatchingAlgorithms';
 
 export const stringMatchingAlgorithmsData: ModuleData[] = [

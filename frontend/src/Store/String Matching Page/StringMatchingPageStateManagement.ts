@@ -1,6 +1,6 @@
-import { StoreModule } from '../../Core/Abstractions/StoreModuleInterface';
+import { StoreModule } from '../../Core/Interfaces/StoreModuleInterface';
+import { StringMatchingCharacterProps } from '../../Core/Interfaces/StringMatchingCharacterPropsInterface';
 import { StringMatchingAlgorithmEnum } from '../../Resources/Enumerations';
-import { StringMatchingCharacterProps } from '../../Resources/SharedProps';
 
 //#region State
 export interface StringMatchingPageState extends StoreModule {

@@ -5,8 +5,8 @@ import { useSelector } from 'react-redux';
 import { AlgorithmBase } from '../Core/Abstractions/AlgorithmBase';
 import { AppState, store } from '../Store/Store';
 import { headerItemHovered } from '../Resources/Colors';
-import { ModuleData } from '../Core/Abstractions/ModuleData';
 import { algorithmContext } from '../Core/Helper';
+import { ModuleData } from '../Core/Interfaces/ModuleDataInterface';
 
 interface AlgorithmListProps {
   data: ModuleData[];

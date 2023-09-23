@@ -1,7 +1,7 @@
-import { StringMatchingCharacterProps } from '../../Resources/SharedProps';
 import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
-import { StoreModule } from '../Abstractions/StoreModuleInterface';
+import { StoreModule } from '../Interfaces/StoreModuleInterface';
+import { StringMatchingCharacterProps } from '../Interfaces/StringMatchingCharacterPropsInterface';
 
 export class StringMatchingAlgorithmsManager implements AlgorithmsManagerBase<StringMatchingCharacterProps> {
   public selectedAlgorithm: AlgorithmBase<any>;

@@ -1,10 +1,10 @@
 import { SortingBarStateEnum } from '../../Resources/Enumerations';
-import { SortingBarProps } from '../../Resources/SharedProps';
 import { updateSelectedSortingAlgorithmState, updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
 import { AppState, store } from '../../Store/Store';
 import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
-import { StoreModule } from '../Abstractions/StoreModuleInterface';
+import { SortingBarProps } from '../Interfaces/SortingBarPropsInterface';
+import { StoreModule } from '../Interfaces/StoreModuleInterface';
 
 export class SortingAlgorithmsManager implements AlgorithmsManagerBase<SortingBarProps> {
   public selectedAlgorithm: AlgorithmBase<any>;

@@ -1,5 +1,5 @@
-import { StoreModule } from '../../Core/Abstractions/StoreModuleInterface';
-import { SortingBarProps } from '../../Resources/SharedProps';
+import { SortingBarProps } from '../../Core/Interfaces/SortingBarPropsInterface';
+import { StoreModule } from '../../Core/Interfaces/StoreModuleInterface';
 
 //#region State
 export interface SortingPageState extends StoreModule {

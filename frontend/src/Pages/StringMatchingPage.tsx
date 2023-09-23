@@ -14,8 +14,8 @@ import { RefreshButton } from '../Components/RefreshButton';
 import { StringMatchingAlgorithmsManager } from '../Core/Other/StringMatchingAlgorithmManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
 import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
-import { StringMatchingCharacterProps } from '../Resources/SharedProps';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
+import { StringMatchingCharacterProps } from '../Core/Interfaces/StringMatchingCharacterPropsInterface';
 
 let stringMatchingAlgorithmManager: StringMatchingAlgorithmsManager = new StringMatchingAlgorithmsManager(stringMatchingAlgorithmsData[0].algorithm);
 let stringMatchingAnimationManager: AnimationManager = new AnimationManager(stringMatchingAlgorithmManager);

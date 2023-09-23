@@ -21,8 +21,8 @@ import { RefreshButton } from '../Components/RefreshButton';
 import { SortingAlgorithmsManager } from '../Core/Other/SortingAlgorithmManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
 import { SortingBarStateEnum } from '../Resources/Enumerations';
-import { SortingBarProps } from '../Resources/SharedProps';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
+import { SortingBarProps } from '../Core/Interfaces/SortingBarPropsInterface';
 
 let sortingAlgorithmManager: SortingAlgorithmsManager = new SortingAlgorithmsManager(sortingAlgorithmsData[0].algorithm);
 let sortingAnimationManager: AnimationManager = new AnimationManager(sortingAlgorithmManager);
