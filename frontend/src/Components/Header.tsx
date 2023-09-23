@@ -1,7 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { headerItemHovered, mainBackground, mainFontColor } from '../Resources/Colors';
-import { ModuleData } from '../Core/Data/ModuleData';
+import { ModulePreviewData } from '../Core/Data/ModuleData';
 import { Link } from 'react-router-dom';
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,7 +10,7 @@ import { updateHeaderStateAction } from '../Store/Home Page/HeaderStateManagemen
 import { minAppWidth } from '../Core/Helper';
 
 interface Props {
-  data: ModuleData[];
+  data: ModulePreviewData[];
   isVisible?: boolean;
 }
 
