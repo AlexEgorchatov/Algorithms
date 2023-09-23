@@ -1,12 +1,10 @@
 import { SortingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
 import { isAnimationTerminated, pauseForStepIteration } from '../Helper';
-import { SortingAlgorithmEnum, SortingBarStateEnum } from '../../Resources/Enumerations';
+import { SortingBarStateEnum } from '../../Resources/Enumerations';
 import { store } from '../../Store/Store';
 
 export class BubbleSort extends SortingAlgorithmBase {
-  public sortingAlgorithm = SortingAlgorithmEnum.BubbleSort;
-
   public async executeAlgorithm(): Promise<void> {
     let length = store.getState().sortingPageState.sortingBars.length;
     let barsCopy = [...store.getState().sortingPageState.sortingBars];
@@ -47,8 +45,6 @@ export class BubbleSort extends SortingAlgorithmBase {
 }
 
 export class QuickSort extends SortingAlgorithmBase {
-  public sortingAlgorithm = SortingAlgorithmEnum.QuickSort;
-
   public async executeAlgorithm(): Promise<void> {
     let length = store.getState().sortingPageState.sortingBars.length;
     await this.quickSort(0, length - 1);

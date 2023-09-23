@@ -1,12 +1,10 @@
 import { StringMatchingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { updateStringMatchingAnimationInputState, updateStringMatchingAnimationPatternState } from '../../Store/String Matching Page/StringMatchingPageStateManagement';
 import { pauseForStepIteration } from '../Helper';
-import { StringMatchingAlgorithmEnum, StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
+import { StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 import { store } from '../../Store/Store';
 
 export class NaivePatternMatching extends StringMatchingAlgorithmBase {
-  public stringMatchingAlgorithm = StringMatchingAlgorithmEnum.Naive;
-
   public async executeAlgorithm(): Promise<void> {
     let animationPatternCopy = [...store.getState().stringMatchingPageState.stringMatchingAnimationPattern];
     let animationInputCopy = [...store.getState().stringMatchingPageState.stringMatchingAnimationInput];
@@ -61,7 +59,5 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
 }
 
 export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase {
-  public stringMatchingAlgorithm = StringMatchingAlgorithmEnum.KnuthMorrisPratt;
-
   public async executeAlgorithm(): Promise<void> {}
 }

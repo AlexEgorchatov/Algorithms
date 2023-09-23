@@ -1,18 +1,13 @@
-import { SortingAlgorithmBase } from '../Abstractions/AlgorithmBase';
+import { ModuleData } from '../Abstractions/ModuleData';
 import { BubbleSort, QuickSort } from '../Algorithms/SortingAlgorithms';
 
-export interface SortingData {
-  sortingAlgorithm: SortingAlgorithmBase;
-  title: string;
-}
-
-export const sortingAlgorithmsData: SortingData[] = [
+export const sortingAlgorithmsData: ModuleData[] = [
   {
-    sortingAlgorithm: new BubbleSort(),
+    algorithm: new BubbleSort(),
     title: 'Bubble Sort',
   },
   {
-    sortingAlgorithm: new QuickSort(),
+    algorithm: new QuickSort(),
     title: 'Quick Sort',
   },
 ];

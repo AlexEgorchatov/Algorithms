@@ -1,8 +1,9 @@
+import { StoreModule } from '../../Core/Abstractions/StoreModuleInterface';
 import { StringMatchingAlgorithmEnum } from '../../Resources/Enumerations';
 import { StringMatchingCharacterProps } from '../../Resources/SharedProps';
 
 //#region State
-export interface StringMatchingPageState {
+export interface StringMatchingPageState extends StoreModule {
   readonly selectedSearchingAlgorithm: StringMatchingAlgorithmEnum;
   readonly stringMatchingPattern: string;
   readonly stringMatchingInput: string;

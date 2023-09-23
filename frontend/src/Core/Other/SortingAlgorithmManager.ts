@@ -1,16 +1,19 @@
 import { SortingBarStateEnum } from '../../Resources/Enumerations';
 import { SortingBarProps } from '../../Resources/SharedProps';
-import { updateIsStateUpdatedState, updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
-import { store } from '../../Store/Store';
+import { updateSelectedSortingAlgorithmState, updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
+import { AppState, store } from '../../Store/Store';
 import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
-import { AlgorithmManagerBase } from '../Abstractions/AlgorithmManagerBase';
+import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
+import { StoreModule } from '../Abstractions/StoreModuleInterface';
 
-export class SortingAlgorithmManager implements AlgorithmManagerBase<SortingBarProps> {
+export class SortingAlgorithmsManager implements AlgorithmsManagerBase<SortingBarProps> {
   public selectedAlgorithm: AlgorithmBase<any>;
   public initialState: SortingBarProps[] = [];
+  public isStateUpdated: boolean = false;
 
   public constructor(selectedAlgorithm: AlgorithmBase<any>) {
     this.selectedAlgorithm = selectedAlgorithm;
+    store.dispatch(updateSelectedSortingAlgorithmState(selectedAlgorithm.constructor.name));
   }
 
   public resetToInitialState(): void {
@@ -18,17 +21,26 @@ export class SortingAlgorithmManager implements AlgorithmManagerBase<SortingBarP
   }
 
   public setInitialState(): void {
-    this.initialState = store.getState().sortingPageState.sortingBars;
+    this.initialState = [...store.getState().sortingPageState.sortingBars];
+  }
+
+  public updateStoreSelectedAlgorithmName(): void {
+    store.dispatch(updateSelectedSortingAlgorithmState(this.selectedAlgorithm.constructor.name));
+  }
+
+  public getStoreSelector(): StoreModule {
+    return (state: AppState) => state.sortingPageState;
   }
 
   public async startAlgorithm(): Promise<void> {
-    if (store.getState().sortingPageState.isStateUpdated) {
+    if (this.isStateUpdated) {
       this.setInitialState();
       this.selectedAlgorithm.setFinalState();
-      store.dispatch(updateIsStateUpdatedState(false));
+      this.isStateUpdated = false;
     }
 
     await this.selectedAlgorithm.executeAlgorithm();
+
     if (!store.getState().animationState.hasAnimationStarted) return;
     await this.finalizeSorting();
   }

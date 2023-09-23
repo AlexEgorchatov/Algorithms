@@ -2,26 +2,22 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useEffect, useRef } from 'react';
-import { errorMessageColor, headerItemHovered, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
-import { StringMatchingData, stringMatchingAlgorithmsData } from '../Core/Data/StringMatchingData';
+import { errorMessageColor, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
+import { stringMatchingAlgorithmsData } from '../Core/Data/StringMatchingData';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
-import {
-  updateSelectedSearchingAlgorithmState,
-  updateStringMatchingInputState,
-  updateStringMatchingPatternState,
-} from '../Store/String Matching Page/StringMatchingPageStateManagement';
-import { animationContext } from '../Core/Helper';
+import { updateStringMatchingInputState, updateStringMatchingPatternState } from '../Store/String Matching Page/StringMatchingPageStateManagement';
+import { algorithmContext, animationContext } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
 import { RefreshButton } from '../Components/RefreshButton';
-import { StringMatchingAlgorithmBase } from '../Core/Abstractions/AlgorithmBase';
-import { StringMatchingAlgorithmManager } from '../Core/Other/StringMatchingAlgorithmManager';
+import { StringMatchingAlgorithmsManager } from '../Core/Other/StringMatchingAlgorithmManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
 import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
 import { StringMatchingCharacterProps } from '../Resources/SharedProps';
+import { AlgorithmsList } from '../Components/AlgorithmsList';
 
-let stringMatchingAlgorithmManager: StringMatchingAlgorithmManager = new StringMatchingAlgorithmManager(stringMatchingAlgorithmsData[0].stringMatchingAlgorithm);
+let stringMatchingAlgorithmManager: StringMatchingAlgorithmsManager = new StringMatchingAlgorithmsManager(stringMatchingAlgorithmsData[0].algorithm);
 let stringMatchingAnimationManager: AnimationManager = new AnimationManager(stringMatchingAlgorithmManager);
 
 export const maxStringMatchingInputLength: number = 200;
@@ -29,69 +25,6 @@ export const maxStringMatchingPatternLength: number = 60;
 export const renderedPatter: string = 'was';
 export const renderedInput: string =
   "Was it a whisper or was it the wind? He wasn't quite sure. He thought he heard a voice but at this moment all he could hear was the wind rustling the leaves of the trees all around him.";
-
-interface AlgorithmListProps {
-  data: StringMatchingData[];
-}
-
-interface AlgorithmProps {
-  title: string;
-  isSelected: boolean;
-  stringMatchingAlgorithm: StringMatchingAlgorithmBase;
-}
-
-const AlgorithmComponent = ({ title, isSelected, stringMatchingAlgorithm }: AlgorithmProps) => {
-  const algorithmState = useSelector((state: AppState) => state.animationState);
-  const dispatch = useDispatch();
-
-  const handleClick = () => {
-    if (algorithmState.hasAnimationStarted) return;
-    stringMatchingAlgorithmManager.selectedAlgorithm = stringMatchingAlgorithm;
-    dispatch(updateSelectedSearchingAlgorithmState(stringMatchingAlgorithm.stringMatchingAlgorithm));
-  };
-
-  return (
-    <div
-      css={css`
-        font-size: 20px;
-        color: ${isSelected ? '' : 'white'};
-        margin-right: 10px;
-        cursor: ${algorithmState.hasAnimationStarted && !isSelected ? 'default' : 'pointer'};
-        opacity: ${algorithmState.hasAnimationStarted && !isSelected ? '0.5' : '1'};
-        :hover {
-          ${!algorithmState.hasAnimationStarted &&
-          `
-            color: ${!isSelected ? `${headerItemHovered}` : ''};
-          `}
-        }
-      `}
-      onClick={handleClick}
-    >
-      {title}
-    </div>
-  );
-};
-
-const AlgorithmsList = ({ data }: AlgorithmListProps) => {
-  const algorithmState = useSelector((state: AppState) => state.stringMatchingPageState);
-
-  return (
-    <div
-      css={css`
-        display: flex;
-      `}
-    >
-      {data.map((algorithm, index) => (
-        <AlgorithmComponent
-          key={index}
-          title={algorithm.title}
-          isSelected={algorithm.stringMatchingAlgorithm.stringMatchingAlgorithm === algorithmState.selectedSearchingAlgorithm}
-          stringMatchingAlgorithm={algorithm.stringMatchingAlgorithm}
-        />
-      ))}
-    </div>
-  );
-};
 
 const StringMatchingPatternComponent = () => {
   const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingPageState);
@@ -309,7 +242,9 @@ const SettingsComponent = () => {
             </div>
             <RefreshButton />
           </div>
-          <AlgorithmsList data={stringMatchingAlgorithmsData} />
+          <algorithmContext.Provider value={{ algorithmManager: stringMatchingAlgorithmManager }}>
+            <AlgorithmsList data={stringMatchingAlgorithmsData} />
+          </algorithmContext.Provider>
         </div>
       </div>
     </div>

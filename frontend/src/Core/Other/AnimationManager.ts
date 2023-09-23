@@ -1,13 +1,13 @@
 import { updateHasAnimationStartedStateAction, updateIsAnimationRunningStateAction } from '../../Store/Shared/AnimationStateManagement';
 import { store } from '../../Store/Store';
-import { AlgorithmManagerBase } from '../Abstractions/AlgorithmManagerBase';
+import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 
 export let isAnimationCompleted: boolean = false;
 
 export class AnimationManager {
-  public readonly algorithmManager: AlgorithmManagerBase<any>;
+  public readonly algorithmManager: AlgorithmsManagerBase<any>;
 
-  public constructor(algorithmManager: AlgorithmManagerBase<any>) {
+  public constructor(algorithmManager: AlgorithmsManagerBase<any>) {
     this.algorithmManager = algorithmManager;
   }
 
@@ -16,7 +16,7 @@ export class AnimationManager {
     if (store.getState().animationState.hasAnimationStarted) return;
 
     store.dispatch(updateHasAnimationStartedStateAction(true));
-    if (isAnimationCompleted) {
+    if (isAnimationCompleted && !this.algorithmManager.isStateUpdated) {
       this.algorithmManager.resetToInitialState();
       await new Promise((resolve) => setTimeout(resolve, 250));
     }

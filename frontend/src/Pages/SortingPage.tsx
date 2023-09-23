@@ -2,31 +2,29 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect, useRef } from 'react';
-import { completionColor, errorMessageColor, headerItemHovered, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
+import { completionColor, errorMessageColor, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
-import { SortingData, sortingAlgorithmsData } from '../Core/Data/SortingData';
+import { sortingAlgorithmsData } from '../Core/Data/SortingData';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import {
   updateSortingBarsStateAction,
   updateSortingInputStateAction,
-  updateSelectedSortingAlgorithmState,
   updatingIsInputNanState,
   updateIsInputOverMaxState,
-  updateIsStateUpdatedState,
 } from '../Store/Sorting Page/SortingPageStateManagement';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
-import { animationContext, minAppWidth } from '../Core/Helper';
+import { algorithmContext, animationContext, minAppWidth } from '../Core/Helper';
 import { RefreshButton } from '../Components/RefreshButton';
-import { SortingAlgorithmBase } from '../Core/Abstractions/AlgorithmBase';
-import { SortingAlgorithmManager } from '../Core/Other/SortingAlgorithmManager';
+import { SortingAlgorithmsManager } from '../Core/Other/SortingAlgorithmManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
 import { SortingBarStateEnum } from '../Resources/Enumerations';
 import { SortingBarProps } from '../Resources/SharedProps';
+import { AlgorithmsList } from '../Components/AlgorithmsList';
 
-let sortingAlgorithmManager: SortingAlgorithmManager = new SortingAlgorithmManager(sortingAlgorithmsData[0].sortingAlgorithm);
+let sortingAlgorithmManager: SortingAlgorithmsManager = new SortingAlgorithmsManager(sortingAlgorithmsData[0].algorithm);
 let sortingAnimationManager: AnimationManager = new AnimationManager(sortingAlgorithmManager);
 
 let validSortingInput: string = '';
@@ -34,16 +32,6 @@ const sortingBarWidth: number = 35;
 const getMaxBarsNumber = (windowWidth: number): number => {
   return Math.floor(Math.max(windowWidth, minAppWidth) / sortingBarWidth);
 };
-
-interface AlgorithmListProps {
-  data: SortingData[];
-}
-
-interface AlgorithmProps {
-  title: string;
-  isSelected: boolean;
-  sortingAlgorithm: SortingAlgorithmBase;
-}
 
 const SortingInputComponent = () => {
   const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
@@ -81,7 +69,7 @@ const SortingInputComponent = () => {
     if (isOverMax) dispatch(updateIsInputOverMaxState(true));
     else dispatch(updateIsInputOverMaxState(false));
     dispatch(updateSortingBarsStateAction(sortingBars));
-    dispatch(updateIsStateUpdatedState(true));
+    sortingAlgorithmManager.isStateUpdated = true;
   };
 
   const fixInput = () => {
@@ -201,7 +189,7 @@ const GenerateInputComponent = () => {
     dispatch(updateSortingBarsStateAction(sortingBars));
     dispatch(updatingIsInputNanState(false));
     dispatch(updateIsInputOverMaxState(false));
-    dispatch(updateIsStateUpdatedState(true));
+    sortingAlgorithmManager.isStateUpdated = true;
   };
 
   const handleEnterKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -248,64 +236,6 @@ const GenerateInputComponent = () => {
         onKeyUp={handleEnterKeyUp}
         disabled={algorithmState.hasAnimationStarted}
       />
-    </div>
-  );
-};
-
-const AlgorithmComponent = ({ title, isSelected, sortingAlgorithm }: AlgorithmProps) => {
-  const algorithmState = useSelector((state: AppState) => state.animationState);
-  const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
-  const dispatch = useDispatch();
-
-  const handleClick = () => {
-    if (algorithmState.hasAnimationStarted) return;
-    dispatch(updateSelectedSortingAlgorithmState(sortingAlgorithm.sortingAlgorithm));
-    sortingAlgorithmManager.selectedAlgorithm = sortingAlgorithm;
-    if (!sortingPageState.isStateUpdated) {
-      dispatch(updateSortingBarsStateAction(sortingAlgorithmManager.initialState));
-      sortingAlgorithmManager.selectedAlgorithm.setFinalState();
-    }
-  };
-
-  return (
-    <div
-      css={css`
-        font-size: 20px;
-        color: ${isSelected ? '' : 'white'};
-        margin-right: 10px;
-        cursor: ${algorithmState.hasAnimationStarted && !isSelected ? 'default' : 'pointer'};
-        opacity: ${algorithmState.hasAnimationStarted && !isSelected ? '0.5' : '1'};
-        :hover {
-          ${!algorithmState.hasAnimationStarted &&
-          `
-            color: ${!isSelected ? `${headerItemHovered}` : ''};
-          `}
-        }
-      `}
-      onClick={handleClick}
-    >
-      {title}
-    </div>
-  );
-};
-
-const AlgorithmsList = ({ data }: AlgorithmListProps) => {
-  const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
-
-  return (
-    <div
-      css={css`
-        display: flex;
-      `}
-    >
-      {data.map((algorithm, index) => (
-        <AlgorithmComponent
-          key={index}
-          title={algorithm.title}
-          isSelected={algorithm.sortingAlgorithm.sortingAlgorithm === sortingPageState.selectedSortingAlgorithm}
-          sortingAlgorithm={algorithm.sortingAlgorithm}
-        />
-      ))}
     </div>
   );
 };
@@ -434,7 +364,9 @@ const SettingsComponent = () => {
           </div>
           <GenerateInputComponent />
         </div>
-        <AlgorithmsList data={sortingAlgorithmsData} />
+        <algorithmContext.Provider value={{ algorithmManager: sortingAlgorithmManager }}>
+          <AlgorithmsList data={sortingAlgorithmsData} />
+        </algorithmContext.Provider>
       </div>
     </div>
   );

@@ -1,22 +1,20 @@
-import { SortingAlgorithmEnum } from '../../Resources/Enumerations';
+import { StoreModule } from '../../Core/Abstractions/StoreModuleInterface';
 import { SortingBarProps } from '../../Resources/SharedProps';
 
 //#region State
-export interface SortingPageState {
-  readonly selectedSortingAlgorithm: SortingAlgorithmEnum;
+export interface SortingPageState extends StoreModule {
+  readonly selectedSortingAlgorithm: string;
   readonly sortingInput: string;
   readonly isInputNan: boolean;
   readonly isInputOverMax: boolean;
-  readonly isStateUpdated: boolean;
   readonly sortingBars: SortingBarProps[];
 }
 
 const initialSortingPageState: SortingPageState = {
-  selectedSortingAlgorithm: SortingAlgorithmEnum.BubbleSort,
+  selectedSortingAlgorithm: '',
   sortingInput: '',
   isInputNan: false,
   isInputOverMax: false,
-  isStateUpdated: false,
   sortingBars: [],
 };
 //#endregion State
@@ -50,13 +48,6 @@ export const updateIsInputOverMaxState = (isInputOverMax = initialSortingPageSta
     isInputOverMax: isInputOverMax,
   } as const);
 
-const UPDATE_IS_STATE_UPDATED_STATE = 'updateIsStateUpdatedState';
-export const updateIsStateUpdatedState = (isStateUpdated = initialSortingPageState.isStateUpdated) =>
-  ({
-    type: UPDATE_IS_STATE_UPDATED_STATE,
-    isStateUpdated: isStateUpdated,
-  } as const);
-
 const UPDATE_SORTING_BARS_STATE = 'updateSortingBarsState';
 export const updateSortingBarsStateAction = (sortingBars = initialSortingPageState.sortingBars) =>
   ({
@@ -72,7 +63,6 @@ type SortingPageActions =
   | ReturnType<typeof updateSortingInputStateAction>
   | ReturnType<typeof updatingIsInputNanState>
   | ReturnType<typeof updateIsInputOverMaxState>
-  | ReturnType<typeof updateIsStateUpdatedState>
   | ReturnType<typeof updateSortingBarsStateAction>;
 export const sortingPageReducer = (state = initialSortingPageState, action: SortingPageActions) => {
   switch (action.type) {
@@ -98,12 +88,6 @@ export const sortingPageReducer = (state = initialSortingPageState, action: Sort
       return {
         ...state,
         isInputOverMax: action.isInputOverMax,
-      };
-
-    case UPDATE_IS_STATE_UPDATED_STATE:
-      return {
-        ...state,
-        isStateUpdated: action.isStateUpdated,
       };
 
     case UPDATE_SORTING_BARS_STATE:

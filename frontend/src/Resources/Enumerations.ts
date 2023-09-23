@@ -1,9 +1,4 @@
-export enum SortingAlgorithmEnum {
-  BubbleSort = 0,
-  QuickSort = 1,
-}
-
-export enum StringMatchingAlgorithmEnum {
+export enum StringMatchingAlgorithmEnum { //TODO: update string matching page like sorting page and delete the enumeration
   Naive = 0,
   KnuthMorrisPratt = 1,
 }

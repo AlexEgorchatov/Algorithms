@@ -1,4 +1,4 @@
-import { SortingAlgorithmEnum, SortingBarStateEnum, StringMatchingAlgorithmEnum, StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
+import { SortingBarStateEnum, StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 import { SortingBarProps, StringMatchingCharacterProps } from '../../Resources/SharedProps';
 import { updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
 import { store } from '../../Store/Store';
@@ -10,7 +10,6 @@ export abstract class AlgorithmBase<T> {
 }
 
 export abstract class SortingAlgorithmBase extends AlgorithmBase<SortingBarProps> {
-  public abstract readonly sortingAlgorithm: SortingAlgorithmEnum;
   public finalState: SortingBarProps[] = [];
   public setFinalState(): void {
     let barsCopy = [...store.getState().sortingPageState.sortingBars];
@@ -42,7 +41,6 @@ export abstract class SortingAlgorithmBase extends AlgorithmBase<SortingBarProps
 }
 
 export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<StringMatchingCharacterProps> {
-  public abstract readonly stringMatchingAlgorithm: StringMatchingAlgorithmEnum;
   public finalState: StringMatchingCharacterProps[] = [];
   public setFinalState(): void {
     let input = store.getState().stringMatchingPageState.stringMatchingInput;

@@ -1,18 +1,13 @@
-import { StringMatchingAlgorithmBase } from '../Abstractions/AlgorithmBase';
+import { ModuleData } from '../Abstractions/ModuleData';
 import { KnuthMorrisPrattPatternMatching, NaivePatternMatching } from '../Algorithms/StringMatchingAlgorithms';
 
-export interface StringMatchingData {
-  stringMatchingAlgorithm: StringMatchingAlgorithmBase;
-  title: string;
-}
-
-export const stringMatchingAlgorithmsData: StringMatchingData[] = [
+export const stringMatchingAlgorithmsData: ModuleData[] = [
   {
-    stringMatchingAlgorithm: new NaivePatternMatching(),
+    algorithm: new NaivePatternMatching(),
     title: 'Naive',
   },
   {
-    stringMatchingAlgorithm: new KnuthMorrisPrattPatternMatching(),
+    algorithm: new KnuthMorrisPrattPatternMatching(),
     title: 'Knuth-Morris-Pratt',
   },
 ];
