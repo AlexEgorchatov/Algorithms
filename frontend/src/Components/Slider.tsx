@@ -25,7 +25,7 @@ const PlayButton = () => {
           color: black;
         }
       `}
-      onClick={() => animationManager.startAnimation}
+      onClick={() => animationManager.startAnimation()}
     >
       <div
         css={css`
@@ -93,7 +93,7 @@ const StopButton = () => {
           `}
         }
       `}
-      onClick={() => animationManager.stopAnimation}
+      onClick={() => animationManager.stopAnimation()}
     ></div>
   );
 };
@@ -120,7 +120,7 @@ const CompleteButton = () => {
           `}
         }
       `}
-      onClick={() => animationManager.completeAnimation}
+      onClick={() => animationManager.completeAnimation()}
     >
       <div
         css={css`
