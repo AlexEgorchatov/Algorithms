@@ -1,6 +1,6 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { ModuleData, modules } from '../Core/Data/ModuleData';
+import { ModulePreviewData, modules } from '../Core/Data/ModuleData';
 import { mainFontColor } from '../Resources/Colors';
 import { Link } from 'react-router-dom';
 import { SortingModule } from '../Modules/SortingModule';
@@ -10,11 +10,11 @@ import React from 'react';
 import { ModuleEnum } from '../Resources/Enumerations';
 
 interface ModuleProps {
-  data: ModuleData;
+  data: ModulePreviewData;
 }
 
 interface ModuleListProps {
-  data: ModuleData[];
+  data: ModulePreviewData[];
 }
 
 const Module = ({ data }: ModuleProps) => {
