@@ -47,11 +47,11 @@ export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<IStringM
   public finalPatternState: IStringMatchingCharacterProps[] = [];
 
   public setFinalState(): void {
-    let input = store.getState().stringMatchingPageState.stringMatchingInput;
-    let pattern = store.getState().stringMatchingPageState.stringMatchingPattern;
+    let input = store.getState().stringMatchingPageState.stringMatchingInput.toLowerCase();
+    let pattern = store.getState().stringMatchingPageState.stringMatchingPattern.toLowerCase();
     let animationInputCopy = [...store.getState().stringMatchingPageState.stringMatchingAnimationInput];
 
-    let foundIndex: number = input.toLowerCase().indexOf(pattern);
+    let foundIndex: number = input.indexOf(pattern);
     while (foundIndex !== -1) {
       for (let i = foundIndex; i < foundIndex + pattern.length; i++) {
         if (animationInputCopy[i].characterState === StringMatchingCharacterStateEnum.Found) continue;
