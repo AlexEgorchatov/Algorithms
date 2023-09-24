@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { AlgorithmBase } from '../Core/Abstractions/AlgorithmBase';
-import { AppState, store } from '../Store/Store';
+import { AppState } from '../Store/Store';
 import { headerItemHovered } from '../Resources/Colors';
 import { algorithmContext } from '../Core/Helper';
 import { IAlgorithmData } from '../Core/Interfaces/IAlgorithmData';
@@ -65,12 +65,12 @@ export const AlgorithmsList = ({ data }: AlgorithmListProps) => {
         display: flex;
       `}
     >
-      {data.map((algorithm, index) => (
+      {data.map((dataItem, index) => (
         <AlgorithmComponent
           key={index}
-          title={algorithm.title}
-          isSelected={algorithm.algorithm.constructor.name === store.getState().sortingPageState.selectedSortingAlgorithm}
-          algorithm={algorithm.algorithm}
+          title={dataItem.title}
+          isSelected={dataItem.algorithm.constructor.name === algorithmManager.selectedAlgorithm.constructor.name}
+          algorithm={dataItem.algorithm}
         />
       ))}
     </div>
