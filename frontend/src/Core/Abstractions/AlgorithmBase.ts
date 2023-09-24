@@ -51,9 +51,9 @@ export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<IStringM
     let pattern = store.getState().stringMatchingPageState.stringMatchingPattern;
     let animationInputCopy = [...store.getState().stringMatchingPageState.stringMatchingAnimationInput];
 
-    let foundIndex: number = input.indexOf(pattern);
+    let foundIndex: number = input.toLowerCase().indexOf(pattern);
     while (foundIndex !== -1) {
-      for (let i = foundIndex; i < pattern.length; i++) {
+      for (let i = foundIndex; i < foundIndex + pattern.length; i++) {
         if (animationInputCopy[i].characterState === StringMatchingCharacterStateEnum.Found) continue;
 
         animationInputCopy[i] = { ...animationInputCopy[i], characterState: StringMatchingCharacterStateEnum.Found };
