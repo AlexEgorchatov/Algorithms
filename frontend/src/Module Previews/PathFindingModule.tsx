@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
 import { CellStateEnum } from '../Resources/Enumerations';
-import { ModuleTitle } from '../Core/Abstractions/ModuleTitleInterface';
+import { ModulePreviewTitle } from '../Core/Interfaces/ModuleTitleInterface';
 
 interface Props {
   state: CellStateEnum;
@@ -52,7 +52,7 @@ const GridCell = ({ state = CellStateEnum.Unselected }: Props) => {
   );
 };
 
-export const PathFindingModule = ({ title }: ModuleTitle) => {
+export const PathFindingModulePreview = ({ title }: ModulePreviewTitle) => {
   const pathFindingState = useSelector((state: AppState) => state.pathFindingModuleState);
   const dispatch = useDispatch();
   const columnNumber: number = 8;

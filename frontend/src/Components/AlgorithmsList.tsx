@@ -6,10 +6,10 @@ import { AlgorithmBase } from '../Core/Abstractions/AlgorithmBase';
 import { AppState, store } from '../Store/Store';
 import { headerItemHovered } from '../Resources/Colors';
 import { algorithmContext } from '../Core/Helper';
-import { ModuleData } from '../Core/Interfaces/ModuleDataInterface';
+import { AlgorithmData } from '../Core/Interfaces/AlgorithmDataInterface';
 
 interface AlgorithmListProps {
-  data: ModuleData[];
+  data: AlgorithmData[];
 }
 
 interface AlgorithmProps {
@@ -44,8 +44,8 @@ const AlgorithmComponent = ({ title, isSelected, algorithm }: AlgorithmProps) =>
         :hover {
           ${!algorithmState.hasAnimationStarted &&
           `
-              color: ${!isSelected ? `${headerItemHovered}` : ''};
-            `}
+            color: ${!isSelected ? `${headerItemHovered}` : ''};
+          `}
         }
       `}
       onClick={handleClick}

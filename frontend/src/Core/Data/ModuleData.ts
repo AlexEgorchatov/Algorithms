@@ -1,12 +1,12 @@
 import { ModuleEnum } from '../../Resources/Enumerations';
 
-export interface ModulePreviewData {
+export interface ModuleData {
   moduleType: ModuleEnum;
   title: string;
   link: string;
 }
 
-export const modules: ModulePreviewData[] = [
+export const modules: ModuleData[] = [
   {
     moduleType: ModuleEnum.Sorting,
     title: 'Sorting',

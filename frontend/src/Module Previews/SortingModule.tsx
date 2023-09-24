@@ -5,7 +5,7 @@ import { ModulePlaceholder } from '../Components/ModulePlaceHolder';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { updateSortingModuleHeightsStateAction } from '../Store/Home Page/SortingModuleStateManagement';
-import { ModuleTitle } from '../Core/Abstractions/ModuleTitleInterface';
+import { ModulePreviewTitle } from '../Core/Interfaces/ModuleTitleInterface';
 
 interface Props {
   height: number;
@@ -24,7 +24,7 @@ const SortingBar = ({ height }: Props) => {
   );
 };
 
-export const SortingModule = ({ title }: ModuleTitle) => {
+export const SortingModulePreview = ({ title }: ModulePreviewTitle) => {
   const sortingState = useSelector((state: AppState) => state.sortingModuleState);
   const dispatch = useDispatch();
   const timeoutID = React.useRef(-1);

@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { updateStringMatchingModuleStateAction } from '../Store/Home Page/StringMatchingModuleStateManagement';
 import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
 import { StringMatchingCharacterProps } from '../Core/Interfaces/StringMatchingCharacterPropsInterface';
-import { ModuleTitle } from '../Core/Interfaces/ModuleTitleInterface';
+import { ModulePreviewTitle } from '../Core/Interfaces/ModuleTitleInterface';
 
 const SearchableCharacter = ({ character, characterState: state = StringMatchingCharacterStateEnum.Unselected }: StringMatchingCharacterProps) => {
   const setFont = () => {
@@ -35,7 +35,7 @@ const SearchableCharacter = ({ character, characterState: state = StringMatching
   );
 };
 
-export const StringMatchingModule = ({ title }: ModuleTitle) => {
+export const StringMatchingModulePreview = ({ title }: ModulePreviewTitle) => {
   const stringMatchingState = useSelector((state: AppState) => state.stringMatchingModuleState);
   const dispatch = useDispatch();
   const inputRender = [

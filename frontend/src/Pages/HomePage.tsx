@@ -1,20 +1,20 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { ModulePreviewData, modules } from '../Core/Data/ModuleData';
+import { ModuleData, modules } from '../Core/Data/ModuleData';
 import { mainFontColor } from '../Resources/Colors';
 import { Link } from 'react-router-dom';
-import { SortingModule } from '../Modules/SortingModule';
-import { StringMatchingModule } from '../Modules/StringMatchingModule';
-import { PathFindingModule } from '../Modules/PathFindingModule';
+import { SortingModulePreview } from '../Module Previews/SortingModule';
+import { StringMatchingModulePreview } from '../Module Previews/StringMatchingModule';
+import { PathFindingModulePreview } from '../Module Previews/PathFindingModule';
 import React from 'react';
 import { ModuleEnum } from '../Resources/Enumerations';
 
 interface ModuleProps {
-  data: ModulePreviewData;
+  data: ModuleData;
 }
 
 interface ModuleListProps {
-  data: ModulePreviewData[];
+  data: ModuleData[];
 }
 
 const Module = ({ data }: ModuleProps) => {
@@ -23,21 +23,21 @@ const Module = ({ data }: ModuleProps) => {
       case ModuleEnum.Sorting:
         return (
           <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
-            <SortingModule title={data.title} />
+            <SortingModulePreview title={data.title} />
           </Link>
         );
 
       case ModuleEnum.StringMatching:
         return (
           <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
-            <StringMatchingModule title={data.title} />
+            <StringMatchingModulePreview title={data.title} />
           </Link>
         );
 
       case ModuleEnum.PathFinding:
         return (
           <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
-            <PathFindingModule title={data.title} />
+            <PathFindingModulePreview title={data.title} />
           </Link>
         );
     }

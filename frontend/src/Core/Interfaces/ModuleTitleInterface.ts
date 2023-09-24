@@ -1,3 +1,3 @@
-export interface ModuleTitle {
+export interface ModulePreviewTitle {
   title: string;
 }
