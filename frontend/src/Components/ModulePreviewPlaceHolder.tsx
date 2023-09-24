@@ -8,7 +8,7 @@ interface Props {
   children?: React.ReactNode;
 }
 
-export const ModulePlaceholder = ({ title, children }: Props) => {
+export const ModulePreviewPlaceholder = ({ title, children }: Props) => {
   return (
     <div
       css={css`

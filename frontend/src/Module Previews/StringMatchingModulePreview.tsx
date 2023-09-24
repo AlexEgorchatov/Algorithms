@@ -1,11 +1,11 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
-import { ModulePlaceholder } from '../Components/ModulePlaceHolder';
+import { ModulePreviewPlaceholder } from '../Components/ModulePreviewPlaceHolder';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
-import { updateStringMatchingModuleStateAction } from '../Store/Home Page/StringMatchingModuleStateManagement';
+import { updateStringMatchingModuleStateAction } from '../Store/Home Page/StringMatchingModulePreviewStateManagement';
 import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
 import { StringMatchingCharacterProps } from '../Core/Interfaces/StringMatchingCharacterPropsInterface';
 import { ModulePreviewTitle } from '../Core/Interfaces/ModuleTitleInterface';
@@ -91,7 +91,7 @@ export const StringMatchingModulePreview = ({ title }: ModulePreviewTitle) => {
 
   return (
     <div onMouseEnter={handleModuleMouseEnter} onMouseLeave={handleModuleMouseLeave}>
-      <ModulePlaceholder title={title}>
+      <ModulePreviewPlaceholder title={title}>
         <div
           css={css`
             align-items: center;
@@ -131,7 +131,7 @@ export const StringMatchingModulePreview = ({ title }: ModulePreviewTitle) => {
             {inputRender}
           </div>
         </div>
-      </ModulePlaceholder>
+      </ModulePreviewPlaceholder>
     </div>
   );
 };

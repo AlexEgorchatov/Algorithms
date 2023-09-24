@@ -1,8 +1,8 @@
 import { combineReducers, Store } from 'redux';
 import { configureStore } from '@reduxjs/toolkit';
-import { sortingModuleReducer, SortingModuleState } from './Home Page/SortingModuleStateManagement';
-import { stringMatchingModuleReducer, StringMatchingModuleState } from './Home Page/StringMatchingModuleStateManagement';
-import { pathFindingModuleReducer, PathFindingModuleState } from './Home Page/PathFindingModuleStateManagement';
+import { sortingModuleReducer, SortingModulePreviewState } from './Home Page/SortingModulePreviewStateManagement';
+import { stringMatchingModuleReducer, StringMatchingModuleState } from './Home Page/StringMatchingModulePreviewStateManagement';
+import { pathFindingModuleReducer, PathFindingModulePreviewState } from './Home Page/PathFindingModulePreviewStateManagement';
 import { headerReducer, HeaderState } from './Home Page/HeaderStateManagement';
 import { sliderComponentReducer, SliderComponentState } from './Shared/SliderComponentStateManagement';
 import { sortingPageReducer, SortingPageState } from './Sorting Page/SortingPageStateManagement';
@@ -23,9 +23,9 @@ const rootReducer = combineReducers<AppState>({
 });
 
 export interface AppState {
-  readonly sortingModuleState: SortingModuleState;
+  readonly sortingModuleState: SortingModulePreviewState;
   readonly stringMatchingModuleState: StringMatchingModuleState;
-  readonly pathFindingModuleState: PathFindingModuleState;
+  readonly pathFindingModuleState: PathFindingModulePreviewState;
   readonly headerState: HeaderState;
   readonly sliderComponentState: SliderComponentState;
   readonly sortingPageState: SortingPageState;

@@ -15,11 +15,11 @@ const InitializeGrid = (): CellStateEnum[] => {
 };
 
 //#region State
-export interface PathFindingModuleState {
+export interface PathFindingModulePreviewState {
   readonly pathFindingModuleGrid: CellStateEnum[];
 }
 
-const initialPathFindingModuleState: PathFindingModuleState = {
+const initialPathFindingModuleState: PathFindingModulePreviewState = {
   pathFindingModuleGrid: InitializeGrid(),
 };
 //#endregion State

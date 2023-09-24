@@ -1,8 +1,8 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect } from 'react';
-import { ModulePlaceholder } from '../Components/ModulePlaceHolder';
-import { updatePathFindingModuleStateAction } from '../Store/Home Page/PathFindingModuleStateManagement';
+import { ModulePreviewPlaceholder } from '../Components/ModulePreviewPlaceHolder';
+import { updatePathFindingModuleStateAction } from '../Store/Home Page/PathFindingModulePreviewStateManagement';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { useDispatch } from 'react-redux';
@@ -103,7 +103,7 @@ export const PathFindingModulePreview = ({ title }: ModulePreviewTitle) => {
 
   return (
     <div onMouseEnter={handleModuleMouseEnter} onMouseLeave={handleModuleMouseLeave}>
-      <ModulePlaceholder title={title}>
+      <ModulePreviewPlaceholder title={title}>
         <div
           css={css`
             display: flex;
@@ -114,7 +114,7 @@ export const PathFindingModulePreview = ({ title }: ModulePreviewTitle) => {
             <GridCell key={index} state={state} />
           ))}
         </div>
-      </ModulePlaceholder>
+      </ModulePreviewPlaceholder>
     </div>
   );
 };

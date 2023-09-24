@@ -1,10 +1,10 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
-import { ModulePlaceholder } from '../Components/ModulePlaceHolder';
+import { ModulePreviewPlaceholder } from '../Components/ModulePreviewPlaceHolder';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppState } from '../Store/Store';
-import { updateSortingModuleHeightsStateAction } from '../Store/Home Page/SortingModuleStateManagement';
+import { updateSortingModuleHeightsStateAction } from '../Store/Home Page/SortingModulePreviewStateManagement';
 import { ModulePreviewTitle } from '../Core/Interfaces/ModuleTitleInterface';
 
 interface Props {
@@ -75,7 +75,7 @@ export const SortingModulePreview = ({ title }: ModulePreviewTitle) => {
 
   return (
     <div onMouseEnter={handleModuleMouseEnter} onMouseLeave={handleModuleMouseLeave}>
-      <ModulePlaceholder title={title}>
+      <ModulePreviewPlaceholder title={title}>
         <div
           css={css`
             margin: 0px 10px 0px 10px;
@@ -89,7 +89,7 @@ export const SortingModulePreview = ({ title }: ModulePreviewTitle) => {
             <SortingBar key={index} height={height} />
           ))}
         </div>
-      </ModulePlaceholder>
+      </ModulePreviewPlaceholder>
     </div>
   );
 };

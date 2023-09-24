@@ -1,9 +1,9 @@
 //#region State
-export interface SortingModuleState {
+export interface SortingModulePreviewState {
   readonly sortingModuleHeights: number[];
 }
 
-const initialSortingModuleState: SortingModuleState = {
+const initialSortingModuleState: SortingModulePreviewState = {
   sortingModuleHeights: [180, 100, 120, 140, 160],
 };
 //#endregion State
