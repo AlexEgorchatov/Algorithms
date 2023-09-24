@@ -20,8 +20,8 @@ export class AnimationManager {
       this.algorithmManager.resetToInitialState();
       await new Promise((resolve) => setTimeout(resolve, 250));
     }
-    isAnimationCompleted = false;
 
+    isAnimationCompleted = false;
     await this.algorithmManager.startAlgorithm();
 
     isAnimationCompleted = true;

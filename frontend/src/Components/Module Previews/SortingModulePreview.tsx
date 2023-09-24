@@ -1,7 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
-import { ModulePreviewPlaceholder } from '../ModulePreviewPlaceHolder';
+import { ModulePreviewPlaceholder } from '../ModulePreviewPlaceholder';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppState } from '../../Store/Store';
 import { updateSortingModuleHeightsStateAction } from '../../Store/Home Page/SortingModulePreviewStateManagement';

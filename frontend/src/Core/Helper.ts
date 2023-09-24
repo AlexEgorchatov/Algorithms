@@ -3,7 +3,7 @@ import { AnimationManager, isAnimationCompleted } from './Other/AnimationManager
 import { store } from '../Store/Store';
 import { AlgorithmsManagerBase } from './Abstractions/AlgorithmManagerBase';
 
-const algorithmIterationBaseTime: number = 400;
+export const algorithmIterationBaseTime: number = 400;
 export const minAppWidth: number = 580;
 
 interface animationProps {
@@ -23,9 +23,14 @@ export const algorithmContext = createContext<algorithmProps>({
 });
 
 export const pauseForStepIteration = async (): Promise<void> => {
-  await new Promise((resolve) => setTimeout(resolve, algorithmIterationBaseTime - 30 * (store.getState().sliderComponentState.sliderValue - 1)));
+  await new Promise((resolve) => setTimeout(resolve, algorithmIterationBaseTime - 50 * (store.getState().sliderComponentState.sliderValue - 1)));
 };
 
+/**
+ * Checks if animation is continued after pause.
+ * @returns If animation was stopped (hasAnimationStarted == false) or was skipped (isAnimationCompleted == true) return false.
+ * If animation was resumed (isAlgorithmRunning == true) return true.
+ */
 export const isAnimationContinued = async (): Promise<boolean> => {
   return new Promise<boolean>((resolve) => {
     let unsubscribe = store.subscribe(() => {
@@ -43,6 +48,12 @@ export const isAnimationContinued = async (): Promise<boolean> => {
   });
 };
 
+/**
+ * Checks if the animation is terminated.
+ * @returns If animation was stopped (hasAnimationStarted == false) or was skipped (isAnimationCompleted == true) return true.
+ * If animation was not paused (isAnimationRunning == true) return false.
+ * Otherwise, animation was paused, wait for the next action.
+ */
 export const isAnimationTerminated = async (): Promise<boolean> => {
   return new Promise<boolean>(async (resolve) => {
     if (!store.getState().animationState.hasAnimationStarted || isAnimationCompleted) {

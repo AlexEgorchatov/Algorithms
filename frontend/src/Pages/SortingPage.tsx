@@ -16,7 +16,7 @@ import {
 } from '../Store/Sorting Page/SortingPageStateManagement';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
-import { algorithmContext, animationContext, minAppWidth } from '../Core/Helper';
+import { algorithmContext, algorithmIterationBaseTime, animationContext, minAppWidth } from '../Core/Helper';
 import { RefreshButton } from '../Components/RefreshButton';
 import { SortingAlgorithmsManager } from '../Core/Other/SortingAlgorithmsManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
@@ -244,13 +244,12 @@ const SortingBarComponent = ({ barHeight, barID, barState = SortingBarStateEnum.
   let divRef = useRef<HTMLDivElement>(null);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const algorithmState = useSelector((state: AppState) => state.animationState);
-  const algorithmAnimationBaseTime: number = 280;
 
   useEffect(() => {
     if (divRef.current === null) return;
     if (newLeftOffset === undefined) return;
 
-    let transformTime = algorithmAnimationBaseTime - 30 * sliderState.sliderValue;
+    let transformTime = algorithmIterationBaseTime - 50 - 50 * (sliderState.sliderValue - 1);
     let translateLength = newLeftOffset - divRef.current.offsetLeft;
     divRef.current.style.transition = `transform ease-in ${transformTime}ms`;
     divRef.current.style.transform = `translateX(${translateLength}px)`;

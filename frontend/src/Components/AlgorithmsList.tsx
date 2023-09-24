@@ -28,6 +28,7 @@ const AlgorithmComponent = ({ title, isSelected, algorithm }: AlgorithmProps) =>
     algorithmManager.selectedAlgorithm = algorithm;
     algorithmManager.updateStoreSelectedAlgorithmName();
     if (!algorithmManager.isStateUpdated) {
+      //If input was not changed, reset state and calculate the final state for selected algorithm
       algorithmManager.resetToInitialState();
       algorithmManager.selectedAlgorithm.setFinalState();
     }
@@ -57,7 +58,7 @@ const AlgorithmComponent = ({ title, isSelected, algorithm }: AlgorithmProps) =>
 
 export const AlgorithmsList = ({ data }: AlgorithmListProps) => {
   const { algorithmManager } = useContext(algorithmContext);
-  useSelector(algorithmManager.getStoreSelector);
+  useSelector(algorithmManager.getStoreSelector); //This line is needed for selected algorithm UI update
 
   return (
     <div
