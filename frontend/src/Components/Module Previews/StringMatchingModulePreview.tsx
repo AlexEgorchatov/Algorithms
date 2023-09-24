@@ -7,10 +7,10 @@ import { AppState } from '../../Store/Store';
 import { useDispatch } from 'react-redux';
 import { updateStringMatchingModuleStateAction } from '../../Store/Home Page/StringMatchingModulePreviewStateManagement';
 import { StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
-import { StringMatchingCharacterProps } from '../../Core/Interfaces/StringMatchingCharacterPropsInterface';
-import { ModulePreviewTitle } from '../../Core/Interfaces/ModuleTitleInterface';
+import { IStringMatchingCharacterProps } from '../../Core/Interfaces/IStringMatchingCharacterProps';
+import { IModulePreviewTitle } from '../../Core/Interfaces/IModuleTitle';
 
-const SearchableCharacter = ({ character, characterState: state = StringMatchingCharacterStateEnum.Unselected }: StringMatchingCharacterProps) => {
+const SearchableCharacter = ({ character, characterState: state = StringMatchingCharacterStateEnum.Unselected }: IStringMatchingCharacterProps) => {
   const setFont = () => {
     switch (state) {
       case StringMatchingCharacterStateEnum.Unselected:
@@ -35,7 +35,7 @@ const SearchableCharacter = ({ character, characterState: state = StringMatching
   );
 };
 
-export const StringMatchingModulePreview = ({ title }: ModulePreviewTitle) => {
+export const StringMatchingModulePreview = ({ title }: IModulePreviewTitle) => {
   const stringMatchingState = useSelector((state: AppState) => state.stringMatchingModuleState);
   const dispatch = useDispatch();
   const inputRender = [

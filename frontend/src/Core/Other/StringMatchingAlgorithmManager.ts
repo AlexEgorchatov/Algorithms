@@ -6,13 +6,13 @@ import {
 } from '../../Store/String Matching Page/StringMatchingPageStateManagement';
 import { AlgorithmBase, StringMatchingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
-import { StoreModule } from '../Interfaces/StoreModuleInterface';
-import { StringMatchingCharacterProps } from '../Interfaces/StringMatchingCharacterPropsInterface';
+import { IStoreModule } from '../Interfaces/IStoreModule';
+import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingCharacterProps';
 
-export class StringMatchingAlgorithmsManager implements AlgorithmsManagerBase<StringMatchingCharacterProps> {
+export class StringMatchingAlgorithmsManager implements AlgorithmsManagerBase<IStringMatchingCharacterProps> {
   public selectedAlgorithm: AlgorithmBase<any>;
-  public initialState: StringMatchingCharacterProps[] = [];
-  public initialPatternState: StringMatchingCharacterProps[] = [];
+  public initialState: IStringMatchingCharacterProps[] = [];
+  public initialPatternState: IStringMatchingCharacterProps[] = [];
   public isStateUpdated: boolean = false;
 
   public constructor(selectedAlgorithm: AlgorithmBase<any>) {
@@ -30,7 +30,7 @@ export class StringMatchingAlgorithmsManager implements AlgorithmsManagerBase<St
     store.dispatch(updateStringMatchingAnimationInputState(this.initialState));
   }
 
-  public getStoreSelector(): StoreModule {
+  public getStoreSelector(): IStoreModule {
     return (state: AppState) => state.stringMatchingPageState;
   }
 

@@ -20,7 +20,7 @@ import { StringMatchingAlgorithmsManager } from '../Core/Other/StringMatchingAlg
 import { AnimationManager } from '../Core/Other/AnimationManager';
 import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
-import { StringMatchingCharacterProps } from '../Core/Interfaces/StringMatchingCharacterPropsInterface';
+import { IStringMatchingCharacterProps } from '../Core/Interfaces/IStringMatchingCharacterProps';
 
 let stringMatchingAlgorithmManager: StringMatchingAlgorithmsManager = new StringMatchingAlgorithmsManager(stringMatchingAlgorithmsData[0].algorithm);
 let stringMatchingAnimationManager: AnimationManager = new AnimationManager(stringMatchingAlgorithmManager);
@@ -347,7 +347,7 @@ const AnimationComponent = () => {
   );
 };
 
-const StringMatchingCharacterComponent = ({ character, characterState = StringMatchingCharacterStateEnum.Unselected }: StringMatchingCharacterProps) => {
+const StringMatchingCharacterComponent = ({ character, characterState = StringMatchingCharacterStateEnum.Unselected }: IStringMatchingCharacterProps) => {
   const setFont = () => {
     switch (characterState) {
       case StringMatchingCharacterStateEnum.Unselected:
@@ -393,9 +393,9 @@ export const StringMatchingPage = () => {
   );
 };
 
-const ProcessStringMatchingAction = (input: string): StringMatchingCharacterProps[] => {
+const ProcessStringMatchingAction = (input: string): IStringMatchingCharacterProps[] => {
   let stringArrayInput = input.split('');
-  let stringMatchingCharacters: StringMatchingCharacterProps[] = [];
+  let stringMatchingCharacters: IStringMatchingCharacterProps[] = [];
 
   for (let i = 0; i < stringArrayInput.length; i++) {
     stringMatchingCharacters.push({ character: stringArrayInput[i] });

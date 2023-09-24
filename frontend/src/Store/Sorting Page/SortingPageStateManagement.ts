@@ -1,13 +1,13 @@
-import { SortingBarProps } from '../../Core/Interfaces/SortingBarPropsInterface';
-import { StoreModule } from '../../Core/Interfaces/StoreModuleInterface';
+import { ISortingBarProps } from '../../Core/Interfaces/ISortingBarProps';
+import { IStoreModule } from '../../Core/Interfaces/IStoreModule';
 
 //#region State
-export interface SortingPageState extends StoreModule {
+export interface SortingPageState extends IStoreModule {
   readonly selectedSortingAlgorithm: string;
   readonly sortingInput: string;
   readonly isInputNan: boolean;
   readonly isInputOverMax: boolean;
-  readonly sortingBars: SortingBarProps[];
+  readonly sortingBars: ISortingBarProps[];
 }
 
 const initialSortingPageState: SortingPageState = {

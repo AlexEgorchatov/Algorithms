@@ -6,7 +6,7 @@ import { AlgorithmBase } from '../Core/Abstractions/AlgorithmBase';
 import { AppState, store } from '../Store/Store';
 import { headerItemHovered } from '../Resources/Colors';
 import { algorithmContext } from '../Core/Helper';
-import { IAlgorithmData } from '../Core/Interfaces/AlgorithmDataInterface';
+import { IAlgorithmData } from '../Core/Interfaces/IAlgorithmData';
 
 interface AlgorithmListProps {
   data: IAlgorithmData[];

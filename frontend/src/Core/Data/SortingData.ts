@@ -1,4 +1,4 @@
-import { IAlgorithmData } from '../Interfaces/AlgorithmDataInterface';
+import { IAlgorithmData } from '../Interfaces/IAlgorithmData';
 import { BubbleSort, QuickSort } from '../Algorithms/SortingAlgorithms';
 
 export const sortingAlgorithmsData: IAlgorithmData[] = [

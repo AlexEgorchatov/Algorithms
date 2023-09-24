@@ -1,4 +1,4 @@
-import { StoreModule } from '../Interfaces/StoreModuleInterface';
+import { IStoreModule } from '../Interfaces/IStoreModule';
 import { AlgorithmBase } from './AlgorithmBase';
 
 export abstract class AlgorithmsManagerBase<T> {
@@ -10,7 +10,7 @@ export abstract class AlgorithmsManagerBase<T> {
 
   public abstract resetToInitialState(): void;
 
-  public abstract getStoreSelector(): StoreModule;
+  public abstract getStoreSelector(): IStoreModule;
 
   public abstract updateStoreSelectedAlgorithmName(): void;
 

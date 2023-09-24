@@ -1,6 +1,6 @@
 import { StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 
-export interface StringMatchingCharacterProps {
+export interface IStringMatchingCharacterProps {
   character: string;
   characterState?: StringMatchingCharacterStateEnum;
 }

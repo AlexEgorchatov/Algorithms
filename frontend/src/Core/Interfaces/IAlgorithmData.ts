@@ -1,6 +1,6 @@
 import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 
-export interface AlgorithmData {
+export interface IAlgorithmData {
   algorithm: AlgorithmBase<any>;
   title: string;
 }

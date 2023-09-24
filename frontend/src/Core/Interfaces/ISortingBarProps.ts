@@ -1,6 +1,6 @@
 import { SortingBarStateEnum } from '../../Resources/Enumerations';
 
-export interface SortingBarProps {
+export interface ISortingBarProps {
   barHeight: number;
   barID?: number;
   barState?: SortingBarStateEnum;

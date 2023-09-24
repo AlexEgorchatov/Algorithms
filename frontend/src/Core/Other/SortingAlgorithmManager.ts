@@ -3,12 +3,12 @@ import { updateSelectedSortingAlgorithmState, updateSortingBarsStateAction } fro
 import { AppState, store } from '../../Store/Store';
 import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
-import { SortingBarProps } from '../Interfaces/SortingBarPropsInterface';
-import { StoreModule } from '../Interfaces/StoreModuleInterface';
+import { ISortingBarProps } from '../Interfaces/ISortingBarProps';
+import { IStoreModule } from '../Interfaces/IStoreModule';
 
-export class SortingAlgorithmsManager implements AlgorithmsManagerBase<SortingBarProps> {
+export class SortingAlgorithmsManager implements AlgorithmsManagerBase<ISortingBarProps> {
   public selectedAlgorithm: AlgorithmBase<any>;
-  public initialState: SortingBarProps[] = [];
+  public initialState: ISortingBarProps[] = [];
   public isStateUpdated: boolean = false;
 
   public constructor(selectedAlgorithm: AlgorithmBase<any>) {
@@ -24,7 +24,7 @@ export class SortingAlgorithmsManager implements AlgorithmsManagerBase<SortingBa
     store.dispatch(updateSortingBarsStateAction(this.initialState));
   }
 
-  public getStoreSelector(): StoreModule {
+  public getStoreSelector(): IStoreModule {
     return (state: AppState) => state.sortingPageState;
   }
 

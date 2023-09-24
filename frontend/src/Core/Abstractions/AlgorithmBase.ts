@@ -1,8 +1,8 @@
 import { SortingBarStateEnum, StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 import { updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
 import { store } from '../../Store/Store';
-import { SortingBarProps } from '../Interfaces/SortingBarPropsInterface';
-import { StringMatchingCharacterProps } from '../Interfaces/StringMatchingCharacterPropsInterface';
+import { ISortingBarProps } from '../Interfaces/ISortingBarProps';
+import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingCharacterProps';
 
 export abstract class AlgorithmBase<T> {
   abstract executeAlgorithm(): Promise<void>;
@@ -10,15 +10,15 @@ export abstract class AlgorithmBase<T> {
   abstract setFinalState(): void;
 }
 
-export abstract class SortingAlgorithmBase extends AlgorithmBase<SortingBarProps> {
-  public finalState: SortingBarProps[] = [];
+export abstract class SortingAlgorithmBase extends AlgorithmBase<ISortingBarProps> {
+  public finalState: ISortingBarProps[] = [];
 
   public setFinalState(): void {
     let barsCopy = [...store.getState().sortingPageState.sortingBars];
     this.finalState = barsCopy.sort((a, b) => a.barHeight - b.barHeight);
   }
 
-  public swapSortingBarsVisually(barsCopy: SortingBarProps[], index1: number, index2: number): void {
+  public swapSortingBarsVisually(barsCopy: ISortingBarProps[], index1: number, index2: number): void {
     barsCopy = [...barsCopy];
     let currentLeftOffset = document.getElementById(index1.toString())?.offsetLeft;
     let nextLeftOffset = document.getElementById(index2.toString())?.offsetLeft;
@@ -27,14 +27,14 @@ export abstract class SortingAlgorithmBase extends AlgorithmBase<SortingBarProps
     store.dispatch(updateSortingBarsStateAction(barsCopy));
   }
 
-  public selectSortingBars(barsCopy: SortingBarProps[], index1: number, index2: number): void {
+  public selectSortingBars(barsCopy: ISortingBarProps[], index1: number, index2: number): void {
     barsCopy = [...barsCopy];
     barsCopy[index1] = { ...barsCopy[index1], barState: SortingBarStateEnum.Selected };
     barsCopy[index2] = { ...barsCopy[index2], barState: SortingBarStateEnum.Selected };
     store.dispatch(updateSortingBarsStateAction(barsCopy));
   }
 
-  public deselectSortingBars(barsCopy: SortingBarProps[], index1: number, index2: number): void {
+  public deselectSortingBars(barsCopy: ISortingBarProps[], index1: number, index2: number): void {
     barsCopy = [...barsCopy];
     barsCopy[index1] = { ...barsCopy[index1], barState: SortingBarStateEnum.Unselected };
     barsCopy[index2] = { ...barsCopy[index2], barState: SortingBarStateEnum.Unselected };
@@ -42,9 +42,9 @@ export abstract class SortingAlgorithmBase extends AlgorithmBase<SortingBarProps
   }
 }
 
-export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<StringMatchingCharacterProps> {
-  public finalState: StringMatchingCharacterProps[] = [];
-  public finalPatternState: StringMatchingCharacterProps[] = [];
+export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<IStringMatchingCharacterProps> {
+  public finalState: IStringMatchingCharacterProps[] = [];
+  public finalPatternState: IStringMatchingCharacterProps[] = [];
 
   public setFinalState(): void {
     let input = store.getState().stringMatchingPageState.stringMatchingInput;

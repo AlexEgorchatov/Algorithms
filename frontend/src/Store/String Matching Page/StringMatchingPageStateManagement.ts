@@ -1,13 +1,13 @@
-import { StoreModule } from '../../Core/Interfaces/StoreModuleInterface';
-import { StringMatchingCharacterProps } from '../../Core/Interfaces/StringMatchingCharacterPropsInterface';
+import { IStoreModule } from '../../Core/Interfaces/IStoreModule';
+import { IStringMatchingCharacterProps } from '../../Core/Interfaces/IStringMatchingCharacterProps';
 
 //#region State
-export interface StringMatchingPageState extends StoreModule {
+export interface StringMatchingPageState extends IStoreModule {
   readonly selectedStringMatchingAlgorithm: string;
   readonly stringMatchingPattern: string;
   readonly stringMatchingInput: string;
-  readonly stringMatchingAnimationPattern: StringMatchingCharacterProps[];
-  readonly stringMatchingAnimationInput: StringMatchingCharacterProps[];
+  readonly stringMatchingAnimationPattern: IStringMatchingCharacterProps[];
+  readonly stringMatchingAnimationInput: IStringMatchingCharacterProps[];
 }
 
 const initialStringMatchingPageState: StringMatchingPageState = {

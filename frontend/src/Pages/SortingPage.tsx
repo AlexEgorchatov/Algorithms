@@ -22,7 +22,7 @@ import { SortingAlgorithmsManager } from '../Core/Other/SortingAlgorithmManager'
 import { AnimationManager } from '../Core/Other/AnimationManager';
 import { SortingBarStateEnum } from '../Resources/Enumerations';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
-import { SortingBarProps } from '../Core/Interfaces/SortingBarPropsInterface';
+import { ISortingBarProps } from '../Core/Interfaces/ISortingBarProps';
 
 let sortingAlgorithmManager: SortingAlgorithmsManager = new SortingAlgorithmsManager(sortingAlgorithmsData[0].algorithm);
 let sortingAnimationManager: AnimationManager = new AnimationManager(sortingAlgorithmManager);
@@ -44,7 +44,7 @@ const SortingInputComponent = () => {
     dispatch(updateSortingInputStateAction(currentInput));
     validSortingInput = '';
     let stringArrayInput = currentInput.split(' ');
-    let sortingBars: SortingBarProps[] = [];
+    let sortingBars: ISortingBarProps[] = [];
     let isOverMax: boolean = false;
     let isNotDigit: boolean = false;
     let ID: number = 0;
@@ -173,7 +173,7 @@ const GenerateInputComponent = () => {
     if (algorithmState.hasAnimationStarted) return;
     if (inputRef.current === null) return;
 
-    let sortingBars: SortingBarProps[] = [];
+    let sortingBars: ISortingBarProps[] = [];
     let newInput: string = '';
 
     for (let i = 0; i < parseInt(inputRef.current.value); i++) {
@@ -240,7 +240,7 @@ const GenerateInputComponent = () => {
   );
 };
 
-const SortingBarComponent = ({ barHeight, barID, barState = SortingBarStateEnum.Unselected, leftOffset: newLeftOffset }: SortingBarProps) => {
+const SortingBarComponent = ({ barHeight, barID, barState = SortingBarStateEnum.Unselected, leftOffset: newLeftOffset }: ISortingBarProps) => {
   let divRef = useRef<HTMLDivElement>(null);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const algorithmState = useSelector((state: AppState) => state.animationState);
