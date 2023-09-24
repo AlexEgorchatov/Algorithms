@@ -31,6 +31,17 @@ export const renderedPatter: string = 'was';
 export const renderedInput: string =
   "Was it a whisper or was it the wind? He wasn't quite sure. He thought he heard a voice but at this moment all he could hear was the wind rustling the leaves of the trees all around him.";
 
+const processStringMatchingInput = (input: string): IStringMatchingCharacterProps[] => {
+  let stringArrayInput = input.split('');
+  let stringMatchingCharacters: IStringMatchingCharacterProps[] = [];
+
+  for (let i = 0; i < stringArrayInput.length; i++) {
+    stringMatchingCharacters.push({ character: stringArrayInput[i] });
+  }
+
+  return stringMatchingCharacters;
+};
+
 const StringMatchingPatternComponent = () => {
   const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingPageState);
   const algorithmState = useSelector((state: AppState) => state.animationState);
@@ -42,7 +53,8 @@ const StringMatchingPatternComponent = () => {
   }, []);
   useEffect(() => {
     if (stringMatchingPageState.stringMatchingPattern.length <= maxStringMatchingPatternLength) {
-      dispatch(updateStringMatchingAnimationPatternState(ProcessStringMatchingAction(stringMatchingPageState.stringMatchingPattern)));
+      dispatch(updateStringMatchingAnimationPatternState(processStringMatchingInput(stringMatchingPageState.stringMatchingPattern)));
+      dispatch(updateStringMatchingAnimationInputState(processStringMatchingInput(stringMatchingPageState.stringMatchingInput)));
       stringMatchingAlgorithmManager.isStateUpdated = true;
     }
   }, [stringMatchingPageState.stringMatchingPattern]);
@@ -127,7 +139,7 @@ const StringMatchingInputComponent = () => {
   }, []);
   useEffect(() => {
     if (stringMatchingPageState.stringMatchingInput.length <= maxStringMatchingInputLength) {
-      dispatch(updateStringMatchingAnimationInputState(ProcessStringMatchingAction(stringMatchingPageState.stringMatchingInput)));
+      dispatch(updateStringMatchingAnimationInputState(processStringMatchingInput(stringMatchingPageState.stringMatchingInput)));
       stringMatchingAlgorithmManager.isStateUpdated = true;
     }
   }, [stringMatchingPageState.stringMatchingInput]);
@@ -393,15 +405,4 @@ export const StringMatchingPage = () => {
       <AnimationComponent />
     </div>
   );
-};
-
-const ProcessStringMatchingAction = (input: string): IStringMatchingCharacterProps[] => {
-  let stringArrayInput = input.split('');
-  let stringMatchingCharacters: IStringMatchingCharacterProps[] = [];
-
-  for (let i = 0; i < stringArrayInput.length; i++) {
-    stringMatchingCharacters.push({ character: stringArrayInput[i] });
-  }
-
-  return stringMatchingCharacters;
 };
