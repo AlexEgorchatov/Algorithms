@@ -1,7 +1,7 @@
-import { AlgorithmData } from '../Interfaces/AlgorithmDataInterface';
+import { IAlgorithmData } from '../Interfaces/AlgorithmDataInterface';
 import { KnuthMorrisPrattPatternMatching, NaivePatternMatching } from '../Algorithms/StringMatchingAlgorithms';
 
-export const stringMatchingAlgorithmsData: AlgorithmData[] = [
+export const stringMatchingAlgorithmsData: IAlgorithmData[] = [
   {
     algorithm: new NaivePatternMatching(),
     title: 'Naive',

@@ -1,11 +1,11 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
-import { ModulePreviewPlaceholder } from '../Components/ModulePreviewPlaceHolder';
+import { ModulePreviewPlaceholder } from '../ModulePreviewPlaceHolder';
 import { useSelector, useDispatch } from 'react-redux';
-import { AppState } from '../Store/Store';
-import { updateSortingModuleHeightsStateAction } from '../Store/Home Page/SortingModulePreviewStateManagement';
-import { ModulePreviewTitle } from '../Core/Interfaces/ModuleTitleInterface';
+import { AppState } from '../../Store/Store';
+import { updateSortingModuleHeightsStateAction } from '../../Store/Home Page/SortingModulePreviewStateManagement';
+import { ModulePreviewTitle } from '../../Core/Interfaces/ModuleTitleInterface';
 
 interface Props {
   height: number;

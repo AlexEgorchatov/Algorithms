@@ -16,20 +16,20 @@ export class SortingAlgorithmsManager implements AlgorithmsManagerBase<SortingBa
     store.dispatch(updateSelectedSortingAlgorithmState(selectedAlgorithm.constructor.name));
   }
 
-  public resetToInitialState(): void {
-    store.dispatch(updateSortingBarsStateAction(this.initialState));
-  }
-
   public setInitialState(): void {
     this.initialState = [...store.getState().sortingPageState.sortingBars];
   }
 
-  public updateStoreSelectedAlgorithmName(): void {
-    store.dispatch(updateSelectedSortingAlgorithmState(this.selectedAlgorithm.constructor.name));
+  public resetToInitialState(): void {
+    store.dispatch(updateSortingBarsStateAction(this.initialState));
   }
 
   public getStoreSelector(): StoreModule {
     return (state: AppState) => state.sortingPageState;
+  }
+
+  public updateStoreSelectedAlgorithmName(): void {
+    store.dispatch(updateSelectedSortingAlgorithmState(this.selectedAlgorithm.constructor.name));
   }
 
   public async startAlgorithm(): Promise<void> {

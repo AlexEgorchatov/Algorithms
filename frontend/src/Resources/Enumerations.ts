@@ -1,8 +1,3 @@
-export enum StringMatchingAlgorithmEnum { //TODO: update string matching page like sorting page and delete the enumeration
-  Naive = 0,
-  KnuthMorrisPratt = 1,
-}
-
 export enum ModuleEnum {
   Sorting = 0,
   StringMatching = 1,

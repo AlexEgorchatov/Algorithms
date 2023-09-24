@@ -1,14 +1,14 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
-import { ModulePreviewPlaceholder } from '../Components/ModulePreviewPlaceHolder';
+import { ModulePreviewPlaceholder } from '../ModulePreviewPlaceHolder';
 import { useSelector } from 'react-redux';
-import { AppState } from '../Store/Store';
+import { AppState } from '../../Store/Store';
 import { useDispatch } from 'react-redux';
-import { updateStringMatchingModuleStateAction } from '../Store/Home Page/StringMatchingModulePreviewStateManagement';
-import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
-import { StringMatchingCharacterProps } from '../Core/Interfaces/StringMatchingCharacterPropsInterface';
-import { ModulePreviewTitle } from '../Core/Interfaces/ModuleTitleInterface';
+import { updateStringMatchingModuleStateAction } from '../../Store/Home Page/StringMatchingModulePreviewStateManagement';
+import { StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
+import { StringMatchingCharacterProps } from '../../Core/Interfaces/StringMatchingCharacterPropsInterface';
+import { ModulePreviewTitle } from '../../Core/Interfaces/ModuleTitleInterface';
 
 const SearchableCharacter = ({ character, characterState: state = StringMatchingCharacterStateEnum.Unselected }: StringMatchingCharacterProps) => {
   const setFont = () => {

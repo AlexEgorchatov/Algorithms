@@ -3,9 +3,9 @@ import { css } from '@emotion/react';
 import { ModuleData, modules } from '../Core/Data/ModuleData';
 import { mainFontColor } from '../Resources/Colors';
 import { Link } from 'react-router-dom';
-import { SortingModulePreview } from '../Module Previews/SortingModulePreview';
-import { StringMatchingModulePreview } from '../Module Previews/StringMatchingModulePreview';
-import { PathFindingModulePreview } from '../Module Previews/PathFindingModulePreview';
+import { SortingModulePreview } from '../Components/Module Previews/SortingModulePreview';
+import { StringMatchingModulePreview } from '../Components/Module Previews/StringMatchingModulePreview';
+import { PathFindingModulePreview } from '../Components/Module Previews/PathFindingModulePreview';
 import React from 'react';
 import { ModuleEnum } from '../Resources/Enumerations';
 

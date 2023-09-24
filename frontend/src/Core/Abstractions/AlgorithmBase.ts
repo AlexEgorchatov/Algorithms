@@ -12,6 +12,7 @@ export abstract class AlgorithmBase<T> {
 
 export abstract class SortingAlgorithmBase extends AlgorithmBase<SortingBarProps> {
   public finalState: SortingBarProps[] = [];
+
   public setFinalState(): void {
     let barsCopy = [...store.getState().sortingPageState.sortingBars];
     this.finalState = barsCopy.sort((a, b) => a.barHeight - b.barHeight);
@@ -43,6 +44,8 @@ export abstract class SortingAlgorithmBase extends AlgorithmBase<SortingBarProps
 
 export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<StringMatchingCharacterProps> {
   public finalState: StringMatchingCharacterProps[] = [];
+  public finalPatternState: StringMatchingCharacterProps[] = [];
+
   public setFinalState(): void {
     let input = store.getState().stringMatchingPageState.stringMatchingInput;
     let pattern = store.getState().stringMatchingPageState.stringMatchingPattern;
@@ -58,16 +61,7 @@ export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<StringMa
       foundIndex = input.indexOf(pattern, foundIndex + 1);
     }
 
-    this.finalState = [...animationInputCopy];
-  }
-
-  //TODO work on it, maybe not needed here
-  public initialPatternState: StringMatchingCharacterProps[] = [];
-  public finalPatternState: StringMatchingCharacterProps[] = [];
-  public setInitialPatternState(): void {
-    this.initialPatternState = store.getState().stringMatchingPageState.stringMatchingAnimationPattern;
-  }
-  public setFinalPatternState(): void {
     this.finalPatternState = store.getState().stringMatchingPageState.stringMatchingAnimationPattern;
+    this.finalState = [...animationInputCopy];
   }
 }

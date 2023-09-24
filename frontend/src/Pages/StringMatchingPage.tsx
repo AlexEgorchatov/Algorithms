@@ -6,7 +6,12 @@ import { errorMessageColor, mainFontColor, moduleBackground, pivotColor } from '
 import { stringMatchingAlgorithmsData } from '../Core/Data/StringMatchingData';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
-import { updateStringMatchingInputState, updateStringMatchingPatternState } from '../Store/String Matching Page/StringMatchingPageStateManagement';
+import {
+  updateStringMatchingAnimationInputState,
+  updateStringMatchingAnimationPatternState,
+  updateStringMatchingInputState,
+  updateStringMatchingPatternState,
+} from '../Store/String Matching Page/StringMatchingPageStateManagement';
 import { algorithmContext, animationContext } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
@@ -35,6 +40,11 @@ const StringMatchingPatternComponent = () => {
   useEffect(() => {
     dispatch(updateStringMatchingPatternState(renderedPatter));
   }, []);
+  useEffect(() => {
+    if (stringMatchingPageState.stringMatchingPattern.length <= maxStringMatchingPatternLength) {
+      dispatch(updateStringMatchingAnimationPatternState(ProcessStringMatchingAction(stringMatchingPageState.stringMatchingPattern)));
+    }
+  }, [stringMatchingPageState.stringMatchingPattern]);
 
   return (
     <div
@@ -114,6 +124,11 @@ const StringMatchingInputComponent = () => {
   useEffect(() => {
     dispatch(updateStringMatchingInputState(renderedInput));
   }, []);
+  useEffect(() => {
+    if (stringMatchingPageState.stringMatchingInput.length <= maxStringMatchingInputLength) {
+      dispatch(updateStringMatchingAnimationInputState(ProcessStringMatchingAction(stringMatchingPageState.stringMatchingInput)));
+    }
+  }, [stringMatchingPageState.stringMatchingInput]);
 
   return (
     <div
@@ -378,35 +393,13 @@ export const StringMatchingPage = () => {
   );
 };
 
-//TODO implement this logic in useEffect
-// const ProcessStringMatchingAction = (input: string): StringMatchingCharacterProps[] => {
-//   let stringArrayInput = input.split('');
-//   let stringMatchingCharacters: StringMatchingCharacterProps[] = [];
+const ProcessStringMatchingAction = (input: string): StringMatchingCharacterProps[] => {
+  let stringArrayInput = input.split('');
+  let stringMatchingCharacters: StringMatchingCharacterProps[] = [];
 
-//   for (let i = 0; i < stringArrayInput.length; i++) {
-//     stringMatchingCharacters.push({ character: stringArrayInput[i] });
-//   }
+  for (let i = 0; i < stringArrayInput.length; i++) {
+    stringMatchingCharacters.push({ character: stringArrayInput[i] });
+  }
 
-//   return stringMatchingCharacters;
-// };
-
-// export const updateStringMatchingPatternMiddleware: Middleware = (store: MiddlewareAPI) => (next: Dispatch) => (action: StringMatchingPageActions) => {
-//   switch (action.type) {
-//     case UPDATE_STRING_MATCHING_INPUT_STATE:
-//       if (action.stringMatchingInput.length <= maxStringMatchingInputLength) {
-//         store.dispatch(updateStringMatchingAnimationInputState(ProcessStringMatchingAction(action.stringMatchingInput)));
-//       }
-//       break;
-
-//     case UPDATE_STRING_MATCHING_PATTERN_STATE:
-//       if (action.stringMatchingPattern.length <= maxStringMatchingPatternLength) {
-//         store.dispatch(updateStringMatchingAnimationPatternState(ProcessStringMatchingAction(action.stringMatchingPattern)));
-//       }
-//       break;
-
-//     default:
-//       break;
-//   }
-
-//   return next(action);
-// };
+  return stringMatchingCharacters;
+};

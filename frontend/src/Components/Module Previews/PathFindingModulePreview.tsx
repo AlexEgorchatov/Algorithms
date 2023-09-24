@@ -1,13 +1,13 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect } from 'react';
-import { ModulePreviewPlaceholder } from '../Components/ModulePreviewPlaceHolder';
-import { updatePathFindingModuleStateAction } from '../Store/Home Page/PathFindingModulePreviewStateManagement';
+import { ModulePreviewPlaceholder } from '../ModulePreviewPlaceHolder';
+import { updatePathFindingModuleStateAction } from '../../Store/Home Page/PathFindingModulePreviewStateManagement';
 import { useSelector } from 'react-redux';
-import { AppState } from '../Store/Store';
+import { AppState } from '../../Store/Store';
 import { useDispatch } from 'react-redux';
-import { CellStateEnum } from '../Resources/Enumerations';
-import { ModulePreviewTitle } from '../Core/Interfaces/ModuleTitleInterface';
+import { CellStateEnum } from '../../Resources/Enumerations';
+import { ModulePreviewTitle } from '../../Core/Interfaces/ModuleTitleInterface';
 
 interface Props {
   state: CellStateEnum;

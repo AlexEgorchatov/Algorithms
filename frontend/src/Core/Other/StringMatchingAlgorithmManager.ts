@@ -1,4 +1,10 @@
-import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
+import { AppState, store } from '../../Store/Store';
+import {
+  updateSelectedStringMatchingAlgorithmState,
+  updateStringMatchingAnimationInputState,
+  updateStringMatchingAnimationPatternState,
+} from '../../Store/String Matching Page/StringMatchingPageStateManagement';
+import { AlgorithmBase, StringMatchingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 import { StoreModule } from '../Interfaces/StoreModuleInterface';
 import { StringMatchingCharacterProps } from '../Interfaces/StringMatchingCharacterPropsInterface';
@@ -6,31 +12,43 @@ import { StringMatchingCharacterProps } from '../Interfaces/StringMatchingCharac
 export class StringMatchingAlgorithmsManager implements AlgorithmsManagerBase<StringMatchingCharacterProps> {
   public selectedAlgorithm: AlgorithmBase<any>;
   public initialState: StringMatchingCharacterProps[] = [];
+  public initialPatternState: StringMatchingCharacterProps[] = [];
   public isStateUpdated: boolean = false;
 
   public constructor(selectedAlgorithm: AlgorithmBase<any>) {
     this.selectedAlgorithm = selectedAlgorithm;
+    store.dispatch(updateSelectedStringMatchingAlgorithmState(selectedAlgorithm.constructor.name));
   }
 
   public setInitialState(): void {
-    throw new Error('Method not implemented.');
+    this.initialPatternState = [...store.getState().stringMatchingPageState.stringMatchingAnimationPattern];
+    this.initialState = [...store.getState().stringMatchingPageState.stringMatchingAnimationInput];
   }
+
   public resetToInitialState(): void {
-    throw new Error('Method not implemented.');
+    store.dispatch(updateStringMatchingAnimationPatternState(this.initialPatternState));
+    store.dispatch(updateStringMatchingAnimationInputState(this.initialState));
   }
+
   public getStoreSelector(): StoreModule {
-    throw new Error('Method not implemented.');
+    return (state: AppState) => state.stringMatchingPageState;
   }
+
   public updateStoreSelectedAlgorithmName(): void {
-    throw new Error('Method not implemented.');
+    store.dispatch(updateSelectedStringMatchingAlgorithmState(this.selectedAlgorithm.constructor.name));
   }
-  public startAlgorithm(): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  public async startAlgorithm(): Promise<void> {
+    await this.selectedAlgorithm.executeAlgorithm();
   }
-  public stopAlgorithm(): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  public async stopAlgorithm(): Promise<void> {
+    store.dispatch(updateStringMatchingAnimationPatternState(this.initialPatternState));
+    store.dispatch(updateStringMatchingAnimationInputState(this.initialState));
   }
-  public completeAlgorithm(): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  public async completeAlgorithm(): Promise<void> {
+    store.dispatch(updateStringMatchingAnimationPatternState(this.selectedAlgorithm.finalState));
+    store.dispatch(updateStringMatchingAnimationInputState((this.selectedAlgorithm as StringMatchingAlgorithmBase).finalPatternState));
   }
 }
