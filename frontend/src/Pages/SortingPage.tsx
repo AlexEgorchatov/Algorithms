@@ -18,7 +18,7 @@ import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagem
 import { ActionBar } from '../Components/ActionBar';
 import { algorithmContext, animationContext, minAppWidth } from '../Core/Helper';
 import { RefreshButton } from '../Components/RefreshButton';
-import { SortingAlgorithmsManager } from '../Core/Other/SortingAlgorithmManager';
+import { SortingAlgorithmsManager } from '../Core/Other/SortingAlgorithmsManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
 import { SortingBarStateEnum } from '../Resources/Enumerations';
 import { AlgorithmsList } from '../Components/AlgorithmsList';

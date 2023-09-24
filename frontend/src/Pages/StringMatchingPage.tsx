@@ -16,7 +16,7 @@ import { algorithmContext, animationContext } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
 import { RefreshButton } from '../Components/RefreshButton';
-import { StringMatchingAlgorithmsManager } from '../Core/Other/StringMatchingAlgorithmManager';
+import { StringMatchingAlgorithmsManager } from '../Core/Other/StringMatchingAlgorithmsManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
 import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
@@ -43,6 +43,7 @@ const StringMatchingPatternComponent = () => {
   useEffect(() => {
     if (stringMatchingPageState.stringMatchingPattern.length <= maxStringMatchingPatternLength) {
       dispatch(updateStringMatchingAnimationPatternState(ProcessStringMatchingAction(stringMatchingPageState.stringMatchingPattern)));
+      stringMatchingAlgorithmManager.isStateUpdated = true;
     }
   }, [stringMatchingPageState.stringMatchingPattern]);
 
@@ -127,6 +128,7 @@ const StringMatchingInputComponent = () => {
   useEffect(() => {
     if (stringMatchingPageState.stringMatchingInput.length <= maxStringMatchingInputLength) {
       dispatch(updateStringMatchingAnimationInputState(ProcessStringMatchingAction(stringMatchingPageState.stringMatchingInput)));
+      stringMatchingAlgorithmManager.isStateUpdated = true;
     }
   }, [stringMatchingPageState.stringMatchingInput]);
 

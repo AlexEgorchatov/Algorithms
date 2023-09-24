@@ -39,6 +39,11 @@ export class StringMatchingAlgorithmsManager implements AlgorithmsManagerBase<IS
   }
 
   public async startAlgorithm(): Promise<void> {
+    if (this.isStateUpdated) {
+      this.setInitialState();
+      this.selectedAlgorithm.setFinalState();
+      this.isStateUpdated = false;
+    }
     await this.selectedAlgorithm.executeAlgorithm();
   }
 
@@ -48,7 +53,7 @@ export class StringMatchingAlgorithmsManager implements AlgorithmsManagerBase<IS
   }
 
   public async completeAlgorithm(): Promise<void> {
-    store.dispatch(updateStringMatchingAnimationPatternState(this.selectedAlgorithm.finalState));
-    store.dispatch(updateStringMatchingAnimationInputState((this.selectedAlgorithm as StringMatchingAlgorithmBase).finalPatternState));
+    store.dispatch(updateStringMatchingAnimationPatternState((this.selectedAlgorithm as StringMatchingAlgorithmBase).finalPatternState));
+    store.dispatch(updateStringMatchingAnimationInputState(this.selectedAlgorithm.finalState));
   }
 }
