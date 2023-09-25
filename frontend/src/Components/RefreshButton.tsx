@@ -4,7 +4,11 @@ import { AppState } from '../Store/Store';
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
 
-export const RefreshButton = () => {
+interface Props {
+  refreshFunction: () => void;
+}
+
+export const RefreshButton = ({ refreshFunction }: Props) => {
   const algorithmState = useSelector((state: AppState) => state.animationState);
 
   return (
@@ -33,6 +37,7 @@ export const RefreshButton = () => {
             `}
         }
       `}
+      onClick={refreshFunction}
     >
       <div
         css={css`

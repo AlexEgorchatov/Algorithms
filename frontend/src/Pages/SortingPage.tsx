@@ -214,9 +214,7 @@ const GenerateInputComponent = () => {
         width: 73px;
       `}
     >
-      <div onClick={handleGenerateElements}>
-        <RefreshButton />
-      </div>
+      <RefreshButton refreshFunction={handleGenerateElements} />
       <input
         css={css`
           width: 40px;

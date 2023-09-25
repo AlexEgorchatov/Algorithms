@@ -49,9 +49,6 @@ const StringMatchingPatternComponent = () => {
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    dispatch(updateStringMatchingPatternState(renderedPatter));
-  }, []);
-  useEffect(() => {
     if (stringMatchingPageState.stringMatchingPattern.length <= maxStringMatchingPatternLength) {
       dispatch(updateStringMatchingAnimationPatternState(processStringMatchingInput(stringMatchingPageState.stringMatchingPattern)));
       dispatch(updateStringMatchingAnimationInputState(processStringMatchingInput(stringMatchingPageState.stringMatchingInput)));
@@ -135,9 +132,6 @@ const StringMatchingInputComponent = () => {
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    dispatch(updateStringMatchingInputState(renderedInput));
-  }, []);
-  useEffect(() => {
     if (stringMatchingPageState.stringMatchingInput.length <= maxStringMatchingInputLength) {
       dispatch(updateStringMatchingAnimationInputState(processStringMatchingInput(stringMatchingPageState.stringMatchingInput)));
       stringMatchingAlgorithmManager.isStateUpdated = true;
@@ -214,6 +208,17 @@ const StringMatchingInputComponent = () => {
 };
 
 const SettingsComponent = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    refreshState();
+  }, []);
+
+  const refreshState = () => {
+    dispatch(updateStringMatchingPatternState(renderedPatter));
+    dispatch(updateStringMatchingInputState(renderedInput));
+  };
+
   return (
     <div
       css={css`
@@ -269,7 +274,7 @@ const SettingsComponent = () => {
                 <ActionBar />
               </animationContext.Provider>
             </div>
-            <RefreshButton />
+            <RefreshButton refreshFunction={refreshState} />
           </div>
           <algorithmContext.Provider value={{ algorithmManager: stringMatchingAlgorithmManager }}>
             <AlgorithmsList data={stringMatchingAlgorithmsData} />
