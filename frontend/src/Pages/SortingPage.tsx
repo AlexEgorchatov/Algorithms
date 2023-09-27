@@ -13,7 +13,7 @@ import {
   updateSortingInputStateAction,
   updatingIsInputNanState,
   updateIsInputOverMaxState,
-} from '../Store/Sorting Module/SortingPageStateManagement';
+} from '../Store/Sorting Module/SortingModuleStateManagement';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { algorithmContext, algorithmIterationBaseTime, animationContext, minAppWidth } from '../Core/Helper';
@@ -23,6 +23,7 @@ import { AnimationManager } from '../Core/Other/AnimationManager';
 import { SortingBarStateEnum } from '../Resources/Enumerations';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
 import { ISortingBarProps } from '../Core/Interfaces/ISortingBarProps';
+import { updateIsAnimationInputNullStateAction } from '../Store/Shared/AnimationStateManagement';
 
 let sortingAlgorithmManager: SortingAlgorithmsManager = new SortingAlgorithmsManager(sortingAlgorithmsData[0].algorithm);
 let sortingAnimationManager: AnimationManager = new AnimationManager(sortingAlgorithmManager);
@@ -34,8 +35,8 @@ const getMaxBarsNumber = (windowWidth: number): number => {
 };
 
 const SortingInputComponent = () => {
-  const sortingPageState = useSelector((state: AppState) => state.sortingModuleState);
-  const algorithmState = useSelector((state: AppState) => state.animationState);
+  const sortingModuleState = useSelector((state: AppState) => state.sortingModuleState);
+  const animationState = useSelector((state: AppState) => state.animationState);
   const windowState = useSelector((state: AppState) => state.windowState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
@@ -68,6 +69,8 @@ const SortingInputComponent = () => {
     else dispatch(updatingIsInputNanState(false));
     if (isOverMax) dispatch(updateIsInputOverMaxState(true));
     else dispatch(updateIsInputOverMaxState(false));
+    if (sortingBars.length === 0) dispatch(updateIsAnimationInputNullStateAction(true));
+    else dispatch(updateIsAnimationInputNullStateAction(false));
     dispatch(updateSortingBarsStateAction(sortingBars));
     sortingAlgorithmManager.isStateUpdated = true;
   };
@@ -98,9 +101,9 @@ const SortingInputComponent = () => {
         ref={ref}
         type="text"
         placeholder="Type several numbers..."
-        value={sortingPageState.sortingInput}
+        value={sortingModuleState.sortingInput}
         onInput={() => processInput(ref.current?.value as string)}
-        disabled={algorithmState.hasAnimationStarted}
+        disabled={animationState.hasAnimationStarted}
       />
 
       <div>
@@ -117,7 +120,7 @@ const SortingInputComponent = () => {
           <div
             css={css`
               margin-left: 5px;
-              color: ${sortingPageState.isInputNan ? errorMessageColor : 'white'};
+              color: ${sortingModuleState.isInputNan ? errorMessageColor : 'white'};
             `}
           >
             "32 0 9 82"
@@ -126,7 +129,7 @@ const SortingInputComponent = () => {
           <div
             css={css`
               margin-left: 5px;
-              color: ${sortingPageState.isInputOverMax ? errorMessageColor : 'white'};
+              color: ${sortingModuleState.isInputOverMax ? errorMessageColor : 'white'};
             `}
           >
             Maximum value is 99
@@ -135,7 +138,7 @@ const SortingInputComponent = () => {
         </div>
         <div
           css={css`
-            visibility: ${sortingPageState.isInputNan || sortingPageState.isInputOverMax ? 'visible' : 'hidden'};
+            visibility: ${sortingModuleState.isInputNan || sortingModuleState.isInputOverMax ? 'visible' : 'hidden'};
             display: flex;
             color: ${errorMessageColor};
             font-size: 13px;
@@ -161,7 +164,7 @@ const SortingInputComponent = () => {
 
 const GenerateInputComponent = () => {
   const windowState = useSelector((state: AppState) => state.windowState);
-  const algorithmState = useSelector((state: AppState) => state.animationState);
+  const animationState = useSelector((state: AppState) => state.animationState);
   const dispatch = useDispatch();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -170,7 +173,7 @@ const GenerateInputComponent = () => {
   }, []);
 
   const handleGenerateElements = () => {
-    if (algorithmState.hasAnimationStarted) return;
+    if (animationState.hasAnimationStarted) return;
     if (inputRef.current === null) return;
 
     let sortingBars: ISortingBarProps[] = [];
@@ -202,7 +205,7 @@ const GenerateInputComponent = () => {
     if (inputRef.current === null) return;
 
     let maxBarsNumber: number = getMaxBarsNumber(windowState.windowWidth);
-    inputRef.current.value = parseInt(currentInput) > maxBarsNumber ? maxBarsNumber.toString() : currentInput;
+    inputRef.current.value = parseInt(currentInput) > maxBarsNumber ? maxBarsNumber.toString() : parseInt(currentInput) < 1 ? '1' : currentInput;
   };
 
   return (
@@ -225,14 +228,14 @@ const GenerateInputComponent = () => {
             font-style: italic;
           }
         `}
-        min={0}
+        min={1}
         max={getMaxBarsNumber(windowState.windowWidth)}
         ref={inputRef}
         type="number"
         defaultValue={10}
         onInput={() => validateInput(inputRef.current?.value as string)}
         onKeyUp={handleEnterKeyUp}
-        disabled={algorithmState.hasAnimationStarted}
+        disabled={animationState.hasAnimationStarted}
       />
     </div>
   );
@@ -241,7 +244,7 @@ const GenerateInputComponent = () => {
 const SortingBarComponent = ({ barHeight, barID, barState = SortingBarStateEnum.Unselected, leftOffset: newLeftOffset }: ISortingBarProps) => {
   let divRef = useRef<HTMLDivElement>(null);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
-  const algorithmState = useSelector((state: AppState) => state.animationState);
+  const animationState = useSelector((state: AppState) => state.animationState);
 
   useEffect(() => {
     if (divRef.current === null) return;
@@ -258,7 +261,7 @@ const SortingBarComponent = ({ barHeight, barID, barState = SortingBarStateEnum.
 
     divRef.current.style.transition = `transform ease-in 0ms`;
     divRef.current.style.transform = `translateX(0px)`;
-  }, [barHeight, algorithmState.hasAnimationStarted, barState]);
+  }, [barHeight, animationState.hasAnimationStarted, barState]);
 
   const getColor = () => {
     switch (barState) {
@@ -317,7 +320,7 @@ const SettingsComponent = () => {
     <div
       css={css`
         margin: 0px 10px;
-        height: 25%;
+        height: 30%;
         min-height: 200px;
         display: block;
       `}
@@ -370,7 +373,7 @@ const SettingsComponent = () => {
 };
 
 const AnimationComponent = () => {
-  const sortingPageState = useSelector((state: AppState) => state.sortingModuleState);
+  const sortingModuleState = useSelector((state: AppState) => state.sortingModuleState);
 
   return (
     <div
@@ -379,7 +382,7 @@ const AnimationComponent = () => {
         flex-direction: column;
         justify-content: space-around;
         background-color: ${moduleBackground};
-        height: 75%;
+        height: 70%;
         min-height: 500px;
       `}
     >
@@ -397,10 +400,10 @@ const AnimationComponent = () => {
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
-            width: ${sortingPageState.sortingBars.length * sortingBarWidth}px;
+            width: ${sortingModuleState.sortingBars.length * sortingBarWidth}px;
           `}
         >
-          {sortingPageState.sortingBars.map((bar, index) => (
+          {sortingModuleState.sortingBars.map((bar, index) => (
             <SortingBarComponent key={index} barID={bar.barID} barHeight={bar.barHeight} barState={bar.barState} leftOffset={bar.leftOffset} />
           ))}
         </div>
