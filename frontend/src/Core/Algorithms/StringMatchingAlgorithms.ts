@@ -1,5 +1,8 @@
 import { StringMatchingAlgorithmBase } from '../Abstractions/AlgorithmBase';
-import { updateStringMatchingAnimationInputState, updateStringMatchingAnimationPatternState } from '../../Store/String Matching Module/StringMatchingPageStateManagement';
+import {
+  updateStringMatchingAnimationInputState,
+  updateStringMatchingAnimationPatternState,
+} from '../../Store/String Matching Module/StringMatchingModuleStateManagement';
 import { isAnimationTerminated, pauseForStepIteration } from '../Helper';
 import { StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 import { store } from '../../Store/Store';

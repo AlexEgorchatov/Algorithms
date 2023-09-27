@@ -1,5 +1,5 @@
 import { SortingAlgorithmBase } from '../Abstractions/AlgorithmBase';
-import { updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingPageStateManagement';
+import { updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingModuleStateManagement';
 import { isAnimationTerminated, pauseForStepIteration } from '../Helper';
 import { SortingBarStateEnum } from '../../Resources/Enumerations';
 import { store } from '../../Store/Store';
@@ -47,6 +47,7 @@ export class BubbleSort extends SortingAlgorithmBase {
 export class QuickSort extends SortingAlgorithmBase {
   public async executeAlgorithm(): Promise<void> {
     let length = store.getState().sortingModuleState.sortingBars.length;
+
     await this.quickSort(0, length - 1);
   }
 

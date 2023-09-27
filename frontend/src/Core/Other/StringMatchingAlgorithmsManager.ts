@@ -3,7 +3,7 @@ import {
   updateSelectedStringMatchingAlgorithmState,
   updateStringMatchingAnimationInputState,
   updateStringMatchingAnimationPatternState,
-} from '../../Store/String Matching Module/StringMatchingPageStateManagement';
+} from '../../Store/String Matching Module/StringMatchingModuleStateManagement';
 import { AlgorithmBase, StringMatchingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 import { IStoreModule } from '../Interfaces/IStoreModule';
