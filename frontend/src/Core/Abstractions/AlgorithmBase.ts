@@ -1,5 +1,5 @@
 import { SortingBarStateEnum, StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
-import { updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingPageStateManagement';
+import { updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingModuleStateManagement';
 import { store } from '../../Store/Store';
 import { ISortingBarProps } from '../Interfaces/ISortingBarProps';
 import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingCharacterProps';
@@ -20,7 +20,7 @@ export abstract class SortingAlgorithmBase extends AlgorithmBase<ISortingBarProp
 
   public setFinalState(): void {
     let barsCopy = [...store.getState().sortingModuleState.sortingBars];
-    this.finalState = barsCopy.sort((a, b) => a.barHeight - b.barHeight);
+    this.finalState = barsCopy.length === 0 ? [] : barsCopy.sort((a, b) => a.barHeight - b.barHeight);
   }
 
   public swapSortingBarsVisually(barsCopy: ISortingBarProps[], index1: number, index2: number): void {
@@ -56,7 +56,7 @@ export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<IStringM
     let pattern = store.getState().stringMatchingModuleState.stringMatchingPattern.toLowerCase();
     let animationInputCopy = [...store.getState().stringMatchingModuleState.stringMatchingAnimationInput];
 
-    let foundIndex: number = input.indexOf(pattern);
+    let foundIndex: number = pattern.length === 0 ? -1 : input.indexOf(pattern);
     while (foundIndex !== -1) {
       for (let i = foundIndex; i < foundIndex + pattern.length; i++) {
         if (animationInputCopy[i].characterState === StringMatchingCharacterStateEnum.Found) continue;
