@@ -138,7 +138,7 @@ const HeaderMenuButton = ({ data }: Props) => {
         position: relative;
         display: inline-block;
         cursor: pointer;
-        @media (min-width: 561px) {
+        @media (min-width: ${minAppWidth + 1}px) {
           display: none;
         }
       `}
