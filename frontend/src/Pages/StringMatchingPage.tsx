@@ -2,7 +2,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useEffect, useRef } from 'react';
-import { errorMessageColor, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
+import { errorMessageColor, mainFontColor, moduleBackground, pivotColor, warningMessageColor } from '../Resources/Colors';
 import { stringMatchingAlgorithmsData } from '../Core/Data/StringMatchingData';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
@@ -11,7 +11,7 @@ import {
   updateStringMatchingAnimationPatternState,
   updateStringMatchingInputState,
   updateStringMatchingPatternState,
-} from '../Store/String Matching Module/StringMatchingPageStateManagement';
+} from '../Store/String Matching Module/StringMatchingModuleStateManagement';
 import { algorithmContext, animationContext } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
@@ -21,6 +21,7 @@ import { AnimationManager } from '../Core/Other/AnimationManager';
 import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
 import { IStringMatchingCharacterProps } from '../Core/Interfaces/IStringMatchingCharacterProps';
+import { WarningSignComponent } from '../Components/WarningSign';
 
 let stringMatchingAlgorithmManager: StringMatchingAlgorithmsManager = new StringMatchingAlgorithmsManager(stringMatchingAlgorithmsData[0].algorithm);
 let stringMatchingAnimationManager: AnimationManager = new AnimationManager(stringMatchingAlgorithmManager);
@@ -43,18 +44,18 @@ const processStringMatchingInput = (input: string): IStringMatchingCharacterProp
 };
 
 const StringMatchingPatternComponent = () => {
-  const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingModuleState);
+  const stringMatchingModuleState = useSelector((state: AppState) => state.stringMatchingModuleState);
   const algorithmState = useSelector((state: AppState) => state.animationState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (stringMatchingPageState.stringMatchingPattern.length <= maxStringMatchingPatternLength) {
-      dispatch(updateStringMatchingAnimationPatternState(processStringMatchingInput(stringMatchingPageState.stringMatchingPattern)));
-      dispatch(updateStringMatchingAnimationInputState(processStringMatchingInput(stringMatchingPageState.stringMatchingInput)));
+    if (stringMatchingModuleState.stringMatchingPattern.length <= maxStringMatchingPatternLength) {
+      dispatch(updateStringMatchingAnimationPatternState(processStringMatchingInput(stringMatchingModuleState.stringMatchingPattern)));
+      dispatch(updateStringMatchingAnimationInputState(processStringMatchingInput(stringMatchingModuleState.stringMatchingInput)));
       stringMatchingAlgorithmManager.isStateUpdated = true;
     }
-  }, [stringMatchingPageState.stringMatchingPattern]);
+  }, [stringMatchingModuleState.stringMatchingPattern]);
 
   return (
     <div
@@ -76,7 +77,7 @@ const StringMatchingPatternComponent = () => {
         ref={ref}
         type="text"
         placeholder="Type a pattern to search..."
-        value={stringMatchingPageState.stringMatchingPattern}
+        value={stringMatchingModuleState.stringMatchingPattern}
         onChange={() => dispatch(updateStringMatchingPatternState(ref.current?.value))}
         disabled={algorithmState.hasAnimationStarted}
       />
@@ -94,15 +95,15 @@ const StringMatchingPatternComponent = () => {
           css={css`
             color: white;
             margin-left: 3px;
-            color: ${stringMatchingPageState.stringMatchingPattern.length > maxStringMatchingPatternLength ? errorMessageColor : 'white'};
+            color: ${stringMatchingModuleState.stringMatchingPattern.length > maxStringMatchingPatternLength ? errorMessageColor : 'white'};
           `}
         >
-          {stringMatchingPageState.stringMatchingPattern.length}/{maxStringMatchingPatternLength}
+          {stringMatchingModuleState.stringMatchingPattern.length}/{maxStringMatchingPatternLength}
         </div>
         .
         <div
           css={css`
-            visibility: ${stringMatchingPageState.stringMatchingPattern.length > maxStringMatchingPatternLength ? 'visible' : 'hidden'};
+            visibility: ${stringMatchingModuleState.stringMatchingPattern.length > maxStringMatchingPatternLength ? 'visible' : 'hidden'};
             display: flex;
             color: ${errorMessageColor};
             margin-left: 5px;
@@ -115,7 +116,7 @@ const StringMatchingPatternComponent = () => {
               cursor: pointer;
               text-decoration: underline;
             `}
-            onClick={() => dispatch(updateStringMatchingPatternState(stringMatchingPageState.stringMatchingAnimationPattern.map((i) => i.character).join('')))}
+            onClick={() => dispatch(updateStringMatchingPatternState(stringMatchingModuleState.stringMatchingAnimationPattern.map((i) => i.character).join('')))}
           >
             Fix
           </div>
@@ -126,17 +127,17 @@ const StringMatchingPatternComponent = () => {
 };
 
 const StringMatchingInputComponent = () => {
-  const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingModuleState);
+  const stringMatchingModuleState = useSelector((state: AppState) => state.stringMatchingModuleState);
   const algorithmState = useSelector((state: AppState) => state.animationState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (stringMatchingPageState.stringMatchingInput.length <= maxStringMatchingInputLength) {
-      dispatch(updateStringMatchingAnimationInputState(processStringMatchingInput(stringMatchingPageState.stringMatchingInput)));
+    if (stringMatchingModuleState.stringMatchingInput.length <= maxStringMatchingInputLength) {
+      dispatch(updateStringMatchingAnimationInputState(processStringMatchingInput(stringMatchingModuleState.stringMatchingInput)));
       stringMatchingAlgorithmManager.isStateUpdated = true;
     }
-  }, [stringMatchingPageState.stringMatchingInput]);
+  }, [stringMatchingModuleState.stringMatchingInput]);
 
   return (
     <div
@@ -158,7 +159,7 @@ const StringMatchingInputComponent = () => {
         ref={ref}
         type="text"
         placeholder="Type some text..."
-        value={stringMatchingPageState.stringMatchingInput}
+        value={stringMatchingModuleState.stringMatchingInput}
         onInput={() => dispatch(updateStringMatchingInputState(ref.current?.value))}
         disabled={algorithmState.hasAnimationStarted}
       />
@@ -176,15 +177,15 @@ const StringMatchingInputComponent = () => {
           css={css`
             color: white;
             margin-left: 3px;
-            color: ${stringMatchingPageState.stringMatchingInput.length > maxStringMatchingInputLength ? errorMessageColor : 'white'};
+            color: ${stringMatchingModuleState.stringMatchingInput.length > maxStringMatchingInputLength ? errorMessageColor : 'white'};
           `}
         >
-          {stringMatchingPageState.stringMatchingInput.length}/{maxStringMatchingInputLength}
+          {stringMatchingModuleState.stringMatchingInput.length}/{maxStringMatchingInputLength}
         </div>
         .
         <div
           css={css`
-            visibility: ${stringMatchingPageState.stringMatchingInput.length > maxStringMatchingInputLength ? 'visible' : 'hidden'};
+            visibility: ${stringMatchingModuleState.stringMatchingInput.length > maxStringMatchingInputLength ? 'visible' : 'hidden'};
             display: flex;
             color: ${errorMessageColor};
             margin-left: 5px;
@@ -197,7 +198,7 @@ const StringMatchingInputComponent = () => {
               cursor: pointer;
               text-decoration: underline;
             `}
-            onClick={() => dispatch(updateStringMatchingInputState(stringMatchingPageState.stringMatchingAnimationInput.map((i) => i.character).join('')))}
+            onClick={() => dispatch(updateStringMatchingInputState(stringMatchingModuleState.stringMatchingAnimationInput.map((i) => i.character).join('')))}
           >
             Fix
           </div>
@@ -208,6 +209,7 @@ const StringMatchingInputComponent = () => {
 };
 
 const SettingsComponent = () => {
+  const stringMatchingModuleState = useSelector((state: AppState) => state.stringMatchingModuleState);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -223,7 +225,7 @@ const SettingsComponent = () => {
     <div
       css={css`
         margin: 0px 10px;
-        height: 25%;
+        height: 30%;
         min-height: 200px;
         display: block;
       `}
@@ -258,24 +260,54 @@ const SettingsComponent = () => {
           <div
             css={css`
               display: flex;
-              align-items: flex-end;
-              justify-content: space-between;
-              width: 199px;
+              align-items: center;
+              justify-content: flex-start;
             `}
           >
             <div
               css={css`
                 display: flex;
+                align-items: flex-end;
                 justify-content: space-between;
-                width: 72px;
+                width: 200px;
               `}
             >
-              <animationContext.Provider value={{ animationManager: stringMatchingAnimationManager }}>
-                <ActionBar />
-              </animationContext.Provider>
+              <div
+                css={css`
+                  display: flex;
+                  justify-content: space-between;
+                  width: 72px;
+                `}
+              >
+                <animationContext.Provider value={{ animationManager: stringMatchingAnimationManager }}>
+                  <ActionBar />
+                </animationContext.Provider>
+              </div>
+              <RefreshButton refreshFunction={refreshState} />
             </div>
-            <RefreshButton refreshFunction={refreshState} />
+            <div
+              css={css`
+                display: flex;
+                align-items: center;
+                color: white;
+                font-size: 13px;
+                font-weight: bold;
+                margin-left: 10px;
+                color: ${warningMessageColor};
+                visibility: ${stringMatchingModuleState.stringMatchingInput.length < stringMatchingModuleState.stringMatchingPattern.length ? 'visible' : 'hidden'};
+              `}
+            >
+              <WarningSignComponent />
+              <div
+                css={css`
+                  margin-left: 3px;
+                `}
+              >
+                Input is shorter than pattern, animation is skipped.
+              </div>
+            </div>
           </div>
+
           <algorithmContext.Provider value={{ algorithmManager: stringMatchingAlgorithmManager }}>
             <AlgorithmsList data={stringMatchingAlgorithmsData} />
           </algorithmContext.Provider>
@@ -286,7 +318,7 @@ const SettingsComponent = () => {
 };
 
 const AnimationComponent = () => {
-  const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingModuleState);
+  const stringMatchingModuleState = useSelector((state: AppState) => state.stringMatchingModuleState);
 
   return (
     <div
@@ -295,7 +327,7 @@ const AnimationComponent = () => {
         flex-direction: column;
         justify-content: space-around;
         background-color: ${moduleBackground};
-        height: 75%;
+        height: 70%;
         min-height: 500px;
       `}
     >
@@ -326,7 +358,7 @@ const AnimationComponent = () => {
           >
             Pattern:
           </span>
-          {stringMatchingPageState.stringMatchingAnimationPattern.map((character, index) => (
+          {stringMatchingModuleState.stringMatchingAnimationPattern.map((character, index) => (
             <StringMatchingCharacterComponent key={index} character={character.character} characterState={character.characterState} />
           ))}
         </div>
@@ -346,7 +378,7 @@ const AnimationComponent = () => {
           >
             Input:
           </span>
-          {stringMatchingPageState.stringMatchingAnimationInput.map((character, index) => (
+          {stringMatchingModuleState.stringMatchingAnimationInput.map((character, index) => (
             <StringMatchingCharacterComponent key={index} character={character.character} characterState={character.characterState} />
           ))}
         </div>
