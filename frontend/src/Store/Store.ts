@@ -1,35 +1,35 @@
 import { combineReducers, Store } from 'redux';
 import { configureStore } from '@reduxjs/toolkit';
-import { sortingModuleReducer, SortingModulePreviewState } from './Home Page/SortingModulePreviewStateManagement';
-import { stringMatchingModuleReducer, StringMatchingModuleState } from './Home Page/StringMatchingModulePreviewStateManagement';
-import { pathFindingModuleReducer, PathFindingModulePreviewState } from './Home Page/PathFindingModulePreviewStateManagement';
+import { pathFindingModulePreviewReducer, PathFindingModulePreviewState } from './Home Page/Module Previews/PathFindingModulePreviewStateManagement';
 import { headerReducer, HeaderState } from './Home Page/HeaderStateManagement';
 import { sliderComponentReducer, SliderComponentState } from './Shared/SliderComponentStateManagement';
-import { sortingPageReducer, SortingPageState } from './Sorting Page/SortingPageStateManagement';
+import { sortingModuleReducer, SortingModuleState } from './Sorting Module/SortingPageStateManagement';
 import { windowReducer, WindowState } from './Shared/WindowStateManagement';
-import { stringMatchingPageReducer, StringMatchingPageState } from './String Matching Page/StringMatchingPageStateManagement';
+import { stringMatchingModuleReducer, StringMatchingModuleState } from './String Matching Module/StringMatchingPageStateManagement';
 import { animationReducer, AnimationState } from './Shared/AnimationStateManagement';
+import { SortingModulePreviewState, sortingModulePreviewReducer } from './Home Page/Module Previews/SortingModulePreviewStateManagement';
+import { stringMatchingModulePreviewReducer, StringMatchingModulePreviewState } from './Home Page/Module Previews/StringMatchingModulePreviewStateManagement';
 
 const rootReducer = combineReducers<AppState>({
-  sortingModuleState: sortingModuleReducer,
-  stringMatchingModuleState: stringMatchingModuleReducer,
-  pathFindingModuleState: pathFindingModuleReducer,
+  sortingModulePreviewState: sortingModulePreviewReducer,
+  stringMatchingModulePreviewState: stringMatchingModulePreviewReducer,
+  pathFindingModulePreviewState: pathFindingModulePreviewReducer,
   headerState: headerReducer,
   sliderComponentState: sliderComponentReducer,
-  sortingPageState: sortingPageReducer,
-  stringMatchingPageState: stringMatchingPageReducer,
+  sortingModuleState: sortingModuleReducer,
+  stringMatchingModuleState: stringMatchingModuleReducer,
   windowState: windowReducer,
   animationState: animationReducer,
 });
 
 export interface AppState {
-  readonly sortingModuleState: SortingModulePreviewState;
-  readonly stringMatchingModuleState: StringMatchingModuleState;
-  readonly pathFindingModuleState: PathFindingModulePreviewState;
+  readonly sortingModulePreviewState: SortingModulePreviewState;
+  readonly stringMatchingModulePreviewState: StringMatchingModulePreviewState;
+  readonly pathFindingModulePreviewState: PathFindingModulePreviewState;
   readonly headerState: HeaderState;
   readonly sliderComponentState: SliderComponentState;
-  readonly sortingPageState: SortingPageState;
-  readonly stringMatchingPageState: StringMatchingPageState;
+  readonly sortingModuleState: SortingModuleState;
+  readonly stringMatchingModuleState: StringMatchingModuleState;
   readonly windowState: WindowState;
   readonly animationState: AnimationState;
 }

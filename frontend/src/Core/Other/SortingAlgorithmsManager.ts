@@ -1,5 +1,5 @@
 import { SortingBarStateEnum } from '../../Resources/Enumerations';
-import { updateSelectedSortingAlgorithmState, updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
+import { updateSelectedSortingAlgorithmState, updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingPageStateManagement';
 import { AppState, store } from '../../Store/Store';
 import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
@@ -17,7 +17,7 @@ export class SortingAlgorithmsManager implements AlgorithmsManagerBase<ISortingB
   }
 
   public setInitialState(): void {
-    this.initialState = [...store.getState().sortingPageState.sortingBars];
+    this.initialState = [...store.getState().sortingModuleState.sortingBars];
   }
 
   public resetToInitialState(): void {
@@ -25,7 +25,7 @@ export class SortingAlgorithmsManager implements AlgorithmsManagerBase<ISortingB
   }
 
   public getStoreSelector(): IStoreModule {
-    return (state: AppState) => state.sortingPageState;
+    return (state: AppState) => state.sortingModuleState;
   }
 
   public updateStoreSelectedAlgorithmName(): void {
@@ -54,7 +54,7 @@ export class SortingAlgorithmsManager implements AlgorithmsManagerBase<ISortingB
   }
 
   private async finalizeSorting(): Promise<void> {
-    let barsCopy = [...store.getState().sortingPageState.sortingBars];
+    let barsCopy = [...store.getState().sortingModuleState.sortingBars];
     let timeout = 300 / barsCopy.length;
 
     for (let i = 0; i < barsCopy.length; i++) {

@@ -3,7 +3,7 @@ import {
   updateSelectedStringMatchingAlgorithmState,
   updateStringMatchingAnimationInputState,
   updateStringMatchingAnimationPatternState,
-} from '../../Store/String Matching Page/StringMatchingPageStateManagement';
+} from '../../Store/String Matching Module/StringMatchingPageStateManagement';
 import { AlgorithmBase, StringMatchingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 import { IStoreModule } from '../Interfaces/IStoreModule';
@@ -21,8 +21,8 @@ export class StringMatchingAlgorithmsManager implements AlgorithmsManagerBase<IS
   }
 
   public setInitialState(): void {
-    this.initialPatternState = [...store.getState().stringMatchingPageState.stringMatchingAnimationPattern];
-    this.initialState = [...store.getState().stringMatchingPageState.stringMatchingAnimationInput];
+    this.initialPatternState = [...store.getState().stringMatchingModuleState.stringMatchingAnimationPattern];
+    this.initialState = [...store.getState().stringMatchingModuleState.stringMatchingAnimationInput];
   }
 
   public resetToInitialState(): void {
@@ -31,7 +31,7 @@ export class StringMatchingAlgorithmsManager implements AlgorithmsManagerBase<IS
   }
 
   public getStoreSelector(): IStoreModule {
-    return (state: AppState) => state.stringMatchingPageState;
+    return (state: AppState) => state.stringMatchingModuleState;
   }
 
   public updateStoreSelectedAlgorithmName(): void {

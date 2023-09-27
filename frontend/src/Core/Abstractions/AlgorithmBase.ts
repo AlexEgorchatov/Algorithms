@@ -1,5 +1,5 @@
 import { SortingBarStateEnum, StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
-import { updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
+import { updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingPageStateManagement';
 import { store } from '../../Store/Store';
 import { ISortingBarProps } from '../Interfaces/ISortingBarProps';
 import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingCharacterProps';
@@ -19,7 +19,7 @@ export abstract class SortingAlgorithmBase extends AlgorithmBase<ISortingBarProp
   public finalState: ISortingBarProps[] = [];
 
   public setFinalState(): void {
-    let barsCopy = [...store.getState().sortingPageState.sortingBars];
+    let barsCopy = [...store.getState().sortingModuleState.sortingBars];
     this.finalState = barsCopy.sort((a, b) => a.barHeight - b.barHeight);
   }
 
@@ -52,9 +52,9 @@ export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<IStringM
   public finalPatternState: IStringMatchingCharacterProps[] = [];
 
   public setFinalState(): void {
-    let input = store.getState().stringMatchingPageState.stringMatchingInput.toLowerCase();
-    let pattern = store.getState().stringMatchingPageState.stringMatchingPattern.toLowerCase();
-    let animationInputCopy = [...store.getState().stringMatchingPageState.stringMatchingAnimationInput];
+    let input = store.getState().stringMatchingModuleState.stringMatchingInput.toLowerCase();
+    let pattern = store.getState().stringMatchingModuleState.stringMatchingPattern.toLowerCase();
+    let animationInputCopy = [...store.getState().stringMatchingModuleState.stringMatchingAnimationInput];
 
     let foundIndex: number = input.indexOf(pattern);
     while (foundIndex !== -1) {
@@ -66,7 +66,7 @@ export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<IStringM
       foundIndex = input.indexOf(pattern, foundIndex + 1);
     }
 
-    this.finalPatternState = store.getState().stringMatchingPageState.stringMatchingAnimationPattern;
+    this.finalPatternState = store.getState().stringMatchingModuleState.stringMatchingAnimationPattern;
     this.finalState = [...animationInputCopy];
   }
 }

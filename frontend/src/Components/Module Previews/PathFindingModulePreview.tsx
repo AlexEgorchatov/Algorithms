@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import React, { useEffect } from 'react';
 import { ModulePreviewPlaceholder } from '../ModulePreviewPlaceholder';
-import { updatePathFindingModuleStateAction } from '../../Store/Home Page/PathFindingModulePreviewStateManagement';
+import { updatePathFindingModulePreviewGridStateAction } from '../../Store/Home Page/Module Previews/PathFindingModulePreviewStateManagement';
 import { useSelector } from 'react-redux';
 import { AppState } from '../../Store/Store';
 import { useDispatch } from 'react-redux';
@@ -53,7 +53,7 @@ const GridCell = ({ state = CellStateEnum.Unselected }: Props) => {
 };
 
 export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
-  const pathFindingState = useSelector((state: AppState) => state.pathFindingModuleState);
+  const pathFindingState = useSelector((state: AppState) => state.pathFindingModulePreviewState);
   const dispatch = useDispatch();
   const columnNumber: number = 8;
   const timeoutID = React.useRef(-1);
@@ -61,7 +61,7 @@ export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
   const animationCompleteTime: number = 500;
 
   const resetComponentState = () => {
-    dispatch(updatePathFindingModuleStateAction());
+    dispatch(updatePathFindingModulePreviewGridStateAction());
   };
 
   const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {
@@ -69,7 +69,7 @@ export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
   };
 
   const handleModuleMouseEnter = async () => {
-    let gridCopy = [...pathFindingState.pathFindingModuleGrid];
+    let gridCopy = [...pathFindingState.grid];
     let rowSource: number = 5;
     let columnSource: number = 2;
     let rowDestination: number = 0;
@@ -77,11 +77,11 @@ export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
     while (rowSource !== rowDestination) {
       while (true) {
         gridCopy[rowSource * 8 + columnSource] = CellStateEnum.Selected;
-        dispatch(updatePathFindingModuleStateAction(gridCopy));
+        dispatch(updatePathFindingModulePreviewGridStateAction(gridCopy));
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
         gridCopy = [...gridCopy];
 
-        if (columnSource + 1 >= columnNumber || pathFindingState.pathFindingModuleGrid[rowSource * 8 + columnSource + 1] === CellStateEnum.Wall) break;
+        if (columnSource + 1 >= columnNumber || pathFindingState.grid[rowSource * 8 + columnSource + 1] === CellStateEnum.Wall) break;
         else columnSource++;
       }
 
@@ -91,7 +91,7 @@ export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
         rowSource = 5;
         columnSource = 2;
         await new Promise((resolve) => awaitCancellation(resolve, stepTime * 4));
-        gridCopy = [...pathFindingState.pathFindingModuleGrid];
+        gridCopy = [...pathFindingState.grid];
       } else rowSource--;
     }
   };
@@ -110,7 +110,7 @@ export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
             flex-wrap: wrap;
           `}
         >
-          {pathFindingState.pathFindingModuleGrid.map((state: CellStateEnum, index) => (
+          {pathFindingState.grid.map((state: CellStateEnum, index) => (
             <GridCell key={index} state={state} />
           ))}
         </div>

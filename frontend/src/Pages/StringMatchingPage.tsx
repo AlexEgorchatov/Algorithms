@@ -11,7 +11,7 @@ import {
   updateStringMatchingAnimationPatternState,
   updateStringMatchingInputState,
   updateStringMatchingPatternState,
-} from '../Store/String Matching Page/StringMatchingPageStateManagement';
+} from '../Store/String Matching Module/StringMatchingPageStateManagement';
 import { algorithmContext, animationContext } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
@@ -43,7 +43,7 @@ const processStringMatchingInput = (input: string): IStringMatchingCharacterProp
 };
 
 const StringMatchingPatternComponent = () => {
-  const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingPageState);
+  const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingModuleState);
   const algorithmState = useSelector((state: AppState) => state.animationState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
@@ -126,7 +126,7 @@ const StringMatchingPatternComponent = () => {
 };
 
 const StringMatchingInputComponent = () => {
-  const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingPageState);
+  const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingModuleState);
   const algorithmState = useSelector((state: AppState) => state.animationState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
@@ -286,7 +286,7 @@ const SettingsComponent = () => {
 };
 
 const AnimationComponent = () => {
-  const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingPageState);
+  const stringMatchingPageState = useSelector((state: AppState) => state.stringMatchingModuleState);
 
   return (
     <div

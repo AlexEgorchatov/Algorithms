@@ -13,7 +13,7 @@ import {
   updateSortingInputStateAction,
   updatingIsInputNanState,
   updateIsInputOverMaxState,
-} from '../Store/Sorting Page/SortingPageStateManagement';
+} from '../Store/Sorting Module/SortingPageStateManagement';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { algorithmContext, algorithmIterationBaseTime, animationContext, minAppWidth } from '../Core/Helper';
@@ -34,7 +34,7 @@ const getMaxBarsNumber = (windowWidth: number): number => {
 };
 
 const SortingInputComponent = () => {
-  const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
+  const sortingPageState = useSelector((state: AppState) => state.sortingModuleState);
   const algorithmState = useSelector((state: AppState) => state.animationState);
   const windowState = useSelector((state: AppState) => state.windowState);
   const dispatch = useDispatch();
@@ -370,7 +370,7 @@ const SettingsComponent = () => {
 };
 
 const AnimationComponent = () => {
-  const sortingPageState = useSelector((state: AppState) => state.sortingPageState);
+  const sortingPageState = useSelector((state: AppState) => state.sortingModuleState);
 
   return (
     <div

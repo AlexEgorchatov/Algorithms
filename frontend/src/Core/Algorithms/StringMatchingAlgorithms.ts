@@ -1,13 +1,13 @@
 import { StringMatchingAlgorithmBase } from '../Abstractions/AlgorithmBase';
-import { updateStringMatchingAnimationInputState, updateStringMatchingAnimationPatternState } from '../../Store/String Matching Page/StringMatchingPageStateManagement';
+import { updateStringMatchingAnimationInputState, updateStringMatchingAnimationPatternState } from '../../Store/String Matching Module/StringMatchingPageStateManagement';
 import { isAnimationTerminated, pauseForStepIteration } from '../Helper';
 import { StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 import { store } from '../../Store/Store';
 
 export class NaivePatternMatching extends StringMatchingAlgorithmBase {
   public async executeAlgorithm(): Promise<void> {
-    let animationPatternCopy = [...store.getState().stringMatchingPageState.stringMatchingAnimationPattern];
-    let animationInputCopy = [...store.getState().stringMatchingPageState.stringMatchingAnimationInput];
+    let animationPatternCopy = [...store.getState().stringMatchingModuleState.stringMatchingAnimationPattern];
+    let animationInputCopy = [...store.getState().stringMatchingModuleState.stringMatchingAnimationInput];
     let patternLength: number = animationPatternCopy.length;
     let inputLength: number = animationInputCopy.length;
 

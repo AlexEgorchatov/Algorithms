@@ -1,13 +1,13 @@
 import { SortingAlgorithmBase } from '../Abstractions/AlgorithmBase';
-import { updateSortingBarsStateAction } from '../../Store/Sorting Page/SortingPageStateManagement';
+import { updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingPageStateManagement';
 import { isAnimationTerminated, pauseForStepIteration } from '../Helper';
 import { SortingBarStateEnum } from '../../Resources/Enumerations';
 import { store } from '../../Store/Store';
 
 export class BubbleSort extends SortingAlgorithmBase {
   public async executeAlgorithm(): Promise<void> {
-    let length = store.getState().sortingPageState.sortingBars.length;
-    let barsCopy = [...store.getState().sortingPageState.sortingBars];
+    let length = store.getState().sortingModuleState.sortingBars.length;
+    let barsCopy = [...store.getState().sortingModuleState.sortingBars];
 
     let isSwapped: boolean = true;
     for (let i = 0; i < length - 1 && isSwapped; i++) {
@@ -46,7 +46,7 @@ export class BubbleSort extends SortingAlgorithmBase {
 
 export class QuickSort extends SortingAlgorithmBase {
   public async executeAlgorithm(): Promise<void> {
-    let length = store.getState().sortingPageState.sortingBars.length;
+    let length = store.getState().sortingModuleState.sortingBars.length;
     await this.quickSort(0, length - 1);
   }
 
@@ -61,7 +61,7 @@ export class QuickSort extends SortingAlgorithmBase {
 
   private async partition(left: number, right: number): Promise<number> {
     return new Promise<number>(async (resolve) => {
-      let barsCopy = [...store.getState().sortingPageState.sortingBars];
+      let barsCopy = [...store.getState().sortingModuleState.sortingBars];
       let pivot: number = barsCopy[left].barHeight;
       barsCopy[left] = { ...barsCopy[left], barState: SortingBarStateEnum.Pivot };
       let currentPartitionIndex: number = right;

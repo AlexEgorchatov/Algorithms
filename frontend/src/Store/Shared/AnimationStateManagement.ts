@@ -4,7 +4,7 @@ export interface AnimationState {
   readonly isAnimationRunning: boolean;
 }
 
-const initialAlgorithmState: AnimationState = {
+const initialAnimationState: AnimationState = {
   hasAnimationStarted: false,
   isAnimationRunning: false,
 };
@@ -29,7 +29,7 @@ export const updateIsAnimationRunningStateAction = (isAnimationRunning: boolean)
 
 //#region Reducers
 type AnimationActions = ReturnType<typeof updateHasAnimationStartedStateAction> | ReturnType<typeof updateIsAnimationRunningStateAction>;
-export const animationReducer = (state = initialAlgorithmState, action: AnimationActions) => {
+export const animationReducer = (state = initialAnimationState, action: AnimationActions) => {
   switch (action.type) {
     case UPDATE_HAS_ANIMATION_STARTED_STATE:
       return {

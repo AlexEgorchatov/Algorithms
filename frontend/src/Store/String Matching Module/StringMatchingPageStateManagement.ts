@@ -2,7 +2,7 @@ import { IStoreModule } from '../../Core/Interfaces/IStoreModule';
 import { IStringMatchingCharacterProps } from '../../Core/Interfaces/IStringMatchingCharacterProps';
 
 //#region State
-export interface StringMatchingPageState extends IStoreModule {
+export interface StringMatchingModuleState extends IStoreModule {
   readonly selectedStringMatchingAlgorithm: string;
   readonly stringMatchingPattern: string;
   readonly stringMatchingInput: string;
@@ -10,7 +10,7 @@ export interface StringMatchingPageState extends IStoreModule {
   readonly stringMatchingAnimationInput: IStringMatchingCharacterProps[];
 }
 
-const initialStringMatchingPageState: StringMatchingPageState = {
+const initialStringMatchingModuleState: StringMatchingModuleState = {
   selectedStringMatchingAlgorithm: '',
   stringMatchingPattern: '',
   stringMatchingInput: '',
@@ -21,35 +21,35 @@ const initialStringMatchingPageState: StringMatchingPageState = {
 
 //#region Actions
 const UPDATE_SELECTED_STRING_MATCHING_ALGORITHM_STATE = 'updateSelectedStringMatchingAlgorithmState';
-export const updateSelectedStringMatchingAlgorithmState = (selectedStringMatchingAlgorithm = initialStringMatchingPageState.selectedStringMatchingAlgorithm) =>
+export const updateSelectedStringMatchingAlgorithmState = (selectedStringMatchingAlgorithm = initialStringMatchingModuleState.selectedStringMatchingAlgorithm) =>
   ({
     type: UPDATE_SELECTED_STRING_MATCHING_ALGORITHM_STATE,
     selectedStringMatchingAlgorithm: selectedStringMatchingAlgorithm,
   } as const);
 
 export const UPDATE_STRING_MATCHING_PATTERN_STATE = 'updateStringMatchingPatternState';
-export const updateStringMatchingPatternState = (stringMatchingPattern = initialStringMatchingPageState.stringMatchingPattern) =>
+export const updateStringMatchingPatternState = (stringMatchingPattern = initialStringMatchingModuleState.stringMatchingPattern) =>
   ({
     type: UPDATE_STRING_MATCHING_PATTERN_STATE,
     stringMatchingPattern: stringMatchingPattern,
   } as const);
 
 export const UPDATE_STRING_MATCHING_INPUT_STATE = 'updateStringMatchingInputState';
-export const updateStringMatchingInputState = (stringMatchingInput = initialStringMatchingPageState.stringMatchingInput) =>
+export const updateStringMatchingInputState = (stringMatchingInput = initialStringMatchingModuleState.stringMatchingInput) =>
   ({
     type: UPDATE_STRING_MATCHING_INPUT_STATE,
     stringMatchingInput: stringMatchingInput,
   } as const);
 
 const UPDATE_STRING_MATCHING_ANIMATION_PATTERN_STATE = 'updateStringMatchingAnimationPatternState';
-export const updateStringMatchingAnimationPatternState = (stringMatchingAnimationPattern = initialStringMatchingPageState.stringMatchingAnimationPattern) =>
+export const updateStringMatchingAnimationPatternState = (stringMatchingAnimationPattern = initialStringMatchingModuleState.stringMatchingAnimationPattern) =>
   ({
     type: UPDATE_STRING_MATCHING_ANIMATION_PATTERN_STATE,
     stringMatchingAnimationPattern: stringMatchingAnimationPattern,
   } as const);
 
 const UPDATE_STRING_MATCHING_ANIMATION_INPUT_STATE = 'updateStringMatchingAnimationInputState';
-export const updateStringMatchingAnimationInputState = (stringMatchingAnimationInput = initialStringMatchingPageState.stringMatchingAnimationInput) =>
+export const updateStringMatchingAnimationInputState = (stringMatchingAnimationInput = initialStringMatchingModuleState.stringMatchingAnimationInput) =>
   ({
     type: UPDATE_STRING_MATCHING_ANIMATION_INPUT_STATE,
     stringMatchingAnimationInput: stringMatchingAnimationInput,
@@ -57,14 +57,14 @@ export const updateStringMatchingAnimationInputState = (stringMatchingAnimationI
 //#endregion Actions
 
 //#region Reducers
-type StringMatchingPageActions =
+type StringMatchingModuleActions =
   | ReturnType<typeof updateSelectedStringMatchingAlgorithmState>
   | ReturnType<typeof updateStringMatchingPatternState>
   | ReturnType<typeof updateStringMatchingInputState>
   | ReturnType<typeof updateStringMatchingAnimationPatternState>
   | ReturnType<typeof updateStringMatchingAnimationInputState>;
 
-export const stringMatchingPageReducer = (state = initialStringMatchingPageState, action: StringMatchingPageActions) => {
+export const stringMatchingModuleReducer = (state = initialStringMatchingModuleState, action: StringMatchingModuleActions) => {
   switch (action.type) {
     case UPDATE_SELECTED_STRING_MATCHING_ALGORITHM_STATE:
       return {

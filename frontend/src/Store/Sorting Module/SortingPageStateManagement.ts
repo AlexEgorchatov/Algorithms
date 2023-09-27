@@ -2,7 +2,7 @@ import { ISortingBarProps } from '../../Core/Interfaces/ISortingBarProps';
 import { IStoreModule } from '../../Core/Interfaces/IStoreModule';
 
 //#region State
-export interface SortingPageState extends IStoreModule {
+export interface SortingModuleState extends IStoreModule {
   readonly selectedSortingAlgorithm: string;
   readonly sortingInput: string;
   readonly isInputNan: boolean;
@@ -10,7 +10,7 @@ export interface SortingPageState extends IStoreModule {
   readonly sortingBars: ISortingBarProps[];
 }
 
-const initialSortingPageState: SortingPageState = {
+const initialSortingModuleState: SortingModuleState = {
   selectedSortingAlgorithm: '',
   sortingInput: '',
   isInputNan: false,
@@ -21,35 +21,35 @@ const initialSortingPageState: SortingPageState = {
 
 //#region Actions
 const UPDATE_SELECTED_SORTING_ALGORITHM_STATE = 'updateSelectedSortingAlgorithmState';
-export const updateSelectedSortingAlgorithmState = (selectedSortingAlgorithm = initialSortingPageState.selectedSortingAlgorithm) =>
+export const updateSelectedSortingAlgorithmState = (selectedSortingAlgorithm = initialSortingModuleState.selectedSortingAlgorithm) =>
   ({
     type: UPDATE_SELECTED_SORTING_ALGORITHM_STATE,
     selectedSortingAlgorithm: selectedSortingAlgorithm,
   } as const);
 
 const UPDATE_SORTING_INPUT_STATE = 'updateSortingInputState';
-export const updateSortingInputStateAction = (sortingInput = initialSortingPageState.sortingInput) =>
+export const updateSortingInputStateAction = (sortingInput = initialSortingModuleState.sortingInput) =>
   ({
     type: UPDATE_SORTING_INPUT_STATE,
     sortingInput: sortingInput,
   } as const);
 
 const UPDATE_IS_INPUT_NAN_STATE = 'updatingIsInputNanState';
-export const updatingIsInputNanState = (isInputNan = initialSortingPageState.isInputNan) =>
+export const updatingIsInputNanState = (isInputNan = initialSortingModuleState.isInputNan) =>
   ({
     type: UPDATE_IS_INPUT_NAN_STATE,
     isInputNan: isInputNan,
   } as const);
 
 const UPDATE_IS_INPUT_OVER_MAX_STATE = 'updateIsInputOverMaxState';
-export const updateIsInputOverMaxState = (isInputOverMax = initialSortingPageState.isInputOverMax) =>
+export const updateIsInputOverMaxState = (isInputOverMax = initialSortingModuleState.isInputOverMax) =>
   ({
     type: UPDATE_IS_INPUT_OVER_MAX_STATE,
     isInputOverMax: isInputOverMax,
   } as const);
 
 const UPDATE_SORTING_BARS_STATE = 'updateSortingBarsState';
-export const updateSortingBarsStateAction = (sortingBars = initialSortingPageState.sortingBars) =>
+export const updateSortingBarsStateAction = (sortingBars = initialSortingModuleState.sortingBars) =>
   ({
     type: UPDATE_SORTING_BARS_STATE,
     sortingBars: sortingBars,
@@ -58,13 +58,13 @@ export const updateSortingBarsStateAction = (sortingBars = initialSortingPageSta
 //#endregion Actions
 
 //#region Reducers
-type SortingPageActions =
+type SortingModuleActions =
   | ReturnType<typeof updateSelectedSortingAlgorithmState>
   | ReturnType<typeof updateSortingInputStateAction>
   | ReturnType<typeof updatingIsInputNanState>
   | ReturnType<typeof updateIsInputOverMaxState>
   | ReturnType<typeof updateSortingBarsStateAction>;
-export const sortingPageReducer = (state = initialSortingPageState, action: SortingPageActions) => {
+export const sortingModuleReducer = (state = initialSortingModuleState, action: SortingModuleActions) => {
   switch (action.type) {
     case UPDATE_SELECTED_SORTING_ALGORITHM_STATE:
       return {
