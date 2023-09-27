@@ -12,6 +12,8 @@ export class AnimationManager {
   }
 
   public async startAnimation(): Promise<void> {
+    if (store.getState().animationState.isAnimationInputNull) return;
+
     store.dispatch(updateIsAnimationRunningStateAction(true));
     if (store.getState().animationState.hasAnimationStarted) return;
 

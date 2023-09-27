@@ -2,11 +2,13 @@
 export interface AnimationState {
   readonly hasAnimationStarted: boolean;
   readonly isAnimationRunning: boolean;
+  readonly isAnimationInputNull: boolean;
 }
 
 const initialAnimationState: AnimationState = {
   hasAnimationStarted: false,
   isAnimationRunning: false,
+  isAnimationInputNull: false,
 };
 //#endregion State
 
@@ -25,10 +27,20 @@ export const updateIsAnimationRunningStateAction = (isAnimationRunning: boolean)
     isAnimationRunning: isAnimationRunning,
   } as const);
 
+const UPDATE_IS_ANIMATION_INPUT_NULL_STATE = 'UpdateIsAnimationInputNullState';
+export const updateIsAnimationInputNullStateAction = (isAnimationInputNull: boolean) =>
+  ({
+    type: UPDATE_IS_ANIMATION_INPUT_NULL_STATE,
+    isAnimationInputNull: isAnimationInputNull,
+  } as const);
+
 //#endregion Actions
 
 //#region Reducers
-type AnimationActions = ReturnType<typeof updateHasAnimationStartedStateAction> | ReturnType<typeof updateIsAnimationRunningStateAction>;
+type AnimationActions =
+  | ReturnType<typeof updateHasAnimationStartedStateAction>
+  | ReturnType<typeof updateIsAnimationRunningStateAction>
+  | ReturnType<typeof updateIsAnimationInputNullStateAction>;
 export const animationReducer = (state = initialAnimationState, action: AnimationActions) => {
   switch (action.type) {
     case UPDATE_HAS_ANIMATION_STARTED_STATE:
@@ -41,6 +53,12 @@ export const animationReducer = (state = initialAnimationState, action: Animatio
       return {
         ...state,
         isAnimationRunning: action.isAnimationRunning,
+      };
+
+    case UPDATE_IS_ANIMATION_INPUT_NULL_STATE:
+      return {
+        ...state,
+        isAnimationInputNull: action.isAnimationInputNull,
       };
 
     default:

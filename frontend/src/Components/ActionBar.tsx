@@ -10,6 +10,7 @@ import { updateIsAnimationRunningStateAction } from '../Store/Shared/AnimationSt
 
 const PlayButton = () => {
   const { animationManager } = useContext(animationContext);
+  const animationState = useSelector((state: AppState) => state.animationState);
 
   return (
     <div
@@ -22,9 +23,16 @@ const PlayButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: pointer;
+        cursor: ${!animationState.isAnimationInputNull ? 'pointer' : 'default'};
+        opacity: ${!animationState.isAnimationInputNull ? '1' : '0.5'};
         :hover {
-          color: ${headerItemHovered};
+          ${!animationState.isAnimationInputNull &&
+          `
+              color: ${headerItemHovered};
+              & > div {
+                background: ${headerItemHovered};
+              }
+            `}
         }
         ::before {
           content: '';
