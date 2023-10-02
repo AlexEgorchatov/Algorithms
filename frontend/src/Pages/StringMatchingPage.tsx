@@ -285,7 +285,6 @@ const SettingsComponent = () => {
                 font-size: 13px;
                 font-weight: bold;
                 margin-left: 10px;
-                color: ${warningMessageColor};
                 visibility: ${stringMatchingModuleState.stringMatchingInput.length < stringMatchingModuleState.stringMatchingPattern.length ? 'visible' : 'hidden'};
               `}
             >
