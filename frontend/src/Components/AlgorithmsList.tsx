@@ -24,6 +24,7 @@ const AlgorithmComponent = ({ title, isSelected, algorithm }: AlgorithmProps) =>
 
   const handleClick = () => {
     if (algorithmState.hasAnimationStarted) return;
+    if (algorithmManager.selectedAlgorithm === algorithm) return;
 
     algorithmManager.selectedAlgorithm = algorithm;
     algorithmManager.updateStoreSelectedAlgorithmName();
