@@ -2,13 +2,16 @@
 import { css } from '@emotion/react';
 import { WarningSignComponent } from './WarningSign';
 import { warningMessageColor } from '../Resources/Colors';
+import { useSelector } from 'react-redux';
+import { AppState } from '../Store/Store';
 
 interface Props {
   message: string;
-  isVisible: boolean;
 }
 
-export const WarningMessageComponent = ({ message, isVisible = false }: Props) => {
+export const WarningMessageComponent = ({ message }: Props) => {
+  const animationState = useSelector((state: AppState) => state.animationState);
+
   return (
     <div
       css={css`
@@ -19,7 +22,7 @@ export const WarningMessageComponent = ({ message, isVisible = false }: Props) =
         font-weight: bold;
         margin-left: 10px;
         color: ${warningMessageColor};
-        visibility: ${isVisible ? 'visible' : 'hidden'};
+        visibility: ${!animationState.canAnimationBeStarted ? 'visible' : 'hidden'};
       `}
     >
       <WarningSignComponent />

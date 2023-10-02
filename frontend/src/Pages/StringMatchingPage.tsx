@@ -2,15 +2,17 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useEffect, useRef } from 'react';
-import { errorMessageColor, mainFontColor, moduleBackground, pivotColor, warningMessageColor } from '../Resources/Colors';
+import { errorMessageColor, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
 import { stringMatchingAlgorithmsData } from '../Core/Data/StringMatchingData';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import {
+  StringMatchingModuleState,
   updateStringMatchingAnimationInputState,
   updateStringMatchingAnimationPatternState,
   updateStringMatchingInputState,
   updateStringMatchingPatternState,
+  updateWarningMessageState,
 } from '../Store/String Matching Module/StringMatchingModuleStateManagement';
 import { algorithmContext, animationContext } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
@@ -21,14 +23,15 @@ import { AnimationManager } from '../Core/Other/AnimationManager';
 import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
 import { IStringMatchingCharacterProps } from '../Core/Interfaces/IStringMatchingCharacterProps';
-import { WarningSignComponent } from '../Components/WarningSign';
+import { WarningMessageComponent } from '../Components/WarningMessage';
+import { updateCanAnimationBeStartedStateAction } from '../Store/Shared/AnimationStateManagement';
 
 let stringMatchingAlgorithmManager: StringMatchingAlgorithmsManager = new StringMatchingAlgorithmsManager(stringMatchingAlgorithmsData[0].algorithm);
 let stringMatchingAnimationManager: AnimationManager = new AnimationManager(stringMatchingAlgorithmManager);
 
 export const maxStringMatchingInputLength: number = 200;
 export const maxStringMatchingPatternLength: number = 60;
-export const renderedPatter: string = 'was';
+export const renderedPattern: string = 'was';
 export const renderedInput: string =
   "Was it a whisper or was it the wind? He wasn't quite sure. He thought he heard a voice but at this moment all he could hear was the wind rustling the leaves of the trees all around him.";
 
@@ -54,6 +57,14 @@ const StringMatchingPatternComponent = () => {
       dispatch(updateStringMatchingAnimationPatternState(processStringMatchingInput(stringMatchingModuleState.stringMatchingPattern)));
       dispatch(updateStringMatchingAnimationInputState(processStringMatchingInput(stringMatchingModuleState.stringMatchingInput)));
       stringMatchingAlgorithmManager.isStateUpdated = true;
+
+      if (stringMatchingModuleState.stringMatchingPattern.length === 0) {
+        dispatch(updateCanAnimationBeStartedStateAction(false));
+        dispatch(updateWarningMessageState('At least one textbox is empty, animation is disabled'));
+      } else if (stringMatchingModuleState.stringMatchingInput.length < stringMatchingModuleState.stringMatchingPattern.length) {
+        dispatch(updateCanAnimationBeStartedStateAction(false));
+        dispatch(updateWarningMessageState('Input is shorter than pattern, animation is disabled'));
+      } else dispatch(updateCanAnimationBeStartedStateAction(true));
     }
   }, [stringMatchingModuleState.stringMatchingPattern]);
 
@@ -136,6 +147,14 @@ const StringMatchingInputComponent = () => {
     if (stringMatchingModuleState.stringMatchingInput.length <= maxStringMatchingInputLength) {
       dispatch(updateStringMatchingAnimationInputState(processStringMatchingInput(stringMatchingModuleState.stringMatchingInput)));
       stringMatchingAlgorithmManager.isStateUpdated = true;
+
+      if (stringMatchingModuleState.stringMatchingInput.length === 0) {
+        dispatch(updateCanAnimationBeStartedStateAction(false));
+        dispatch(updateWarningMessageState('At least one textbox is empty, animation is disabled'));
+      } else if (stringMatchingModuleState.stringMatchingInput.length < stringMatchingModuleState.stringMatchingPattern.length) {
+        dispatch(updateCanAnimationBeStartedStateAction(false));
+        dispatch(updateWarningMessageState('Input is shorter than pattern, animation is disabled'));
+      } else dispatch(updateCanAnimationBeStartedStateAction(true));
     }
   }, [stringMatchingModuleState.stringMatchingInput]);
 
@@ -217,7 +236,7 @@ const SettingsComponent = () => {
   }, []);
 
   const refreshState = () => {
-    dispatch(updateStringMatchingPatternState(renderedPatter));
+    dispatch(updateStringMatchingPatternState(renderedPattern));
     dispatch(updateStringMatchingInputState(renderedInput));
   };
 
@@ -277,26 +296,8 @@ const SettingsComponent = () => {
               </animationContext.Provider>
               <RefreshButton refreshFunction={refreshState} />
             </div>
-            <div
-              css={css`
-                display: flex;
-                align-items: center;
-                color: white;
-                font-size: 13px;
-                font-weight: bold;
-                margin-left: 10px;
-                visibility: ${stringMatchingModuleState.stringMatchingInput.length < stringMatchingModuleState.stringMatchingPattern.length ? 'visible' : 'hidden'};
-              `}
-            >
-              <WarningSignComponent />
-              <div
-                css={css`
-                  margin-left: 3px;
-                `}
-              >
-                Input is shorter than pattern, animation is skipped.
-              </div>
-            </div>
+
+            <WarningMessageComponent message={stringMatchingModuleState.warningMessage} />
           </div>
 
           <algorithmContext.Provider value={{ algorithmManager: stringMatchingAlgorithmManager }}>

@@ -2,7 +2,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect, useRef } from 'react';
-import { completionColor, errorMessageColor, mainFontColor, moduleBackground, pivotColor, warningMessageColor } from '../Resources/Colors';
+import { completionColor, errorMessageColor, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
 import { sortingAlgorithmsData } from '../Core/Data/SortingData';
 import { useSelector } from 'react-redux';
@@ -24,7 +24,7 @@ import { SortingBarStateEnum } from '../Resources/Enumerations';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
 import { ISortingBarProps } from '../Core/Interfaces/ISortingBarProps';
 import { updateCanAnimationBeStartedStateAction } from '../Store/Shared/AnimationStateManagement';
-import { WarningSignComponent } from '../Components/WarningSign';
+import { WarningMessageComponent } from '../Components/WarningMessage';
 
 let sortingAlgorithmManager: SortingAlgorithmsManager = new SortingAlgorithmsManager(sortingAlgorithmsData[0].algorithm);
 let sortingAnimationManager: AnimationManager = new AnimationManager(sortingAlgorithmManager);
@@ -319,8 +319,6 @@ const SortingBarComponent = ({ barHeight, barID, barState = SortingBarStateEnum.
 };
 
 const SettingsComponent = () => {
-  const sortingModuleState = useSelector((state: AppState) => state.sortingModuleState);
-
   return (
     <div
       css={css`
@@ -368,27 +366,8 @@ const SettingsComponent = () => {
             </animationContext.Provider>
             <GenerateInputComponent />
           </div>
-          <div
-            css={css`
-              display: flex;
-              align-items: center;
-              color: white;
-              font-size: 13px;
-              font-weight: bold;
-              margin-left: 10px;
-              color: ${warningMessageColor};
-              visibility: ${sortingModuleState.sortingBars.length === 0 ? 'visible' : 'hidden'};
-            `}
-          >
-            <WarningSignComponent />
-            <div
-              css={css`
-                margin-left: 3px;
-              `}
-            >
-              Input is empty, animation is skipped.
-            </div>
-          </div>
+
+          <WarningMessageComponent message="Input is empty, animation is disabled." />
         </div>
 
         <algorithmContext.Provider value={{ algorithmManager: sortingAlgorithmManager }}>

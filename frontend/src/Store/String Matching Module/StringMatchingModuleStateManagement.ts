@@ -4,6 +4,7 @@ import { IStringMatchingCharacterProps } from '../../Core/Interfaces/IStringMatc
 //#region State
 export interface StringMatchingModuleState extends IStoreModule {
   readonly selectedStringMatchingAlgorithm: string;
+  readonly warningMessage: string;
   readonly stringMatchingPattern: string;
   readonly stringMatchingInput: string;
   readonly stringMatchingAnimationPattern: IStringMatchingCharacterProps[];
@@ -12,6 +13,7 @@ export interface StringMatchingModuleState extends IStoreModule {
 
 const initialStringMatchingModuleState: StringMatchingModuleState = {
   selectedStringMatchingAlgorithm: '',
+  warningMessage: '',
   stringMatchingPattern: '',
   stringMatchingInput: '',
   stringMatchingAnimationPattern: [],
@@ -25,6 +27,13 @@ export const updateSelectedStringMatchingAlgorithmState = (selectedStringMatchin
   ({
     type: UPDATE_SELECTED_STRING_MATCHING_ALGORITHM_STATE,
     selectedStringMatchingAlgorithm: selectedStringMatchingAlgorithm,
+  } as const);
+
+const UPDATE_WARNING_MESSAGE_STATE = 'updateWarningMessageState';
+export const updateWarningMessageState = (warningMessage = initialStringMatchingModuleState.warningMessage) =>
+  ({
+    type: UPDATE_WARNING_MESSAGE_STATE,
+    warningMessage: warningMessage,
   } as const);
 
 export const UPDATE_STRING_MATCHING_PATTERN_STATE = 'updateStringMatchingPatternState';
@@ -59,6 +68,7 @@ export const updateStringMatchingAnimationInputState = (stringMatchingAnimationI
 //#region Reducers
 type StringMatchingModuleActions =
   | ReturnType<typeof updateSelectedStringMatchingAlgorithmState>
+  | ReturnType<typeof updateWarningMessageState>
   | ReturnType<typeof updateStringMatchingPatternState>
   | ReturnType<typeof updateStringMatchingInputState>
   | ReturnType<typeof updateStringMatchingAnimationPatternState>
@@ -70,6 +80,12 @@ export const stringMatchingModuleReducer = (state = initialStringMatchingModuleS
       return {
         ...state,
         selectedStringMatchingAlgorithm: action.selectedStringMatchingAlgorithm,
+      };
+
+    case UPDATE_WARNING_MESSAGE_STATE:
+      return {
+        ...state,
+        warningMessage: action.warningMessage,
       };
 
     case UPDATE_STRING_MATCHING_PATTERN_STATE:
