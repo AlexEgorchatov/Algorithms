@@ -1,17 +1,17 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { HomePage } from './Pages/HomePage';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { mainBackground, mainFontColor, pageBackground } from './Resources/Colors';
+import { Header } from './Components/Header';
+import { modules } from './Core/Data/ModuleData';
+import { minAppWidth } from './Core/Helper';
+import { store } from './Store/Store';
+import { HomePage } from './Pages/HomePage';
 import { SortingPage } from './Pages/SortingPage';
 import { StringMatchingPage } from './Pages/StringMatchingPage';
 import { PathFindingPage } from './Pages/PathFindingPage';
 import { NotFoundPage } from './Pages/NotFoundPage';
-import { Provider } from 'react-redux';
-import { Header } from './Components/Header';
-import { mainBackground, mainFontColor, pageBackground } from './Resources/Colors';
-import { modules } from './Core/Data/ModuleData';
-import { store } from './Store/Store';
-import { minAppWidth } from './Core/Helper';
 
 function App() {
   return (
