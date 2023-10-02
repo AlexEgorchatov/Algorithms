@@ -272,17 +272,9 @@ const SettingsComponent = () => {
                 width: 200px;
               `}
             >
-              <div
-                css={css`
-                  display: flex;
-                  justify-content: space-between;
-                  width: 72px;
-                `}
-              >
-                <animationContext.Provider value={{ animationManager: stringMatchingAnimationManager }}>
-                  <ActionBar />
-                </animationContext.Provider>
-              </div>
+              <animationContext.Provider value={{ animationManager: stringMatchingAnimationManager }}>
+                <ActionBar />
+              </animationContext.Provider>
               <RefreshButton refreshFunction={refreshState} />
             </div>
             <div

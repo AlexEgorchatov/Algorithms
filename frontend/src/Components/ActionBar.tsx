@@ -23,10 +23,10 @@ const PlayButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${!animationState.isAnimationInputNull ? 'pointer' : 'default'};
-        opacity: ${!animationState.isAnimationInputNull ? '1' : '0.5'};
+        cursor: ${animationState.canAnimationBeStarted ? 'pointer' : 'default'};
+        opacity: ${animationState.canAnimationBeStarted ? '1' : '0.5'};
         :hover {
-          ${!animationState.isAnimationInputNull &&
+          ${animationState.canAnimationBeStarted &&
           `
               color: ${headerItemHovered};
               & > div {
@@ -209,10 +209,16 @@ export const ActionBar = () => {
   const algorithmState = useSelector((state: AppState) => state.animationState);
 
   return (
-    <Fragment>
+    <div
+      css={css`
+        display: flex;
+        justify-content: space-between;
+        width: 72px;
+      `}
+    >
       {algorithmState.isAnimationRunning ? <PauseButton /> : <PlayButton />}
       <StopButton />
       <CompleteButton />
-    </Fragment>
+    </div>
   );
 };

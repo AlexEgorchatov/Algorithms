@@ -23,7 +23,7 @@ import { AnimationManager } from '../Core/Other/AnimationManager';
 import { SortingBarStateEnum } from '../Resources/Enumerations';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
 import { ISortingBarProps } from '../Core/Interfaces/ISortingBarProps';
-import { updateIsAnimationInputNullStateAction } from '../Store/Shared/AnimationStateManagement';
+import { updateCanAnimationBeStartedStateAction } from '../Store/Shared/AnimationStateManagement';
 
 let sortingAlgorithmManager: SortingAlgorithmsManager = new SortingAlgorithmsManager(sortingAlgorithmsData[0].algorithm);
 let sortingAnimationManager: AnimationManager = new AnimationManager(sortingAlgorithmManager);
@@ -69,8 +69,9 @@ const SortingInputComponent = () => {
     else dispatch(updatingIsInputNanState(false));
     if (isOverMax) dispatch(updateIsInputOverMaxState(true));
     else dispatch(updateIsInputOverMaxState(false));
-    if (sortingBars.length === 0) dispatch(updateIsAnimationInputNullStateAction(true));
-    else dispatch(updateIsAnimationInputNullStateAction(false));
+    if (sortingBars.length !== 0) dispatch(updateCanAnimationBeStartedStateAction(true));
+    else dispatch(updateCanAnimationBeStartedStateAction(false));
+
     dispatch(updateSortingBarsStateAction(sortingBars));
     sortingAlgorithmManager.isStateUpdated = true;
   };
@@ -192,6 +193,7 @@ const GenerateInputComponent = () => {
     dispatch(updateSortingBarsStateAction(sortingBars));
     dispatch(updatingIsInputNanState(false));
     dispatch(updateIsInputOverMaxState(false));
+    dispatch(updateCanAnimationBeStartedStateAction(true));
     sortingAlgorithmManager.isStateUpdated = true;
   };
 
@@ -351,17 +353,9 @@ const SettingsComponent = () => {
             width: 250px;
           `}
         >
-          <div
-            css={css`
-              display: flex;
-              justify-content: space-between;
-              width: 72px;
-            `}
-          >
-            <animationContext.Provider value={{ animationManager: sortingAnimationManager }}>
-              <ActionBar />
-            </animationContext.Provider>
-          </div>
+          <animationContext.Provider value={{ animationManager: sortingAnimationManager }}>
+            <ActionBar />
+          </animationContext.Provider>
           <GenerateInputComponent />
         </div>
         <algorithmContext.Provider value={{ algorithmManager: sortingAlgorithmManager }}>
