@@ -21,10 +21,10 @@ const PlayButton = () => {
         transform: scale(var(--ggs, 1));
         width: 12px;
         height: 16px;
-        cursor: ${!animationState.isAnimationInputNull ? 'pointer' : 'default'};
-        opacity: ${!animationState.isAnimationInputNull ? '1' : '0.5'};
+        cursor: ${animationState.canAnimationBeStarted ? 'pointer' : 'default'};
+        opacity: ${animationState.canAnimationBeStarted ? '1' : '0.5'};
         :hover {
-          ${!animationState.isAnimationInputNull &&
+          ${animationState.canAnimationBeStarted &&
           `
               color: black;
             `}

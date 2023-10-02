@@ -2,13 +2,13 @@
 export interface AnimationState {
   readonly hasAnimationStarted: boolean;
   readonly isAnimationRunning: boolean;
-  readonly isAnimationInputNull: boolean;
+  readonly canAnimationBeStarted: boolean;
 }
 
 const initialAnimationState: AnimationState = {
   hasAnimationStarted: false,
   isAnimationRunning: false,
-  isAnimationInputNull: false,
+  canAnimationBeStarted: true,
 };
 //#endregion State
 
@@ -27,11 +27,11 @@ export const updateIsAnimationRunningStateAction = (isAnimationRunning: boolean)
     isAnimationRunning: isAnimationRunning,
   } as const);
 
-const UPDATE_IS_ANIMATION_INPUT_NULL_STATE = 'UpdateIsAnimationInputNullState';
-export const updateIsAnimationInputNullStateAction = (isAnimationInputNull: boolean) =>
+const UPDATE_CAN_ANIMATION_BE_STARTED_STATE = 'UpdateCanAnimationBeStartedState';
+export const updateCanAnimationBeStartedStateAction = (canAnimationBeStarted: boolean) =>
   ({
-    type: UPDATE_IS_ANIMATION_INPUT_NULL_STATE,
-    isAnimationInputNull: isAnimationInputNull,
+    type: UPDATE_CAN_ANIMATION_BE_STARTED_STATE,
+    canAnimationBeStarted: canAnimationBeStarted,
   } as const);
 
 //#endregion Actions
@@ -40,7 +40,7 @@ export const updateIsAnimationInputNullStateAction = (isAnimationInputNull: bool
 type AnimationActions =
   | ReturnType<typeof updateHasAnimationStartedStateAction>
   | ReturnType<typeof updateIsAnimationRunningStateAction>
-  | ReturnType<typeof updateIsAnimationInputNullStateAction>;
+  | ReturnType<typeof updateCanAnimationBeStartedStateAction>;
 export const animationReducer = (state = initialAnimationState, action: AnimationActions) => {
   switch (action.type) {
     case UPDATE_HAS_ANIMATION_STARTED_STATE:
@@ -55,10 +55,10 @@ export const animationReducer = (state = initialAnimationState, action: Animatio
         isAnimationRunning: action.isAnimationRunning,
       };
 
-    case UPDATE_IS_ANIMATION_INPUT_NULL_STATE:
+    case UPDATE_CAN_ANIMATION_BE_STARTED_STATE:
       return {
         ...state,
-        isAnimationInputNull: action.isAnimationInputNull,
+        canAnimationBeStarted: action.canAnimationBeStarted,
       };
 
     default:
