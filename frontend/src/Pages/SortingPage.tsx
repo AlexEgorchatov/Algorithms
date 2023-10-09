@@ -323,7 +323,7 @@ const SettingsComponent = () => {
     <div
       css={css`
         margin: 0px 10px;
-        height: 30%;
+        height: 26%;
         min-height: 200px;
         display: block;
       `}
@@ -342,7 +342,7 @@ const SettingsComponent = () => {
           min-height: 118px;
           display: flex;
           flex-direction: column;
-          justify-content: space-around;
+          justify-content: space-evenly;
         `}
       >
         <SortingInputComponent />
@@ -369,10 +369,6 @@ const SettingsComponent = () => {
 
           <WarningMessageComponent message="Input is empty, animation is disabled." />
         </div>
-
-        <algorithmContext.Provider value={{ algorithmManager: sortingAlgorithmManager }}>
-          <AlgorithmsList data={sortingAlgorithmsData} />
-        </algorithmContext.Provider>
       </div>
     </div>
   );
@@ -384,46 +380,63 @@ const AnimationComponent = () => {
   return (
     <div
       css={css`
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        background-color: ${moduleBackground};
-        height: 70%;
-        min-height: 500px;
+        height: 74%;
       `}
     >
       <div
         css={css`
+          height: 6%;
+          margin-left: 10px;
+        `}
+      >
+        <algorithmContext.Provider value={{ algorithmManager: sortingAlgorithmManager }}>
+          <AlgorithmsList data={sortingAlgorithmsData} />
+        </algorithmContext.Provider>
+      </div>
+
+      <div
+        css={css`
           display: flex;
-          height: 70%;
-          min-height: 425px;
-          justify-content: center;
-          align-items: flex-end;
+          flex-direction: column;
+          justify-content: space-around;
+          background-color: ${moduleBackground};
+          height: 94%;
+          min-height: 500px;
         `}
       >
         <div
           css={css`
             display: flex;
+            height: 70%;
+            min-height: 425px;
+            justify-content: center;
             align-items: flex-end;
-            justify-content: space-between;
-            width: ${sortingModuleState.sortingBars.length * sortingBarWidth}px;
           `}
         >
-          {sortingModuleState.sortingBars.map((bar, index) => (
-            <SortingBarComponent key={index} barID={bar.barID} barHeight={bar.barHeight} barState={bar.barState} leftOffset={bar.leftOffset} />
-          ))}
+          <div
+            css={css`
+              display: flex;
+              align-items: flex-end;
+              justify-content: space-between;
+              width: ${sortingModuleState.sortingBars.length * sortingBarWidth}px;
+            `}
+          >
+            {sortingModuleState.sortingBars.map((bar, index) => (
+              <SortingBarComponent key={index} barID={bar.barID} barHeight={bar.barHeight} barState={bar.barState} leftOffset={bar.leftOffset} />
+            ))}
+          </div>
         </div>
-      </div>
-      <div
-        css={css`
-          display: flex;
-          justify-content: flex-start;
-          align-items: flex-end;
-        `}
-      >
-        <animationContext.Provider value={{ animationManager: sortingAnimationManager }}>
-          <SliderComponent />
-        </animationContext.Provider>
+        <div
+          css={css`
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+          `}
+        >
+          <animationContext.Provider value={{ animationManager: sortingAnimationManager }}>
+            <SliderComponent />
+          </animationContext.Provider>
+        </div>
       </div>
     </div>
   );

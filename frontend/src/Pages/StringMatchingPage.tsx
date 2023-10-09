@@ -243,7 +243,7 @@ const SettingsComponent = () => {
     <div
       css={css`
         margin: 0px 10px;
-        height: 30%;
+        height: 26%;
         min-height: 200px;
         display: block;
       `}
@@ -269,7 +269,6 @@ const SettingsComponent = () => {
         <StringMatchingInputComponent />
         <div
           css={css`
-            height: 65px;
             display: flex;
             flex-direction: column;
             justify-content: space-evenly;
@@ -298,10 +297,6 @@ const SettingsComponent = () => {
 
             <WarningMessageComponent message={stringMatchingModuleState.warningMessage} />
           </div>
-
-          <algorithmContext.Provider value={{ algorithmManager: stringMatchingAlgorithmManager }}>
-            <AlgorithmsList data={stringMatchingAlgorithmsData} />
-          </algorithmContext.Provider>
         </div>
       </div>
     </div>
@@ -314,76 +309,93 @@ const AnimationComponent = () => {
   return (
     <div
       css={css`
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        background-color: ${moduleBackground};
-        height: 70%;
-        min-height: 500px;
+        height: 74%;
       `}
     >
       <div
         css={css`
-          display: flex;
-          flex-direction: column;
-          height: 70%;
-          min-height: 425px;
-          padding: 0px 20px;
-          color: white;
+          height: 6%;
+          margin-left: 10px;
         `}
       >
-        <div
-          css={css`
-            display: flex;
-            flex-wrap: wrap;
-            align-content: flex-start;
-            min-height: 120px;
-            font-family: monospace;
-          `}
-        >
-          <span
-            css={css`
-              font-weight: 700;
-              width: 148.5px;
-            `}
-          >
-            Pattern:
-          </span>
-          {stringMatchingModuleState.stringMatchingAnimationPattern.map((character, index) => (
-            <StringMatchingCharacterComponent key={index} character={character.character} characterState={character.characterState} />
-          ))}
-        </div>
-        <div
-          css={css`
-            display: flex;
-            flex-wrap: wrap;
-            max-height: 290px;
-            font-family: monospace;
-          `}
-        >
-          <span
-            css={css`
-              font-weight: 700;
-              width: 115.5px;
-            `}
-          >
-            Input:
-          </span>
-          {stringMatchingModuleState.stringMatchingAnimationInput.map((character, index) => (
-            <StringMatchingCharacterComponent key={index} character={character.character} characterState={character.characterState} />
-          ))}
-        </div>
+        <algorithmContext.Provider value={{ algorithmManager: stringMatchingAlgorithmManager }}>
+          <AlgorithmsList data={stringMatchingAlgorithmsData} />
+        </algorithmContext.Provider>
       </div>
+
       <div
         css={css`
           display: flex;
-          justify-content: flex-start;
-          align-items: flex-end;
+          flex-direction: column;
+          justify-content: space-around;
+          background-color: ${moduleBackground};
+          height: 94%;
+          min-height: 500px;
         `}
       >
-        <animationContext.Provider value={{ animationManager: stringMatchingAnimationManager }}>
-          <SliderComponent />
-        </animationContext.Provider>
+        <div
+          css={css`
+            display: flex;
+            flex-direction: column;
+            height: 70%;
+            min-height: 425px;
+            padding: 0px 20px;
+            color: white;
+          `}
+        >
+          <div
+            css={css`
+              display: flex;
+              flex-wrap: wrap;
+              align-content: flex-start;
+              min-height: 120px;
+              font-family: monospace;
+            `}
+          >
+            <span
+              css={css`
+                font-weight: 700;
+                width: 148.5px;
+              `}
+            >
+              Pattern:
+            </span>
+            {stringMatchingModuleState.stringMatchingAnimationPattern.map((character, index) => (
+              <StringMatchingCharacterComponent key={index} character={character.character} characterState={character.characterState} />
+            ))}
+          </div>
+          <div
+            css={css`
+              display: flex;
+              flex-wrap: wrap;
+              max-height: 290px;
+              font-family: monospace;
+            `}
+          >
+            <span
+              css={css`
+                font-weight: 700;
+                width: 115.5px;
+              `}
+            >
+              Input:
+            </span>
+            {stringMatchingModuleState.stringMatchingAnimationInput.map((character, index) => (
+              <StringMatchingCharacterComponent key={index} character={character.character} characterState={character.characterState} />
+            ))}
+          </div>
+        </div>
+        <div
+          css={css`
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+          `}
+        >
+          <animationContext.Provider value={{ animationManager: stringMatchingAnimationManager }}>
+            <SliderComponent />
+          </animationContext.Provider>
+        </div>
       </div>
     </div>
   );
