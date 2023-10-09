@@ -1,7 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
-import { Fragment, useContext } from 'react';
+import { useContext } from 'react';
 import { animationContext } from '../Core/Helper';
 import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';

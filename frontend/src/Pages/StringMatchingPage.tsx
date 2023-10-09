@@ -7,7 +7,6 @@ import { stringMatchingAlgorithmsData } from '../Core/Data/StringMatchingData';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import {
-  StringMatchingModuleState,
   updateStringMatchingAnimationInputState,
   updateStringMatchingAnimationPatternState,
   updateStringMatchingInputState,
