@@ -10,7 +10,7 @@ import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingChar
  * the final state depends on the selected algorithm. Hence, the initial state is not a part of the abstraction.
  */
 export abstract class AlgorithmBase<T> {
-  abstract executeAlgorithm(): Promise<void>;
+  abstract executeAlgorithm(): Promise<any>;
   abstract finalState: T[];
   abstract setFinalState(): void;
 }

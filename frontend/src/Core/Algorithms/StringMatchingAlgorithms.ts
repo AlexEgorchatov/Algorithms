@@ -8,7 +8,7 @@ import { StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 import { store } from '../../Store/Store';
 
 export class NaivePatternMatching extends StringMatchingAlgorithmBase {
-  public async executeAlgorithm(): Promise<void> {
+  public async executeAlgorithm(): Promise<number> {
     let animationPatternCopy = [...store.getState().stringMatchingModuleState.stringMatchingAnimationPattern];
     let animationInputCopy = [...store.getState().stringMatchingModuleState.stringMatchingAnimationInput];
     let patternLength: number = animationPatternCopy.length;
@@ -28,7 +28,7 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
         store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
 
         await pauseForStepIteration();
-        if (await isAnimationTerminated()) return;
+        if (await isAnimationTerminated()) return i;
 
         if (animationInputCopy[i + j].character.toLowerCase() !== animationPatternCopy[j].character.toLowerCase()) {
           j++;
@@ -59,6 +59,8 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
       store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
       store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
     }
+
+    return -1;
   }
 }
 
