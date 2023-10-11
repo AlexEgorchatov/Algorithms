@@ -13,14 +13,15 @@ import { updateStringMatchingModulePreviewCharactersState } from '../../Store/Ho
 const SearchableCharacter = ({ character, characterState: state = StringMatchingCharacterStateEnum.Unselected }: IStringMatchingCharacterProps) => {
   const setFont = () => {
     switch (state) {
-      case StringMatchingCharacterStateEnum.Unselected:
-        return 'color: #ffffff; background-color: transparent';
-
-      case StringMatchingCharacterStateEnum.Checked:
-        return 'color: #ffffff; background-color: #000000';
+      case StringMatchingCharacterStateEnum.Current:
+        return 'color: white; background-color: black';
 
       case StringMatchingCharacterStateEnum.Found:
-        return 'color: #000000; background-color: #ffff00';
+        return 'color: black; background-color: #ffff00';
+
+      case StringMatchingCharacterStateEnum.Unselected:
+      default:
+        return 'color: white; background-color: transparent';
     }
   };
 
@@ -65,7 +66,7 @@ export const StringMatchingModulePreview = ({ title }: IModulePreviewTitle) => {
     let inputCopy = [...stringMatchingState.characters];
 
     for (let i = 0; i < inputLength; i++) {
-      inputCopy[i] = StringMatchingCharacterStateEnum.Checked;
+      inputCopy[i] = StringMatchingCharacterStateEnum.Current;
       dispatch(updateStringMatchingModulePreviewCharactersState(inputCopy));
       await new Promise((resolve) => awaitCancellation(resolve, stepTime));
       inputCopy = [...inputCopy];

@@ -404,17 +404,18 @@ const AnimationComponent = () => {
 const StringMatchingCharacterComponent = ({ character, characterState = StringMatchingCharacterStateEnum.Unselected }: IStringMatchingCharacterProps) => {
   const setFont = () => {
     switch (characterState) {
-      case StringMatchingCharacterStateEnum.Unselected:
-        return 'color: white; background-color: transparent';
+      case StringMatchingCharacterStateEnum.Current:
+        return `color: white; background-color: black`;
+
+      case StringMatchingCharacterStateEnum.Found:
+        return 'color: black; background-color: #ffff00';
 
       case StringMatchingCharacterStateEnum.Checked:
         return 'color: white; background-color: orange';
 
-      case StringMatchingCharacterStateEnum.Current:
-        return `color: black; background-color: ${pivotColor}`;
-
-      case StringMatchingCharacterStateEnum.Found:
-        return 'color: black; background-color: #ffff00';
+      case StringMatchingCharacterStateEnum.Unselected:
+      default:
+        return 'color: white; background-color: transparent';
     }
   };
 
