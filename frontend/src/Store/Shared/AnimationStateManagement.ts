@@ -1,18 +1,28 @@
 //#region State
 export interface AnimationState {
+  readonly canAnimationBeStarted: boolean;
   readonly hasAnimationStarted: boolean;
   readonly isAnimationRunning: boolean;
-  readonly canAnimationBeStarted: boolean;
+  readonly isAnimationFinalizing: boolean;
 }
 
 const initialAnimationState: AnimationState = {
+  canAnimationBeStarted: true,
   hasAnimationStarted: false,
   isAnimationRunning: false,
-  canAnimationBeStarted: true,
+  isAnimationFinalizing: false,
 };
 //#endregion State
 
 //#region Actions
+
+const UPDATE_CAN_ANIMATION_BE_STARTED_STATE = 'UpdateCanAnimationBeStartedState';
+export const updateCanAnimationBeStartedStateAction = (canAnimationBeStarted: boolean) =>
+  ({
+    type: UPDATE_CAN_ANIMATION_BE_STARTED_STATE,
+    canAnimationBeStarted: canAnimationBeStarted,
+  } as const);
+
 const UPDATE_HAS_ANIMATION_STARTED_STATE = 'UpdateHasAnimationStartedState';
 export const updateHasAnimationStartedStateAction = (hasAnimationStarted: boolean) =>
   ({
@@ -27,11 +37,11 @@ export const updateIsAnimationRunningStateAction = (isAnimationRunning: boolean)
     isAnimationRunning: isAnimationRunning,
   } as const);
 
-const UPDATE_CAN_ANIMATION_BE_STARTED_STATE = 'UpdateCanAnimationBeStartedState';
-export const updateCanAnimationBeStartedStateAction = (canAnimationBeStarted: boolean) =>
+const UPDATE_IS_ANIMATION_FINALIZING_STATE = 'UpdateIsAnimationFinalizingState';
+export const updateIsAnimationFinalizingStateAction = (isAnimationFinalizing: boolean) =>
   ({
-    type: UPDATE_CAN_ANIMATION_BE_STARTED_STATE,
-    canAnimationBeStarted: canAnimationBeStarted,
+    type: UPDATE_IS_ANIMATION_FINALIZING_STATE,
+    isAnimationFinalizing: isAnimationFinalizing,
   } as const);
 
 //#endregion Actions
@@ -40,6 +50,7 @@ export const updateCanAnimationBeStartedStateAction = (canAnimationBeStarted: bo
 type AnimationActions =
   | ReturnType<typeof updateHasAnimationStartedStateAction>
   | ReturnType<typeof updateIsAnimationRunningStateAction>
+  | ReturnType<typeof updateIsAnimationFinalizingStateAction>
   | ReturnType<typeof updateCanAnimationBeStartedStateAction>;
 export const animationReducer = (state = initialAnimationState, action: AnimationActions) => {
   switch (action.type) {
@@ -59,6 +70,12 @@ export const animationReducer = (state = initialAnimationState, action: Animatio
       return {
         ...state,
         canAnimationBeStarted: action.canAnimationBeStarted,
+      };
+
+    case UPDATE_IS_ANIMATION_FINALIZING_STATE:
+      return {
+        ...state,
+        isAnimationFinalizing: action.isAnimationFinalizing,
       };
 
     default:

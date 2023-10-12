@@ -5,13 +5,15 @@ import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 import { ISortingBarProps } from '../Interfaces/ISortingBarProps';
 import { IStoreModule } from '../Interfaces/IStoreModule';
+import { isAnimationCompleted } from './AnimationManager';
 
-export class SortingAlgorithmsManager implements AlgorithmsManagerBase<ISortingBarProps> {
+export class SortingAlgorithmsManager extends AlgorithmsManagerBase<ISortingBarProps> {
   public selectedAlgorithm: AlgorithmBase<any>;
   public initialState: ISortingBarProps[] = [];
   public isStateUpdated: boolean = false;
 
   public constructor(selectedAlgorithm: AlgorithmBase<any>) {
+    super();
     this.selectedAlgorithm = selectedAlgorithm;
     store.dispatch(updateSelectedSortingAlgorithmState(selectedAlgorithm.constructor.name));
   }
@@ -41,7 +43,7 @@ export class SortingAlgorithmsManager implements AlgorithmsManagerBase<ISortingB
 
     await this.selectedAlgorithm.executeAlgorithm();
 
-    if (!store.getState().animationState.hasAnimationStarted) return;
+    if (!isAnimationCompleted) return;
     await this.finalizeSorting();
   }
 

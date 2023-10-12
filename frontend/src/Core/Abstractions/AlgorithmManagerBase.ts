@@ -20,11 +20,11 @@ export abstract class AlgorithmsManagerBase<T> {
 
   public abstract getStoreSelector(): IStoreModule;
 
-  abstract updateStoreSelectedAlgorithmName(): void;
+  public abstract updateStoreSelectedAlgorithmName(): void;
 
   public abstract startAlgorithm(): Promise<void>;
 
   public abstract stopAlgorithm(): Promise<void>;
 
-  public abstract completeAlgorithm(): Promise<void>;
+  async completeAlgorithm(): Promise<void> {}
 }
