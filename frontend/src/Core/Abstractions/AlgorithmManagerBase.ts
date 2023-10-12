@@ -26,5 +26,5 @@ export abstract class AlgorithmsManagerBase<T> {
 
   public abstract stopAlgorithm(): Promise<void>;
 
-  async completeAlgorithm(): Promise<void> {}
+  public abstract completeAlgorithm(): Promise<void>;
 }

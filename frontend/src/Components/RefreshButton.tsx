@@ -11,6 +11,12 @@ interface Props {
 export const RefreshButton = ({ refreshFunction }: Props) => {
   const algorithmState = useSelector((state: AppState) => state.animationState);
 
+  const handleRefreshButtonClick = () => {
+    if (algorithmState.hasAnimationStarted) return;
+
+    refreshFunction();
+  };
+
   return (
     <div
       css={css`
@@ -37,7 +43,7 @@ export const RefreshButton = ({ refreshFunction }: Props) => {
             `}
         }
       `}
-      onClick={refreshFunction}
+      onClick={handleRefreshButtonClick}
     >
       <div
         css={css`

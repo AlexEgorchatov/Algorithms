@@ -12,7 +12,7 @@ export class AnimationManager {
   }
 
   public async startAnimation(): Promise<void> {
-    if (!store.getState().animationState.canAnimationBeStarted) return;
+    if (!store.getState().animationState.canAnimationBeStarted || store.getState().animationState.isAnimationFinalizing) return;
 
     store.dispatch(updateIsAnimationRunningStateAction(true));
     if (store.getState().animationState.hasAnimationStarted) return;
@@ -32,7 +32,7 @@ export class AnimationManager {
   }
 
   public stopAnimation(): void {
-    if (!store.getState().animationState.hasAnimationStarted) return;
+    if (!store.getState().animationState.hasAnimationStarted || store.getState().animationState.isAnimationFinalizing) return;
 
     store.dispatch(updateHasAnimationStartedStateAction(false));
     store.dispatch(updateIsAnimationRunningStateAction(false));
@@ -40,7 +40,7 @@ export class AnimationManager {
   }
 
   public completeAnimation(): void {
-    if (!store.getState().animationState.hasAnimationStarted) return;
+    if (!store.getState().animationState.hasAnimationStarted || store.getState().animationState.isAnimationFinalizing) return;
 
     isAnimationCompleted = true;
     this.algorithmManager.completeAlgorithm();

@@ -1,11 +1,11 @@
 import { SortingBarStateEnum } from '../../Resources/Enumerations';
+import { updateIsAnimationFinalizingStateAction } from '../../Store/Shared/AnimationStateManagement';
 import { updateSelectedSortingAlgorithmState, updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingModuleStateManagement';
 import { AppState, store } from '../../Store/Store';
 import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 import { ISortingBarProps } from '../Interfaces/ISortingBarProps';
 import { IStoreModule } from '../Interfaces/IStoreModule';
-import { isAnimationCompleted } from './AnimationManager';
 
 export class SortingAlgorithmsManager extends AlgorithmsManagerBase<ISortingBarProps> {
   public selectedAlgorithm: AlgorithmBase<any>;
@@ -42,9 +42,10 @@ export class SortingAlgorithmsManager extends AlgorithmsManagerBase<ISortingBarP
     }
 
     await this.selectedAlgorithm.executeAlgorithm();
+    if (!store.getState().animationState.hasAnimationStarted) return;
 
-    if (!isAnimationCompleted) return;
     await this.finalizeSorting();
+    store.dispatch(updateIsAnimationFinalizingStateAction(false));
   }
 
   public async stopAlgorithm(): Promise<void> {
@@ -52,6 +53,7 @@ export class SortingAlgorithmsManager extends AlgorithmsManagerBase<ISortingBarP
   }
 
   public async completeAlgorithm(): Promise<void> {
+    store.dispatch(updateIsAnimationFinalizingStateAction(true));
     store.dispatch(updateSortingBarsStateAction(this.selectedAlgorithm.finalState));
   }
 

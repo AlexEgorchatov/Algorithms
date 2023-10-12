@@ -21,13 +21,14 @@ const PlayButton = () => {
         transform: scale(var(--ggs, 1));
         width: 12px;
         height: 16px;
-        cursor: ${animationState.canAnimationBeStarted ? 'pointer' : 'default'};
-        opacity: ${animationState.canAnimationBeStarted ? '1' : '0.5'};
+        cursor: ${animationState.canAnimationBeStarted && !animationState.isAnimationFinalizing ? 'pointer' : 'default'};
+        opacity: ${animationState.canAnimationBeStarted && !animationState.isAnimationFinalizing ? '1' : '0.5'};
         :hover {
           ${animationState.canAnimationBeStarted &&
+          !animationState.isAnimationFinalizing &&
           `
-              color: black;
-            `}
+            color: black;
+          `}
         }
       `}
       onClick={() => animationManager.startAnimation()}
@@ -51,6 +52,13 @@ const PlayButton = () => {
 
 const PauseButton = () => {
   const dispatch = useDispatch();
+  const animationState = useSelector((state: AppState) => state.animationState);
+
+  const handlePauseButtonClick = () => {
+    if (animationState.isAnimationFinalizing) return;
+
+    dispatch(updateIsAnimationRunningStateAction(false));
+  };
 
   return (
     <div
@@ -63,21 +71,20 @@ const PauseButton = () => {
         border-left: 4px solid;
         border-right: 4px solid;
         color: white;
-
-        cursor: pointer;
+        cursor: ${!animationState.isAnimationFinalizing ? 'pointer' : 'default'};
+        opacity: ${!animationState.isAnimationFinalizing ? '1' : '0.5'};
         :hover {
-          color: black;
+          ${!animationState.isAnimationFinalizing && 'color: black;'}
         }
       `}
-      onClick={() => dispatch(updateIsAnimationRunningStateAction(false))}
+      onClick={handlePauseButtonClick}
     ></div>
   );
 };
 
 const StopButton = () => {
   const { animationManager } = useContext(animationContext);
-
-  const algorithmState = useSelector((state: AppState) => state.animationState);
+  const animationState = useSelector((state: AppState) => state.animationState);
 
   return (
     <div
@@ -89,10 +96,11 @@ const StopButton = () => {
         width: 16px;
         height: 16px;
         background: white;
-        cursor: ${algorithmState.hasAnimationStarted ? 'pointer' : 'default'};
-        opacity: ${algorithmState.hasAnimationStarted ? '1' : '0.5'};
+        cursor: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing ? 'pointer' : 'default'};
+        opacity: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing ? '1' : '0.5'};
         :hover {
-          ${algorithmState.hasAnimationStarted &&
+          ${animationState.hasAnimationStarted &&
+          !animationState.isAnimationFinalizing &&
           `
             background: black;
           `}
@@ -105,7 +113,7 @@ const StopButton = () => {
 
 const CompleteButton = () => {
   const { animationManager } = useContext(animationContext);
-  const algorithmState = useSelector((state: AppState) => state.animationState);
+  const animationState = useSelector((state: AppState) => state.animationState);
 
   return (
     <div
@@ -114,10 +122,11 @@ const CompleteButton = () => {
         position: relative;
         display: flex;
         color: white;
-        cursor: ${algorithmState.hasAnimationStarted ? 'pointer' : 'default'};
-        opacity: ${algorithmState.hasAnimationStarted ? '1' : '0.5'};
+        cursor: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing ? 'pointer' : 'default'};
+        opacity: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing ? '1' : '0.5'};
         :hover {
-          ${algorithmState.hasAnimationStarted &&
+          ${animationState.hasAnimationStarted &&
+          !animationState.isAnimationFinalizing &&
           `
             & > div {
               color: black;

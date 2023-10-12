@@ -50,10 +50,8 @@ export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase<IStri
     }
 
     let lastIndex = await this.selectedAlgorithm.executeAlgorithm();
-
     if (!isAnimationCompleted || lastIndex === -1) return;
 
-    store.dispatch(updateIsAnimationFinalizingStateAction(true));
     await this.finalizeStringMatching(lastIndex);
     store.dispatch(updateStringMatchingAnimationPatternState((this.selectedAlgorithm as StringMatchingAlgorithmBase).finalPatternState));
     store.dispatch(updateStringMatchingAnimationInputState(this.selectedAlgorithm.finalState));
@@ -63,6 +61,10 @@ export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase<IStri
   public async stopAlgorithm(): Promise<void> {
     store.dispatch(updateStringMatchingAnimationPatternState(this.initialPatternState));
     store.dispatch(updateStringMatchingAnimationInputState(this.initialState));
+  }
+
+  public async completeAlgorithm(): Promise<void> {
+    store.dispatch(updateIsAnimationFinalizingStateAction(true));
   }
 
   private async finalizeStringMatching(lastIndex: number): Promise<void> {

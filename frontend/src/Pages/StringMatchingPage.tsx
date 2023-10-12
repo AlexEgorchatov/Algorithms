@@ -2,7 +2,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useEffect, useRef } from 'react';
-import { errorMessageColor, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
+import { errorMessageColor, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { stringMatchingAlgorithmsData } from '../Core/Data/StringMatchingData';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
