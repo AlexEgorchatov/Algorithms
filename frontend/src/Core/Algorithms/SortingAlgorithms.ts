@@ -54,6 +54,7 @@ export class QuickSort extends SortingAlgorithmBase {
   private async quickSort(left: number, right: number): Promise<void> {
     if (left >= right) return;
 
+    if (await isAnimationTerminated()) return;
     let partitionIndex: number = await this.partition(left, right);
     if (await isAnimationTerminated()) return;
     await this.quickSort(left, partitionIndex - 1);
