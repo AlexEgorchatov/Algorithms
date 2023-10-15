@@ -74,12 +74,11 @@ export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase<IStri
     for (let i = lastIndex; i < animationInputCopy.length; i++) {
       animationInputCopy[i] = { ...animationInputCopy[i], characterState: StringMatchingCharacterStateEnum.Current };
       store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
+      animationInputCopy = [...animationInputCopy];
       await new Promise((resolve) => setTimeout(resolve, timeout));
 
-      animationInputCopy = [...animationInputCopy];
       animationInputCopy[i] = this.selectedAlgorithm.finalState[i];
       store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
-
       animationInputCopy = [...animationInputCopy];
     }
   }
