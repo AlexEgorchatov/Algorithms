@@ -56,7 +56,6 @@ export class QuickSort extends SortingAlgorithmBase {
 
     if (await isAnimationTerminated()) return;
     let partitionIndex: number = await this.partition(left, right);
-    if (await isAnimationTerminated()) return;
     await this.quickSort(left, partitionIndex - 1);
     await this.quickSort(partitionIndex + 1, right);
   }

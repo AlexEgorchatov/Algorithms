@@ -1,6 +1,10 @@
 import { SortingBarStateEnum, StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 import { updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingModuleStateManagement';
 import { store } from '../../Store/Store';
+import {
+  updateStringMatchingAnimationInputState,
+  updateStringMatchingAnimationPatternState,
+} from '../../Store/String Matching Module/StringMatchingModuleStateManagement';
 import { ISortingBarProps } from '../Interfaces/ISortingBarProps';
 import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingCharacterProps';
 
@@ -68,5 +72,18 @@ export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<IStringM
 
     this.finalPatternState = store.getState().stringMatchingModuleState.stringMatchingAnimationPattern;
     this.finalState = [...animationInputCopy];
+  }
+
+  public async highlightCharacters(
+    animationPatternCopy: IStringMatchingCharacterProps[],
+    animationInputCopy: IStringMatchingCharacterProps[],
+    patternIndex: number,
+    inputIndex: number,
+    highlightCharacterState: StringMatchingCharacterStateEnum,
+  ) {
+    animationPatternCopy[patternIndex] = { ...animationPatternCopy[patternIndex], characterState: highlightCharacterState };
+    store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
+    animationInputCopy[inputIndex] = { ...animationInputCopy[inputIndex], characterState: highlightCharacterState };
+    store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
   }
 }
