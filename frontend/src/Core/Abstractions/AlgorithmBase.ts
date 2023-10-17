@@ -74,16 +74,14 @@ export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<IStringM
     this.finalState = [...animationInputCopy];
   }
 
-  public async highlightCharacters(
+  public selectCharacters(
     animationPatternCopy: IStringMatchingCharacterProps[],
     animationInputCopy: IStringMatchingCharacterProps[],
     patternIndex: number,
     inputIndex: number,
     highlightCharacterState: StringMatchingCharacterStateEnum,
-  ) {
+  ): void {
     animationPatternCopy[patternIndex] = { ...animationPatternCopy[patternIndex], characterState: highlightCharacterState };
-    store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
     animationInputCopy[inputIndex] = { ...animationInputCopy[inputIndex], characterState: highlightCharacterState };
-    store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
   }
 }

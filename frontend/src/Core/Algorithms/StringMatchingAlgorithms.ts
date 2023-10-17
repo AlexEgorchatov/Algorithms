@@ -18,7 +18,9 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
     for (let i = 0; i <= inputLength - patternLength; i++) {
       let j = 0;
       for (j = 0; j < patternLength; ++j) {
-        await this.highlightCharacters(animationPatternCopy, animationInputCopy, j, i + j, StringMatchingCharacterStateEnum.Current);
+        this.selectCharacters(animationPatternCopy, animationInputCopy, j, i + j, StringMatchingCharacterStateEnum.Current);
+        store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
+        store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
         animationPatternCopy = [...animationPatternCopy];
         animationInputCopy = [...animationInputCopy];
 
@@ -26,24 +28,26 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
         if (await isAnimationTerminated()) return i;
         if (animationInputCopy[i + j].character.toLowerCase() !== animationPatternCopy[j].character.toLowerCase()) break;
 
-        this.highlightCharacters(animationPatternCopy, animationInputCopy, j, i + j, StringMatchingCharacterStateEnum.Checked);
-        animationPatternCopy = [...animationPatternCopy];
-        animationInputCopy = [...animationInputCopy];
+        this.selectCharacters(animationPatternCopy, animationInputCopy, j, i + j, StringMatchingCharacterStateEnum.Checked);
       }
 
       let isPatternFound: boolean = j === patternLength;
       j = isPatternFound ? j - 1 : j;
       for (; j >= 0; j--) {
         animationPatternCopy[j] = { ...animationPatternCopy[j], characterState: StringMatchingCharacterStateEnum.Unselected };
-        animationInputCopy[i + j] = { ...animationInputCopy[i + j], characterState: this.finalState[i + j].characterState };
+        animationInputCopy[i + j] = {
+          ...animationInputCopy[i + j],
+          characterState:
+            this.finalState[i].characterState === StringMatchingCharacterStateEnum.Found &&
+            this.finalState[i + j].characterState === StringMatchingCharacterStateEnum.Found
+              ? StringMatchingCharacterStateEnum.Found
+              : StringMatchingCharacterStateEnum.Unselected,
+        };
       }
-
-      store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
-      store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
-      animationPatternCopy = [...animationPatternCopy];
-      animationInputCopy = [...animationInputCopy];
     }
 
+    store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
+    store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
     return -1;
   }
 }
@@ -63,37 +67,78 @@ export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase
 
     while (inputLength - inputIndex >= patternLength - patternIndex) {
       animationPatternCopy[patternIndex] = { ...animationPatternCopy[patternIndex], characterState: StringMatchingCharacterStateEnum.Current };
-      store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
-      animationPatternCopy = [...animationPatternCopy];
       animationInputCopy[inputIndex] = { ...animationInputCopy[inputIndex], characterState: StringMatchingCharacterStateEnum.Current };
+      store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
       store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
+      animationPatternCopy = [...animationPatternCopy];
       animationInputCopy = [...animationInputCopy];
 
       await pauseForStepIteration();
+      if (await isAnimationTerminated()) return inputIndex - patternIndex;
 
       if (animationPatternCopy[patternIndex].character.toLowerCase() === animationInputCopy[inputIndex].character.toLowerCase()) {
         animationPatternCopy[patternIndex] = { ...animationPatternCopy[patternIndex], characterState: StringMatchingCharacterStateEnum.Checked };
-        store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
-        animationPatternCopy = [...animationPatternCopy];
         animationInputCopy[inputIndex] = { ...animationInputCopy[inputIndex], characterState: StringMatchingCharacterStateEnum.Checked };
-        store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
-        animationInputCopy = [...animationInputCopy];
 
         patternIndex++;
         inputIndex++;
       }
       if (patternIndex === patternLength) {
-        patternIndex = lps[patternIndex - 1];
+        patternIndex--;
+        for (let i = patternIndex; i >= 0; i--) {
+          if (i > lps[patternIndex - 1]) {
+            animationPatternCopy[i] = { ...animationPatternCopy[i], characterState: StringMatchingCharacterStateEnum.Unselected };
+          }
+
+          animationInputCopy[inputIndex - i - 1] = {
+            ...animationInputCopy[inputIndex - i - 1],
+            characterState: this.finalState[inputIndex - i - 1].characterState,
+          };
+        }
+
+        patternIndex = lps[patternLength - 1];
       } else if (inputIndex < inputLength && animationPatternCopy[patternIndex].character.toLowerCase() !== animationInputCopy[inputIndex].character.toLowerCase()) {
-        if (patternIndex !== 0) patternIndex = lps[patternIndex - 1];
-        else inputIndex++;
+        if (patternIndex !== 0) {
+          if (animationPatternCopy[patternIndex].characterState !== StringMatchingCharacterStateEnum.Current) {
+            animationPatternCopy[patternIndex] = { ...animationPatternCopy[patternIndex], characterState: StringMatchingCharacterStateEnum.Current };
+            animationInputCopy[inputIndex] = { ...animationInputCopy[inputIndex], characterState: StringMatchingCharacterStateEnum.Current };
+            store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
+            store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
+            animationPatternCopy = [...animationPatternCopy];
+            animationInputCopy = [...animationInputCopy];
+
+            await pauseForStepIteration();
+            if (await isAnimationTerminated()) return inputIndex - patternIndex;
+          }
+          for (let i = patternIndex; i >= 0; i--) {
+            if (i > lps[patternIndex - 1]) {
+              animationPatternCopy[i] = { ...animationPatternCopy[i], characterState: StringMatchingCharacterStateEnum.Unselected };
+              animationInputCopy[inputIndex - i] = { ...animationInputCopy[inputIndex - i], characterState: StringMatchingCharacterStateEnum.Unselected };
+            } else {
+              animationPatternCopy[i] = { ...animationPatternCopy[i], characterState: StringMatchingCharacterStateEnum.Checked };
+              animationInputCopy[inputIndex - i] = { ...animationInputCopy[inputIndex - i], characterState: StringMatchingCharacterStateEnum.Checked };
+            }
+          }
+
+          patternIndex = lps[patternIndex - 1];
+        } else {
+          animationInputCopy[inputIndex] = { ...animationInputCopy[inputIndex], characterState: StringMatchingCharacterStateEnum.Unselected };
+          inputIndex++;
+        }
       }
     }
 
+    for (let i = patternIndex; i >= 0; i--) {
+      animationPatternCopy[i] = { ...animationPatternCopy[i], characterState: StringMatchingCharacterStateEnum.Unselected };
+      animationInputCopy[inputIndex - i] = { ...animationInputCopy[inputIndex - i], characterState: StringMatchingCharacterStateEnum.Unselected };
+    }
+
+    store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
+    store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
     return -1;
   }
 
-  private async computeLPSArray(pattern: IStringMatchingCharacterProps[], lps: number[]): Promise<void> {
+  private computeLPSArray(pattern: IStringMatchingCharacterProps[], lps: number[]): void {
     let length: number = 0;
     let i: number = 1;
 
@@ -106,5 +151,30 @@ export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase
       if (length === 0) lps[i++] = length;
       else length = lps[length - 1];
     }
+
+    console.log(lps);
   }
 }
+
+/*TODO: debug the KMP selection feature
+THIS IS A TEST TEXT
+TEST
+
+AABAACAADAABAABA
+AABA
+
+AAAAAAAAAAAAAAAAAB
+AAAAB
+
+ABABABCABABABCABABABC
+ABABAC
+
+AAAAABAAABA
+AAAA
+
+aaaabaaaaab
+aaaab
+
+aaaaaabaaaaab
+aaaab
+*/
