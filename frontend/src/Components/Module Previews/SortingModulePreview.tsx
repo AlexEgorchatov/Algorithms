@@ -53,17 +53,17 @@ export const SortingModulePreview = ({ title }: IModulePreviewTitle) => {
         heightsCopy[j] = heightsCopy[j + 1];
         heightsCopy[j + 1] = tempHeight;
         dispatch(updateSortingModulePreviewHeightsStateAction(heightsCopy));
-        await new Promise((resolve) => awaitCancellation(resolve, stepTime));
         heightsCopy = [...heightsCopy];
+        await new Promise((resolve) => awaitCancellation(resolve, stepTime));
         isSwapped = true;
       }
 
       if (!isSwapped) {
         await new Promise((resolve) => awaitCancellation(resolve, animationCompleteTime));
         resetComponentState();
+        heightsCopy = [...sortingState.heights];
         i = -1;
         await new Promise((resolve) => awaitCancellation(resolve, stepTime * 2));
-        heightsCopy = [...sortingState.heights];
       }
     }
   };

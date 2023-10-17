@@ -68,8 +68,8 @@ export const StringMatchingModulePreview = ({ title }: IModulePreviewTitle) => {
     for (let i = 0; i < inputLength; i++) {
       inputCopy[i] = StringMatchingCharacterStateEnum.Current;
       dispatch(updateStringMatchingModulePreviewCharactersState(inputCopy));
-      await new Promise((resolve) => awaitCancellation(resolve, stepTime));
       inputCopy = [...inputCopy];
+      await new Promise((resolve) => awaitCancellation(resolve, stepTime));
 
       inputCopy[i] = i === 1 || i === 2 || i === 4 || i === 5 ? StringMatchingCharacterStateEnum.Found : StringMatchingCharacterStateEnum.Unselected;
       dispatch(updateStringMatchingModulePreviewCharactersState(inputCopy));
@@ -78,9 +78,9 @@ export const StringMatchingModulePreview = ({ title }: IModulePreviewTitle) => {
       if (i === inputLength - 1) {
         await new Promise((resolve) => awaitCancellation(resolve, animationCompleteTime));
         resetComponentState();
+        inputCopy = [...stringMatchingState.characters];
         i = -1;
         await new Promise((resolve) => awaitCancellation(resolve, stepTime * 3));
-        inputCopy = [...stringMatchingState.characters];
       }
     }
   };

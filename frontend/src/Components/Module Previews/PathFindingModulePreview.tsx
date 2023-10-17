@@ -78,8 +78,8 @@ export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
       while (true) {
         gridCopy[rowSource * 8 + columnSource] = CellStateEnum.Selected;
         dispatch(updatePathFindingModulePreviewGridStateAction(gridCopy));
-        await new Promise((resolve) => awaitCancellation(resolve, stepTime));
         gridCopy = [...gridCopy];
+        await new Promise((resolve) => awaitCancellation(resolve, stepTime));
 
         if (columnSource + 1 >= columnNumber || pathFindingState.grid[rowSource * 8 + columnSource + 1] === CellStateEnum.Wall) break;
         else columnSource++;
@@ -88,10 +88,10 @@ export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
       if (rowSource - 1 === rowDestination) {
         await new Promise((resolve) => awaitCancellation(resolve, animationCompleteTime));
         resetComponentState();
+        gridCopy = [...pathFindingState.grid];
         rowSource = 5;
         columnSource = 2;
         await new Promise((resolve) => awaitCancellation(resolve, stepTime * 4));
-        gridCopy = [...pathFindingState.grid];
       } else rowSource--;
     }
   };
