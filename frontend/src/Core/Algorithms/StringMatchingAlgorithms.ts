@@ -86,7 +86,7 @@ export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase
       if (patternIndex === patternLength) {
         patternIndex--;
         for (let i = patternIndex; i >= 0; i--) {
-          if (i > lps[patternIndex - 1]) {
+          if (i > lps[patternIndex]) {
             animationPatternCopy[i] = { ...animationPatternCopy[i], characterState: StringMatchingCharacterStateEnum.Unselected };
           }
 
@@ -113,7 +113,7 @@ export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase
           for (let i = patternIndex; i >= 0; i--) {
             if (i > lps[patternIndex - 1]) {
               animationPatternCopy[i] = { ...animationPatternCopy[i], characterState: StringMatchingCharacterStateEnum.Unselected };
-              animationInputCopy[inputIndex - i] = { ...animationInputCopy[inputIndex - i], characterState: StringMatchingCharacterStateEnum.Unselected };
+              animationInputCopy[inputIndex - i] = { ...animationInputCopy[inputIndex - i], characterState: this.finalState[inputIndex - i].characterState };
             } else {
               animationPatternCopy[i] = { ...animationPatternCopy[i], characterState: StringMatchingCharacterStateEnum.Checked };
               animationInputCopy[inputIndex - i] = { ...animationInputCopy[inputIndex - i], characterState: StringMatchingCharacterStateEnum.Checked };
@@ -128,9 +128,10 @@ export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase
       }
     }
 
-    for (let i = patternIndex; i >= 0; i--) {
+    for (let i = patternLength - 1; i >= 0; i--) {
       animationPatternCopy[i] = { ...animationPatternCopy[i], characterState: StringMatchingCharacterStateEnum.Unselected };
-      animationInputCopy[inputIndex - i] = { ...animationInputCopy[inputIndex - i], characterState: StringMatchingCharacterStateEnum.Unselected };
+      if (inputIndex - i < animationInputCopy.length)
+        animationInputCopy[inputIndex - i] = { ...animationInputCopy[inputIndex - i], characterState: this.finalState[inputIndex - i].characterState };
     }
 
     store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
