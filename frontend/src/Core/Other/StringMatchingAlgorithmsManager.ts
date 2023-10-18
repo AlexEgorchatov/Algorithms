@@ -69,7 +69,7 @@ export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase<IStri
 
   private async finalizeStringMatching(lastIndex: number): Promise<void> {
     let animationInputCopy = [...store.getState().stringMatchingModuleState.stringMatchingAnimationInput];
-    let timeout = 1000 / (animationInputCopy.length - lastIndex);
+    let timeout = 300 / (animationInputCopy.length - lastIndex);
 
     for (let i = lastIndex; i < animationInputCopy.length; i++) {
       animationInputCopy[i] = { ...animationInputCopy[i], characterState: StringMatchingCharacterStateEnum.Current };
