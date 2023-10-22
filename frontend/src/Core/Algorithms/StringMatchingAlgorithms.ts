@@ -15,30 +15,30 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
     let patternLength: number = animationPatternCopy.length;
     let inputLength: number = animationInputCopy.length;
 
-    for (let inputIndex = 0; inputIndex <= inputLength - patternLength; inputIndex++) {
-      let patternIndex = 0;
-      for (patternIndex = 0; patternIndex < patternLength; patternIndex++) {
-        this.selectCharacters(animationPatternCopy, animationInputCopy, patternIndex, inputIndex + patternIndex, StringMatchingCharacterStateEnum.Current);
+    for (let i = 0; i <= inputLength - patternLength; i++) {
+      let j = 0;
+      for (j = 0; j < patternLength; j++) {
+        this.selectCharacters(animationPatternCopy, animationInputCopy, j, i + j, StringMatchingCharacterStateEnum.Current);
         store.dispatch(updateStringMatchingAnimationPatternState(animationPatternCopy));
         store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
         animationPatternCopy = [...animationPatternCopy];
         animationInputCopy = [...animationInputCopy];
 
         await pauseForStepIteration();
-        if (await isAnimationTerminated()) return inputIndex;
-        if (animationInputCopy[inputIndex + patternIndex].character.toLowerCase() !== animationPatternCopy[patternIndex].character.toLowerCase()) break;
+        if (await isAnimationTerminated()) return i;
+        if (animationInputCopy[i + j].character.toLowerCase() !== animationPatternCopy[j].character.toLowerCase()) break;
 
-        this.selectCharacters(animationPatternCopy, animationInputCopy, patternIndex, inputIndex + patternIndex, StringMatchingCharacterStateEnum.Checked);
+        this.selectCharacters(animationPatternCopy, animationInputCopy, j, i + j, StringMatchingCharacterStateEnum.Checked);
       }
 
-      patternIndex = patternIndex === patternLength ? patternIndex - 1 : patternIndex;
-      for (; patternIndex >= 0; patternIndex--) {
-        animationPatternCopy[patternIndex] = { ...animationPatternCopy[patternIndex], characterState: StringMatchingCharacterStateEnum.Unselected };
-        animationInputCopy[inputIndex + patternIndex] = {
-          ...animationInputCopy[inputIndex + patternIndex],
+      j = j === patternLength ? j - 1 : j;
+      for (; j >= 0; j--) {
+        animationPatternCopy[j] = { ...animationPatternCopy[j], characterState: StringMatchingCharacterStateEnum.Unselected };
+        animationInputCopy[i + j] = {
+          ...animationInputCopy[i + j],
           characterState:
-            this.finalState[inputIndex].characterState === StringMatchingCharacterStateEnum.Found &&
-            this.finalState[inputIndex + patternIndex].characterState === StringMatchingCharacterStateEnum.Found
+            this.finalState[i].characterState === StringMatchingCharacterStateEnum.Found &&
+            this.finalState[i + j].characterState === StringMatchingCharacterStateEnum.Found
               ? StringMatchingCharacterStateEnum.Found
               : StringMatchingCharacterStateEnum.Unselected,
         };
@@ -114,9 +114,10 @@ export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase
       }
     }
 
+    inputIndex = inputIndex >= animationInputCopy.length ? inputIndex - 1 : inputIndex;
     for (let i = patternLength - 1; i >= 0; i--) {
       animationPatternCopy[i] = { ...animationPatternCopy[i], characterState: StringMatchingCharacterStateEnum.Unselected };
-      if (inputIndex - i >= animationInputCopy.length) continue;
+      if (inputIndex - i < 0) continue;
 
       animationInputCopy[inputIndex - i] = { ...animationInputCopy[inputIndex - i], characterState: this.finalState[inputIndex - i].characterState };
     }
@@ -137,7 +138,7 @@ export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase
         continue;
       }
 
-      if (prefixSuffixLength === 0) lps[lpsIndex++] = prefixSuffixLength;
+      if (prefixSuffixLength === 0) lpsIndex++;
       else prefixSuffixLength = lps[prefixSuffixLength - 1];
     }
 
