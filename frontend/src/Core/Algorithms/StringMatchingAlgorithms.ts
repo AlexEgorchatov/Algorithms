@@ -57,10 +57,7 @@ export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase
     let animationInputCopy = [...store.getState().stringMatchingModuleState.stringMatchingAnimationInput];
     let patternLength = animationPatternCopy.length;
     let inputLength = animationInputCopy.length;
-    let lps: number[] = new Array(patternLength).fill(0);
-
-    this.computeLPSArray(animationPatternCopy, lps);
-
+    let lps: number[] = this.computeLPSArray(animationPatternCopy);
     let inputIndex: number = 0;
     let patternIndex: number = 0;
 
@@ -75,28 +72,24 @@ export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase
       if (await isAnimationTerminated()) return inputIndex - patternIndex;
 
       if (animationPatternCopy[patternIndex].character.toLowerCase() === animationInputCopy[inputIndex].character.toLowerCase()) {
-        this.selectCharacters(animationPatternCopy, animationInputCopy, patternIndex, inputIndex, StringMatchingCharacterStateEnum.Checked);
+        if (patternIndex + 1 !== patternLength)
+          this.selectCharacters(animationPatternCopy, animationInputCopy, patternIndex, inputIndex, StringMatchingCharacterStateEnum.Checked);
         patternIndex++;
         inputIndex++;
       }
       if (patternIndex === patternLength) {
         patternIndex--;
         for (let i = patternIndex; i >= 0; i--) {
-          if (i > lps[patternIndex]) {
-            animationPatternCopy[i] = { ...animationPatternCopy[i], characterState: StringMatchingCharacterStateEnum.Unselected };
-          }
-
+          animationPatternCopy[i] =
+            i > lps[patternIndex] ? { ...animationPatternCopy[i], characterState: StringMatchingCharacterStateEnum.Unselected } : { ...animationPatternCopy[i] };
           animationInputCopy[inputIndex - i - 1] = {
             ...animationInputCopy[inputIndex - i - 1],
-            characterState: this.finalState[inputIndex - i - 1].characterState,
+            characterState: i >= lps[patternIndex] ? this.finalState[inputIndex - i - 1].characterState : StringMatchingCharacterStateEnum.Checked,
           };
         }
 
         patternIndex = lps[patternLength - 1];
-      } else if (
-        inputIndex < inputLength &&
-        animationPatternCopy[patternIndex].character.toLowerCase() !== animationInputCopy[inputIndex].character.toLowerCase()
-      ) {
+      } else if (inputIndex < inputLength && animationPatternCopy[patternIndex].character.toLowerCase() !== animationInputCopy[inputIndex].character.toLowerCase()) {
         if (patternIndex !== 0) {
           if (animationPatternCopy[patternIndex].characterState !== StringMatchingCharacterStateEnum.Current) {
             this.selectCharacters(animationPatternCopy, animationInputCopy, patternIndex, inputIndex, StringMatchingCharacterStateEnum.Current);
@@ -108,13 +101,9 @@ export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase
             await pauseForStepIteration();
             if (await isAnimationTerminated()) return inputIndex - patternIndex;
           }
-          for (let i = patternIndex; i >= 0; i--) {
-            if (i > lps[patternIndex - 1]) {
-              animationPatternCopy[i] = { ...animationPatternCopy[i], characterState: StringMatchingCharacterStateEnum.Unselected };
-              animationInputCopy[inputIndex - i] = { ...animationInputCopy[inputIndex - i], characterState: this.finalState[inputIndex - i].characterState };
-            } else {
-              this.selectCharacters(animationPatternCopy, animationInputCopy, i, inputIndex - i, StringMatchingCharacterStateEnum.Checked);
-            }
+          for (let i = patternIndex; i > lps[patternIndex - 1]; i--) {
+            animationPatternCopy[i] = { ...animationPatternCopy[i], characterState: StringMatchingCharacterStateEnum.Unselected };
+            animationInputCopy[inputIndex - i] = { ...animationInputCopy[inputIndex - i], characterState: this.finalState[inputIndex - i].characterState };
           }
 
           patternIndex = lps[patternIndex - 1];
@@ -137,41 +126,21 @@ export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase
     return -1;
   }
 
-  private computeLPSArray(pattern: IStringMatchingCharacterProps[], lps: number[]): void {
-    let length: number = 0;
-    let i: number = 1;
+  private computeLPSArray(pattern: IStringMatchingCharacterProps[]): number[] {
+    let prefixSuffixLength: number = 0;
+    let lpsIndex: number = 1;
+    let lps: number[] = new Array(pattern.length).fill(0);
 
-    while (i < pattern.length) {
-      if (pattern[i].character === pattern[length].character) {
-        lps[i++] = ++length;
+    while (lpsIndex < pattern.length) {
+      if (pattern[lpsIndex].character === pattern[prefixSuffixLength].character) {
+        lps[lpsIndex++] = ++prefixSuffixLength;
         continue;
       }
 
-      if (length === 0) lps[i++] = length;
-      else length = lps[length - 1];
+      if (prefixSuffixLength === 0) lps[lpsIndex++] = prefixSuffixLength;
+      else prefixSuffixLength = lps[prefixSuffixLength - 1];
     }
+
+    return lps;
   }
 }
-
-/*
-THIS IS A TEST TEXT
-TEST
-
-AABAACAADAABAABA
-AABA
-
-AAAAAAAAAAAAAAAAAB
-AAAAB
-
-ABABABCABABABCABABABC
-ABABAC
-
-AAAAABAAABA
-AAAA
-
-aaaabaaaaab
-aaaab
-
-aaaaaabaaaaab
-aaaab
-*/
