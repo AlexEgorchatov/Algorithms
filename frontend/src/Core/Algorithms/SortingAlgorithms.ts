@@ -27,7 +27,7 @@ export class BubbleSort extends SortingAlgorithmBase {
         await pauseForStepIteration();
         if (await isAnimationTerminated()) return;
 
-        //TODO: Figure out why putting this code in a function breaks the algorithm
+        //TODO: Figure out why putting this code in a function breaks the animation
         barsCopy = [...barsCopy];
         let tempBar = { ...barsCopy[j] };
         barsCopy[j] = { ...barsCopy[j], barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Unselected };
