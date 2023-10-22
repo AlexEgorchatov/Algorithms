@@ -57,7 +57,7 @@ const StringMatchingPatternComponent = () => {
       dispatch(updateStringMatchingAnimationInputState(processStringMatchingInput(stringMatchingModuleState.stringMatchingInput)));
       stringMatchingAlgorithmManager.isStateUpdated = true;
 
-      if (stringMatchingModuleState.stringMatchingPattern.length === 0) {
+      if (stringMatchingModuleState.stringMatchingPattern.length === 0 || stringMatchingModuleState.stringMatchingInput.length === 0) {
         dispatch(updateCanAnimationBeStartedStateAction(false));
         dispatch(updateWarningMessageState('At least one textbox is empty, animation is disabled'));
       } else if (stringMatchingModuleState.stringMatchingInput.length < stringMatchingModuleState.stringMatchingPattern.length) {
@@ -147,7 +147,7 @@ const StringMatchingInputComponent = () => {
       dispatch(updateStringMatchingAnimationInputState(processStringMatchingInput(stringMatchingModuleState.stringMatchingInput)));
       stringMatchingAlgorithmManager.isStateUpdated = true;
 
-      if (stringMatchingModuleState.stringMatchingInput.length === 0) {
+      if (stringMatchingModuleState.stringMatchingPattern.length === 0 || stringMatchingModuleState.stringMatchingInput.length === 0) {
         dispatch(updateCanAnimationBeStartedStateAction(false));
         dispatch(updateWarningMessageState('At least one textbox is empty, animation is disabled'));
       } else if (stringMatchingModuleState.stringMatchingInput.length < stringMatchingModuleState.stringMatchingPattern.length) {
