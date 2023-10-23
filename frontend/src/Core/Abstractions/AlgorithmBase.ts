@@ -1,17 +1,13 @@
 import { SortingBarStateEnum, StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 import { updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingModuleStateManagement';
 import { store } from '../../Store/Store';
-import {
-  updateStringMatchingAnimationInputState,
-  updateStringMatchingAnimationPatternState,
-} from '../../Store/String Matching Module/StringMatchingModuleStateManagement';
 import { ISortingBarProps } from '../Interfaces/ISortingBarProps';
 import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingCharacterProps';
 
 /**
  * @abstract Abstract class for any algorithm.
- * The initial state is universal for all algorithms that belong to a specific module, but in general,
- * the final state depends on the selected algorithm. Hence, the initial state is not a part of the abstraction.
+ * The initial state is universal for all algorithms that belong to a specific module,
+ * but the final state depends on the selected algorithm. Hence, the initial state is not a part of the abstraction.
  */
 export abstract class AlgorithmBase<T> {
   abstract executeAlgorithm(): Promise<any>;
