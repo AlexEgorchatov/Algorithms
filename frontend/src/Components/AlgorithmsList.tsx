@@ -15,7 +15,7 @@ interface AlgorithmListProps {
 interface AlgorithmProps {
   title: string;
   isSelected: boolean;
-  algorithm: AlgorithmBase<any>;
+  algorithm: AlgorithmBase;
 }
 
 const AlgorithmComponent = ({ title, isSelected, algorithm }: AlgorithmProps) => {

@@ -2,7 +2,7 @@ import { IStoreModule } from '../Interfaces/IStoreModule';
 import { AlgorithmBase } from './AlgorithmBase';
 
 export abstract class AlgorithmsManagerBase<T> {
-  public abstract selectedAlgorithm: AlgorithmBase<any>;
+  public abstract selectedAlgorithm: AlgorithmBase;
   public abstract initialState: T[];
   public abstract isStateUpdated: boolean;
 

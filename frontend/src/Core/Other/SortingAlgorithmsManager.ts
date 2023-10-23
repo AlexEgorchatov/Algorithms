@@ -8,11 +8,11 @@ import { ISortingBarProps } from '../Interfaces/ISortingBarProps';
 import { IStoreModule } from '../Interfaces/IStoreModule';
 
 export class SortingAlgorithmsManager extends AlgorithmsManagerBase<ISortingBarProps> {
-  public selectedAlgorithm: AlgorithmBase<any>;
+  public selectedAlgorithm: AlgorithmBase;
   public initialState: ISortingBarProps[] = [];
   public isStateUpdated: boolean = false;
 
-  public constructor(selectedAlgorithm: AlgorithmBase<any>) {
+  public constructor(selectedAlgorithm: AlgorithmBase) {
     super();
     this.selectedAlgorithm = selectedAlgorithm;
     store.dispatch(updateSelectedSortingAlgorithmState(selectedAlgorithm.constructor.name));

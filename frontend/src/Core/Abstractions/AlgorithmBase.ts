@@ -9,13 +9,13 @@ import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingChar
  * The initial state is universal for all algorithms that belong to a specific module,
  * but the final state depends on the selected algorithm. Hence, the initial state is not a part of the abstraction.
  */
-export abstract class AlgorithmBase<T> {
+export abstract class AlgorithmBase {
   abstract executeAlgorithm(): Promise<any>;
-  abstract finalState: T[];
+  abstract finalState: any[];
   abstract setFinalState(): void;
 }
 
-export abstract class SortingAlgorithmBase extends AlgorithmBase<ISortingBarProps> {
+export abstract class SortingAlgorithmBase extends AlgorithmBase {
   public finalState: ISortingBarProps[] = [];
 
   public setFinalState(): void {
@@ -47,7 +47,7 @@ export abstract class SortingAlgorithmBase extends AlgorithmBase<ISortingBarProp
   }
 }
 
-export abstract class StringMatchingAlgorithmBase extends AlgorithmBase<IStringMatchingCharacterProps> {
+export abstract class StringMatchingAlgorithmBase extends AlgorithmBase {
   public finalState: IStringMatchingCharacterProps[] = [];
   public finalPatternState: IStringMatchingCharacterProps[] = [];
 

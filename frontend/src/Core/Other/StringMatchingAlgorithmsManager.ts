@@ -13,12 +13,12 @@ import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingChar
 import { isAnimationCompleted } from './AnimationManager';
 
 export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase<IStringMatchingCharacterProps> {
-  public selectedAlgorithm: AlgorithmBase<any>;
+  public selectedAlgorithm: AlgorithmBase;
   public initialState: IStringMatchingCharacterProps[] = [];
   public initialPatternState: IStringMatchingCharacterProps[] = [];
   public isStateUpdated: boolean = false;
 
-  public constructor(selectedAlgorithm: AlgorithmBase<any>) {
+  public constructor(selectedAlgorithm: AlgorithmBase) {
     super();
     this.selectedAlgorithm = selectedAlgorithm;
     store.dispatch(updateSelectedStringMatchingAlgorithmState(selectedAlgorithm.constructor.name));
