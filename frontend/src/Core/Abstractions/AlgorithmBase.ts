@@ -1,6 +1,7 @@
 import { SortingBarStateEnum, StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 import { updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingModuleStateManagement';
 import { store } from '../../Store/Store';
+import { IPathFindingCellProps } from '../Interfaces/IPathFindingCellProps';
 import { ISortingBarProps } from '../Interfaces/ISortingBarProps';
 import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingCharacterProps';
 
@@ -80,4 +81,8 @@ export abstract class StringMatchingAlgorithmBase extends AlgorithmBase {
     animationPatternCopy[patternIndex] = { ...animationPatternCopy[patternIndex], characterState: highlightCharacterState };
     animationInputCopy[inputIndex] = { ...animationInputCopy[inputIndex], characterState: highlightCharacterState };
   }
+}
+
+export abstract class PathFindingAlgorithmBase extends AlgorithmBase {
+  public finalState: IPathFindingCellProps[] = [];
 }

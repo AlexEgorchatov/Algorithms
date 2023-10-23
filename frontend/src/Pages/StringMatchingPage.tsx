@@ -226,6 +226,36 @@ const StringMatchingInputComponent = () => {
   );
 };
 
+const StringMatchingCharacterComponent = ({ character, characterState = StringMatchingCharacterStateEnum.Unselected }: IStringMatchingCharacterProps) => {
+  const setFont = () => {
+    switch (characterState) {
+      case StringMatchingCharacterStateEnum.Current:
+        return `color: white; background-color: black`;
+
+      case StringMatchingCharacterStateEnum.Found:
+        return 'color: black; background-color: #ffff00';
+
+      case StringMatchingCharacterStateEnum.Checked:
+        return 'color: white; background-color: orange';
+
+      case StringMatchingCharacterStateEnum.Unselected:
+      default:
+        return 'color: white; background-color: transparent';
+    }
+  };
+
+  return (
+    <div
+      css={css`
+        width: 16.5px;
+        ${setFont()}
+      `}
+    >
+      {character}
+    </div>
+  );
+};
+
 const SettingsComponent = () => {
   const stringMatchingModuleState = useSelector((state: AppState) => state.stringMatchingModuleState);
   const dispatch = useDispatch();
@@ -397,36 +427,6 @@ const AnimationComponent = () => {
           </animationContext.Provider>
         </div>
       </div>
-    </div>
-  );
-};
-
-const StringMatchingCharacterComponent = ({ character, characterState = StringMatchingCharacterStateEnum.Unselected }: IStringMatchingCharacterProps) => {
-  const setFont = () => {
-    switch (characterState) {
-      case StringMatchingCharacterStateEnum.Current:
-        return `color: white; background-color: black`;
-
-      case StringMatchingCharacterStateEnum.Found:
-        return 'color: black; background-color: #ffff00';
-
-      case StringMatchingCharacterStateEnum.Checked:
-        return 'color: white; background-color: orange';
-
-      case StringMatchingCharacterStateEnum.Unselected:
-      default:
-        return 'color: white; background-color: transparent';
-    }
-  };
-
-  return (
-    <div
-      css={css`
-        width: 16.5px;
-        ${setFont()}
-      `}
-    >
-      {character}
     </div>
   );
 };

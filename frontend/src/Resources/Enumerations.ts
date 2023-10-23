@@ -4,14 +4,6 @@ export enum ModuleEnum {
   PathFinding = 2,
 }
 
-export enum CellStateEnum {
-  Unselected = 0,
-  Selected = 1,
-  Source = 2,
-  Destination = 3,
-  Wall = 4,
-}
-
 export enum SortingBarStateEnum {
   Unselected = 0,
   Selected = 1,
@@ -24,4 +16,13 @@ export enum StringMatchingCharacterStateEnum {
   Checked = 1,
   Current = 2,
   Found = 3,
+}
+
+export enum PathFindingCellStateEnum {
+  Unselected = 0,
+  Checked = 1,
+  Source = 2,
+  Destination = 3,
+  Wall = 4,
+  Path = 5,
 }

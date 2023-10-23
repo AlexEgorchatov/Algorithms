@@ -5,9 +5,9 @@ import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 export let isAnimationCompleted: boolean = false;
 
 export class AnimationManager {
-  public readonly algorithmManager: AlgorithmsManagerBase<any>;
+  public readonly algorithmManager: AlgorithmsManagerBase;
 
-  public constructor(algorithmManager: AlgorithmsManagerBase<any>) {
+  public constructor(algorithmManager: AlgorithmsManagerBase) {
     this.algorithmManager = algorithmManager;
   }
 

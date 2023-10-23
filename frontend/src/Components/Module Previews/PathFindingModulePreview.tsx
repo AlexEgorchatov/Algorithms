@@ -6,33 +6,33 @@ import { updatePathFindingModulePreviewGridStateAction } from '../../Store/Home 
 import { useSelector } from 'react-redux';
 import { AppState } from '../../Store/Store';
 import { useDispatch } from 'react-redux';
-import { CellStateEnum } from '../../Resources/Enumerations';
+import { PathFindingCellStateEnum } from '../../Resources/Enumerations';
 import { IModulePreviewTitle } from '../../Core/Interfaces/IModuleTitle';
 
 interface Props {
-  state: CellStateEnum;
+  state: PathFindingCellStateEnum;
 }
 
-const GridCell = ({ state = CellStateEnum.Unselected }: Props) => {
+const GridCell = ({ state = PathFindingCellStateEnum.Unselected }: Props) => {
   useEffect(() => {
     setBackground();
   });
 
   const setBackground = () => {
     switch (state) {
-      case CellStateEnum.Unselected:
+      case PathFindingCellStateEnum.Unselected:
         return 'background-color: #ffffff';
 
-      case CellStateEnum.Selected:
+      case PathFindingCellStateEnum.Checked:
         return 'background-color: #1100ff';
 
-      case CellStateEnum.Source:
+      case PathFindingCellStateEnum.Source:
         return 'background-color: green';
 
-      case CellStateEnum.Destination:
+      case PathFindingCellStateEnum.Destination:
         return 'background-color: red';
 
-      case CellStateEnum.Wall:
+      case PathFindingCellStateEnum.Wall:
         return 'background-color: gray';
     }
   };
@@ -76,12 +76,12 @@ export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
 
     while (rowSource !== rowDestination) {
       while (true) {
-        gridCopy[rowSource * 8 + columnSource] = CellStateEnum.Selected;
+        gridCopy[rowSource * 8 + columnSource] = PathFindingCellStateEnum.Checked;
         dispatch(updatePathFindingModulePreviewGridStateAction(gridCopy));
         gridCopy = [...gridCopy];
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
 
-        if (columnSource + 1 >= columnNumber || pathFindingState.grid[rowSource * 8 + columnSource + 1] === CellStateEnum.Wall) break;
+        if (columnSource + 1 >= columnNumber || pathFindingState.grid[rowSource * 8 + columnSource + 1] === PathFindingCellStateEnum.Wall) break;
         else columnSource++;
       }
 
@@ -110,7 +110,7 @@ export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
             flex-wrap: wrap;
           `}
         >
-          {pathFindingState.grid.map((state: CellStateEnum, index) => (
+          {pathFindingState.grid.map((state: PathFindingCellStateEnum, index) => (
             <GridCell key={index} state={state} />
           ))}
         </div>

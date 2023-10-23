@@ -11,7 +11,7 @@ interface animationProps {
 }
 
 interface algorithmProps {
-  algorithmManager: AlgorithmsManagerBase<any>;
+  algorithmManager: AlgorithmsManagerBase;
 }
 
 export const animationContext = createContext<animationProps>({
@@ -19,7 +19,7 @@ export const animationContext = createContext<animationProps>({
 });
 
 export const algorithmContext = createContext<algorithmProps>({
-  algorithmManager: {} as AlgorithmsManagerBase<any>,
+  algorithmManager: {} as AlgorithmsManagerBase,
 });
 
 export const pauseForStepIteration = async (): Promise<void> => {

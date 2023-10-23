@@ -7,7 +7,7 @@ import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 import { ISortingBarProps } from '../Interfaces/ISortingBarProps';
 import { IStoreModule } from '../Interfaces/IStoreModule';
 
-export class SortingAlgorithmsManager extends AlgorithmsManagerBase<ISortingBarProps> {
+export class SortingAlgorithmsManager extends AlgorithmsManagerBase {
   public selectedAlgorithm: AlgorithmBase;
   public initialState: ISortingBarProps[] = [];
   public isStateUpdated: boolean = false;

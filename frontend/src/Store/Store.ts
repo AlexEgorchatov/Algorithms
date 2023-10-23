@@ -9,15 +9,17 @@ import { stringMatchingModuleReducer, StringMatchingModuleState } from './String
 import { animationReducer, AnimationState } from './Shared/AnimationStateManagement';
 import { SortingModulePreviewState, sortingModulePreviewReducer } from './Home Page/Module Previews/SortingModulePreviewStateManagement';
 import { stringMatchingModulePreviewReducer, StringMatchingModulePreviewState } from './Home Page/Module Previews/StringMatchingModulePreviewStateManagement';
+import { pathFindingModuleReducer, PathFindingModuleState } from './Path Finding Module/PathFindingModuleStateManagement';
 
 const rootReducer = combineReducers<AppState>({
   sortingModulePreviewState: sortingModulePreviewReducer,
   stringMatchingModulePreviewState: stringMatchingModulePreviewReducer,
   pathFindingModulePreviewState: pathFindingModulePreviewReducer,
-  headerState: headerReducer,
-  sliderComponentState: sliderComponentReducer,
   sortingModuleState: sortingModuleReducer,
   stringMatchingModuleState: stringMatchingModuleReducer,
+  pathFindingModuleState: pathFindingModuleReducer,
+  headerState: headerReducer,
+  sliderComponentState: sliderComponentReducer,
   windowState: windowReducer,
   animationState: animationReducer,
 });
@@ -26,10 +28,11 @@ export interface AppState {
   readonly sortingModulePreviewState: SortingModulePreviewState;
   readonly stringMatchingModulePreviewState: StringMatchingModulePreviewState;
   readonly pathFindingModulePreviewState: PathFindingModulePreviewState;
-  readonly headerState: HeaderState;
-  readonly sliderComponentState: SliderComponentState;
   readonly sortingModuleState: SortingModuleState;
   readonly stringMatchingModuleState: StringMatchingModuleState;
+  readonly pathFindingModuleState: PathFindingModuleState;
+  readonly headerState: HeaderState;
+  readonly sliderComponentState: SliderComponentState;
   readonly windowState: WindowState;
   readonly animationState: AnimationState;
 }

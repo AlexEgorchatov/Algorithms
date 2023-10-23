@@ -12,7 +12,7 @@ import { IStoreModule } from '../Interfaces/IStoreModule';
 import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingCharacterProps';
 import { isAnimationCompleted } from './AnimationManager';
 
-export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase<IStringMatchingCharacterProps> {
+export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase {
   public selectedAlgorithm: AlgorithmBase;
   public initialState: IStringMatchingCharacterProps[] = [];
   public initialPatternState: IStringMatchingCharacterProps[] = [];
