@@ -2,12 +2,11 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect, useRef } from 'react';
-import { completionColor, errorMessageColor, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
+import { checkedColor, completionColor, errorMessageColor, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
 import { sortingAlgorithmsData } from '../Core/Data/SortingData';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { AppState } from '../Store/Store';
-import { useDispatch } from 'react-redux';
 import {
   updateSortingBarsStateAction,
   updateSortingInputStateAction,
@@ -17,7 +16,7 @@ import {
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { algorithmContext, algorithmIterationBaseTime, animationContext, minAppWidth } from '../Core/Helper';
-import { RefreshButton } from '../Components/RefreshButton';
+import { ResetButton } from '../Components/ResetButton';
 import { SortingAlgorithmsManager } from '../Core/Other/SortingAlgorithmsManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
 import { SortingBarStateEnum } from '../Resources/Enumerations';
@@ -171,10 +170,10 @@ const GenerateInputComponent = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    handleGenerateElements();
+    generateElements();
   }, []);
 
-  const handleGenerateElements = () => {
+  const generateElements = () => {
     if (animationState.hasAnimationStarted) return;
     if (inputRef.current === null) return;
 
@@ -201,7 +200,7 @@ const GenerateInputComponent = () => {
   const handleEnterKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') return;
 
-    handleGenerateElements();
+    generateElements();
   };
 
   const validateInput = (currentInput: string) => {
@@ -220,7 +219,7 @@ const GenerateInputComponent = () => {
         width: 73px;
       `}
     >
-      <RefreshButton refreshFunction={handleGenerateElements} />
+      <ResetButton resetFunction={generateElements} />
       <input
         css={css`
           width: 40px;
@@ -272,10 +271,10 @@ const SortingBarComponent = ({ barHeight, barID, barState = SortingBarStateEnum.
         return 'white';
 
       case SortingBarStateEnum.Selected:
-        return 'orange';
+        return checkedColor;
 
       case SortingBarStateEnum.Pivot:
-        return `${pivotColor}`;
+        return pivotColor;
 
       case SortingBarStateEnum.Completed:
         return completionColor;

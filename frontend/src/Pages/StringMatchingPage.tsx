@@ -16,7 +16,7 @@ import {
 import { algorithmContext, animationContext } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
-import { RefreshButton } from '../Components/RefreshButton';
+import { ResetButton } from '../Components/ResetButton';
 import { StringMatchingAlgorithmsManager } from '../Core/Other/StringMatchingAlgorithmsManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
 import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
@@ -261,10 +261,10 @@ const SettingsComponent = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    refreshState();
+    resetState();
   }, []);
 
-  const refreshState = () => {
+  const resetState = () => {
     dispatch(updateStringMatchingPatternState(renderedPattern));
     dispatch(updateStringMatchingInputState(renderedInput));
   };
@@ -322,7 +322,7 @@ const SettingsComponent = () => {
               <animationContext.Provider value={{ animationManager: stringMatchingAnimationManager }}>
                 <ActionBar />
               </animationContext.Provider>
-              <RefreshButton refreshFunction={refreshState} />
+              <ResetButton resetFunction={resetState} />
             </div>
 
             <WarningMessageComponent message={stringMatchingModuleState.warningMessage} />

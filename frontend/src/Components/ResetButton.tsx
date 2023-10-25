@@ -5,10 +5,10 @@ import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
 
 interface Props {
-  refreshFunction: () => void;
+  resetFunction: () => void;
 }
 
-export const RefreshButton = ({ refreshFunction }: Props) => {
+export const ResetButton = ({ resetFunction: refreshFunction }: Props) => {
   const algorithmState = useSelector((state: AppState) => state.animationState);
 
   const handleRefreshButtonClick = () => {

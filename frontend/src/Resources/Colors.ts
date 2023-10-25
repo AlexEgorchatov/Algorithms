@@ -7,4 +7,5 @@ export const headerItemHovered = '#f59e42';
 export const errorMessageColor = '#ff5f1f';
 export const warningMessageColor = '#ede04d';
 export const completionColor = '#FFD700';
+export const checkedColor = '#ffa500';
 export const pivotColor = '#adff2f';
