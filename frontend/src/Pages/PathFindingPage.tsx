@@ -127,6 +127,29 @@ const CellActions = () => {
 };
 
 const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselected }: IPathFindingCellProps) => {
+  const animationState = useSelector((state: AppState) => state.animationState);
+  const pathFindingState = useSelector((state: AppState) => state.pathFindingModuleState);
+  const dispatch = useDispatch();
+
+  const getCursor = (): string => {
+    if (animationState.hasAnimationStarted) return 'cursor';
+    if (pathFindingState.pathFindingCellAction === PathFindingCellStateEnum.None) return 'cursor';
+
+    return 'pointer';
+  };
+  const getHoverStyle = (): string => {
+    if (animationState.hasAnimationStarted) return ``;
+    if (pathFindingState.pathFindingCellAction === PathFindingCellStateEnum.None) return ``;
+
+    const transparentColor = getCellColor(pathFindingState.pathFindingCellAction).replace(')', ', 0.5)').replace('rgb', 'rgba');
+
+    let style: string = `
+      background-color: ${transparentColor};
+    `;
+    return style;
+  };
+  const handleMouseEnter = () => {};
+
   return (
     <div
       css={css`
@@ -137,8 +160,12 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
         border-style: solid;
         margin: -1px;
         background-color: ${getCellColor(cellState)};
-        cursor: pointer;
+        cursor: ${getCursor()};
+        :hover {
+          ${getHoverStyle()}
+        }
       `}
+      onMouseEnter={handleMouseEnter}
     ></div>
   );
 };
@@ -154,7 +181,7 @@ const SettingsComponent = () => {
     for (let i = 0; i < grid.length; i++) {
       grid[i] = new Array(arrayLength);
       for (let j = 0; j < grid[i].length; j++) {
-        grid[i][j] = { cellState: PathFindingCellStateEnum.Unselected };
+        grid[i][j] = { cellState: PathFindingCellStateEnum.Unselected, rowIndex: i, columnIndex: j };
       }
     }
     grid[Math.floor(grid.length / 2 - 3)][Math.floor(arrayLength / 2 - 5)].cellState = PathFindingCellStateEnum.Source;
@@ -274,8 +301,8 @@ const AnimationComponent = () => {
                 `}
                 key={rowIndex}
               >
-                {row.map((cellState, cellIndex) => (
-                  <PathFindingCellComponent key={cellIndex} cellState={cellState.cellState} />
+                {row.map((cellState, columnIndex) => (
+                  <PathFindingCellComponent key={columnIndex} cellState={cellState.cellState} rowIndex={rowIndex} columnIndex={columnIndex} />
                 ))}
               </div>
             ))}
