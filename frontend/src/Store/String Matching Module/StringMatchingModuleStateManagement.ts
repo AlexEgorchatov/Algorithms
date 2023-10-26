@@ -1,10 +1,9 @@
-import { IStoreModule } from '../../Core/Interfaces/IStoreModule';
 import { IStringMatchingCharacterProps } from '../../Core/Interfaces/IStringMatchingCharacterProps';
 
 //#region State
-export interface StringMatchingModuleState extends IStoreModule {
+export interface StringMatchingModuleState {
   readonly selectedStringMatchingAlgorithm: string;
-  readonly warningMessage: string;
+  readonly stringMatchingWarningMessage: string;
   readonly stringMatchingPattern: string;
   readonly stringMatchingInput: string;
   readonly stringMatchingAnimationPattern: IStringMatchingCharacterProps[];
@@ -13,7 +12,7 @@ export interface StringMatchingModuleState extends IStoreModule {
 
 const initialStringMatchingModuleState: StringMatchingModuleState = {
   selectedStringMatchingAlgorithm: '',
-  warningMessage: '',
+  stringMatchingWarningMessage: '',
   stringMatchingPattern: '',
   stringMatchingInput: '',
   stringMatchingAnimationPattern: [],
@@ -29,11 +28,11 @@ export const updateSelectedStringMatchingAlgorithmState = (selectedStringMatchin
     selectedStringMatchingAlgorithm: selectedStringMatchingAlgorithm,
   } as const);
 
-const UPDATE_WARNING_MESSAGE_STATE = 'updateWarningMessageState';
-export const updateWarningMessageState = (warningMessage = initialStringMatchingModuleState.warningMessage) =>
+const UPDATE_STRING_MATCHING_WARNING_MESSAGE_STATE = 'updateStringMatchingWarningMessageState';
+export const updateStringMatchingWarningMessageState = (stringMatchingWarningMessage = initialStringMatchingModuleState.stringMatchingWarningMessage) =>
   ({
-    type: UPDATE_WARNING_MESSAGE_STATE,
-    warningMessage: warningMessage,
+    type: UPDATE_STRING_MATCHING_WARNING_MESSAGE_STATE,
+    stringMatchingWarningMessage: stringMatchingWarningMessage,
   } as const);
 
 export const UPDATE_STRING_MATCHING_PATTERN_STATE = 'updateStringMatchingPatternState';
@@ -68,7 +67,7 @@ export const updateStringMatchingAnimationInputState = (stringMatchingAnimationI
 //#region Reducers
 type StringMatchingModuleActions =
   | ReturnType<typeof updateSelectedStringMatchingAlgorithmState>
-  | ReturnType<typeof updateWarningMessageState>
+  | ReturnType<typeof updateStringMatchingWarningMessageState>
   | ReturnType<typeof updateStringMatchingPatternState>
   | ReturnType<typeof updateStringMatchingInputState>
   | ReturnType<typeof updateStringMatchingAnimationPatternState>
@@ -82,10 +81,10 @@ export const stringMatchingModuleReducer = (state = initialStringMatchingModuleS
         selectedStringMatchingAlgorithm: action.selectedStringMatchingAlgorithm,
       };
 
-    case UPDATE_WARNING_MESSAGE_STATE:
+    case UPDATE_STRING_MATCHING_WARNING_MESSAGE_STATE:
       return {
         ...state,
-        warningMessage: action.warningMessage,
+        stringMatchingWarningMessage: action.stringMatchingWarningMessage,
       };
 
     case UPDATE_STRING_MATCHING_PATTERN_STATE:

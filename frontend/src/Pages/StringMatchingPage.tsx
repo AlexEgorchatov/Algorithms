@@ -11,7 +11,7 @@ import {
   updateStringMatchingAnimationPatternState,
   updateStringMatchingInputState,
   updateStringMatchingPatternState,
-  updateWarningMessageState,
+  updateStringMatchingWarningMessageState,
 } from '../Store/String Matching Module/StringMatchingModuleStateManagement';
 import { algorithmContext, animationContext } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
@@ -47,7 +47,7 @@ const processStringMatchingInput = (input: string): IStringMatchingCharacterProp
 
 const StringMatchingPatternComponent = () => {
   const stringMatchingModuleState = useSelector((state: AppState) => state.stringMatchingModuleState);
-  const algorithmState = useSelector((state: AppState) => state.animationState);
+  const animationState = useSelector((state: AppState) => state.animationState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
@@ -59,10 +59,10 @@ const StringMatchingPatternComponent = () => {
 
       if (stringMatchingModuleState.stringMatchingPattern.length === 0 || stringMatchingModuleState.stringMatchingInput.length === 0) {
         dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(updateWarningMessageState('At least one textbox is empty, animation is disabled'));
+        dispatch(updateStringMatchingWarningMessageState('At least one textbox is empty, animation is disabled'));
       } else if (stringMatchingModuleState.stringMatchingInput.length < stringMatchingModuleState.stringMatchingPattern.length) {
         dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(updateWarningMessageState('Input is shorter than pattern, animation is disabled'));
+        dispatch(updateStringMatchingWarningMessageState('Input is shorter than pattern, animation is disabled'));
       } else dispatch(updateCanAnimationBeStartedStateAction(true));
     }
   }, [stringMatchingModuleState.stringMatchingPattern]);
@@ -89,7 +89,7 @@ const StringMatchingPatternComponent = () => {
         placeholder="Type a pattern to search..."
         value={stringMatchingModuleState.stringMatchingPattern}
         onChange={() => dispatch(updateStringMatchingPatternState(ref.current?.value))}
-        disabled={algorithmState.hasAnimationStarted}
+        disabled={animationState.hasAnimationStarted}
       />
       <div
         css={css`
@@ -138,7 +138,7 @@ const StringMatchingPatternComponent = () => {
 
 const StringMatchingInputComponent = () => {
   const stringMatchingModuleState = useSelector((state: AppState) => state.stringMatchingModuleState);
-  const algorithmState = useSelector((state: AppState) => state.animationState);
+  const animationState = useSelector((state: AppState) => state.animationState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
@@ -149,10 +149,10 @@ const StringMatchingInputComponent = () => {
 
       if (stringMatchingModuleState.stringMatchingPattern.length === 0 || stringMatchingModuleState.stringMatchingInput.length === 0) {
         dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(updateWarningMessageState('At least one textbox is empty, animation is disabled'));
+        dispatch(updateStringMatchingWarningMessageState('At least one textbox is empty, animation is disabled'));
       } else if (stringMatchingModuleState.stringMatchingInput.length < stringMatchingModuleState.stringMatchingPattern.length) {
         dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(updateWarningMessageState('Input is shorter than pattern, animation is disabled'));
+        dispatch(updateStringMatchingWarningMessageState('Input is shorter than pattern, animation is disabled'));
       } else dispatch(updateCanAnimationBeStartedStateAction(true));
     }
   }, [stringMatchingModuleState.stringMatchingInput]);
@@ -179,7 +179,7 @@ const StringMatchingInputComponent = () => {
         placeholder="Type some text..."
         value={stringMatchingModuleState.stringMatchingInput}
         onInput={() => dispatch(updateStringMatchingInputState(ref.current?.value))}
-        disabled={algorithmState.hasAnimationStarted}
+        disabled={animationState.hasAnimationStarted}
       />
       <div
         css={css`
@@ -325,7 +325,7 @@ const SettingsComponent = () => {
               <ResetButton resetFunction={resetState} />
             </div>
 
-            <WarningMessageComponent message={stringMatchingModuleState.warningMessage} />
+            <WarningMessageComponent message={stringMatchingModuleState.stringMatchingWarningMessage} />
           </div>
         </div>
       </div>

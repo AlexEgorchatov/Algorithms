@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { checkedColor, completionColor, mainFontColor, moduleBackground } from '../Resources/Colors';
+import { checkedColor, completionColor, headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { algorithmContext, animationContext, minAppWidth } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { ResetButton } from '../Components/ResetButton';
@@ -16,7 +16,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { AppState } from '../Store/Store';
 import { IPathFindingCellProps } from '../Core/Interfaces/IPathFindingCellProps';
-import { updatePathFindingGridState } from '../Store/Path Finding Module/PathFindingModuleStateManagement';
+import { updatePathFindingCellActionState, updatePathFindingGridState } from '../Store/Path Finding Module/PathFindingModuleStateManagement';
+import { WarningMessageComponent } from '../Components/WarningMessage';
 
 let pathFindingAlgorithmManager: PathFindingAlgorithmsManager = new PathFindingAlgorithmsManager(pathFindingAlgorithmsData[0].algorithm);
 let pathFindingAnimationManager: AnimationManager = new AnimationManager(pathFindingAlgorithmManager);
@@ -26,30 +27,106 @@ const cellSize: number = 25;
 const getCellsInRowCount = (windowWidth: number): number => {
   return Math.floor((Math.max(windowWidth, minAppWidth) - cellSize) / cellSize);
 };
+const getCellColor = (cellState: PathFindingCellStateEnum) => {
+  switch (cellState) {
+    case PathFindingCellStateEnum.Unselected:
+      return 'white';
 
-const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselected }: IPathFindingCellProps) => {
-  const getColor = () => {
-    switch (cellState) {
-      case PathFindingCellStateEnum.Unselected:
-        return '#ffffff';
+    case PathFindingCellStateEnum.Checked:
+      return checkedColor;
 
-      case PathFindingCellStateEnum.Checked:
-        return checkedColor;
+    case PathFindingCellStateEnum.Source:
+      return 'green';
 
-      case PathFindingCellStateEnum.Source:
-        return 'green';
+    case PathFindingCellStateEnum.Destination:
+      return 'red';
 
-      case PathFindingCellStateEnum.Destination:
-        return 'red';
+    case PathFindingCellStateEnum.Wall:
+      return 'gray';
 
-      case PathFindingCellStateEnum.Wall:
-        return 'gray';
+    case PathFindingCellStateEnum.Path:
+      return completionColor;
 
-      case PathFindingCellStateEnum.Path:
-        return completionColor;
-    }
+    case PathFindingCellStateEnum.None:
+    default:
+      return 'transparent';
+  }
+};
+
+interface CellActionItemProps {
+  cellActionState: PathFindingCellStateEnum;
+}
+
+const CellActionItem = ({ cellActionState }: CellActionItemProps) => {
+  const animationState = useSelector((state: AppState) => state.animationState);
+  const pathFindingState = useSelector((state: AppState) => state.pathFindingModuleState);
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    if (!isCellActionItemEnabled()) return;
+
+    if (pathFindingState.pathFindingCellAction === cellActionState) dispatch(updatePathFindingCellActionState(PathFindingCellStateEnum.None));
+    else dispatch(updatePathFindingCellActionState(cellActionState));
+  };
+  const isCellActionItemEnabled = (): boolean => {
+    if (animationState.hasAnimationStarted) return false;
+    if (cellActionState !== PathFindingCellStateEnum.Source && cellActionState !== PathFindingCellStateEnum.Destination) return true;
+    if (cellActionState === PathFindingCellStateEnum.Source && !pathFindingState.doesSourceExist) return true;
+    if (cellActionState === PathFindingCellStateEnum.Destination && !pathFindingState.doesDestinationExist) return true;
+
+    return false;
   };
 
+  return (
+    <div
+      css={css`
+        position: relative;
+        display: flex;
+        width: 22px;
+        height: 22px;
+        background-color: ${pathFindingState.pathFindingCellAction === cellActionState ? '#71a1f5' : 'transparent'};
+        cursor: ${isCellActionItemEnabled() ? 'pointer' : 'default'};
+        opacity: ${isCellActionItemEnabled() ? '1' : '0.5'};
+        :hover {
+          ${isCellActionItemEnabled() &&
+          `
+            background-color: ${pathFindingState.pathFindingCellAction === cellActionState ? '#71a1f5' : headerItemHovered};
+          `}
+        }
+        ::before {
+          content: '';
+          box-sizing: border-box;
+          position: absolute;
+          top: 3px;
+          left: 3px;
+          height: 16px;
+          width: 16px;
+          background-color: ${getCellColor(cellActionState)};
+        }
+      `}
+      onClick={handleClick}
+    ></div>
+  );
+};
+
+const CellActions = () => {
+  return (
+    <div
+      css={css`
+        display: flex;
+        justify-content: space-between;
+        width: 97px;
+      `}
+    >
+      <CellActionItem cellActionState={PathFindingCellStateEnum.Source} />
+      <CellActionItem cellActionState={PathFindingCellStateEnum.Destination} />
+      <CellActionItem cellActionState={PathFindingCellStateEnum.Wall} />
+      <CellActionItem cellActionState={PathFindingCellStateEnum.Unselected} />
+    </div>
+  );
+};
+
+const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselected }: IPathFindingCellProps) => {
   return (
     <div
       css={css`
@@ -59,7 +136,7 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
         border-color: black;
         border-style: solid;
         margin: -1px;
-        background-color: ${getColor()};
+        background-color: ${getCellColor(cellState)};
         cursor: pointer;
       `}
     ></div>
@@ -68,6 +145,7 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
 
 const SettingsComponent = () => {
   const windowState = useSelector((state: AppState) => state.windowState);
+  const pathFindingState = useSelector((state: AppState) => state.pathFindingModuleState);
   const dispatch = useDispatch();
 
   const resetGrid = () => {
@@ -119,6 +197,7 @@ const SettingsComponent = () => {
           justify-content: space-evenly;
         `}
       >
+        <CellActions />
         <div
           css={css`
             display: flex;
@@ -126,10 +205,21 @@ const SettingsComponent = () => {
             justify-content: flex-start;
           `}
         >
-          <animationContext.Provider value={{ animationManager: pathFindingAnimationManager }}>
-            <ActionBar />
-          </animationContext.Provider>
-          <ResetButton resetFunction={() => {}} />
+          <div
+            css={css`
+              display: flex;
+              align-items: flex-end;
+              justify-content: space-between;
+              width: 200px;
+            `}
+          >
+            <animationContext.Provider value={{ animationManager: pathFindingAnimationManager }}>
+              <ActionBar />
+            </animationContext.Provider>
+            <ResetButton resetFunction={resetGrid} />
+          </div>
+
+          <WarningMessageComponent message={pathFindingState.pathFindingWarningMessage} />
         </div>
       </div>
     </div>

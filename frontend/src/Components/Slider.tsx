@@ -224,7 +224,7 @@ const Slider = () => {
 };
 
 const SliderButtons = () => {
-  const algorithmState = useSelector((state: AppState) => state.animationState);
+  const animationState = useSelector((state: AppState) => state.animationState);
 
   return (
     <div
@@ -234,7 +234,7 @@ const SliderButtons = () => {
         max-width: 155px;
       `}
     >
-      {algorithmState.isAnimationRunning ? <PauseButton /> : <PlayButton />}
+      {animationState.isAnimationRunning ? <PauseButton /> : <PlayButton />}
       <StopButton />
       <CompleteButton />
     </div>

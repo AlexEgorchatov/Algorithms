@@ -1,15 +1,23 @@
 import { IPathFindingCellProps } from '../../Core/Interfaces/IPathFindingCellProps';
-import { IStoreModule } from '../../Core/Interfaces/IStoreModule';
+import { PathFindingCellStateEnum } from '../../Resources/Enumerations';
 
 //#region State
-export interface PathFindingModuleState extends IStoreModule {
+export interface PathFindingModuleState {
   readonly selectedPathFindingAlgorithm: string;
+  readonly pathFindingWarningMessage: string;
   readonly pathFindingGrid: IPathFindingCellProps[][];
+  readonly pathFindingCellAction: PathFindingCellStateEnum;
+  readonly doesSourceExist: boolean;
+  readonly doesDestinationExist: boolean;
 }
 
 const initialPathFindingModuleState: PathFindingModuleState = {
   selectedPathFindingAlgorithm: '',
+  pathFindingWarningMessage: '',
   pathFindingGrid: [],
+  pathFindingCellAction: PathFindingCellStateEnum.None,
+  doesSourceExist: true,
+  doesDestinationExist: true,
 };
 //#endregion State
 
@@ -21,6 +29,13 @@ export const updateSelectedPathFindingAlgorithmState = (selectedPathFindingAlgor
     selectedPathFindingAlgorithm: selectedPathFindingAlgorithm,
   } as const);
 
+const UPDATE_PATH_FINDING_WARNING_MESSAGE_STATE = 'updatePathFindingWarningMessageState';
+export const updatePathFindingWarningMessageState = (pathFindingWarningMessage = initialPathFindingModuleState.pathFindingWarningMessage) =>
+  ({
+    type: UPDATE_PATH_FINDING_WARNING_MESSAGE_STATE,
+    pathFindingWarningMessage: pathFindingWarningMessage,
+  } as const);
+
 const UPDATE_PATH_FINDING_GRID_STATE = 'updatePathFindingGridState';
 export const updatePathFindingGridState = (pathFindingGrid = initialPathFindingModuleState.pathFindingGrid) =>
   ({
@@ -28,10 +43,37 @@ export const updatePathFindingGridState = (pathFindingGrid = initialPathFindingM
     pathFindingGrid: pathFindingGrid,
   } as const);
 
+const UPDATE_PATH_FINDING_CELL_ACTION_STATE = 'updatePathFindingCellActionState';
+export const updatePathFindingCellActionState = (pathFindingCellAction = initialPathFindingModuleState.pathFindingCellAction) =>
+  ({
+    type: UPDATE_PATH_FINDING_CELL_ACTION_STATE,
+    pathFindingCellAction: pathFindingCellAction,
+  } as const);
+
+const UPDATE_DOES_SOURCE_EXIST_STATE = 'updateDoesSourceExistState';
+export const updateDoesSourceExistState = (doesSourceExist = initialPathFindingModuleState.doesSourceExist) =>
+  ({
+    type: UPDATE_DOES_SOURCE_EXIST_STATE,
+    doesSourceExist: doesSourceExist,
+  } as const);
+
+const UPDATE_DOES_DESTINATION_EXIST_STATE = 'updateDoesDestinationExistState';
+export const updateDoesDestinationExistState = (doesDestinationExist = initialPathFindingModuleState.doesDestinationExist) =>
+  ({
+    type: UPDATE_DOES_DESTINATION_EXIST_STATE,
+    doesDestinationExist: doesDestinationExist,
+  } as const);
+
 //#endregion Actions
 
 //#region Reducers
-type PathFindingModuleActions = ReturnType<typeof updateSelectedPathFindingAlgorithmState> | ReturnType<typeof updatePathFindingGridState>;
+type PathFindingModuleActions =
+  | ReturnType<typeof updateSelectedPathFindingAlgorithmState>
+  | ReturnType<typeof updatePathFindingWarningMessageState>
+  | ReturnType<typeof updatePathFindingGridState>
+  | ReturnType<typeof updatePathFindingCellActionState>
+  | ReturnType<typeof updateDoesSourceExistState>
+  | ReturnType<typeof updateDoesDestinationExistState>;
 export const pathFindingModuleReducer = (state = initialPathFindingModuleState, action: PathFindingModuleActions) => {
   switch (action.type) {
     case UPDATE_SELECTED_PATH_FINDING_ALGORITHM_STATE:
@@ -40,10 +82,34 @@ export const pathFindingModuleReducer = (state = initialPathFindingModuleState, 
         selectedPathFindingAlgorithm: action.selectedPathFindingAlgorithm,
       };
 
+    case UPDATE_PATH_FINDING_WARNING_MESSAGE_STATE:
+      return {
+        ...state,
+        pathFindingWarningMessage: action.pathFindingWarningMessage,
+      };
+
     case UPDATE_PATH_FINDING_GRID_STATE:
       return {
         ...state,
         pathFindingGrid: action.pathFindingGrid,
+      };
+
+    case UPDATE_PATH_FINDING_CELL_ACTION_STATE:
+      return {
+        ...state,
+        pathFindingCellAction: action.pathFindingCellAction,
+      };
+
+    case UPDATE_DOES_SOURCE_EXIST_STATE:
+      return {
+        ...state,
+        doesSourceExist: action.doesSourceExist,
+      };
+
+    case UPDATE_DOES_DESTINATION_EXIST_STATE:
+      return {
+        ...state,
+        doesDestinationExist: action.doesDestinationExist,
       };
 
     default:

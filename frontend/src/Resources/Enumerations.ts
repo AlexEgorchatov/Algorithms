@@ -25,4 +25,5 @@ export enum PathFindingCellStateEnum {
   Destination = 3,
   Wall = 4,
   Path = 5,
+  None = 6,
 }
