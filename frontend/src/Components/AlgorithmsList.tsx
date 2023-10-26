@@ -19,10 +19,10 @@ interface AlgorithmProps {
 
 const AlgorithmComponent = ({ title, algorithm }: AlgorithmProps) => {
   const { algorithmManager } = useContext(algorithmContext);
-  const algorithmState = useSelector((state: AppState) => state.animationState);
+  const animationState = useSelector((state: AppState) => state.animationState);
 
   const handleClick = () => {
-    if (algorithmState.hasAnimationStarted) return;
+    if (animationState.hasAnimationStarted) return;
     if (algorithmManager.selectedAlgorithm === algorithm) return;
 
     algorithmManager.selectedAlgorithm = algorithm;
@@ -40,10 +40,10 @@ const AlgorithmComponent = ({ title, algorithm }: AlgorithmProps) => {
         font-size: 20px;
         color: ${algorithm.constructor.name === algorithmManager.selectedAlgorithm.constructor.name ? '' : 'white'};
         margin-right: 10px;
-        cursor: ${algorithmState.hasAnimationStarted && algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name ? 'default' : 'pointer'};
-        opacity: ${algorithmState.hasAnimationStarted && algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name ? '0.5' : '1'};
+        cursor: ${animationState.hasAnimationStarted && algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name ? 'default' : 'pointer'};
+        opacity: ${animationState.hasAnimationStarted && algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name ? '0.5' : '1'};
         :hover {
-          ${!algorithmState.hasAnimationStarted &&
+          ${!animationState.hasAnimationStarted &&
           `
             color: ${algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name ? `${headerItemHovered}` : ''};
           `}

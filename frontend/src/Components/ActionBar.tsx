@@ -220,7 +220,7 @@ const CompleteButton = () => {
 };
 
 export const ActionBar = () => {
-  const algorithmState = useSelector((state: AppState) => state.animationState);
+  const animationState = useSelector((state: AppState) => state.animationState);
 
   return (
     <div
@@ -230,7 +230,7 @@ export const ActionBar = () => {
         width: 72px;
       `}
     >
-      {algorithmState.isAnimationRunning ? <PauseButton /> : <PlayButton />}
+      {animationState.isAnimationRunning ? <PauseButton /> : <PlayButton />}
       <StopButton />
       <CompleteButton />
     </div>

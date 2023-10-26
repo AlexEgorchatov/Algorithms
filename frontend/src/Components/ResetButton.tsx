@@ -9,10 +9,10 @@ interface Props {
 }
 
 export const ResetButton = ({ resetFunction: refreshFunction }: Props) => {
-  const algorithmState = useSelector((state: AppState) => state.animationState);
+  const animationState = useSelector((state: AppState) => state.animationState);
 
   const handleRefreshButtonClick = () => {
-    if (algorithmState.hasAnimationStarted) return;
+    if (animationState.hasAnimationStarted) return;
 
     refreshFunction();
   };
@@ -31,10 +31,10 @@ export const ResetButton = ({ resetFunction: refreshFunction }: Props) => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${!algorithmState.hasAnimationStarted ? 'pointer' : 'default'};
-        opacity: ${!algorithmState.hasAnimationStarted ? '1' : '0.5'};
+        cursor: ${!animationState.hasAnimationStarted ? 'pointer' : 'default'};
+        opacity: ${!animationState.hasAnimationStarted ? '1' : '0.5'};
         :hover {
-          ${!algorithmState.hasAnimationStarted &&
+          ${!animationState.hasAnimationStarted &&
           `
               color: ${headerItemHovered};
               & > div {
