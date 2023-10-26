@@ -1,4 +1,3 @@
-import { IStoreModule } from '../Interfaces/IStoreModule';
 import { AlgorithmBase } from './AlgorithmBase';
 
 export abstract class AlgorithmsManagerBase {
@@ -17,8 +16,6 @@ export abstract class AlgorithmsManagerBase {
    * Used when selected algorithm is changed or if animation is completed.
    */
   public abstract resetToInitialState(): void;
-
-  public abstract getStoreSelector(): IStoreModule;
 
   public abstract updateStoreSelectedAlgorithmName(): void;
 

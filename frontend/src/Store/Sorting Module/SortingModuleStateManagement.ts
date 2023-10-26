@@ -1,8 +1,7 @@
 import { ISortingBarProps } from '../../Core/Interfaces/ISortingBarProps';
-import { IStoreModule } from '../../Core/Interfaces/IStoreModule';
 
 //#region State
-export interface SortingModuleState extends IStoreModule {
+export interface SortingModuleState {
   readonly selectedSortingAlgorithm: string;
   readonly sortingInput: string;
   readonly isInputNan: boolean;

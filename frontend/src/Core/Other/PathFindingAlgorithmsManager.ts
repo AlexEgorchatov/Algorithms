@@ -1,9 +1,8 @@
 import { updateSelectedPathFindingAlgorithmState } from '../../Store/Path Finding Module/PathFindingModuleStateManagement';
-import { AppState, store } from '../../Store/Store';
+import { store } from '../../Store/Store';
 import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 import { IPathFindingCellProps } from '../Interfaces/IPathFindingCellProps';
-import { IStoreModule } from '../Interfaces/IStoreModule';
 
 export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
   public selectedAlgorithm: AlgorithmBase;
@@ -18,9 +17,6 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
 
   public setInitialState(): void {}
   public resetToInitialState(): void {}
-  public getStoreSelector(): IStoreModule {
-    return (state: AppState) => state.pathFindingModuleState;
-  }
   public updateStoreSelectedAlgorithmName(): void {
     store.dispatch(updateSelectedPathFindingAlgorithmState(this.selectedAlgorithm.constructor.name));
   }

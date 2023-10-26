@@ -14,11 +14,10 @@ interface AlgorithmListProps {
 
 interface AlgorithmProps {
   title: string;
-  isSelected: boolean;
   algorithm: AlgorithmBase;
 }
 
-const AlgorithmComponent = ({ title, isSelected, algorithm }: AlgorithmProps) => {
+const AlgorithmComponent = ({ title, algorithm }: AlgorithmProps) => {
   const { algorithmManager } = useContext(algorithmContext);
   const algorithmState = useSelector((state: AppState) => state.animationState);
 
@@ -39,14 +38,14 @@ const AlgorithmComponent = ({ title, isSelected, algorithm }: AlgorithmProps) =>
     <div
       css={css`
         font-size: 20px;
-        color: ${isSelected ? '' : 'white'};
+        color: ${algorithm.constructor.name === algorithmManager.selectedAlgorithm.constructor.name ? '' : 'white'};
         margin-right: 10px;
-        cursor: ${algorithmState.hasAnimationStarted && !isSelected ? 'default' : 'pointer'};
-        opacity: ${algorithmState.hasAnimationStarted && !isSelected ? '0.5' : '1'};
+        cursor: ${algorithmState.hasAnimationStarted && algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name ? 'default' : 'pointer'};
+        opacity: ${algorithmState.hasAnimationStarted && algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name ? '0.5' : '1'};
         :hover {
           ${!algorithmState.hasAnimationStarted &&
           `
-            color: ${!isSelected ? `${headerItemHovered}` : ''};
+            color: ${algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name ? `${headerItemHovered}` : ''};
           `}
         }
       `}
@@ -58,9 +57,6 @@ const AlgorithmComponent = ({ title, isSelected, algorithm }: AlgorithmProps) =>
 };
 
 export const AlgorithmsList = ({ data }: AlgorithmListProps) => {
-  const { algorithmManager } = useContext(algorithmContext);
-  useSelector(algorithmManager.getStoreSelector); //This line is needed for selected algorithm UI update
-
   return (
     <div
       css={css`
@@ -68,12 +64,7 @@ export const AlgorithmsList = ({ data }: AlgorithmListProps) => {
       `}
     >
       {data.map((dataItem, index) => (
-        <AlgorithmComponent
-          key={index}
-          title={dataItem.title}
-          isSelected={dataItem.algorithm.constructor.name === algorithmManager.selectedAlgorithm.constructor.name}
-          algorithm={dataItem.algorithm}
-        />
+        <AlgorithmComponent key={index} title={dataItem.title} algorithm={dataItem.algorithm} />
       ))}
     </div>
   );

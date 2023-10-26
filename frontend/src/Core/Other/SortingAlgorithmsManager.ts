@@ -1,11 +1,10 @@
 import { SortingBarStateEnum } from '../../Resources/Enumerations';
 import { updateIsAnimationFinalizingStateAction } from '../../Store/Shared/AnimationStateManagement';
 import { updateSelectedSortingAlgorithmState, updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingModuleStateManagement';
-import { AppState, store } from '../../Store/Store';
+import { store } from '../../Store/Store';
 import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 import { ISortingBarProps } from '../Interfaces/ISortingBarProps';
-import { IStoreModule } from '../Interfaces/IStoreModule';
 
 export class SortingAlgorithmsManager extends AlgorithmsManagerBase {
   public selectedAlgorithm: AlgorithmBase;
@@ -24,10 +23,6 @@ export class SortingAlgorithmsManager extends AlgorithmsManagerBase {
 
   public resetToInitialState(): void {
     store.dispatch(updateSortingBarsStateAction(this.initialState));
-  }
-
-  public getStoreSelector(): IStoreModule {
-    return (state: AppState) => state.sortingModuleState;
   }
 
   public updateStoreSelectedAlgorithmName(): void {

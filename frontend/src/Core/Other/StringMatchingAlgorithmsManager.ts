@@ -1,6 +1,6 @@
 import { StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 import { updateIsAnimationFinalizingStateAction } from '../../Store/Shared/AnimationStateManagement';
-import { AppState, store } from '../../Store/Store';
+import { store } from '../../Store/Store';
 import {
   updateSelectedStringMatchingAlgorithmState,
   updateStringMatchingAnimationInputState,
@@ -8,7 +8,6 @@ import {
 } from '../../Store/String Matching Module/StringMatchingModuleStateManagement';
 import { AlgorithmBase, StringMatchingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
-import { IStoreModule } from '../Interfaces/IStoreModule';
 import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingCharacterProps';
 import { isAnimationCompleted } from './AnimationManager';
 
@@ -32,10 +31,6 @@ export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase {
   public resetToInitialState(): void {
     store.dispatch(updateStringMatchingAnimationPatternState(this.initialPatternState));
     store.dispatch(updateStringMatchingAnimationInputState(this.initialState));
-  }
-
-  public getStoreSelector(): IStoreModule {
-    return (state: AppState) => state.stringMatchingModuleState;
   }
 
   public updateStoreSelectedAlgorithmName(): void {
