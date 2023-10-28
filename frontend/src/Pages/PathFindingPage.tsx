@@ -16,7 +16,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { AppState } from '../Store/Store';
 import { IPathFindingCellProps } from '../Core/Interfaces/IPathFindingCellProps';
-import { updatePathFindingCellActionState, updatePathFindingGridState } from '../Store/Path Finding Module/PathFindingModuleStateManagement';
+import {
+  updatePathFindingSelectedCellActionState,
+  updatePathFindingGridState,
+  updateDoesSourceExistState,
+  updateDoesDestinationExistState,
+} from '../Store/Path Finding Module/PathFindingModuleStateManagement';
 import { WarningMessageComponent } from '../Components/WarningMessage';
 
 let pathFindingAlgorithmManager: PathFindingAlgorithmsManager = new PathFindingAlgorithmsManager(pathFindingAlgorithmsData[0].algorithm);
@@ -29,9 +34,6 @@ const getCellsInRowCount = (windowWidth: number): number => {
 };
 const getCellColor = (cellState: PathFindingCellStateEnum) => {
   switch (cellState) {
-    case PathFindingCellStateEnum.Unselected:
-      return 'white';
-
     case PathFindingCellStateEnum.Checked:
       return checkedColor;
 
@@ -42,14 +44,15 @@ const getCellColor = (cellState: PathFindingCellStateEnum) => {
       return 'red';
 
     case PathFindingCellStateEnum.Wall:
-      return 'gray';
+      return '#ae7a59';
 
     case PathFindingCellStateEnum.Path:
       return completionColor;
 
+    case PathFindingCellStateEnum.Unselected:
     case PathFindingCellStateEnum.None:
     default:
-      return 'transparent';
+      return 'white';
   }
 };
 
@@ -62,12 +65,6 @@ const CellActionItem = ({ cellActionState }: CellActionItemProps) => {
   const pathFindingState = useSelector((state: AppState) => state.pathFindingModuleState);
   const dispatch = useDispatch();
 
-  const handleClick = () => {
-    if (!isCellActionItemEnabled()) return;
-
-    if (pathFindingState.pathFindingCellAction === cellActionState) dispatch(updatePathFindingCellActionState(PathFindingCellStateEnum.None));
-    else dispatch(updatePathFindingCellActionState(cellActionState));
-  };
   const isCellActionItemEnabled = (): boolean => {
     if (animationState.hasAnimationStarted) return false;
     if (cellActionState !== PathFindingCellStateEnum.Source && cellActionState !== PathFindingCellStateEnum.Destination) return true;
@@ -75,6 +72,12 @@ const CellActionItem = ({ cellActionState }: CellActionItemProps) => {
     if (cellActionState === PathFindingCellStateEnum.Destination && !pathFindingState.doesDestinationExist) return true;
 
     return false;
+  };
+  const handleClick = () => {
+    if (!isCellActionItemEnabled()) return;
+
+    if (pathFindingState.pathFindingSelectedCellAction === cellActionState) dispatch(updatePathFindingSelectedCellActionState(PathFindingCellStateEnum.None));
+    else dispatch(updatePathFindingSelectedCellActionState(cellActionState));
   };
 
   return (
@@ -84,13 +87,13 @@ const CellActionItem = ({ cellActionState }: CellActionItemProps) => {
         display: flex;
         width: 22px;
         height: 22px;
-        background-color: ${pathFindingState.pathFindingCellAction === cellActionState ? '#71a1f5' : 'transparent'};
+        background-color: ${pathFindingState.pathFindingSelectedCellAction === cellActionState ? '#71a1f5' : 'transparent'};
         cursor: ${isCellActionItemEnabled() ? 'pointer' : 'default'};
         opacity: ${isCellActionItemEnabled() ? '1' : '0.5'};
         :hover {
           ${isCellActionItemEnabled() &&
           `
-            background-color: ${pathFindingState.pathFindingCellAction === cellActionState ? '#71a1f5' : headerItemHovered};
+            background-color: ${pathFindingState.pathFindingSelectedCellAction === cellActionState ? '#71a1f5' : headerItemHovered};
           `}
         }
         ::before {
@@ -126,46 +129,78 @@ const CellActions = () => {
   );
 };
 
-const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselected }: IPathFindingCellProps) => {
+const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselected, rowIndex, columnIndex }: IPathFindingCellProps) => {
   const animationState = useSelector((state: AppState) => state.animationState);
   const pathFindingState = useSelector((state: AppState) => state.pathFindingModuleState);
   const dispatch = useDispatch();
 
   const getCursor = (): string => {
     if (animationState.hasAnimationStarted) return 'cursor';
-    if (pathFindingState.pathFindingCellAction === PathFindingCellStateEnum.None) return 'cursor';
+    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.None) return 'cursor';
 
     return 'pointer';
   };
   const getHoverStyle = (): string => {
     if (animationState.hasAnimationStarted) return ``;
-    if (pathFindingState.pathFindingCellAction === PathFindingCellStateEnum.None) return ``;
-
-    const transparentColor = getCellColor(pathFindingState.pathFindingCellAction).replace(')', ', 0.5)').replace('rgb', 'rgba');
+    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.None) return ``;
+    if (pathFindingState.pathFindingSelectedCellAction === cellState) return ``;
 
     let style: string = `
-      background-color: ${transparentColor};
+      background-color: ${getCellColor(pathFindingState.pathFindingSelectedCellAction)};
+      opacity: 0.3;
     `;
     return style;
   };
-  const handleMouseEnter = () => {};
+  const setCellState = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.None) return;
+
+    let gridCopy = pathFindingState.pathFindingGrid.map((row) => [...row]);
+
+    if (gridCopy[rowIndex][columnIndex].cellState === pathFindingState.pathFindingSelectedCellAction) return;
+    if (gridCopy[rowIndex][columnIndex].cellState === PathFindingCellStateEnum.Source) {
+      dispatch(updateDoesSourceExistState(false));
+    }
+    if (gridCopy[rowIndex][columnIndex].cellState === PathFindingCellStateEnum.Destination) {
+      dispatch(updateDoesDestinationExistState(false));
+    }
+
+    gridCopy[rowIndex][columnIndex] = { ...gridCopy[rowIndex][columnIndex], cellState: pathFindingState.pathFindingSelectedCellAction };
+    dispatch(updatePathFindingGridState(gridCopy));
+
+    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.Source) {
+      dispatch(updateDoesSourceExistState(true));
+      dispatch(updatePathFindingSelectedCellActionState(PathFindingCellStateEnum.None));
+    }
+    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.Destination) {
+      dispatch(updateDoesDestinationExistState(true));
+      dispatch(updatePathFindingSelectedCellActionState(PathFindingCellStateEnum.None));
+    }
+  };
+
+  const handleMouseOver = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.buttons !== 1) return;
+    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.None) return;
+
+    setCellState(event);
+  };
 
   return (
     <div
       css={css`
+        box-sizing: border-box;
         height: ${cellSize}px;
         width: ${cellSize}px;
-        border: 1px;
-        border-color: black;
-        border-style: solid;
-        margin: -1px;
+        outline: 0.5px solid black;
+        border: 0.5px solid black;
         background-color: ${getCellColor(cellState)};
         cursor: ${getCursor()};
         :hover {
           ${getHoverStyle()}
         }
       `}
-      onMouseEnter={handleMouseEnter}
+      onMouseOver={handleMouseOver}
+      onMouseDown={setCellState}
     ></div>
   );
 };
