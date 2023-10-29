@@ -27,42 +27,42 @@ export const updateSelectedPathFindingAlgorithmState = (selectedPathFindingAlgor
   ({
     type: UPDATE_SELECTED_PATH_FINDING_ALGORITHM_STATE,
     selectedPathFindingAlgorithm: selectedPathFindingAlgorithm,
-  } as const);
+  }) as const;
 
 const UPDATE_PATH_FINDING_WARNING_MESSAGE_STATE = 'updatePathFindingWarningMessageState';
 export const updatePathFindingWarningMessageState = (pathFindingWarningMessage = initialPathFindingModuleState.pathFindingWarningMessage) =>
   ({
     type: UPDATE_PATH_FINDING_WARNING_MESSAGE_STATE,
     pathFindingWarningMessage: pathFindingWarningMessage,
-  } as const);
+  }) as const;
 
 const UPDATE_PATH_FINDING_GRID_STATE = 'updatePathFindingGridState';
 export const updatePathFindingGridState = (pathFindingGrid = initialPathFindingModuleState.pathFindingGrid) =>
   ({
     type: UPDATE_PATH_FINDING_GRID_STATE,
     pathFindingGrid: pathFindingGrid,
-  } as const);
+  }) as const;
 
 const UPDATE_PATH_FINDING_SELECTED_CELL_ACTION_STATE = 'updatePathFindingSelectedCellActionState';
 export const updatePathFindingSelectedCellActionState = (pathFindingSelectedCellAction = initialPathFindingModuleState.pathFindingSelectedCellAction) =>
   ({
     type: UPDATE_PATH_FINDING_SELECTED_CELL_ACTION_STATE,
     pathFindingSelectedCellAction: pathFindingSelectedCellAction,
-  } as const);
+  }) as const;
 
 const UPDATE_DOES_SOURCE_EXIST_STATE = 'updateDoesSourceExistState';
 export const updateDoesSourceExistState = (doesSourceExist = initialPathFindingModuleState.doesSourceExist) =>
   ({
     type: UPDATE_DOES_SOURCE_EXIST_STATE,
     doesSourceExist: doesSourceExist,
-  } as const);
+  }) as const;
 
 const UPDATE_DOES_DESTINATION_EXIST_STATE = 'updateDoesDestinationExistState';
 export const updateDoesDestinationExistState = (doesDestinationExist = initialPathFindingModuleState.doesDestinationExist) =>
   ({
     type: UPDATE_DOES_DESTINATION_EXIST_STATE,
     doesDestinationExist: doesDestinationExist,
-  } as const);
+  }) as const;
 
 //#endregion Actions
 

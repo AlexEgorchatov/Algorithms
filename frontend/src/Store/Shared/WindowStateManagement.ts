@@ -14,7 +14,7 @@ export const updateWindowWidthStateAction = (windowWidth: number) =>
   ({
     type: UPDATE_WINDOW_WIDTH_STATE,
     windowWidth: windowWidth,
-  } as const);
+  }) as const;
 
 //#endregion Actions
 

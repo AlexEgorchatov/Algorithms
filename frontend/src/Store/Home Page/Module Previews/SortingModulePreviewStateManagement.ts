@@ -14,7 +14,7 @@ export const updateSortingModulePreviewHeightsStateAction = (heights = initialSo
   ({
     type: UPDATE_SORTING_MODULE_PREVIEW_HEIGHTS_STATE,
     heights: heights,
-  } as const);
+  }) as const;
 
 //#endregion Actions
 

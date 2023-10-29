@@ -30,7 +30,7 @@ export const updatePathFindingModulePreviewGridStateAction = (grid = initialPath
   ({
     type: UPDATE_PATH_FINDING_MODULE_PREVIEW_GRID_STATE,
     grid: grid,
-  } as const);
+  }) as const;
 
 //#endregion Actions
 

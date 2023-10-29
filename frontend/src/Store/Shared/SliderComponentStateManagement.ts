@@ -15,7 +15,7 @@ export const updateSliderValueStateAction = (sliderValue: number) =>
   ({
     type: UPDATE_SLIDER_VALUE_STATE,
     sliderValue: sliderValue,
-  } as const);
+  }) as const;
 //#endregion Actions
 
 //#region Reducers

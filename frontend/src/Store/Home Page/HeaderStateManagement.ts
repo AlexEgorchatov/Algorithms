@@ -14,7 +14,7 @@ export const updateHeaderStateAction = (visibility = initialHeaderState.menuButt
   ({
     type: UPDATE_HEADER_VISIBILITY_STATE,
     visibility: visibility,
-  } as const);
+  }) as const;
 
 //#endregion Actions
 

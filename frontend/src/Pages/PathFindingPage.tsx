@@ -2,7 +2,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { checkedColor, completionColor, headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
-import { algorithmContext, animationContext, minAppWidth } from '../Core/Helper';
+import { algorithmContext, animationContext, minAppWidth, pauseForStepIteration } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { ResetButton } from '../Components/ResetButton';
 import { pathFindingAlgorithmsData } from '../Core/Data/PathFindingData';
@@ -10,7 +10,7 @@ import { AnimationManager } from '../Core/Other/AnimationManager';
 import { PathFindingAlgorithmsManager } from '../Core/Other/PathFindingAlgorithmsManager';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
 import { SliderComponent } from '../Components/Slider';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { PathFindingCellStateEnum } from '../Resources/Enumerations';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
@@ -23,16 +23,18 @@ import {
   updateDoesDestinationExistState,
 } from '../Store/Path Finding Module/PathFindingModuleStateManagement';
 import { WarningMessageComponent } from '../Components/WarningMessage';
+import chroma from 'chroma-js';
 
 let pathFindingAlgorithmManager: PathFindingAlgorithmsManager = new PathFindingAlgorithmsManager(pathFindingAlgorithmsData[0].algorithm);
 let pathFindingAnimationManager: AnimationManager = new AnimationManager(pathFindingAlgorithmManager);
 let minAnimationComponentWidth: number = 0;
+let internalGrid: IPathFindingCellProps[][] = [];
 
 const cellSize: number = 25;
 const getCellsInRowCount = (windowWidth: number): number => {
   return Math.floor((Math.max(windowWidth, minAppWidth) - cellSize) / cellSize);
 };
-const getCellColor = (cellState: PathFindingCellStateEnum) => {
+const getCellColor = (cellState: PathFindingCellStateEnum): string => {
   switch (cellState) {
     case PathFindingCellStateEnum.Checked:
       return checkedColor;
@@ -133,6 +135,7 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
   const animationState = useSelector((state: AppState) => state.animationState);
   const pathFindingState = useSelector((state: AppState) => state.pathFindingModuleState);
   const dispatch = useDispatch();
+  const cellRef = useRef<HTMLDivElement>(null);
 
   const getCursor = (): string => {
     if (animationState.hasAnimationStarted) return 'cursor';
@@ -151,22 +154,32 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
     `;
     return style;
   };
-  const setCellState = (event: React.MouseEvent<HTMLDivElement>) => {
+
+  const initiateGridStateUpdate = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.None) return;
+    if (cellRef.current === null) return;
 
-    let gridCopy = pathFindingState.pathFindingGrid.map((row) => [...row]);
+    internalGrid = pathFindingState.pathFindingGrid.map((row) => [...row]);
+    setCellState();
+  };
 
-    if (gridCopy[rowIndex][columnIndex].cellState === pathFindingState.pathFindingSelectedCellAction) return;
-    if (gridCopy[rowIndex][columnIndex].cellState === PathFindingCellStateEnum.Source) {
+  const setCellState = () => {
+    if (cellRef.current === null) return;
+    let curcolor = chroma(getCellColor(pathFindingState.pathFindingSelectedCellAction));
+    let test = curcolor._rgb;
+    let test2 = chroma(cellRef.current.style.backgroundColor).hex();
+    if (chroma(cellRef.current.style.backgroundColor).hex() === chroma(curcolor).hex()) return;
+
+    if (cellState === PathFindingCellStateEnum.Source) {
       dispatch(updateDoesSourceExistState(false));
     }
-    if (gridCopy[rowIndex][columnIndex].cellState === PathFindingCellStateEnum.Destination) {
+    if (cellState === PathFindingCellStateEnum.Destination) {
       dispatch(updateDoesDestinationExistState(false));
     }
 
-    gridCopy[rowIndex][columnIndex] = { ...gridCopy[rowIndex][columnIndex], cellState: pathFindingState.pathFindingSelectedCellAction };
-    dispatch(updatePathFindingGridState(gridCopy));
+    cellRef.current.style.backgroundColor = getCellColor(pathFindingState.pathFindingSelectedCellAction);
+    internalGrid[rowIndex][columnIndex] = { ...internalGrid[rowIndex][columnIndex], cellState: pathFindingState.pathFindingSelectedCellAction };
 
     if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.Source) {
       dispatch(updateDoesSourceExistState(true));
@@ -182,7 +195,11 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
     if (event.buttons !== 1) return;
     if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.None) return;
 
-    setCellState(event);
+    setCellState();
+  };
+
+  const setNewGridState = () => {
+    dispatch(updatePathFindingGridState(internalGrid));
   };
 
   return (
@@ -199,8 +216,10 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
           ${getHoverStyle()}
         }
       `}
+      ref={cellRef}
       onMouseOver={handleMouseOver}
-      onMouseDown={setCellState}
+      onMouseDown={initiateGridStateUpdate}
+      onMouseUp={setNewGridState}
     ></div>
   );
 };

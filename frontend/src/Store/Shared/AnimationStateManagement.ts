@@ -21,28 +21,28 @@ export const updateCanAnimationBeStartedStateAction = (canAnimationBeStarted: bo
   ({
     type: UPDATE_CAN_ANIMATION_BE_STARTED_STATE,
     canAnimationBeStarted: canAnimationBeStarted,
-  } as const);
+  }) as const;
 
 const UPDATE_HAS_ANIMATION_STARTED_STATE = 'UpdateHasAnimationStartedState';
 export const updateHasAnimationStartedStateAction = (hasAnimationStarted: boolean) =>
   ({
     type: UPDATE_HAS_ANIMATION_STARTED_STATE,
     hasAnimationStarted: hasAnimationStarted,
-  } as const);
+  }) as const;
 
 const UPDATE_IS_ANIMATION_RUNNING_STATE = 'UpdateIsAnimationRunningState';
 export const updateIsAnimationRunningStateAction = (isAnimationRunning: boolean) =>
   ({
     type: UPDATE_IS_ANIMATION_RUNNING_STATE,
     isAnimationRunning: isAnimationRunning,
-  } as const);
+  }) as const;
 
 const UPDATE_IS_ANIMATION_FINALIZING_STATE = 'UpdateIsAnimationFinalizingState';
 export const updateIsAnimationFinalizingStateAction = (isAnimationFinalizing: boolean) =>
   ({
     type: UPDATE_IS_ANIMATION_FINALIZING_STATE,
     isAnimationFinalizing: isAnimationFinalizing,
-  } as const);
+  }) as const;
 
 //#endregion Actions
 

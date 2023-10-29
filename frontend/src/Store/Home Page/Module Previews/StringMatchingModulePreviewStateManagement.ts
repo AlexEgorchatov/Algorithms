@@ -24,7 +24,7 @@ export const updateStringMatchingModulePreviewCharactersState = (characters = in
   ({
     type: UPDATE_STRING_MATCHING_MODULE_PREVIEW_CHARACTERS_STATE,
     characters: characters,
-  } as const);
+  }) as const;
 
 //#endregion Actions
 

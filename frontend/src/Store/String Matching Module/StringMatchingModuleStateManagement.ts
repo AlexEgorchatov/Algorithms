@@ -26,42 +26,42 @@ export const updateSelectedStringMatchingAlgorithmState = (selectedStringMatchin
   ({
     type: UPDATE_SELECTED_STRING_MATCHING_ALGORITHM_STATE,
     selectedStringMatchingAlgorithm: selectedStringMatchingAlgorithm,
-  } as const);
+  }) as const;
 
 const UPDATE_STRING_MATCHING_WARNING_MESSAGE_STATE = 'updateStringMatchingWarningMessageState';
 export const updateStringMatchingWarningMessageState = (stringMatchingWarningMessage = initialStringMatchingModuleState.stringMatchingWarningMessage) =>
   ({
     type: UPDATE_STRING_MATCHING_WARNING_MESSAGE_STATE,
     stringMatchingWarningMessage: stringMatchingWarningMessage,
-  } as const);
+  }) as const;
 
 export const UPDATE_STRING_MATCHING_PATTERN_STATE = 'updateStringMatchingPatternState';
 export const updateStringMatchingPatternState = (stringMatchingPattern = initialStringMatchingModuleState.stringMatchingPattern) =>
   ({
     type: UPDATE_STRING_MATCHING_PATTERN_STATE,
     stringMatchingPattern: stringMatchingPattern,
-  } as const);
+  }) as const;
 
 export const UPDATE_STRING_MATCHING_INPUT_STATE = 'updateStringMatchingInputState';
 export const updateStringMatchingInputState = (stringMatchingInput = initialStringMatchingModuleState.stringMatchingInput) =>
   ({
     type: UPDATE_STRING_MATCHING_INPUT_STATE,
     stringMatchingInput: stringMatchingInput,
-  } as const);
+  }) as const;
 
 const UPDATE_STRING_MATCHING_ANIMATION_PATTERN_STATE = 'updateStringMatchingAnimationPatternState';
 export const updateStringMatchingAnimationPatternState = (stringMatchingAnimationPattern = initialStringMatchingModuleState.stringMatchingAnimationPattern) =>
   ({
     type: UPDATE_STRING_MATCHING_ANIMATION_PATTERN_STATE,
     stringMatchingAnimationPattern: stringMatchingAnimationPattern,
-  } as const);
+  }) as const;
 
 const UPDATE_STRING_MATCHING_ANIMATION_INPUT_STATE = 'updateStringMatchingAnimationInputState';
 export const updateStringMatchingAnimationInputState = (stringMatchingAnimationInput = initialStringMatchingModuleState.stringMatchingAnimationInput) =>
   ({
     type: UPDATE_STRING_MATCHING_ANIMATION_INPUT_STATE,
     stringMatchingAnimationInput: stringMatchingAnimationInput,
-  } as const);
+  }) as const;
 //#endregion Actions
 
 //#region Reducers
