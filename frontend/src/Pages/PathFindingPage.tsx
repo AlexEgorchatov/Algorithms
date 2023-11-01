@@ -14,7 +14,7 @@ import { useEffect, useRef } from 'react';
 import { PathFindingCellStateEnum } from '../Resources/Enumerations';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
-import { AppState } from '../Store/Store';
+import { AppState, store } from '../Store/Store';
 import { IPathFindingCellProps } from '../Core/Interfaces/IPathFindingCellProps';
 import {
   updatePathFindingSelectedCellActionState,
@@ -29,6 +29,8 @@ let pathFindingAnimationManager: AnimationManager = new AnimationManager(pathFin
 let minAnimationComponentWidth: number = 0;
 let internalGrid: IPathFindingCellProps[][] = [];
 let coloredCells: React.RefObject<HTMLDivElement>[] = [];
+let doesSourceExist: boolean = true;
+let doesDestinationExist: boolean = true;
 
 const cellSize: number = 25;
 const getCellsInRowCount = (windowWidth: number): number => {
@@ -56,6 +58,23 @@ const getCellColor = (cellState: PathFindingCellStateEnum): string => {
     default:
       return 'white';
   }
+};
+const setNewGridState = () => {
+  if (internalGrid.length === 0) return;
+
+  store.dispatch(updatePathFindingGridState(internalGrid));
+  for (let i = 0; i < coloredCells.length; i++) {
+    let element = coloredCells[i].current;
+    if (element === null) continue;
+
+    element.style.backgroundColor = ``;
+  }
+
+  if (!doesSourceExist) store.dispatch(updateDoesSourceExistState(doesSourceExist));
+  if (!doesDestinationExist) store.dispatch(updateDoesDestinationExistState(doesDestinationExist));
+
+  coloredCells = [];
+  internalGrid = [];
 };
 
 interface CellActionItemProps {
@@ -165,45 +184,30 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
     if (cellRef.current === null) return;
     if (cellState === pathFindingState.pathFindingSelectedCellAction) return;
 
-    if (cellState === PathFindingCellStateEnum.Source) {
-      dispatch(updateDoesSourceExistState(false));
-    }
-    if (cellState === PathFindingCellStateEnum.Destination) {
-      dispatch(updateDoesDestinationExistState(false));
-    }
+    if (cellState === PathFindingCellStateEnum.Source) doesSourceExist = false;
+    if (cellState === PathFindingCellStateEnum.Destination) doesDestinationExist = false;
 
     internalGrid[rowIndex][columnIndex] = { ...internalGrid[rowIndex][columnIndex], cellState: pathFindingState.pathFindingSelectedCellAction };
     cellRef.current.style.backgroundColor = getCellColor(pathFindingState.pathFindingSelectedCellAction);
     coloredCells.push(cellRef);
 
     if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.Source) {
-      dispatch(updateDoesSourceExistState(true));
+      dispatch(updateDoesSourceExistState((doesSourceExist = true)));
       dispatch(updatePathFindingSelectedCellActionState(PathFindingCellStateEnum.None));
     }
     if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.Destination) {
-      dispatch(updateDoesDestinationExistState(true));
+      dispatch(updateDoesDestinationExistState((doesDestinationExist = true)));
       dispatch(updatePathFindingSelectedCellActionState(PathFindingCellStateEnum.None));
     }
   };
   const handleMouseOver = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.buttons !== 1) return;
     if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.None) return;
-
-    setCellState();
-  };
-  const setNewGridState = () => {
-    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.None) return;
-
-    dispatch(updatePathFindingGridState(internalGrid));
-    for (let i = 0; i < coloredCells.length; i++) {
-      let element = coloredCells[i].current;
-      if (element === null) continue;
-
-      element.style.backgroundColor = ``;
+    if (internalGrid.length === 0) {
+      internalGrid = pathFindingState.pathFindingGrid.map((row) => [...row]);
     }
 
-    coloredCells = [];
-    internalGrid = [];
+    setCellState();
   };
 
   return (
@@ -249,10 +253,16 @@ const SettingsComponent = () => {
     }
     minAnimationComponentWidth = windowState.windowWidth;
 
-    dispatch(updateDoesDestinationExistState(true));
-    dispatch(updateDoesSourceExistState(true));
-    dispatch(updatePathFindingSelectedCellActionState(PathFindingCellStateEnum.None));
+    dispatch(updateDoesDestinationExistState((doesDestinationExist = true)));
+    dispatch(updateDoesSourceExistState((doesSourceExist = true)));
     dispatch(updatePathFindingGridState(grid));
+
+    if (
+      pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.Source ||
+      pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.Destination
+    ) {
+      dispatch(updatePathFindingSelectedCellActionState(PathFindingCellStateEnum.None));
+    }
   };
 
   useEffect(() => {
@@ -354,7 +364,7 @@ const AnimationComponent = () => {
             align-items: flex-end;
           `}
         >
-          <div>
+          <div onMouseLeave={setNewGridState}>
             {pathFindingState.pathFindingGrid.map((row, rowIndex) => (
               <div
                 css={css`
