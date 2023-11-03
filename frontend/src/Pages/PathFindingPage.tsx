@@ -24,6 +24,10 @@ import {
 } from '../Store/Path Finding Module/PathFindingModuleStateManagement';
 import { WarningMessageComponent } from '../Components/WarningMessage';
 
+interface CellActionItemProps {
+  cellActionState: PathFindingCellStateEnum;
+}
+
 let pathFindingAlgorithmManager: PathFindingAlgorithmsManager = new PathFindingAlgorithmsManager(pathFindingAlgorithmsData[0].algorithm);
 let pathFindingAnimationManager: AnimationManager = new AnimationManager(pathFindingAlgorithmManager);
 let minAnimationComponentWidth: number = 0;
@@ -76,10 +80,6 @@ const setNewGridState = () => {
   coloredCells = [];
   internalGrid = [];
 };
-
-interface CellActionItemProps {
-  cellActionState: PathFindingCellStateEnum;
-}
 
 const CellActionItem = ({ cellActionState }: CellActionItemProps) => {
   const animationState = useSelector((state: AppState) => state.animationState);
