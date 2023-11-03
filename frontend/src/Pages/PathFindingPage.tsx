@@ -74,8 +74,8 @@ const setNewGridState = () => {
     element.style.backgroundColor = ``;
   }
 
-  if (!doesSourceExist) store.dispatch(updateDoesSourceExistState(doesSourceExist));
-  if (!doesDestinationExist) store.dispatch(updateDoesDestinationExistState(doesDestinationExist));
+  store.dispatch(updateDoesSourceExistState(doesSourceExist));
+  store.dispatch(updateDoesDestinationExistState(doesDestinationExist));
 
   coloredCells = [];
   internalGrid = [];
@@ -100,6 +100,13 @@ const CellActionItem = ({ cellActionState }: CellActionItemProps) => {
     if (pathFindingState.pathFindingSelectedCellAction === cellActionState) dispatch(updatePathFindingSelectedCellActionState(PathFindingCellStateEnum.None));
     else dispatch(updatePathFindingSelectedCellActionState(cellActionState));
   };
+  const getBackgroundColor = (): string => {
+    if (pathFindingState.pathFindingSelectedCellAction !== cellActionState) return 'transparent';
+    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.Source && pathFindingState.doesSourceExist) return 'transparent';
+    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.Destination && pathFindingState.doesDestinationExist) return 'transparent';
+
+    return '#71a1f5';
+  };
 
   return (
     <div
@@ -108,7 +115,7 @@ const CellActionItem = ({ cellActionState }: CellActionItemProps) => {
         display: flex;
         width: 22px;
         height: 22px;
-        background-color: ${pathFindingState.pathFindingSelectedCellAction === cellActionState ? '#71a1f5' : 'transparent'};
+        background-color: ${getBackgroundColor()};
         cursor: ${isCellActionItemEnabled() ? 'pointer' : 'default'};
         opacity: ${isCellActionItemEnabled() ? '1' : '0.5'};
         :hover {
@@ -158,14 +165,16 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
 
   const getCursor = (): string => {
     if (animationState.hasAnimationStarted) return 'cursor';
-    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.None) return 'cursor';
+    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.None) {
+      return cellState === PathFindingCellStateEnum.Source || cellState === PathFindingCellStateEnum.Destination ? 'pointer' : 'cursor';
+    }
 
     return 'pointer';
   };
   const getHoverStyle = (): string => {
     if (animationState.hasAnimationStarted) return ``;
-    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.None) return ``;
     if (pathFindingState.pathFindingSelectedCellAction === cellState) return ``;
+    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.None) return ``;
 
     let style: string = `
       background-color: ${getCellColor(pathFindingState.pathFindingSelectedCellAction)};
@@ -173,9 +182,14 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
     `;
     return style;
   };
+
   const initiateGridStateUpdate = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
-    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.None) return;
+    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.None) {
+      if (cellState === PathFindingCellStateEnum.Source) dispatch(updatePathFindingSelectedCellActionState(PathFindingCellStateEnum.Source));
+      if (cellState === PathFindingCellStateEnum.Destination) dispatch(updatePathFindingSelectedCellActionState(PathFindingCellStateEnum.Destination));
+      else return;
+    }
 
     internalGrid = pathFindingState.pathFindingGrid.map((row) => [...row]);
     setCellState();
@@ -192,11 +206,11 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
     coloredCells.push(cellRef);
 
     if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.Source) {
-      dispatch(updateDoesSourceExistState((doesSourceExist = true)));
+      doesSourceExist = true;
       dispatch(updatePathFindingSelectedCellActionState(PathFindingCellStateEnum.None));
     }
     if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellStateEnum.Destination) {
-      dispatch(updateDoesDestinationExistState((doesDestinationExist = true)));
+      doesDestinationExist = true;
       dispatch(updatePathFindingSelectedCellActionState(PathFindingCellStateEnum.None));
     }
   };
