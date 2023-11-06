@@ -1,7 +1,7 @@
-import { PathFindingCellStateEnum } from '../../Resources/Enumerations';
+import { PathFindingCellStateEnum, PathFindingCellActionStateEnum, PathFindingCellDraggingStateEnum } from '../../Resources/Enumerations';
 
 export interface IPathFindingCellProps {
-  cellState?: PathFindingCellStateEnum;
+  cellState?: PathFindingCellStateEnum | PathFindingCellActionStateEnum | PathFindingCellDraggingStateEnum;
   rowIndex: number;
   columnIndex: number;
 }

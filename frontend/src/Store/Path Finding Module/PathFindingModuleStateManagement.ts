@@ -1,12 +1,13 @@
 import { IPathFindingCellProps } from '../../Core/Interfaces/IPathFindingCellProps';
-import { PathFindingCellStateEnum } from '../../Resources/Enumerations';
+import { PathFindingCellActionStateEnum, PathFindingCellDraggingStateEnum } from '../../Resources/Enumerations';
 
 //#region State
 export interface PathFindingModuleState {
   readonly selectedPathFindingAlgorithm: string;
   readonly pathFindingWarningMessage: string;
   readonly pathFindingGrid: IPathFindingCellProps[][];
-  readonly pathFindingSelectedCellAction: PathFindingCellStateEnum;
+  readonly pathFindingSelectedCellAction: PathFindingCellActionStateEnum;
+  readonly pathFindingSelectedCellDragging: PathFindingCellDraggingStateEnum;
   readonly doesSourceExist: boolean;
   readonly doesDestinationExist: boolean;
 }
@@ -15,7 +16,8 @@ const initialPathFindingModuleState: PathFindingModuleState = {
   selectedPathFindingAlgorithm: '',
   pathFindingWarningMessage: '',
   pathFindingGrid: [],
-  pathFindingSelectedCellAction: PathFindingCellStateEnum.None,
+  pathFindingSelectedCellAction: PathFindingCellActionStateEnum.None,
+  pathFindingSelectedCellDragging: PathFindingCellDraggingStateEnum.None,
   doesSourceExist: true,
   doesDestinationExist: true,
 };
@@ -50,6 +52,13 @@ export const updatePathFindingSelectedCellActionState = (pathFindingSelectedCell
     pathFindingSelectedCellAction: pathFindingSelectedCellAction,
   }) as const;
 
+const UPDATE_PATH_FINDING_SELECTED_CELL_DRAGGING_STATE = 'updatePathFindingSelectedCellDraggingState';
+export const updatePathFindingSelectedCellDraggingState = (pathFindingSelectedCellDragging = initialPathFindingModuleState.pathFindingSelectedCellDragging) =>
+  ({
+    type: UPDATE_PATH_FINDING_SELECTED_CELL_DRAGGING_STATE,
+    pathFindingSelectedCellDragging: pathFindingSelectedCellDragging,
+  }) as const;
+
 const UPDATE_DOES_SOURCE_EXIST_STATE = 'updateDoesSourceExistState';
 export const updateDoesSourceExistState = (doesSourceExist = initialPathFindingModuleState.doesSourceExist) =>
   ({
@@ -72,6 +81,7 @@ type PathFindingModuleActions =
   | ReturnType<typeof updatePathFindingWarningMessageState>
   | ReturnType<typeof updatePathFindingGridState>
   | ReturnType<typeof updatePathFindingSelectedCellActionState>
+  | ReturnType<typeof updatePathFindingSelectedCellDraggingState>
   | ReturnType<typeof updateDoesSourceExistState>
   | ReturnType<typeof updateDoesDestinationExistState>;
 export const pathFindingModuleReducer = (state = initialPathFindingModuleState, action: PathFindingModuleActions) => {
@@ -98,6 +108,12 @@ export const pathFindingModuleReducer = (state = initialPathFindingModuleState, 
       return {
         ...state,
         pathFindingSelectedCellAction: action.pathFindingSelectedCellAction,
+      };
+
+    case UPDATE_PATH_FINDING_SELECTED_CELL_DRAGGING_STATE:
+      return {
+        ...state,
+        pathFindingSelectedCellDragging: action.pathFindingSelectedCellDragging,
       };
 
     case UPDATE_DOES_SOURCE_EXIST_STATE:

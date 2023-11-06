@@ -20,10 +20,24 @@ export enum StringMatchingCharacterStateEnum {
 
 export enum PathFindingCellStateEnum {
   Unselected = 0,
-  Checked = 1,
-  Source = 2,
-  Destination = 3,
-  Wall = 4,
+  Source = 1,
+  Destination = 2,
+  Wall = 3,
+  Checked = 4,
   Path = 5,
-  None = 6,
+}
+
+export enum PathFindingCellActionStateEnum {
+  Unselected = 0,
+  Source = 1,
+  Destination = 2,
+  Wall = 3,
+  None = 4,
+}
+
+export enum PathFindingCellDraggingStateEnum {
+  Source = 1,
+  Destination = 2,
+  Wall = 3,
+  None = 4,
 }
