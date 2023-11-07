@@ -18,6 +18,7 @@ export enum StringMatchingCharacterStateEnum {
   Found = 3,
 }
 
+//#region Path Finding Enums. Int values matter
 export enum PathFindingCellStateEnum {
   Unselected = 0,
   Source = 1,
@@ -41,3 +42,4 @@ export enum PathFindingCellDraggingStateEnum {
   Wall = 3,
   None = 4,
 }
+//#endregion

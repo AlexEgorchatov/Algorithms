@@ -13,7 +13,7 @@ import {
   updateStringMatchingPatternState,
   updateStringMatchingWarningMessageState,
 } from '../Store/String Matching Module/StringMatchingModuleStateManagement';
-import { algorithmContext, animationContext } from '../Core/Helper';
+import { algorithmContext, animationContext, minAnimationContainerHeight } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
 import { ResetButton } from '../Components/ResetButton';
@@ -390,7 +390,7 @@ const AnimationComponent = () => {
             display: flex;
             flex-direction: column;
             height: 70%;
-            min-height: 425px;
+            min-height: ${minAnimationContainerHeight}px;
             padding: 0px 20px;
             color: white;
           `}

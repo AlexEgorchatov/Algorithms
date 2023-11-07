@@ -2,7 +2,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { checkedColor, completionColor, headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
-import { algorithmContext, animationContext, minAppWidth } from '../Core/Helper';
+import { algorithmContext, animationContext, minAnimationContainerHeight, minAppWidth } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { ResetButton } from '../Components/ResetButton';
 import { pathFindingAlgorithmsData } from '../Core/Data/PathFindingData';
@@ -101,6 +101,32 @@ const setNewGridState = () => {
   }
 
   internalGrid = [];
+};
+const initializeInternalGrid = () => {
+  internalGrid = store.getState().pathFindingModuleState.pathFindingGrid.map((row) => [...row]);
+};
+
+const CellActionItemLegend = ({ cellActionState }: CellActionItemProps) => {
+  return (
+    <div
+      css={css`
+        position: relative;
+        display: flex;
+        width: 10px;
+        height: 10px;
+        top: 5px;
+        margin-right: 5px;
+        ::before {
+          content: '';
+          box-sizing: border-box;
+          position: absolute;
+          height: 10px;
+          width: 10px;
+          background-color: ${getCellColor(cellActionState)};
+        }
+      `}
+    ></div>
+  );
 };
 
 const CellActionItem = ({ cellActionState }: CellActionItemProps) => {
@@ -212,12 +238,14 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
   const initiateGridStateUpdate = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     if (pathFindingState.pathFindingSelectedCellAction !== PathFindingCellActionStateEnum.None) {
-      internalGrid = pathFindingState.pathFindingGrid.map((row) => [...row]);
+      initializeInternalGrid();
       colorCell();
-    } else if (cellState !== PathFindingCellStateEnum.Unselected) {
+      return;
+    }
+    if (cellState !== PathFindingCellStateEnum.Unselected) {
       if (cellRef.current === null) return;
 
-      internalGrid = pathFindingState.pathFindingGrid.map((row) => [...row]);
+      initializeInternalGrid();
       internalGrid[rowIndex][columnIndex] = { ...internalGrid[rowIndex][columnIndex], cellState: PathFindingCellStateEnum.Unselected };
       cellRef.current.style.opacity = '0.3';
       movedCell = cellRef;
@@ -249,12 +277,10 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
     if (event.buttons !== 1) return;
 
     if (pathFindingState.pathFindingSelectedCellAction !== PathFindingCellActionStateEnum.None) {
-      if (internalGrid.length === 0) {
-        internalGrid = pathFindingState.pathFindingGrid.map((row) => [...row]);
-      }
-
       colorCell();
-    } else if (pathFindingState.pathFindingSelectedCellDragging !== PathFindingCellDraggingStateEnum.None) {
+      return;
+    }
+    if (pathFindingState.pathFindingSelectedCellDragging !== PathFindingCellDraggingStateEnum.None) {
       droppedCell = [rowIndex, columnIndex];
     }
   };
@@ -287,7 +313,7 @@ const SettingsComponent = () => {
   const dispatch = useDispatch();
 
   const resetGrid = () => {
-    let grid: IPathFindingCellProps[][] = new Array(425 / cellSize);
+    let grid: IPathFindingCellProps[][] = new Array(minAnimationContainerHeight / cellSize);
     let arrayLength = getCellsInRowCount(windowState.windowWidth);
     for (let i = 0; i < grid.length; i++) {
       grid[i] = new Array(arrayLength);
@@ -344,7 +370,53 @@ const SettingsComponent = () => {
           justify-content: space-evenly;
         `}
       >
-        <CellActions />
+        <div>
+          <CellActions />
+          <div>
+            <div
+              css={css`
+                display: flex;
+                color: white;
+                font-size: 13px;
+                font-weight: bold;
+                margin-left: 3px;
+              `}
+            >
+              <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Source} />
+              <div
+                css={css`
+                  margin-right: 5px;
+                `}
+              >
+                Source;
+              </div>
+              <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Destination} />
+              <div
+                css={css`
+                  margin-right: 5px;
+                `}
+              >
+                Destination;
+              </div>
+              <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Wall} />
+              <div
+                css={css`
+                  margin-right: 5px;
+                `}
+              >
+                Wall;
+              </div>
+              <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Unselected} />
+              <div
+                css={css`
+                  margin-right: 5px;
+                `}
+              >
+                Empty cell
+              </div>
+            </div>
+          </div>
+        </div>
         <div
           css={css`
             display: flex;
@@ -408,12 +480,12 @@ const AnimationComponent = () => {
           css={css`
             display: flex;
             height: 70%;
-            min-height: 425px;
+            min-height: ${minAnimationContainerHeight}px;
             justify-content: center;
             align-items: flex-end;
           `}
         >
-          <div onMouseLeave={setNewGridState}>
+          <div onMouseLeave={setNewGridState} onMouseEnter={initializeInternalGrid}>
             {pathFindingState.pathFindingGrid.map((row, rowIndex) => (
               <div
                 css={css`

@@ -15,7 +15,7 @@ import {
 } from '../Store/Sorting Module/SortingModuleStateManagement';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
-import { algorithmContext, algorithmIterationBaseTime, animationContext, minAppWidth } from '../Core/Helper';
+import { algorithmContext, algorithmIterationBaseTime, animationContext, minAnimationContainerHeight, minAppWidth } from '../Core/Helper';
 import { ResetButton } from '../Components/ResetButton';
 import { SortingAlgorithmsManager } from '../Core/Other/SortingAlgorithmsManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
@@ -429,7 +429,7 @@ const AnimationComponent = () => {
           css={css`
             display: flex;
             height: 70%;
-            min-height: 425px;
+            min-height: ${minAnimationContainerHeight}px;
             justify-content: center;
             align-items: flex-end;
           `}
