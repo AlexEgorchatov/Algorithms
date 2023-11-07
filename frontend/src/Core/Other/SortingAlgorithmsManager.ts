@@ -40,7 +40,7 @@ export class SortingAlgorithmsManager extends AlgorithmsManagerBase {
     if (!store.getState().animationState.hasAnimationStarted) return;
 
     await this.finalizeSorting();
-    store.dispatch(updateIsAnimationFinalizingStateAction(false));
+    store.dispatch(updateIsAnimationFinalizingStateAction(false)); //Is this actually correct? What if we don't skip the animation?
   }
 
   public async stopAlgorithm(): Promise<void> {
@@ -49,7 +49,7 @@ export class SortingAlgorithmsManager extends AlgorithmsManagerBase {
 
   public async completeAlgorithm(): Promise<void> {
     store.dispatch(updateIsAnimationFinalizingStateAction(true));
-    store.dispatch(updateSortingBarsStateAction(this.selectedAlgorithm.finalState));
+    store.dispatch(updateSortingBarsStateAction(this.selectedAlgorithm.finalState)); //Remove this line and implement bars animation
   }
 
   private async finalizeSorting(): Promise<void> {

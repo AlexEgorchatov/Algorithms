@@ -67,6 +67,7 @@ const getCellColor = (cellState: PathFindingCellStateEnum | PathFindingCellActio
   }
 };
 const setNewGridState = () => {
+  if (store.getState().animationState.hasAnimationStarted) return;
   if (internalGrid.length === 0) return;
 
   if (store.getState().pathFindingModuleState.pathFindingSelectedCellDragging === PathFindingCellDraggingStateEnum.None) {
@@ -103,6 +104,8 @@ const setNewGridState = () => {
   internalGrid = [];
 };
 const initializeInternalGrid = () => {
+  if (store.getState().animationState.hasAnimationStarted) return;
+
   internalGrid = store.getState().pathFindingModuleState.pathFindingGrid.map((row) => [...row]);
 };
 

@@ -13,9 +13,10 @@ let directions: number[][] = [
 ];
 
 export class BreadthFirstSearch extends PathFindingAlgorithmBase {
-  public async executeAlgorithm(): Promise<void> {
+  public async executeAlgorithm(): Promise<IPathFindingCellProps> {
     let gridCopy: IPathFindingCellProps[][] = store.getState().pathFindingModuleState.pathFindingGrid.map((row) => [...row]);
     let source: IPathFindingCellProps = { cellState: PathFindingCellStateEnum.Unselected, rowIndex: 0, columnIndex: 0, distance: 0 };
+    let destination: IPathFindingCellProps = { cellState: PathFindingCellStateEnum.Unselected, rowIndex: 0, columnIndex: 0, distance: 0 };
 
     for (let i = 0, isSourceFound = false; i < gridCopy.length && !isSourceFound; i++) {
       for (let j = 0; j < gridCopy[i].length; j++) {
@@ -28,9 +29,8 @@ export class BreadthFirstSearch extends PathFindingAlgorithmBase {
     }
 
     let queue: IPathFindingCellProps[] = [source];
-    let isDestinationFound: boolean = false;
     let queueLength = 1;
-    while (queue.length > 0 && !isDestinationFound) {
+    while (queue.length > 0 && destination.cellState === PathFindingCellStateEnum.Unselected) {
       let top = { ...queue[0] };
 
       queue.shift();
@@ -40,7 +40,7 @@ export class BreadthFirstSearch extends PathFindingAlgorithmBase {
         if (!this.isCellValid(gridCopy, newRow, newColumn)) continue;
 
         if (gridCopy[newRow][newColumn].cellState === PathFindingCellStateEnum.Destination) {
-          isDestinationFound = true;
+          destination = { ...gridCopy[newRow][newColumn], distance: top.distance + 1 };
           break;
         }
 
@@ -48,18 +48,19 @@ export class BreadthFirstSearch extends PathFindingAlgorithmBase {
         queue.push(gridCopy[newRow][newColumn]);
       }
 
-      if (--queueLength === 0) {
+      if (--queueLength === 0 && destination.cellState === PathFindingCellStateEnum.Unselected) {
         queueLength = queue.length;
         store.dispatch(updatePathFindingGridState(gridCopy));
         gridCopy = gridCopy.map((row) => [...row]);
         await pauseForStepIteration();
         if (await isAnimationTerminated()) {
-          return;
+          return destination;
         }
       }
     }
 
     store.dispatch(updatePathFindingGridState(gridCopy));
+    return destination;
   }
 
   setFinalState(): void {}
