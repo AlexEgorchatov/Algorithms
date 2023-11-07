@@ -318,7 +318,7 @@ const SettingsComponent = () => {
     for (let i = 0; i < grid.length; i++) {
       grid[i] = new Array(arrayLength);
       for (let j = 0; j < grid[i].length; j++) {
-        grid[i][j] = { cellState: PathFindingCellStateEnum.Unselected, rowIndex: i, columnIndex: j };
+        grid[i][j] = { cellState: PathFindingCellStateEnum.Unselected, rowIndex: i, columnIndex: j, distance: 0 };
       }
     }
     grid[Math.floor(grid.length / 2 - 3)][Math.floor(arrayLength / 2 - 5)].cellState = PathFindingCellStateEnum.Source;
@@ -494,7 +494,7 @@ const AnimationComponent = () => {
                 key={rowIndex}
               >
                 {row.map((cellState, columnIndex) => (
-                  <PathFindingCellComponent key={columnIndex} cellState={cellState.cellState} rowIndex={rowIndex} columnIndex={columnIndex} />
+                  <PathFindingCellComponent key={columnIndex} cellState={cellState.cellState} rowIndex={rowIndex} columnIndex={columnIndex} distance={0} />
                 ))}
               </div>
             ))}
