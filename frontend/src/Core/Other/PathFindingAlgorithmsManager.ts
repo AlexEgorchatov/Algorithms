@@ -101,6 +101,14 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
 
   public async completeAlgorithm(): Promise<void> {}
 
+  public resetCellsToColor = () => {
+    for (let i = 0; i < this.cellsToColor.length; i++) {
+      for (let j = 0; j < this.cellsToColor[i].length; j++) {
+        this.cellsToColor[i][j].current!.style.backgroundColor = ``;
+      }
+    }
+  };
+
   private async finalizePathFinding(destination: IPathFindingCellProps): Promise<void> {
     let gridCopy: IPathFindingCellProps[][] = store.getState().pathFindingModuleState.pathFindingGrid.map((row) => [...row]);
     let timeout = 500 / destination.distance;
@@ -120,11 +128,7 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
       await new Promise((resolve) => setTimeout(resolve, timeout));
     }
 
-    for (let i = 0; i < this.cellsToColor.length; i++) {
-      for (let j = 0; j < this.cellsToColor[i].length; j++) {
-        this.cellsToColor[i][j].current!.style.backgroundColor = ``;
-      }
-    }
+    this.resetCellsToColor();
     store.dispatch(updatePathFindingGridState(gridCopy));
   }
 }

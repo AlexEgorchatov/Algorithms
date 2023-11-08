@@ -48,11 +48,7 @@ const setNewGridState = () => {
 
   if (store.getState().pathFindingModuleState.pathFindingSelectedCellDragging === PathFindingCellDraggingStateEnum.None) {
     store.dispatch(updatePathFindingGridState(internalGrid));
-    for (let i = 0; i < pathFindingAlgorithmManager.cellsToColor.length; i++) {
-      for (let j = 0; j < pathFindingAlgorithmManager.cellsToColor[i].length; j++) {
-        pathFindingAlgorithmManager.cellsToColor[i][j].current!.style.backgroundColor = ``;
-      }
-    }
+    pathFindingAlgorithmManager.resetCellsToColor();
 
     store.dispatch(updateDoesSourceExistState(doesSourceExist));
     store.dispatch(updateDoesDestinationExistState(doesDestinationExist));
