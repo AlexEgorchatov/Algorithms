@@ -24,10 +24,10 @@ export const isCellValid = (gridCopy: IPathFindingCellProps[][], rowIndex: numbe
     ) {
       return false;
     }
-  } else {
-    if (gridCopy[rowIndex][columnIndex].cellState !== PathFindingCellStateEnum.Checked || currentDistance <= gridCopy[rowIndex][columnIndex].distance) {
-      return false;
-    }
+    return true;
+  }
+  if (gridCopy[rowIndex][columnIndex].cellState !== PathFindingCellStateEnum.Checked || currentDistance <= gridCopy[rowIndex][columnIndex].distance) {
+    return false;
   }
 
   return true;
