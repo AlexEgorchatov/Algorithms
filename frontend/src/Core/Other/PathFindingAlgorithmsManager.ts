@@ -18,13 +18,10 @@ export const isCellValid = (gridCopy: IPathFindingCellProps[][], rowIndex: numbe
   if (rowIndex < 0 || rowIndex >= gridCopy.length || columnIndex < 0 || columnIndex >= gridCopy[0].length) return false;
 
   if (currentDistance === -1) {
-    if (
-      gridCopy[rowIndex][columnIndex].cellState !== PathFindingCellStateEnum.Unselected &&
+    return gridCopy[rowIndex][columnIndex].cellState !== PathFindingCellStateEnum.Unselected &&
       gridCopy[rowIndex][columnIndex].cellState !== PathFindingCellStateEnum.Destination
-    ) {
-      return false;
-    }
-    return true;
+      ? false
+      : true;
   }
   if (gridCopy[rowIndex][columnIndex].cellState !== PathFindingCellStateEnum.Checked || currentDistance <= gridCopy[rowIndex][columnIndex].distance) {
     return false;
@@ -57,11 +54,19 @@ export const getCellColor = (cellState: PathFindingCellStateEnum | PathFindingCe
   }
 };
 
+export const resetCellsRefsBackground = (cellsRefs: React.RefObject<HTMLDivElement>[][]) => {
+  cellsRefs.map((row) => {
+    return row.map((cell) => {
+      return (cell.current!.style.backgroundColor = ``);
+    });
+  });
+};
+
 export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
   public selectedAlgorithm: AlgorithmBase;
   public initialState: IPathFindingCellProps[][] = [];
   public isStateUpdated: boolean = false;
-  public cellsToColor: React.RefObject<HTMLDivElement>[][] = [];
+  public cellsRefs: React.RefObject<HTMLDivElement>[][] = [];
 
   public constructor(selectedAlgorithm: AlgorithmBase) {
     super();
@@ -88,8 +93,8 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
       this.isStateUpdated = false;
     }
 
-    let destination: IPathFindingCellProps = await this.selectedAlgorithm.executeAlgorithm(this.cellsToColor);
-    if (!store.getState().animationState.hasAnimationStarted) return;
+    let destination: IPathFindingCellProps = await this.selectedAlgorithm.executeAlgorithm(this.cellsRefs);
+    if (!store.getState().animationState.hasAnimationStarted || destination.cellState === PathFindingCellStateEnum.Unselected) return;
 
     await this.finalizePathFinding(destination);
     store.dispatch(updateIsAnimationFinalizingStateAction(false));
@@ -100,14 +105,6 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
   }
 
   public async completeAlgorithm(): Promise<void> {}
-
-  public resetCellsToColor = () => {
-    for (let i = 0; i < this.cellsToColor.length; i++) {
-      for (let j = 0; j < this.cellsToColor[i].length; j++) {
-        this.cellsToColor[i][j].current!.style.backgroundColor = ``;
-      }
-    }
-  };
 
   private async finalizePathFinding(destination: IPathFindingCellProps): Promise<void> {
     let gridCopy: IPathFindingCellProps[][] = store.getState().pathFindingModuleState.pathFindingGrid.map((row) => [...row]);
@@ -121,14 +118,14 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
       if (gridCopy[newRow][newColumn].cellState === PathFindingCellStateEnum.Source) break;
 
       gridCopy[newRow][newColumn] = { ...gridCopy[newRow][newColumn], cellState: PathFindingCellStateEnum.Path };
-      this.cellsToColor[newRow][newColumn].current!.style.backgroundColor = getCellColor(PathFindingCellStateEnum.Path);
+      this.cellsRefs[newRow][newColumn].current!.style.backgroundColor = getCellColor(PathFindingCellStateEnum.Path);
       pathCell = gridCopy[newRow][newColumn];
       gridCopy = gridCopy.map((row) => [...row]);
       i = -1;
       await new Promise((resolve) => setTimeout(resolve, timeout));
     }
 
-    this.resetCellsToColor();
+    resetCellsRefsBackground(this.cellsRefs);
     store.dispatch(updatePathFindingGridState(gridCopy));
   }
 }

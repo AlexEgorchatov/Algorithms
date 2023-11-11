@@ -7,7 +7,7 @@ import { ActionBar } from '../Components/ActionBar';
 import { ResetButton } from '../Components/ResetButton';
 import { pathFindingAlgorithmsData } from '../Core/Data/PathFindingData';
 import { AnimationManager } from '../Core/Other/AnimationManager';
-import { PathFindingAlgorithmsManager, getCellColor } from '../Core/Other/PathFindingAlgorithmsManager';
+import { PathFindingAlgorithmsManager, getCellColor, resetCellsRefsBackground } from '../Core/Other/PathFindingAlgorithmsManager';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
 import { SliderComponent } from '../Components/Slider';
 import { useEffect, useRef } from 'react';
@@ -48,7 +48,7 @@ const setNewGridState = () => {
 
   if (store.getState().pathFindingModuleState.pathFindingSelectedCellDragging === PathFindingCellDraggingStateEnum.None) {
     store.dispatch(updatePathFindingGridState(internalGrid));
-    pathFindingAlgorithmManager.resetCellsToColor();
+    resetCellsRefsBackground(pathFindingAlgorithmManager.cellsRefs);
 
     store.dispatch(updateDoesSourceExistState(doesSourceExist));
     store.dispatch(updateDoesDestinationExistState(doesDestinationExist));
@@ -178,11 +178,13 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
   const cellRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    pathFindingAlgorithmManager.cellsToColor[rowIndex][columnIndex] = cellRef;
+    pathFindingAlgorithmManager.cellsRefs[rowIndex][columnIndex] = cellRef;
   }, []);
 
   const getCursor = (): string => {
     if (animationState.hasAnimationStarted) return 'cursor';
+    if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellActionStateEnum.Unselected && cellState === PathFindingCellStateEnum.Unselected)
+      return 'cursor';
     if (pathFindingState.pathFindingSelectedCellAction !== PathFindingCellActionStateEnum.None) return 'pointer';
     if (pathFindingState.pathFindingSelectedCellDragging !== PathFindingCellDraggingStateEnum.None) return 'pointer';
     if (cellState !== PathFindingCellStateEnum.Unselected) return 'pointer';
@@ -216,7 +218,7 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
     event.preventDefault();
     if (pathFindingState.pathFindingSelectedCellAction !== PathFindingCellActionStateEnum.None) {
       initializeInternalGrid();
-      colorCell();
+      paintCell();
       return;
     }
     if (cellState !== PathFindingCellStateEnum.Unselected) {
@@ -230,7 +232,7 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
       dispatch(updatePathFindingSelectedCellDraggingState(cellState as PathFindingCellDraggingStateEnum));
     }
   };
-  const colorCell = () => {
+  const paintCell = () => {
     if (cellRef.current === null) return;
     if (cellState === pathFindingState.pathFindingSelectedCellAction) return;
 
@@ -238,7 +240,7 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
     if (cellState === PathFindingCellStateEnum.Destination) doesDestinationExist = false;
 
     internalGrid[rowIndex][columnIndex] = { ...internalGrid[rowIndex][columnIndex], cellState: pathFindingState.pathFindingSelectedCellAction };
-    pathFindingAlgorithmManager.cellsToColor[rowIndex][columnIndex].current!.style.backgroundColor = getCellColor(pathFindingState.pathFindingSelectedCellAction);
+    pathFindingAlgorithmManager.cellsRefs[rowIndex][columnIndex].current!.style.backgroundColor = getCellColor(pathFindingState.pathFindingSelectedCellAction);
 
     if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellActionStateEnum.Source) {
       doesSourceExist = true;
@@ -253,7 +255,7 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
     if (event.buttons !== 1) return;
 
     if (pathFindingState.pathFindingSelectedCellAction !== PathFindingCellActionStateEnum.None) {
-      colorCell();
+      paintCell();
       return;
     }
     if (pathFindingState.pathFindingSelectedCellDragging !== PathFindingCellDraggingStateEnum.None) {
@@ -320,11 +322,11 @@ const SettingsComponent = () => {
   };
 
   useEffect(() => {
-    pathFindingAlgorithmManager.cellsToColor = new Array(arrayLength);
+    pathFindingAlgorithmManager.cellsRefs = new Array(arrayLength);
     rowLength = getCellsInRowCount(windowState.windowWidth);
 
     for (let i = 0; i < arrayLength; i++) {
-      pathFindingAlgorithmManager.cellsToColor[i] = new Array(rowLength);
+      pathFindingAlgorithmManager.cellsRefs[i] = new Array(rowLength);
     }
     resetGrid();
   }, []);
