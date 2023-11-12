@@ -18,8 +18,8 @@ import { IPathFindingCellProps } from '../Core/Interfaces/IPathFindingCellProps'
 import {
   updatePathFindingSelectedCellActionState,
   updatePathFindingGridState,
-  updateDoesSourceExistState,
-  updateDoesDestinationExistState,
+  updatePathFindingSourceState,
+  updatePathFindingDestinationState,
   updatePathFindingSelectedCellDraggingState,
 } from '../Store/Path Finding Module/PathFindingModuleStateManagement';
 import { WarningMessageComponent } from '../Components/WarningMessage';
@@ -35,8 +35,8 @@ let minAnimationComponentWidth: number = 0;
 let internalGrid: IPathFindingCellProps[][] = [];
 let movedCell: React.RefObject<HTMLDivElement>;
 let droppedCell: [number, number];
-let doesSourceExist: boolean = true;
-let doesDestinationExist: boolean = true;
+let source: IPathFindingCellProps;
+let destination: IPathFindingCellProps;
 
 const cellSize: number = 25;
 const getCellsInRowCount = (windowWidth: number): number => {
@@ -50,16 +50,16 @@ const setNewGridState = () => {
     store.dispatch(updatePathFindingGridState(internalGrid));
     resetCellsRefsBackground(pathFindingAlgorithmManager.cellsRefs);
 
-    store.dispatch(updateDoesSourceExistState(doesSourceExist));
-    store.dispatch(updateDoesDestinationExistState(doesDestinationExist));
+    store.dispatch(updatePathFindingSourceState(source));
+    store.dispatch(updatePathFindingDestinationState(destination));
   } else {
     if (movedCell.current === null) return;
 
     if (internalGrid[droppedCell[0]][droppedCell[1]].cellState === PathFindingCellStateEnum.Source) {
-      store.dispatch(updateDoesSourceExistState((doesSourceExist = false)));
+      store.dispatch(updatePathFindingSourceState((source = { cellState: PathFindingCellStateEnum.Unselected, rowIndex: 0, columnIndex: 0, distance: 0 })));
     }
     if (internalGrid[droppedCell[0]][droppedCell[1]].cellState === PathFindingCellStateEnum.Destination) {
-      store.dispatch(updateDoesDestinationExistState((doesDestinationExist = false)));
+      store.dispatch(updatePathFindingDestinationState((destination = { cellState: PathFindingCellStateEnum.Unselected, rowIndex: 0, columnIndex: 0, distance: 0 })));
     }
 
     internalGrid[droppedCell[0]][droppedCell[1]] = {
@@ -110,8 +110,9 @@ const CellActionItem = ({ cellActionState }: CellActionItemProps) => {
   const isCellActionItemEnabled = (): boolean => {
     if (animationState.hasAnimationStarted) return false;
     if (cellActionState !== PathFindingCellActionStateEnum.Source && cellActionState !== PathFindingCellActionStateEnum.Destination) return true;
-    if (cellActionState === PathFindingCellActionStateEnum.Source && !pathFindingState.doesSourceExist) return true;
-    if (cellActionState === PathFindingCellActionStateEnum.Destination && !pathFindingState.doesDestinationExist) return true;
+    if (cellActionState === PathFindingCellActionStateEnum.Source && pathFindingState.pathFindingSource.cellState === PathFindingCellStateEnum.Unselected) return true;
+    if (cellActionState === PathFindingCellActionStateEnum.Destination && pathFindingState.pathFindingDestination.cellState === PathFindingCellStateEnum.Unselected)
+      return true;
 
     return false;
   };
@@ -236,18 +237,18 @@ const PathFindingCellComponent = ({ cellState = PathFindingCellStateEnum.Unselec
     if (cellRef.current === null) return;
     if (cellState === pathFindingState.pathFindingSelectedCellAction) return;
 
-    if (cellState === PathFindingCellStateEnum.Source) doesSourceExist = false;
-    if (cellState === PathFindingCellStateEnum.Destination) doesDestinationExist = false;
+    if (cellState === PathFindingCellStateEnum.Source) source = { cellState: PathFindingCellStateEnum.Unselected, rowIndex: 0, columnIndex: 0, distance: 0 };
+    if (cellState === PathFindingCellStateEnum.Destination) destination = { cellState: PathFindingCellStateEnum.Unselected, rowIndex: 0, columnIndex: 0, distance: 0 };
 
     internalGrid[rowIndex][columnIndex] = { ...internalGrid[rowIndex][columnIndex], cellState: pathFindingState.pathFindingSelectedCellAction };
     pathFindingAlgorithmManager.cellsRefs[rowIndex][columnIndex].current!.style.backgroundColor = getCellColor(pathFindingState.pathFindingSelectedCellAction);
 
     if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellActionStateEnum.Source) {
-      doesSourceExist = true;
+      source = internalGrid[rowIndex][columnIndex];
       dispatch(updatePathFindingSelectedCellActionState(PathFindingCellActionStateEnum.None));
     }
     if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellActionStateEnum.Destination) {
-      doesDestinationExist = true;
+      destination = internalGrid[rowIndex][columnIndex];
       dispatch(updatePathFindingSelectedCellActionState(PathFindingCellActionStateEnum.None));
     }
   };
@@ -302,15 +303,16 @@ const SettingsComponent = () => {
         grid[i][j] = { cellState: PathFindingCellStateEnum.Unselected, rowIndex: i, columnIndex: j, distance: 0 };
       }
     }
+
     grid[Math.floor(grid.length / 2 - 3)][Math.floor(rowLength / 2 - 5)].cellState = PathFindingCellStateEnum.Source;
     grid[Math.round(grid.length / 2 + 3)][Math.round(rowLength / 2 + 5)].cellState = PathFindingCellStateEnum.Destination;
+    dispatch(updatePathFindingSourceState((source = grid[Math.round(grid.length / 2 + 3)][Math.round(rowLength / 2 + 5)])));
+    dispatch(updatePathFindingDestinationState((destination = grid[Math.floor(grid.length / 2 - 3)][Math.floor(rowLength / 2 - 5)])));
+
     for (let i = 3; i < grid.length - 3; i++) {
       grid[i][Math.round(rowLength / 2)].cellState = PathFindingCellStateEnum.Wall;
     }
     minAnimationComponentWidth = windowState.windowWidth;
-
-    dispatch(updateDoesDestinationExistState((doesDestinationExist = true)));
-    dispatch(updateDoesSourceExistState((doesSourceExist = true)));
     dispatch(updatePathFindingGridState(grid));
 
     if (

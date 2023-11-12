@@ -84,5 +84,5 @@ export abstract class StringMatchingAlgorithmBase extends AlgorithmBase {
 }
 
 export abstract class PathFindingAlgorithmBase extends AlgorithmBase {
-  public finalState: IPathFindingCellProps[] = [];
+  public finalState: IPathFindingCellProps[][] = [];
 }
