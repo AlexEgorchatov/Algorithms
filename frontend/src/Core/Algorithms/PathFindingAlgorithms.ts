@@ -1,5 +1,5 @@
 import { PathFindingCellStateEnum } from '../../Resources/Enumerations';
-import { updatePathFindingGridState } from '../../Store/Path Finding Module/PathFindingModuleStateManagement';
+import { updatePathFindingDestinationState, updatePathFindingGridState } from '../../Store/Path Finding Module/PathFindingModuleStateManagement';
 import { store } from '../../Store/Store';
 import { PathFindingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { isAnimationTerminated, pauseForStepIteration } from '../Helper';
@@ -7,24 +7,14 @@ import { IPathFindingCellProps } from '../Interfaces/IPathFindingCellProps';
 import { directions, getCellColor, isCellValid, resetCellsRefsBackground } from '../Other/PathFindingAlgorithmsManager';
 
 export class BreadthFirstSearch extends PathFindingAlgorithmBase {
-  public async executeAlgorithm(cellsRefs: React.RefObject<HTMLDivElement>[][]): Promise<IPathFindingCellProps> {
+  public async executeAlgorithm(cellsRefs: React.RefObject<HTMLDivElement>[][]): Promise<void> {
     let gridCopy: IPathFindingCellProps[][] = store.getState().pathFindingModuleState.pathFindingGrid.map((row) => [...row]);
-    let source: IPathFindingCellProps = { cellState: PathFindingCellStateEnum.Unselected, rowIndex: 0, columnIndex: 0, distance: 0 };
-    let destination: IPathFindingCellProps = { cellState: PathFindingCellStateEnum.Unselected, rowIndex: 0, columnIndex: 0, distance: 0 };
-
-    for (let i = 0, isSourceFound = false; i < gridCopy.length && !isSourceFound; i++) {
-      for (let j = 0; j < gridCopy[i].length; j++) {
-        if (gridCopy[i][j].cellState !== PathFindingCellStateEnum.Source) continue;
-
-        source = { ...gridCopy[i][j], distance: 0 };
-        isSourceFound = true;
-        break;
-      }
-    }
+    let source: IPathFindingCellProps = store.getState().pathFindingModuleState.pathFindingSource;
+    let destination: IPathFindingCellProps = store.getState().pathFindingModuleState.pathFindingDestination;
 
     let queue: IPathFindingCellProps[] = [source];
     let queueLength = 1;
-    while (queue.length > 0 && destination.cellState === PathFindingCellStateEnum.Unselected) {
+    while (queue.length > 0 && destination.distance === 0) {
       let top = queue[0];
       queue.shift();
 
@@ -34,7 +24,7 @@ export class BreadthFirstSearch extends PathFindingAlgorithmBase {
         if (!isCellValid(gridCopy, newRow, newColumn)) continue;
 
         if (gridCopy[newRow][newColumn].cellState === PathFindingCellStateEnum.Destination) {
-          destination = { ...gridCopy[newRow][newColumn], distance: top.distance + 1 };
+          store.dispatch(updatePathFindingDestinationState((destination = { ...gridCopy[newRow][newColumn], distance: top.distance + 1 })));
           await pauseForStepIteration();
           break;
         }
@@ -44,13 +34,13 @@ export class BreadthFirstSearch extends PathFindingAlgorithmBase {
         queue.push(gridCopy[newRow][newColumn]);
       }
 
-      if (--queueLength === 0 && destination.cellState === PathFindingCellStateEnum.Unselected) {
+      if (--queueLength === 0 && destination.distance === 0) {
         queueLength = queue.length;
         if (queueLength === 0) break;
 
         await pauseForStepIteration();
         if (await isAnimationTerminated()) {
-          return destination;
+          return;
         }
       }
     }
@@ -58,7 +48,6 @@ export class BreadthFirstSearch extends PathFindingAlgorithmBase {
     resetCellsRefsBackground(cellsRefs);
     store.dispatch(updatePathFindingGridState(gridCopy));
     gridCopy = gridCopy.map((row) => [...row]);
-    return destination;
   }
 
   setFinalState(): void {}

@@ -93,21 +93,23 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
       this.isStateUpdated = false;
     }
 
-    let destination: IPathFindingCellProps = await this.selectedAlgorithm.executeAlgorithm(this.cellsRefs);
-    if (!store.getState().animationState.hasAnimationStarted || destination.cellState === PathFindingCellStateEnum.Unselected) return;
+    await this.selectedAlgorithm.executeAlgorithm(this.cellsRefs);
+    if (!store.getState().animationState.hasAnimationStarted || store.getState().pathFindingModuleState.pathFindingDestination.distance === 0) return;
 
-    await this.finalizePathFinding(destination);
+    await this.finalizePathFinding();
     store.dispatch(updateIsAnimationFinalizingStateAction(false));
   }
 
   public async stopAlgorithm(): Promise<void> {
+    resetCellsRefsBackground(this.cellsRefs);
     store.dispatch(updatePathFindingGridState(this.initialState));
   }
 
   public async completeAlgorithm(): Promise<void> {}
 
-  private async finalizePathFinding(destination: IPathFindingCellProps): Promise<void> {
+  private async finalizePathFinding(): Promise<void> {
     let gridCopy: IPathFindingCellProps[][] = store.getState().pathFindingModuleState.pathFindingGrid.map((row) => [...row]);
+    let destination = store.getState().pathFindingModuleState.pathFindingDestination;
     let timeout = 500 / destination.distance;
 
     let pathCell = { ...destination };
