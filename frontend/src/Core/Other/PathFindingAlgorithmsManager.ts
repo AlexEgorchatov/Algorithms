@@ -114,15 +114,11 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
   }
 
   public resetToInitialState(): void {
-    let pathFindingModuleState = store.getState().pathFindingModuleState;
     let dispatch = store.dispatch;
     dispatch(updatePathFindingGridState(this.initialState));
     dispatch(
-      updatePathFindingSourceState({ ...pathFindingModuleState.pathFindingSource, distance: 0 }),
-    );
-    dispatch(
       updatePathFindingDestinationState({
-        ...pathFindingModuleState.pathFindingDestination,
+        ...store.getState().pathFindingModuleState.pathFindingDestination,
         distance: 0,
       }),
     );
@@ -187,6 +183,7 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
       await new Promise((resolve) => setTimeout(resolve, timeout));
     }
 
+    await new Promise((resolve) => setTimeout(resolve, timeout));
     resetCellsRefsBackground(this.cellsRefs);
     store.dispatch(updatePathFindingGridState(gridCopy));
   }
