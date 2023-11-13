@@ -16,6 +16,7 @@ import {
   PathFindingAlgorithmsManager,
   getCellColor,
   resetCellsRefsBackground,
+  undefinedCell,
 } from '../Core/Other/PathFindingAlgorithmsManager';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
 import { SliderComponent } from '../Components/Slider';
@@ -64,16 +65,37 @@ const setNewGridState = () => {
   if (internalGrid.length === 0) return;
 
   let dispatch = store.dispatch;
+  let pathFindingModuleState = store.getState().pathFindingModuleState;
 
   if (
-    store.getState().pathFindingModuleState.pathFindingSelectedCellDragging ===
-    PathFindingCellDraggingStateEnum.None
+    (pathFindingModuleState.pathFindingSelectedCellDragging ===
+      PathFindingCellDraggingStateEnum.None &&
+      pathFindingModuleState.pathFindingSelectedCellAction ===
+        PathFindingCellActionStateEnum.None) ||
+    (pathFindingModuleState.pathFindingSelectedCellAction !== PathFindingCellActionStateEnum.None &&
+      !pathFindingAlgorithmManager.cellsRefs.some((row) =>
+        row.some((cell) => cell.current!.style.backgroundColor !== ``),
+      ))
+  ) {
+    return;
+  }
+
+  if (
+    pathFindingModuleState.pathFindingSelectedCellDragging === PathFindingCellDraggingStateEnum.None
   ) {
     dispatch(updatePathFindingGridState(internalGrid));
     resetCellsRefsBackground(pathFindingAlgorithmManager.cellsRefs);
 
     dispatch(updatePathFindingSourceState(source));
     dispatch(updatePathFindingDestinationState(destination));
+    if (
+      pathFindingModuleState.pathFindingSelectedCellAction ===
+        PathFindingCellActionStateEnum.Source ||
+      pathFindingModuleState.pathFindingSelectedCellAction ===
+        PathFindingCellActionStateEnum.Destination
+    ) {
+      dispatch(updatePathFindingSelectedCellActionState(PathFindingCellActionStateEnum.None));
+    }
   } else {
     if (movedCell.current === null) return;
 
@@ -280,7 +302,12 @@ const PathFindingCellComponent = ({
       return 'pointer';
     if (pathFindingState.pathFindingSelectedCellDragging !== PathFindingCellDraggingStateEnum.None)
       return 'pointer';
-    if (cellState !== PathFindingCellStateEnum.Unselected) return 'pointer';
+    if (
+      cellState !== PathFindingCellStateEnum.Unselected &&
+      cellState !== PathFindingCellStateEnum.Path &&
+      cellState !== PathFindingCellStateEnum.Checked
+    )
+      return 'pointer';
 
     return 'cursor';
   };
@@ -313,18 +340,25 @@ const PathFindingCellComponent = ({
     if (store.getState().animationState.hasAnimationStarted) return;
     event.preventDefault();
 
-    if (!pathFindingAlgorithmManager.isStateUpdated) {
-      pathFindingAlgorithmManager.resetToInitialState();
-      pathFindingAlgorithmManager.isStateUpdated = true;
-    }
-
     if (pathFindingState.pathFindingSelectedCellAction !== PathFindingCellActionStateEnum.None) {
+      if (!pathFindingAlgorithmManager.isStateUpdated) {
+        pathFindingAlgorithmManager.resetToInitialState();
+        pathFindingAlgorithmManager.isStateUpdated = true;
+      }
       initializeInternalGrid();
       paintCell();
       return;
     }
-    if (cellState !== PathFindingCellStateEnum.Unselected) {
+    if (
+      cellState !== PathFindingCellStateEnum.Unselected &&
+      cellState !== PathFindingCellStateEnum.Path &&
+      cellState !== PathFindingCellStateEnum.Checked
+    ) {
       if (cellRef.current === null) return;
+      if (!pathFindingAlgorithmManager.isStateUpdated) {
+        pathFindingAlgorithmManager.resetToInitialState();
+        pathFindingAlgorithmManager.isStateUpdated = true;
+      }
 
       initializeInternalGrid();
       internalGrid[rowIndex][columnIndex] = {
@@ -343,20 +377,8 @@ const PathFindingCellComponent = ({
     if (cellRef.current === null) return;
     if (cellState === pathFindingState.pathFindingSelectedCellAction) return;
 
-    if (cellState === PathFindingCellStateEnum.Source)
-      source = {
-        cellState: PathFindingCellStateEnum.Unselected,
-        rowIndex: 0,
-        columnIndex: 0,
-        distance: 0,
-      };
-    if (cellState === PathFindingCellStateEnum.Destination)
-      destination = {
-        cellState: PathFindingCellStateEnum.Unselected,
-        rowIndex: 0,
-        columnIndex: 0,
-        distance: 0,
-      };
+    if (cellState === PathFindingCellStateEnum.Source) source = undefinedCell;
+    if (cellState === PathFindingCellStateEnum.Destination) destination = undefinedCell;
 
     internalGrid[rowIndex][columnIndex] = {
       ...internalGrid[rowIndex][columnIndex],
@@ -367,19 +389,38 @@ const PathFindingCellComponent = ({
 
     if (pathFindingState.pathFindingSelectedCellAction === PathFindingCellActionStateEnum.Source) {
       source = internalGrid[rowIndex][columnIndex];
-      dispatch(updatePathFindingSelectedCellActionState(PathFindingCellActionStateEnum.None));
     }
     if (
       pathFindingState.pathFindingSelectedCellAction === PathFindingCellActionStateEnum.Destination
     ) {
       destination = internalGrid[rowIndex][columnIndex];
-      dispatch(updatePathFindingSelectedCellActionState(PathFindingCellActionStateEnum.None));
     }
   };
   const handleMouseOver = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (store.getState().animationState.hasAnimationStarted) return;
+
+    if (
+      pathFindingState.pathFindingSelectedCellAction !== PathFindingCellActionStateEnum.None &&
+      !pathFindingAlgorithmManager.isStateUpdated
+    ) {
+      pathFindingAlgorithmManager.resetToInitialState();
+      pathFindingAlgorithmManager.isStateUpdated = true;
+    }
     if (event.buttons !== 1) return;
 
     if (pathFindingState.pathFindingSelectedCellAction !== PathFindingCellActionStateEnum.None) {
+      if (
+        pathFindingState.pathFindingSelectedCellAction === PathFindingCellActionStateEnum.Source &&
+        source !== undefinedCell
+      )
+        return;
+      if (
+        pathFindingState.pathFindingSelectedCellAction ===
+          PathFindingCellActionStateEnum.Destination &&
+        destination !== undefinedCell
+      )
+        return;
+
       if (!pathFindingAlgorithmManager.isStateUpdated) {
         pathFindingAlgorithmManager.resetToInitialState();
         pathFindingAlgorithmManager.isStateUpdated = true;

@@ -5,7 +5,9 @@ import {
   PathFindingCellStateEnum,
 } from '../../Resources/Enumerations';
 import {
+  updatePathFindingDestinationState,
   updatePathFindingGridState,
+  updatePathFindingSourceState,
   updateSelectedPathFindingAlgorithmState,
 } from '../../Store/Path Finding Module/PathFindingModuleStateManagement';
 import { updateIsAnimationFinalizingStateAction } from '../../Store/Shared/AnimationStateManagement';
@@ -20,6 +22,13 @@ export let directions: number[][] = [
   [1, 0],
   [-1, 0],
 ];
+
+export const undefinedCell: IPathFindingCellProps = {
+  cellState: PathFindingCellStateEnum.Unselected,
+  rowIndex: -1,
+  columnIndex: -1,
+  distance: 0,
+};
 
 export const isCellValid = (
   gridCopy: IPathFindingCellProps[][],
@@ -105,7 +114,18 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
   }
 
   public resetToInitialState(): void {
-    store.dispatch(updatePathFindingGridState(this.initialState));
+    let pathFindingModuleState = store.getState().pathFindingModuleState;
+    let dispatch = store.dispatch;
+    dispatch(updatePathFindingGridState(this.initialState));
+    dispatch(
+      updatePathFindingSourceState({ ...pathFindingModuleState.pathFindingSource, distance: 0 }),
+    );
+    dispatch(
+      updatePathFindingDestinationState({
+        ...pathFindingModuleState.pathFindingDestination,
+        distance: 0,
+      }),
+    );
   }
 
   public updateStoreSelectedAlgorithmName(): void {
