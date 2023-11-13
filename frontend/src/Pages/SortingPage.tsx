@@ -2,7 +2,14 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect, useRef } from 'react';
-import { checkedColor, completionColor, errorMessageColor, mainFontColor, moduleBackground, pivotColor } from '../Resources/Colors';
+import {
+  checkedColor,
+  completionColor,
+  errorMessageColor,
+  mainFontColor,
+  moduleBackground,
+  pivotColor,
+} from '../Resources/Colors';
 import { SliderComponent } from '../Components/Slider';
 import { sortingAlgorithmsData } from '../Core/Data/SortingData';
 import { useSelector, useDispatch } from 'react-redux';
@@ -15,7 +22,13 @@ import {
 } from '../Store/Sorting Module/SortingModuleStateManagement';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
-import { algorithmContext, algorithmIterationBaseTime, animationContext, minAnimationContainerHeight, minAppWidth } from '../Core/Helper';
+import {
+  algorithmContext,
+  algorithmIterationBaseTime,
+  animationContext,
+  minAnimationContainerHeight,
+  minAppWidth,
+} from '../Core/Helper';
 import { ResetButton } from '../Components/ResetButton';
 import { SortingAlgorithmsManager } from '../Core/Other/SortingAlgorithmsManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
@@ -25,7 +38,9 @@ import { ISortingBarProps } from '../Core/Interfaces/ISortingBarProps';
 import { updateCanAnimationBeStartedStateAction } from '../Store/Shared/AnimationStateManagement';
 import { WarningMessageComponent } from '../Components/WarningMessage';
 
-let sortingAlgorithmManager: SortingAlgorithmsManager = new SortingAlgorithmsManager(sortingAlgorithmsData[0].algorithm);
+let sortingAlgorithmManager: SortingAlgorithmsManager = new SortingAlgorithmsManager(
+  sortingAlgorithmsData[0].algorithm,
+);
 let sortingAnimationManager: AnimationManager = new AnimationManager(sortingAlgorithmManager);
 
 let validSortingInput: string = '';
@@ -150,7 +165,9 @@ const SortingInputComponent = () => {
         </div>
         <div
           css={css`
-            visibility: ${sortingModuleState.isInputNan || sortingModuleState.isInputOverMax ? 'visible' : 'hidden'};
+            visibility: ${sortingModuleState.isInputNan || sortingModuleState.isInputOverMax
+              ? 'visible'
+              : 'hidden'};
             display: flex;
             color: ${errorMessageColor};
             font-size: 13px;
@@ -218,7 +235,12 @@ const GenerateInputComponent = () => {
     if (inputRef.current === null) return;
 
     let maxBarsNumber: number = getMaxBarsNumber(windowState.windowWidth);
-    inputRef.current.value = parseInt(currentInput) > maxBarsNumber ? maxBarsNumber.toString() : parseInt(currentInput) < 1 ? '1' : currentInput;
+    inputRef.current.value =
+      parseInt(currentInput) > maxBarsNumber
+        ? maxBarsNumber.toString()
+        : parseInt(currentInput) < 1
+        ? '1'
+        : currentInput;
   };
 
   return (
@@ -265,7 +287,12 @@ const GenerateInputComponent = () => {
   );
 };
 
-const SortingBarComponent = ({ barHeight, barID, barState = SortingBarStateEnum.Unselected, leftOffset: newLeftOffset }: ISortingBarProps) => {
+const SortingBarComponent = ({
+  barHeight,
+  barID,
+  barState = SortingBarStateEnum.Unselected,
+  leftOffset: newLeftOffset,
+}: ISortingBarProps) => {
   let divRef = useRef<HTMLDivElement>(null);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const animationState = useSelector((state: AppState) => state.animationState);
@@ -443,7 +470,13 @@ const AnimationComponent = () => {
             `}
           >
             {sortingModuleState.sortingBars.map((bar, index) => (
-              <SortingBarComponent key={index} barID={bar.barID} barHeight={bar.barHeight} barState={bar.barState} leftOffset={bar.leftOffset} />
+              <SortingBarComponent
+                key={index}
+                barID={bar.barID}
+                barHeight={bar.barHeight}
+                barState={bar.barState}
+                leftOffset={bar.leftOffset}
+              />
             ))}
           </div>
         </div>

@@ -1,6 +1,9 @@
 import { SortingBarStateEnum } from '../../Resources/Enumerations';
 import { updateIsAnimationFinalizingStateAction } from '../../Store/Shared/AnimationStateManagement';
-import { updateSelectedSortingAlgorithmState, updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingModuleStateManagement';
+import {
+  updateSelectedSortingAlgorithmState,
+  updateSortingBarsStateAction,
+} from '../../Store/Sorting Module/SortingModuleStateManagement';
 import { store } from '../../Store/Store';
 import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';

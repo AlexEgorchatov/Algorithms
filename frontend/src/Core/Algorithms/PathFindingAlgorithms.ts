@@ -1,16 +1,27 @@
 import { PathFindingCellStateEnum } from '../../Resources/Enumerations';
-import { updatePathFindingDestinationState, updatePathFindingGridState } from '../../Store/Path Finding Module/PathFindingModuleStateManagement';
+import {
+  updatePathFindingDestinationState,
+  updatePathFindingGridState,
+} from '../../Store/Path Finding Module/PathFindingModuleStateManagement';
 import { store } from '../../Store/Store';
 import { PathFindingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { isAnimationTerminated, pauseForStepIteration } from '../Helper';
 import { IPathFindingCellProps } from '../Interfaces/IPathFindingCellProps';
-import { directions, getCellColor, isCellValid, resetCellsRefsBackground } from '../Other/PathFindingAlgorithmsManager';
+import {
+  directions,
+  getCellColor,
+  isCellValid,
+  resetCellsRefsBackground,
+} from '../Other/PathFindingAlgorithmsManager';
 
 export class BreadthFirstSearch extends PathFindingAlgorithmBase {
   public async executeAlgorithm(cellsRefs: React.RefObject<HTMLDivElement>[][]): Promise<void> {
-    let gridCopy: IPathFindingCellProps[][] = store.getState().pathFindingModuleState.pathFindingGrid.map((row) => [...row]);
+    let gridCopy: IPathFindingCellProps[][] = store
+      .getState()
+      .pathFindingModuleState.pathFindingGrid.map((row) => [...row]);
     let source: IPathFindingCellProps = store.getState().pathFindingModuleState.pathFindingSource;
-    let destination: IPathFindingCellProps = store.getState().pathFindingModuleState.pathFindingDestination;
+    let destination: IPathFindingCellProps =
+      store.getState().pathFindingModuleState.pathFindingDestination;
 
     let queue: IPathFindingCellProps[] = [source];
     let queueLength = 1;
@@ -24,13 +35,23 @@ export class BreadthFirstSearch extends PathFindingAlgorithmBase {
         if (!isCellValid(gridCopy, newRow, newColumn)) continue;
 
         if (gridCopy[newRow][newColumn].cellState === PathFindingCellStateEnum.Destination) {
-          store.dispatch(updatePathFindingDestinationState((destination = { ...gridCopy[newRow][newColumn], distance: top.distance + 1 })));
+          store.dispatch(
+            updatePathFindingDestinationState(
+              (destination = { ...gridCopy[newRow][newColumn], distance: top.distance + 1 }),
+            ),
+          );
           await pauseForStepIteration();
           break;
         }
 
-        gridCopy[newRow][newColumn] = { ...gridCopy[newRow][newColumn], cellState: PathFindingCellStateEnum.Checked, distance: top.distance + 1 };
-        cellsRefs[newRow][newColumn].current!.style.backgroundColor = getCellColor(PathFindingCellStateEnum.Checked);
+        gridCopy[newRow][newColumn] = {
+          ...gridCopy[newRow][newColumn],
+          cellState: PathFindingCellStateEnum.Checked,
+          distance: top.distance + 1,
+        };
+        cellsRefs[newRow][newColumn].current!.style.backgroundColor = getCellColor(
+          PathFindingCellStateEnum.Checked,
+        );
         queue.push(gridCopy[newRow][newColumn]);
       }
 

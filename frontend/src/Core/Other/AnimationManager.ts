@@ -1,4 +1,7 @@
-import { updateHasAnimationStartedStateAction, updateIsAnimationRunningStateAction } from '../../Store/Shared/AnimationStateManagement';
+import {
+  updateHasAnimationStartedStateAction,
+  updateIsAnimationRunningStateAction,
+} from '../../Store/Shared/AnimationStateManagement';
 import { store } from '../../Store/Store';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 
@@ -12,7 +15,11 @@ export class AnimationManager {
   }
 
   public async startAnimation(): Promise<void> {
-    if (!store.getState().animationState.canAnimationBeStarted || store.getState().animationState.isAnimationFinalizing) return;
+    if (
+      !store.getState().animationState.canAnimationBeStarted ||
+      store.getState().animationState.isAnimationFinalizing
+    )
+      return;
 
     store.dispatch(updateIsAnimationRunningStateAction(true));
     if (store.getState().animationState.hasAnimationStarted) return;
@@ -32,7 +39,11 @@ export class AnimationManager {
   }
 
   public stopAnimation(): void {
-    if (!store.getState().animationState.hasAnimationStarted || store.getState().animationState.isAnimationFinalizing) return;
+    if (
+      !store.getState().animationState.hasAnimationStarted ||
+      store.getState().animationState.isAnimationFinalizing
+    )
+      return;
 
     store.dispatch(updateHasAnimationStartedStateAction(false));
     store.dispatch(updateIsAnimationRunningStateAction(false));
@@ -40,7 +51,11 @@ export class AnimationManager {
   }
 
   public completeAnimation(): void {
-    if (!store.getState().animationState.hasAnimationStarted || store.getState().animationState.isAnimationFinalizing) return;
+    if (
+      !store.getState().animationState.hasAnimationStarted ||
+      store.getState().animationState.isAnimationFinalizing
+    )
+      return;
 
     isAnimationCompleted = true;
     this.algorithmManager.completeAlgorithm();
