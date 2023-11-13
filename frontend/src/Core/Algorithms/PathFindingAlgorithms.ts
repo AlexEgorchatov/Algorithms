@@ -16,12 +16,13 @@ import {
 
 export class BreadthFirstSearch extends PathFindingAlgorithmBase {
   public async executeAlgorithm(cellsRefs: React.RefObject<HTMLDivElement>[][]): Promise<void> {
-    let gridCopy: IPathFindingCellProps[][] = store
-      .getState()
-      .pathFindingModuleState.pathFindingGrid.map((row) => [...row]);
-    let source: IPathFindingCellProps = store.getState().pathFindingModuleState.pathFindingSource;
-    let destination: IPathFindingCellProps =
-      store.getState().pathFindingModuleState.pathFindingDestination;
+    let pathFindingModuleState = store.getState().pathFindingModuleState;
+    let dispatch = store.dispatch;
+    let gridCopy: IPathFindingCellProps[][] = pathFindingModuleState.pathFindingGrid.map((row) => [
+      ...row,
+    ]);
+    let source: IPathFindingCellProps = pathFindingModuleState.pathFindingSource;
+    let destination: IPathFindingCellProps = pathFindingModuleState.pathFindingDestination;
 
     let queue: IPathFindingCellProps[] = [source];
     let queueLength = 1;
@@ -35,7 +36,7 @@ export class BreadthFirstSearch extends PathFindingAlgorithmBase {
         if (!isCellValid(gridCopy, newRow, newColumn)) continue;
 
         if (gridCopy[newRow][newColumn].cellState === PathFindingCellStateEnum.Destination) {
-          store.dispatch(
+          dispatch(
             updatePathFindingDestinationState(
               (destination = { ...gridCopy[newRow][newColumn], distance: top.distance + 1 }),
             ),
@@ -67,7 +68,7 @@ export class BreadthFirstSearch extends PathFindingAlgorithmBase {
     }
 
     resetCellsRefsBackground(cellsRefs);
-    store.dispatch(updatePathFindingGridState(gridCopy));
+    dispatch(updatePathFindingGridState(gridCopy));
     gridCopy = gridCopy.map((row) => [...row]);
   }
 
