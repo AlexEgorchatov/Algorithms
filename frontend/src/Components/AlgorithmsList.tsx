@@ -38,14 +38,26 @@ const AlgorithmComponent = ({ title, algorithm }: AlgorithmProps) => {
     <div
       css={css`
         font-size: 20px;
-        color: ${algorithm.constructor.name === algorithmManager.selectedAlgorithm.constructor.name ? '' : 'white'};
+        color: ${algorithm.constructor.name === algorithmManager.selectedAlgorithm.constructor.name
+          ? ''
+          : 'white'};
         margin-right: 10px;
-        cursor: ${animationState.hasAnimationStarted && algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name ? 'default' : 'pointer'};
-        opacity: ${animationState.hasAnimationStarted && algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name ? '0.5' : '1'};
+        cursor: ${animationState.hasAnimationStarted &&
+        algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name
+          ? 'default'
+          : 'pointer'};
+        opacity: ${animationState.hasAnimationStarted &&
+        algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name
+          ? '0.5'
+          : '1'};
         :hover {
           ${!animationState.hasAnimationStarted &&
           `
-            color: ${algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name ? `${headerItemHovered}` : ''};
+            color: ${
+              algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name
+                ? `${headerItemHovered}`
+                : ''
+            };
           `}
         }
       `}
