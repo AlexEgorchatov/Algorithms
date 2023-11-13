@@ -164,6 +164,13 @@ const initializeInternalGrid = () => {
 
   internalGrid = store.getState().pathFindingModuleState.pathFindingGrid.map((row) => [...row]);
 };
+const isInteractableCell = (cellState: PathFindingCellStateEnum): boolean => {
+  return (
+    cellState !== PathFindingCellStateEnum.Unselected &&
+    cellState !== PathFindingCellStateEnum.Path &&
+    cellState !== PathFindingCellStateEnum.Checked
+  );
+};
 
 const CellActionItemLegend = ({ cellActionState }: CellActionItemProps) => {
   return (
@@ -292,22 +299,12 @@ const PathFindingCellComponent = ({
 
   const getCursor = (): string => {
     if (animationState.hasAnimationStarted) return 'cursor';
-    if (
-      pathFindingState.pathFindingSelectedCellAction ===
-        PathFindingCellActionStateEnum.Unselected &&
-      cellState === PathFindingCellStateEnum.Unselected
-    )
-      return 'cursor';
+    if (pathFindingState.pathFindingSelectedCellAction === cellState) return 'cursor';
     if (pathFindingState.pathFindingSelectedCellAction !== PathFindingCellActionStateEnum.None)
       return 'pointer';
     if (pathFindingState.pathFindingSelectedCellDragging !== PathFindingCellDraggingStateEnum.None)
       return 'pointer';
-    if (
-      cellState !== PathFindingCellStateEnum.Unselected &&
-      cellState !== PathFindingCellStateEnum.Path &&
-      cellState !== PathFindingCellStateEnum.Checked
-    )
-      return 'pointer';
+    if (isInteractableCell(cellState as PathFindingCellStateEnum)) return 'pointer';
 
     return 'cursor';
   };
@@ -345,16 +342,14 @@ const PathFindingCellComponent = ({
         pathFindingAlgorithmManager.resetToInitialState();
         pathFindingAlgorithmManager.isStateUpdated = true;
       }
+
       initializeInternalGrid();
       paintCell();
       return;
     }
-    if (
-      cellState !== PathFindingCellStateEnum.Unselected &&
-      cellState !== PathFindingCellStateEnum.Path &&
-      cellState !== PathFindingCellStateEnum.Checked
-    ) {
+    if (isInteractableCell(cellState as PathFindingCellStateEnum)) {
       if (cellRef.current === null) return;
+
       if (!pathFindingAlgorithmManager.isStateUpdated) {
         pathFindingAlgorithmManager.resetToInitialState();
         pathFindingAlgorithmManager.isStateUpdated = true;
