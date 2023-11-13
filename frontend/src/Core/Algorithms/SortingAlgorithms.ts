@@ -30,8 +30,16 @@ export class BubbleSort extends SortingAlgorithmBase {
         //TODO: Figure out why putting this code in a function breaks the animation
         barsCopy = [...barsCopy];
         let tempBar = { ...barsCopy[j] };
-        barsCopy[j] = { ...barsCopy[j], barHeight: barsCopy[j + 1].barHeight, barState: SortingBarStateEnum.Unselected };
-        barsCopy[j + 1] = { ...barsCopy[j + 1], barHeight: tempBar.barHeight, barState: SortingBarStateEnum.Unselected };
+        barsCopy[j] = {
+          ...barsCopy[j],
+          barHeight: barsCopy[j + 1].barHeight,
+          barState: SortingBarStateEnum.Unselected,
+        };
+        barsCopy[j + 1] = {
+          ...barsCopy[j + 1],
+          barHeight: tempBar.barHeight,
+          barState: SortingBarStateEnum.Unselected,
+        };
         store.dispatch(updateSortingBarsStateAction(barsCopy));
         if (await isAnimationTerminated()) return;
 
@@ -93,7 +101,11 @@ export class QuickSort extends SortingAlgorithmBase {
           }
           barsCopy = [...barsCopy];
           let tempBar = { ...barsCopy[i] };
-          barsCopy[i] = { ...barsCopy[i], barHeight: barsCopy[currentPartitionIndex].barHeight, barState: SortingBarStateEnum.Unselected };
+          barsCopy[i] = {
+            ...barsCopy[i],
+            barHeight: barsCopy[currentPartitionIndex].barHeight,
+            barState: SortingBarStateEnum.Unselected,
+          };
           barsCopy[currentPartitionIndex] = {
             ...barsCopy[currentPartitionIndex],
             barHeight: tempBar.barHeight,
@@ -125,7 +137,11 @@ export class QuickSort extends SortingAlgorithmBase {
 
       let tempBar = { ...barsCopy[left] };
       barsCopy = [...barsCopy];
-      barsCopy[left] = { ...barsCopy[left], barHeight: barsCopy[currentPartitionIndex].barHeight, barState: SortingBarStateEnum.Unselected };
+      barsCopy[left] = {
+        ...barsCopy[left],
+        barHeight: barsCopy[currentPartitionIndex].barHeight,
+        barState: SortingBarStateEnum.Unselected,
+      };
       barsCopy[currentPartitionIndex] = {
         ...barsCopy[currentPartitionIndex],
         barHeight: tempBar.barHeight,

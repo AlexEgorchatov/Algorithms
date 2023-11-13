@@ -24,7 +24,12 @@ export const algorithmContext = createContext<algorithmProps>({
 });
 
 export const pauseForStepIteration = async (): Promise<void> => {
-  await new Promise((resolve) => setTimeout(resolve, algorithmIterationBaseTime - 50 * (store.getState().sliderComponentState.sliderValue - 1)));
+  await new Promise((resolve) =>
+    setTimeout(
+      resolve,
+      algorithmIterationBaseTime - 50 * (store.getState().sliderComponentState.sliderValue - 1),
+    ),
+  );
 };
 
 /**
@@ -35,12 +40,13 @@ export const pauseForStepIteration = async (): Promise<void> => {
 export const isAnimationContinued = async (): Promise<boolean> => {
   return new Promise<boolean>((resolve) => {
     let unsubscribe = store.subscribe(() => {
-      if (!store.getState().animationState.hasAnimationStarted || isAnimationCompleted) {
+      let animationState = store.getState().animationState;
+      if (!animationState.hasAnimationStarted || isAnimationCompleted) {
         resolve(false);
         unsubscribe();
         return;
       }
-      if (store.getState().animationState.isAnimationRunning) {
+      if (animationState.isAnimationRunning) {
         resolve(true);
         unsubscribe();
         return;
@@ -57,11 +63,12 @@ export const isAnimationContinued = async (): Promise<boolean> => {
  */
 export const isAnimationTerminated = async (): Promise<boolean> => {
   return new Promise<boolean>(async (resolve) => {
-    if (!store.getState().animationState.hasAnimationStarted || isAnimationCompleted) {
+    let animationState = store.getState().animationState;
+    if (!animationState.hasAnimationStarted || isAnimationCompleted) {
       resolve(true);
       return;
     }
-    if (store.getState().animationState.isAnimationRunning) {
+    if (animationState.isAnimationRunning) {
       resolve(false);
       return;
     }

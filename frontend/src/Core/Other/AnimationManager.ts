@@ -15,16 +15,14 @@ export class AnimationManager {
   }
 
   public async startAnimation(): Promise<void> {
-    if (
-      !store.getState().animationState.canAnimationBeStarted ||
-      store.getState().animationState.isAnimationFinalizing
-    )
-      return;
+    let animationState = store.getState().animationState;
+    if (!animationState.canAnimationBeStarted || animationState.isAnimationFinalizing) return;
 
-    store.dispatch(updateIsAnimationRunningStateAction(true));
-    if (store.getState().animationState.hasAnimationStarted) return;
+    let dispatch = store.dispatch;
+    dispatch(updateIsAnimationRunningStateAction(true));
+    if (animationState.hasAnimationStarted) return;
 
-    store.dispatch(updateHasAnimationStartedStateAction(true));
+    dispatch(updateHasAnimationStartedStateAction(true));
     if (isAnimationCompleted && !this.algorithmManager.isStateUpdated) {
       this.algorithmManager.resetToInitialState();
       await new Promise((resolve) => setTimeout(resolve, 250));
@@ -34,28 +32,23 @@ export class AnimationManager {
     await this.algorithmManager.startAlgorithm();
 
     isAnimationCompleted = true;
-    store.dispatch(updateIsAnimationRunningStateAction(false));
-    store.dispatch(updateHasAnimationStartedStateAction(false));
+    dispatch(updateIsAnimationRunningStateAction(false));
+    dispatch(updateHasAnimationStartedStateAction(false));
   }
 
   public stopAnimation(): void {
-    if (
-      !store.getState().animationState.hasAnimationStarted ||
-      store.getState().animationState.isAnimationFinalizing
-    )
-      return;
+    let animationState = store.getState().animationState;
+    if (!animationState.hasAnimationStarted || animationState.isAnimationFinalizing) return;
 
-    store.dispatch(updateHasAnimationStartedStateAction(false));
-    store.dispatch(updateIsAnimationRunningStateAction(false));
+    let dispatch = store.dispatch;
+    dispatch(updateHasAnimationStartedStateAction(false));
+    dispatch(updateIsAnimationRunningStateAction(false));
     this.algorithmManager.stopAlgorithm();
   }
 
   public completeAnimation(): void {
-    if (
-      !store.getState().animationState.hasAnimationStarted ||
-      store.getState().animationState.isAnimationFinalizing
-    )
-      return;
+    let animationState = store.getState().animationState;
+    if (!animationState.hasAnimationStarted || animationState.isAnimationFinalizing) return;
 
     isAnimationCompleted = true;
     this.algorithmManager.completeAlgorithm();

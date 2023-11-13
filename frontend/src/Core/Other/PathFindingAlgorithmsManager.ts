@@ -140,10 +140,11 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
   public async completeAlgorithm(): Promise<void> {}
 
   private async finalizePathFinding(): Promise<void> {
-    let gridCopy: IPathFindingCellProps[][] = store
-      .getState()
-      .pathFindingModuleState.pathFindingGrid.map((row) => [...row]);
-    let destination = store.getState().pathFindingModuleState.pathFindingDestination;
+    let pathFindingModuleState = store.getState().pathFindingModuleState;
+    let gridCopy: IPathFindingCellProps[][] = pathFindingModuleState.pathFindingGrid.map((row) => [
+      ...row,
+    ]);
+    let destination = pathFindingModuleState.pathFindingDestination;
     let timeout = 500 / destination.distance;
 
     let pathCell = { ...destination };

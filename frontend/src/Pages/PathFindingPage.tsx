@@ -63,22 +63,24 @@ const setNewGridState = () => {
   if (store.getState().animationState.hasAnimationStarted) return;
   if (internalGrid.length === 0) return;
 
+  let dispatch = store.dispatch;
+
   if (
     store.getState().pathFindingModuleState.pathFindingSelectedCellDragging ===
     PathFindingCellDraggingStateEnum.None
   ) {
-    store.dispatch(updatePathFindingGridState(internalGrid));
+    dispatch(updatePathFindingGridState(internalGrid));
     resetCellsRefsBackground(pathFindingAlgorithmManager.cellsRefs);
 
-    store.dispatch(updatePathFindingSourceState(source));
-    store.dispatch(updatePathFindingDestinationState(destination));
+    dispatch(updatePathFindingSourceState(source));
+    dispatch(updatePathFindingDestinationState(destination));
   } else {
     if (movedCell.current === null) return;
 
     if (
       internalGrid[droppedCell[0]][droppedCell[1]].cellState === PathFindingCellStateEnum.Source
     ) {
-      store.dispatch(
+      dispatch(
         updatePathFindingSourceState(
           (source = {
             cellState: PathFindingCellStateEnum.Unselected,
@@ -93,7 +95,7 @@ const setNewGridState = () => {
       internalGrid[droppedCell[0]][droppedCell[1]].cellState ===
       PathFindingCellStateEnum.Destination
     ) {
-      store.dispatch(
+      dispatch(
         updatePathFindingDestinationState(
           (destination = {
             cellState: PathFindingCellStateEnum.Unselected,
@@ -110,16 +112,14 @@ const setNewGridState = () => {
       cellState: store.getState().pathFindingModuleState.pathFindingSelectedCellDragging,
     };
 
-    store.dispatch(updatePathFindingGridState(internalGrid));
-    store.dispatch(
-      updatePathFindingSelectedCellDraggingState(PathFindingCellDraggingStateEnum.None),
-    );
+    dispatch(updatePathFindingGridState(internalGrid));
+    dispatch(updatePathFindingSelectedCellDraggingState(PathFindingCellDraggingStateEnum.None));
     movedCell.current.style.opacity = '1';
 
     if (
       internalGrid[droppedCell[0]][droppedCell[1]].cellState === PathFindingCellStateEnum.Source
     ) {
-      store.dispatch(
+      dispatch(
         updatePathFindingSourceState((source = internalGrid[droppedCell[0]][droppedCell[1]])),
       );
     }
@@ -127,7 +127,7 @@ const setNewGridState = () => {
       internalGrid[droppedCell[0]][droppedCell[1]].cellState ===
       PathFindingCellStateEnum.Destination
     ) {
-      store.dispatch(
+      dispatch(
         updatePathFindingDestinationState(
           (destination = internalGrid[droppedCell[0]][droppedCell[1]]),
         ),

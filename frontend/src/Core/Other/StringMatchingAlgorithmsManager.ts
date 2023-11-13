@@ -24,8 +24,9 @@ export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase {
   }
 
   public setInitialState(): void {
-    this.initialPatternState = [...store.getState().stringMatchingModuleState.stringMatchingAnimationPattern];
-    this.initialState = [...store.getState().stringMatchingModuleState.stringMatchingAnimationInput];
+    let stringMatchingModuleState = store.getState().stringMatchingModuleState;
+    this.initialPatternState = [...stringMatchingModuleState.stringMatchingAnimationPattern];
+    this.initialState = [...stringMatchingModuleState.stringMatchingAnimationInput];
   }
 
   public resetToInitialState(): void {
@@ -34,7 +35,9 @@ export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase {
   }
 
   public updateStoreSelectedAlgorithmName(): void {
-    store.dispatch(updateSelectedStringMatchingAlgorithmState(this.selectedAlgorithm.constructor.name));
+    store.dispatch(
+      updateSelectedStringMatchingAlgorithmState(this.selectedAlgorithm.constructor.name),
+    );
   }
 
   public async startAlgorithm(): Promise<void> {
@@ -44,13 +47,18 @@ export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase {
       this.isStateUpdated = false;
     }
 
+    let dispatch = store.dispatch;
     let lastIndex = await this.selectedAlgorithm.executeAlgorithm();
     if (!isAnimationCompleted || lastIndex === -1) return;
 
     await this.finalizeStringMatching(lastIndex);
-    store.dispatch(updateStringMatchingAnimationPatternState((this.selectedAlgorithm as StringMatchingAlgorithmBase).finalPatternState));
-    store.dispatch(updateStringMatchingAnimationInputState(this.selectedAlgorithm.finalState));
-    store.dispatch(updateIsAnimationFinalizingStateAction(false));
+    dispatch(
+      updateStringMatchingAnimationPatternState(
+        (this.selectedAlgorithm as StringMatchingAlgorithmBase).finalPatternState,
+      ),
+    );
+    dispatch(updateStringMatchingAnimationInputState(this.selectedAlgorithm.finalState));
+    dispatch(updateIsAnimationFinalizingStateAction(false));
   }
 
   public async stopAlgorithm(): Promise<void> {
@@ -63,17 +71,22 @@ export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase {
   }
 
   private async finalizeStringMatching(lastIndex: number): Promise<void> {
-    let animationInputCopy = [...store.getState().stringMatchingModuleState.stringMatchingAnimationInput];
+    let stringMatchingModuleState = store.getState().stringMatchingModuleState;
+    let dispatch = store.dispatch;
+    let animationInputCopy = [...stringMatchingModuleState.stringMatchingAnimationInput];
     let timeout = 300 / (animationInputCopy.length - lastIndex);
 
     for (let i = lastIndex; i < animationInputCopy.length; i++) {
-      animationInputCopy[i] = { ...animationInputCopy[i], characterState: StringMatchingCharacterStateEnum.Current };
-      store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
+      animationInputCopy[i] = {
+        ...animationInputCopy[i],
+        characterState: StringMatchingCharacterStateEnum.Current,
+      };
+      dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
       animationInputCopy = [...animationInputCopy];
       await new Promise((resolve) => setTimeout(resolve, timeout));
 
       animationInputCopy[i] = this.selectedAlgorithm.finalState[i];
-      store.dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
+      dispatch(updateStringMatchingAnimationInputState(animationInputCopy));
       animationInputCopy = [...animationInputCopy];
     }
   }
