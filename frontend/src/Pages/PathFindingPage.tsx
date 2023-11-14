@@ -295,7 +295,7 @@ const PathFindingCellComponent = ({
 
   useEffect(() => {
     pathFindingAlgorithmManager.cellsRefs[rowIndex][columnIndex] = cellRef;
-  }, []);
+  }, [pathFindingAlgorithmManager.cellsRefs]);
 
   const getCursor = (): string => {
     if (animationState.hasAnimationStarted) return 'cursor';
@@ -467,9 +467,12 @@ const SettingsComponent = () => {
   let rowLength = getCellsInRowCount(windowState.windowWidth);
 
   const resetGrid = () => {
+    pathFindingAlgorithmManager.cellsRefs = new Array(arrayLength);
     let grid: IPathFindingCellProps[][] = new Array(arrayLength);
     rowLength = getCellsInRowCount(windowState.windowWidth);
     for (let i = 0; i < arrayLength; i++) {
+      pathFindingAlgorithmManager.cellsRefs[i] = new Array(rowLength);
+
       grid[i] = new Array(rowLength);
       for (let j = 0; j < rowLength; j++) {
         grid[i][j] = {
@@ -512,12 +515,6 @@ const SettingsComponent = () => {
   };
 
   useEffect(() => {
-    pathFindingAlgorithmManager.cellsRefs = new Array(arrayLength);
-    rowLength = getCellsInRowCount(windowState.windowWidth);
-
-    for (let i = 0; i < arrayLength; i++) {
-      pathFindingAlgorithmManager.cellsRefs[i] = new Array(rowLength);
-    }
     resetGrid();
   }, []);
 

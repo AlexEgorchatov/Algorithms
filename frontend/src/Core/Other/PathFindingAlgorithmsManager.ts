@@ -7,12 +7,11 @@ import {
 import {
   updatePathFindingDestinationState,
   updatePathFindingGridState,
-  updatePathFindingSourceState,
   updateSelectedPathFindingAlgorithmState,
 } from '../../Store/Path Finding Module/PathFindingModuleStateManagement';
 import { updateIsAnimationFinalizingStateAction } from '../../Store/Shared/AnimationStateManagement';
 import { store } from '../../Store/Store';
-import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
+import { PathFindingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 import { IPathFindingCellProps } from '../Interfaces/IPathFindingCellProps';
 
@@ -90,20 +89,20 @@ export const getCellColor = (
 };
 
 export const resetCellsRefsBackground = (cellsRefs: React.RefObject<HTMLDivElement>[][]) => {
-  cellsRefs.map((row) => {
-    return row.map((cell) => {
-      return (cell.current!.style.backgroundColor = ``);
-    });
-  });
+  for (let i = 0; i < cellsRefs.length; i++) {
+    for (let j = 0; j < cellsRefs[i].length; j++) {
+      cellsRefs[i][j].current!.style.backgroundColor = ``;
+    }
+  }
 };
 
 export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
-  public selectedAlgorithm: AlgorithmBase;
+  public selectedAlgorithm: PathFindingAlgorithmBase;
   public initialState: IPathFindingCellProps[][] = [];
   public isStateUpdated: boolean = false;
   public cellsRefs: React.RefObject<HTMLDivElement>[][] = [];
 
-  public constructor(selectedAlgorithm: AlgorithmBase) {
+  public constructor(selectedAlgorithm: PathFindingAlgorithmBase) {
     super();
     this.selectedAlgorithm = selectedAlgorithm;
     store.dispatch(updateSelectedPathFindingAlgorithmState(selectedAlgorithm.constructor.name));
@@ -137,37 +136,75 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
       this.isStateUpdated = false;
     }
 
-    await this.selectedAlgorithm.executeAlgorithm(this.cellsRefs);
-    if (
-      !store.getState().animationState.hasAnimationStarted ||
-      store.getState().pathFindingModuleState.pathFindingDestination.distance === 0
-    )
-      return;
+    let layer: number = await this.selectedAlgorithm.executeAlgorithm(this.cellsRefs);
+    if (!store.getState().animationState.hasAnimationStarted) return;
 
-    await this.finalizePathFinding();
+    await this.finalizePathFinding(layer);
     store.dispatch(updateIsAnimationFinalizingStateAction(false));
   }
 
   public async stopAlgorithm(): Promise<void> {
     resetCellsRefsBackground(this.cellsRefs);
-    store.dispatch(updatePathFindingGridState(this.initialState));
   }
 
-  public async completeAlgorithm(): Promise<void> {}
+  public async completeAlgorithm(): Promise<void> {
+    store.dispatch(updateIsAnimationFinalizingStateAction(true));
+  }
 
-  private async finalizePathFinding(): Promise<void> {
+  private async finalizePathFinding(layer: number): Promise<void> {
+    let queue: IPathFindingCellProps[] = [];
+    let maxDistance: number = -1;
+    for (let i = 0; i < this.selectedAlgorithm.finalState.length; i++) {
+      for (let j = 0; j < this.selectedAlgorithm.finalState[i].length; j++) {
+        maxDistance = Math.max(maxDistance, this.selectedAlgorithm.finalState[i][j].distance);
+        if (this.selectedAlgorithm.finalState[i][j].distance <= layer) continue;
+
+        queue.push(this.selectedAlgorithm.finalState[i][j]);
+      }
+    }
+
+    let timeout = 30;
+    queue.sort((a, b) => a.distance - b.distance);
+    if (maxDistance !== layer) {
+      let dispatch = store.dispatch;
+
+      let lastLayer = queue[0].distance;
+      while (queue.length > 0) {
+        let top = queue[0];
+        queue.shift();
+
+        if (top.cellState === PathFindingCellStateEnum.Destination) {
+          await new Promise((resolve) => setTimeout(resolve, timeout));
+          dispatch(updatePathFindingDestinationState(top));
+        } else {
+          this.cellsRefs[top.rowIndex][top.columnIndex].current!.style.backgroundColor =
+            getCellColor(PathFindingCellStateEnum.Checked);
+        }
+
+        if (lastLayer !== top.distance) {
+          lastLayer = top.distance;
+          await new Promise((resolve) => setTimeout(resolve, timeout));
+        }
+      }
+    }
+
+    await this.drawPath();
+  }
+
+  private async drawPath(): Promise<void> {
     let pathFindingModuleState = store.getState().pathFindingModuleState;
-    let gridCopy: IPathFindingCellProps[][] = pathFindingModuleState.pathFindingGrid.map((row) => [
+    let gridCopy: IPathFindingCellProps[][] = this.selectedAlgorithm.finalState.map((row) => [
       ...row,
     ]);
     let destination = pathFindingModuleState.pathFindingDestination;
-    let timeout = 500 / destination.distance;
+    let timeout = 20;
 
     let pathCell = { ...destination };
     for (let i = 0; i < directions.length; i++) {
       let newRow: number = pathCell.rowIndex + directions[i][0];
       let newColumn: number = pathCell.columnIndex + directions[i][1];
-      if (!isCellValid(gridCopy, newRow, newColumn, pathCell.distance)) continue;
+      if (!isCellValid(this.selectedAlgorithm.finalState, newRow, newColumn, pathCell.distance))
+        continue;
       if (gridCopy[newRow][newColumn].cellState === PathFindingCellStateEnum.Source) break;
 
       gridCopy[newRow][newColumn] = {
@@ -178,7 +215,6 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
         PathFindingCellStateEnum.Path,
       );
       pathCell = gridCopy[newRow][newColumn];
-      gridCopy = gridCopy.map((row) => [...row]);
       i = -1;
       await new Promise((resolve) => setTimeout(resolve, timeout));
     }
