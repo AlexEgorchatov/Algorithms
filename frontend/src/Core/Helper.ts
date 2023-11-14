@@ -34,7 +34,7 @@ export const pauseForStepIteration = async (): Promise<void> => {
 
 /**
  * Checks if animation is continued after pause.
- * @returns If animation was stopped (hasAnimationStarted == false) or was skipped (isAnimationCompleted == true) return false.
+ * @returns If animation was stopped (hasAnimationStarted == false), was skipped (isAnimationCompleted == true) or was clicked to be completed return false.
  * If animation was resumed (isAlgorithmRunning == true) return true.
  */
 export const isAnimationContinued = async (): Promise<boolean> => {
@@ -57,7 +57,7 @@ export const isAnimationContinued = async (): Promise<boolean> => {
 
 /**
  * Checks if the animation is terminated.
- * @returns If animation was stopped (hasAnimationStarted == false) or was skipped (isAnimationCompleted == true) return true.
+ * @returns If animation was stopped (hasAnimationStarted == false), was skipped (isAnimationCompleted == true) or was clicked to be completed return true.
  * If animation was not paused (isAnimationRunning == true) return false.
  * Otherwise, animation was paused, wait for the next action.
  */
