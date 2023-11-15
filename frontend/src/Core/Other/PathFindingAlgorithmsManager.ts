@@ -136,10 +136,11 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
       this.isStateUpdated = false;
     }
 
-    let layer: number = await this.selectedAlgorithm.executeAlgorithm(this.cellsRefs);
+    let computedDistance: number = await this.selectedAlgorithm.executeAlgorithm(this.cellsRefs);
     if (!store.getState().animationState.hasAnimationStarted) return;
 
-    await this.finalizePathFinding(layer);
+    store.dispatch(updateIsAnimationFinalizingStateAction(true));
+    await this.finalizePathFinding(computedDistance);
     store.dispatch(updateIsAnimationFinalizingStateAction(false));
   }
 
@@ -151,21 +152,19 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
     store.dispatch(updateIsAnimationFinalizingStateAction(true));
   }
 
-  private async finalizePathFinding(layer: number): Promise<void> {
+  private async finalizePathFinding(computedDistance: number): Promise<void> {
     let queue: IPathFindingCellProps[] = [];
-    let maxDistance: number = -1;
     for (let i = 0; i < this.selectedAlgorithm.finalState.length; i++) {
       for (let j = 0; j < this.selectedAlgorithm.finalState[i].length; j++) {
-        maxDistance = Math.max(maxDistance, this.selectedAlgorithm.finalState[i][j].distance);
-        if (this.selectedAlgorithm.finalState[i][j].distance <= layer) continue;
+        if (this.selectedAlgorithm.finalState[i][j].distance <= computedDistance) continue;
 
         queue.push(this.selectedAlgorithm.finalState[i][j]);
       }
     }
 
     let timeout = 30;
-    queue.sort((a, b) => a.distance - b.distance);
-    if (maxDistance !== layer) {
+    if (queue.length > 0) {
+      queue.sort((a, b) => a.distance - b.distance);
       let dispatch = store.dispatch;
 
       let lastLayer = queue[0].distance;
@@ -200,23 +199,25 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
     let timeout = 20;
 
     let pathCell = { ...destination };
-    for (let i = 0; i < directions.length; i++) {
-      let newRow: number = pathCell.rowIndex + directions[i][0];
-      let newColumn: number = pathCell.columnIndex + directions[i][1];
-      if (!isCellValid(this.selectedAlgorithm.finalState, newRow, newColumn, pathCell.distance))
-        continue;
-      if (gridCopy[newRow][newColumn].cellState === PathFindingCellStateEnum.Source) break;
+    if (pathCell.distance > 0) {
+      for (let i = 0; i < directions.length; i++) {
+        let newRow: number = pathCell.rowIndex + directions[i][0];
+        let newColumn: number = pathCell.columnIndex + directions[i][1];
+        if (!isCellValid(this.selectedAlgorithm.finalState, newRow, newColumn, pathCell.distance))
+          continue;
+        if (gridCopy[newRow][newColumn].cellState === PathFindingCellStateEnum.Source) break;
 
-      gridCopy[newRow][newColumn] = {
-        ...gridCopy[newRow][newColumn],
-        cellState: PathFindingCellStateEnum.Path,
-      };
-      this.cellsRefs[newRow][newColumn].current!.style.backgroundColor = getCellColor(
-        PathFindingCellStateEnum.Path,
-      );
-      pathCell = gridCopy[newRow][newColumn];
-      i = -1;
-      await new Promise((resolve) => setTimeout(resolve, timeout));
+        gridCopy[newRow][newColumn] = {
+          ...gridCopy[newRow][newColumn],
+          cellState: PathFindingCellStateEnum.Path,
+        };
+        this.cellsRefs[newRow][newColumn].current!.style.backgroundColor = getCellColor(
+          PathFindingCellStateEnum.Path,
+        );
+        pathCell = gridCopy[newRow][newColumn];
+        i = -1;
+        await new Promise((resolve) => setTimeout(resolve, timeout));
+      }
     }
 
     await new Promise((resolve) => setTimeout(resolve, timeout));

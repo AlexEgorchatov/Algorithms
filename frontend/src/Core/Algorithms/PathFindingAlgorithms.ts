@@ -27,7 +27,7 @@ export class BreadthFirstSearch extends PathFindingAlgorithmBase {
 
       let queue: IPathFindingCellProps[] = [source];
       let queueLength: number = 1;
-      let layer: number = 0;
+      let computedDistance: number = 0;
       while (queue.length > 0 && destination.distance === 0) {
         let top = queue[0];
         queue.shift();
@@ -62,10 +62,10 @@ export class BreadthFirstSearch extends PathFindingAlgorithmBase {
           queueLength = queue.length;
           if (queueLength === 0) break;
 
-          layer++;
+          computedDistance++;
           await pauseForStepIteration();
           if (await isAnimationTerminated()) {
-            resolve(layer);
+            resolve(computedDistance);
             return;
           }
         }
@@ -74,7 +74,7 @@ export class BreadthFirstSearch extends PathFindingAlgorithmBase {
       resetCellsRefsBackground(cellsRefs);
       dispatch(updatePathFindingGridState(gridCopy));
       gridCopy = gridCopy.map((row) => [...row]);
-      resolve(++layer);
+      resolve(++computedDistance);
       return;
     });
   }
