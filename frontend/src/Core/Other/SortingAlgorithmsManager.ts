@@ -94,7 +94,10 @@ export class SortingAlgorithmsManager extends AlgorithmsManagerBase {
       );
     }
     await new Promise((resolve) => setTimeout(resolve, algorithmIterationBaseTime - 50));
+    await this.highlightBars(barsCopy);
+  }
 
+  private async highlightBars(barsCopy: ISortingBarProps[]): Promise<void> {
     let timeout = 300 / barsCopy.length;
     for (let i = 0; i < barsCopy.length; i++) {
       barsCopy = [...barsCopy];
