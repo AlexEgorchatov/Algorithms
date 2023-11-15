@@ -291,7 +291,7 @@ const SortingBarComponent = ({
   barHeight,
   barID,
   barState = SortingBarStateEnum.Unselected,
-  leftOffset: newLeftOffset,
+  leftOffset,
 }: ISortingBarProps) => {
   let divRef = useRef<HTMLDivElement>(null);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
@@ -299,13 +299,15 @@ const SortingBarComponent = ({
 
   useEffect(() => {
     if (divRef.current === null) return;
-    if (newLeftOffset === undefined) return;
+    if (leftOffset === undefined) return;
 
-    let transformTime = algorithmIterationBaseTime - 50 - 50 * (sliderState.sliderValue - 1);
-    let translateLength = newLeftOffset - divRef.current.offsetLeft;
+    let transformTime = animationState.isAnimationFinalizing
+      ? algorithmIterationBaseTime - 50
+      : algorithmIterationBaseTime - 50 - 50 * (sliderState.sliderValue - 1);
+    let translateLength = leftOffset - divRef.current.offsetLeft;
     divRef.current.style.transition = `transform ease-in ${transformTime}ms`;
     divRef.current.style.transform = `translateX(${translateLength}px)`;
-  }, [newLeftOffset, sliderState.sliderValue]);
+  }, [leftOffset, sliderState.sliderValue]);
 
   useEffect(() => {
     if (divRef.current === null) return;
