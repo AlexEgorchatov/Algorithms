@@ -21,8 +21,12 @@ const PlayButton = () => {
         transform: scale(var(--ggs, 1));
         width: 12px;
         height: 16px;
-        cursor: ${animationState.canAnimationBeStarted && !animationState.isAnimationFinalizing ? 'pointer' : 'default'};
-        opacity: ${animationState.canAnimationBeStarted && !animationState.isAnimationFinalizing ? '1' : '0.5'};
+        cursor: ${animationState.canAnimationBeStarted && !animationState.isAnimationFinalizing
+          ? 'pointer'
+          : 'default'};
+        opacity: ${animationState.canAnimationBeStarted && !animationState.isAnimationFinalizing
+          ? '1'
+          : '0.5'};
         :hover {
           ${animationState.canAnimationBeStarted &&
           !animationState.isAnimationFinalizing &&
@@ -96,8 +100,12 @@ const StopButton = () => {
         width: 16px;
         height: 16px;
         background: white;
-        cursor: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing ? 'pointer' : 'default'};
-        opacity: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing ? '1' : '0.5'};
+        cursor: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing
+          ? 'pointer'
+          : 'default'};
+        opacity: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing
+          ? '1'
+          : '0.5'};
         :hover {
           ${animationState.hasAnimationStarted &&
           !animationState.isAnimationFinalizing &&
@@ -122,8 +130,12 @@ const CompleteButton = () => {
         position: relative;
         display: flex;
         color: white;
-        cursor: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing ? 'pointer' : 'default'};
-        opacity: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing ? '1' : '0.5'};
+        cursor: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing
+          ? 'pointer'
+          : 'default'};
+        opacity: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing
+          ? '1'
+          : '0.5'};
         :hover {
           ${animationState.hasAnimationStarted &&
           !animationState.isAnimationFinalizing &&
@@ -169,6 +181,7 @@ const Slider = () => {
 
   const handleSliderChange = () => {
     if (inputRef.current == null) return;
+
     let inputValue: number = parseInt(inputRef.current.value);
     dispatch(updateSliderValueStateAction(inputValue));
   };
@@ -191,13 +204,13 @@ const Slider = () => {
           appearance: none;
           -webkit-appearance: none;
           height: 12px;
+          cursor: pointer;
           ::-webkit-slider-thumb {
             appearance: none;
             -webkit-appearance: none;
             width: 25px;
             height: 12px;
             background: #333;
-            cursor: pointer;
             :hover {
               background: black;
             }
