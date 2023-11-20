@@ -6,7 +6,10 @@ import { Link } from 'react-router-dom';
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
-import { updateHeaderStateAction } from '../Store/Home Page/HeaderStateManagement';
+import {
+  updateAboutFormVisibleStateAction,
+  updateMenuButtonVisibleStateAction,
+} from '../Store/Home Page/HeaderStateManagement';
 import { minAppWidth } from '../Core/Helper';
 
 interface Props {
@@ -20,20 +23,25 @@ const HeaderStyle = css`
   color: ${mainFontColor};
   vertical-align: super;
   background-color: transparent;
+  cursor: pointer;
   :hover {
     color: ${headerItemHovered};
   }
 `;
 
 const HeaderMainComponent = ({ data, isVisible }: Props) => {
+  const headerState = useSelector((appState: AppState) => appState.headerState);
+  const dispatch = useDispatch();
+
   return (
     <div
       css={css`
         background-color: ${mainBackground};
+        display: flex;
         ${isVisible &&
         `@media (max-width: ${minAppWidth}px) {
           display: none;
-        }`}
+        }`};
       `}
     >
       <Link css={HeaderStyle} to="" reloadDocument={true}>
@@ -110,9 +118,12 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
           ))}
         </div>
       </div>
-      <Link css={HeaderStyle} to="#" reloadDocument={true}>
+      <div
+        css={HeaderStyle}
+        onClick={() => dispatch(updateAboutFormVisibleStateAction(!headerState.aboutFormVisible))}
+      >
         About
-      </Link>
+      </div>
     </div>
   );
 };
@@ -124,12 +135,12 @@ const HeaderMenuButton = ({ data }: Props) => {
 
   const handleOutsideMenuButtonClick = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as Node)) {
-      dispatch(updateHeaderStateAction(false));
+      dispatch(updateMenuButtonVisibleStateAction(false));
     }
     document.removeEventListener('click', handleOutsideMenuButtonClick, true);
   };
   const handleMenuButtonClick = () => {
-    dispatch(updateHeaderStateAction(!headerState.menuButtonVisibility));
+    dispatch(updateMenuButtonVisibleStateAction(!headerState.menuButtonVisible));
     document.addEventListener('click', handleOutsideMenuButtonClick, true);
     return () => {
       document.removeEventListener('click', handleOutsideMenuButtonClick, true);
@@ -149,6 +160,7 @@ const HeaderMenuButton = ({ data }: Props) => {
         position: relative;
         display: inline-block;
         cursor: pointer;
+        z-index: 999;
         @media (min-width: ${minAppWidth + 1}px) {
           display: none;
         }
@@ -173,7 +185,7 @@ const HeaderMenuButton = ({ data }: Props) => {
         css={css`
           position: absolute;
           margin-left: -1px;
-          display: ${headerState.menuButtonVisibility ? 'block' : 'none'};
+          display: ${headerState.menuButtonVisible ? 'block' : 'none'};
         `}
       >
         <HeaderMainComponent data={data} isVisible={false} />

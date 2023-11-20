@@ -23,8 +23,12 @@ const PlayButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${animationState.canAnimationBeStarted && !animationState.isAnimationFinalizing ? 'pointer' : 'default'};
-        opacity: ${animationState.canAnimationBeStarted && !animationState.isAnimationFinalizing ? '1' : '0.5'};
+        cursor: ${animationState.canAnimationBeStarted && !animationState.isAnimationFinalizing
+          ? 'pointer'
+          : 'default'};
+        opacity: ${animationState.canAnimationBeStarted && !animationState.isAnimationFinalizing
+          ? '1'
+          : '0.5'};
         :hover {
           ${animationState.canAnimationBeStarted &&
           !animationState.isAnimationFinalizing &&
@@ -124,8 +128,12 @@ const StopButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing ? 'pointer' : 'default'};
-        opacity: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing ? '1' : '0.5'};
+        cursor: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing
+          ? 'pointer'
+          : 'default'};
+        opacity: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing
+          ? '1'
+          : '0.5'};
         :hover {
           ${animationState.hasAnimationStarted &&
           !animationState.isAnimationFinalizing &&
@@ -171,8 +179,12 @@ const CompleteButton = () => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing ? 'pointer' : 'default'};
-        opacity: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing ? '1' : '0.5'};
+        cursor: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing
+          ? 'pointer'
+          : 'default'};
+        opacity: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing
+          ? '1'
+          : '0.5'};
         :hover {
           ${animationState.hasAnimationStarted &&
           !animationState.isAnimationFinalizing &&
