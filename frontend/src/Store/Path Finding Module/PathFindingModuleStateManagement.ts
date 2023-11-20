@@ -24,14 +24,14 @@ const initialPathFindingModuleState: PathFindingModuleState = {
   pathFindingSelectedCellDragging: PathFindingCellDraggingStateEnum.None,
   pathFindingSource: {
     cellState: PathFindingCellStateEnum.Unselected,
-    rowIndex: 0,
-    columnIndex: 0,
+    rowIndex: -1,
+    columnIndex: -1,
     distance: 0,
   },
   pathFindingDestination: {
     cellState: PathFindingCellStateEnum.Unselected,
-    rowIndex: 0,
-    columnIndex: 0,
+    rowIndex: -1,
+    columnIndex: -1,
     distance: 0,
   },
 };

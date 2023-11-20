@@ -31,6 +31,7 @@ import {
   updatePathFindingSourceState,
   updatePathFindingDestinationState,
   updatePathFindingSelectedCellDraggingState,
+  updatePathFindingWarningMessageState,
 } from '../Store/Path Finding Module/PathFindingModuleStateManagement';
 import { WarningMessageComponent } from '../Components/WarningMessage';
 import {
@@ -38,6 +39,7 @@ import {
   PathFindingCellDraggingStateEnum,
   PathFindingCellStateEnum,
 } from '../Resources/Enumerations';
+import { updateCanAnimationBeStartedStateAction } from '../Store/Shared/AnimationStateManagement';
 
 interface CellActionItemProps {
   cellActionState: PathFindingCellActionStateEnum;
@@ -96,37 +98,33 @@ const setNewGridState = () => {
     ) {
       dispatch(updatePathFindingSelectedCellActionState(PathFindingCellActionStateEnum.None));
     }
+
+    if (source === undefinedCell && destination === undefinedCell) {
+      dispatch(
+        updatePathFindingWarningMessageState(
+          'Source and Destination are not set, animation is disabled',
+        ),
+      );
+    } else if (source === undefinedCell) {
+      dispatch(updatePathFindingWarningMessageState('Source is not set, animation is disabled'));
+    } else {
+      dispatch(
+        updatePathFindingWarningMessageState('Destination is not set, animation is disabled'),
+      );
+    }
   } else {
     if (movedCell.current === null) return;
 
     if (
       internalGrid[droppedCell[0]][droppedCell[1]].cellState === PathFindingCellStateEnum.Source
     ) {
-      dispatch(
-        updatePathFindingSourceState(
-          (source = {
-            cellState: PathFindingCellStateEnum.Unselected,
-            rowIndex: 0,
-            columnIndex: 0,
-            distance: 0,
-          }),
-        ),
-      );
+      dispatch(updatePathFindingSourceState((source = undefinedCell)));
     }
     if (
       internalGrid[droppedCell[0]][droppedCell[1]].cellState ===
       PathFindingCellStateEnum.Destination
     ) {
-      dispatch(
-        updatePathFindingDestinationState(
-          (destination = {
-            cellState: PathFindingCellStateEnum.Unselected,
-            rowIndex: 0,
-            columnIndex: 0,
-            distance: 0,
-          }),
-        ),
-      );
+      dispatch(updatePathFindingDestinationState((destination = undefinedCell)));
     }
 
     internalGrid[droppedCell[0]][droppedCell[1]] = {
@@ -155,6 +153,23 @@ const setNewGridState = () => {
         ),
       );
     }
+  }
+
+  if (source === undefinedCell && destination === undefinedCell) {
+    dispatch(
+      updatePathFindingWarningMessageState(
+        'Source and Destination are not set, animation is disabled',
+      ),
+    );
+    dispatch(updateCanAnimationBeStartedStateAction(false));
+  } else if (source === undefinedCell) {
+    dispatch(updatePathFindingWarningMessageState('Source is not set, animation is disabled'));
+    dispatch(updateCanAnimationBeStartedStateAction(false));
+  } else if (destination === undefinedCell) {
+    dispatch(updatePathFindingWarningMessageState('Destination is not set, animation is disabled'));
+    dispatch(updateCanAnimationBeStartedStateAction(false));
+  } else {
+    dispatch(updateCanAnimationBeStartedStateAction(true));
   }
 
   internalGrid = [];
@@ -279,6 +294,55 @@ const CellActions = () => {
       <CellActionItem cellActionState={PathFindingCellActionStateEnum.Destination} />
       <CellActionItem cellActionState={PathFindingCellActionStateEnum.Wall} />
       <CellActionItem cellActionState={PathFindingCellActionStateEnum.Unselected} />
+    </div>
+  );
+};
+
+const CellActionLegends = () => {
+  return (
+    <div>
+      <div
+        css={css`
+          display: flex;
+          color: white;
+          font-size: 13px;
+          font-weight: bold;
+          margin-left: 3px;
+        `}
+      >
+        <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Source} />
+        <div
+          css={css`
+            margin-right: 5px;
+          `}
+        >
+          Source;
+        </div>
+        <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Destination} />
+        <div
+          css={css`
+            margin-right: 5px;
+          `}
+        >
+          Destination;
+        </div>
+        <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Wall} />
+        <div
+          css={css`
+            margin-right: 5px;
+          `}
+        >
+          Wall;
+        </div>
+        <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Unselected} />
+        <div
+          css={css`
+            margin-right: 5px;
+          `}
+        >
+          Empty cell
+        </div>
+      </div>
     </div>
   );
 };
@@ -504,6 +568,7 @@ const SettingsComponent = () => {
     }
     minAnimationComponentWidth = windowState.windowWidth;
     dispatch(updatePathFindingGridState(grid));
+    dispatch(updateCanAnimationBeStartedStateAction(true));
     pathFindingAlgorithmManager.isStateUpdated = true;
 
     if (
@@ -546,50 +611,7 @@ const SettingsComponent = () => {
       >
         <div>
           <CellActions />
-          <div>
-            <div
-              css={css`
-                display: flex;
-                color: white;
-                font-size: 13px;
-                font-weight: bold;
-                margin-left: 3px;
-              `}
-            >
-              <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Source} />
-              <div
-                css={css`
-                  margin-right: 5px;
-                `}
-              >
-                Source;
-              </div>
-              <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Destination} />
-              <div
-                css={css`
-                  margin-right: 5px;
-                `}
-              >
-                Destination;
-              </div>
-              <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Wall} />
-              <div
-                css={css`
-                  margin-right: 5px;
-                `}
-              >
-                Wall;
-              </div>
-              <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Unselected} />
-              <div
-                css={css`
-                  margin-right: 5px;
-                `}
-              >
-                Empty cell
-              </div>
-            </div>
-          </div>
+          <CellActionLegends />
         </div>
         <div
           css={css`
