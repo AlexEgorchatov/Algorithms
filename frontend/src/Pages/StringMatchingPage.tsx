@@ -25,8 +25,11 @@ import { IStringMatchingCharacterProps } from '../Core/Interfaces/IStringMatchin
 import { WarningMessageComponent } from '../Components/WarningMessage';
 import { updateCanAnimationBeStartedStateAction } from '../Store/Shared/AnimationStateManagement';
 
-let stringMatchingAlgorithmManager: StringMatchingAlgorithmsManager = new StringMatchingAlgorithmsManager(stringMatchingAlgorithmsData[0].algorithm);
-let stringMatchingAnimationManager: AnimationManager = new AnimationManager(stringMatchingAlgorithmManager);
+let stringMatchingAlgorithmManager: StringMatchingAlgorithmsManager =
+  new StringMatchingAlgorithmsManager(stringMatchingAlgorithmsData[0].algorithm);
+let stringMatchingAnimationManager: AnimationManager = new AnimationManager(
+  stringMatchingAlgorithmManager,
+);
 
 export const maxStringMatchingInputLength: number = 200;
 export const maxStringMatchingPatternLength: number = 60;
@@ -46,23 +49,55 @@ const processStringMatchingInput = (input: string): IStringMatchingCharacterProp
 };
 
 const StringMatchingPatternComponent = () => {
-  const stringMatchingModuleState = useSelector((state: AppState) => state.stringMatchingModuleState);
+  const stringMatchingModuleState = useSelector(
+    (state: AppState) => state.stringMatchingModuleState,
+  );
   const animationState = useSelector((state: AppState) => state.animationState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (stringMatchingModuleState.stringMatchingPattern.length <= maxStringMatchingPatternLength) {
-      dispatch(updateStringMatchingAnimationPatternState(processStringMatchingInput(stringMatchingModuleState.stringMatchingPattern)));
-      dispatch(updateStringMatchingAnimationInputState(processStringMatchingInput(stringMatchingModuleState.stringMatchingInput)));
+      dispatch(
+        updateStringMatchingAnimationPatternState(
+          processStringMatchingInput(stringMatchingModuleState.stringMatchingPattern),
+        ),
+      );
+      dispatch(
+        updateStringMatchingAnimationInputState(
+          processStringMatchingInput(stringMatchingModuleState.stringMatchingInput),
+        ),
+      );
       stringMatchingAlgorithmManager.isStateUpdated = true;
 
-      if (stringMatchingModuleState.stringMatchingPattern.length === 0 || stringMatchingModuleState.stringMatchingInput.length === 0) {
+      if (
+        stringMatchingModuleState.stringMatchingPattern.length === 0 &&
+        stringMatchingModuleState.stringMatchingInput.length === 0
+      ) {
         dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(updateStringMatchingWarningMessageState('At least one textbox is empty, animation is disabled'));
-      } else if (stringMatchingModuleState.stringMatchingInput.length < stringMatchingModuleState.stringMatchingPattern.length) {
+        dispatch(
+          updateStringMatchingWarningMessageState(
+            'Pattern and Input are empty, animation is disabled',
+          ),
+        );
+      } else if (stringMatchingModuleState.stringMatchingPattern.length === 0) {
         dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(updateStringMatchingWarningMessageState('Input is shorter than pattern, animation is disabled'));
+        dispatch(
+          updateStringMatchingWarningMessageState('Pattern is empty, animation is disabled'),
+        );
+      } else if (stringMatchingModuleState.stringMatchingInput.length === 0) {
+        dispatch(updateCanAnimationBeStartedStateAction(false));
+        dispatch(updateStringMatchingWarningMessageState('Input is empty, animation is disabled'));
+      } else if (
+        stringMatchingModuleState.stringMatchingInput.length <
+        stringMatchingModuleState.stringMatchingPattern.length
+      ) {
+        dispatch(updateCanAnimationBeStartedStateAction(false));
+        dispatch(
+          updateStringMatchingWarningMessageState(
+            'Input is shorter than pattern, animation is disabled',
+          ),
+        );
       } else dispatch(updateCanAnimationBeStartedStateAction(true));
     }
   }, [stringMatchingModuleState.stringMatchingPattern]);
@@ -116,7 +151,10 @@ const StringMatchingPatternComponent = () => {
           css={css`
             color: white;
             margin-left: 3px;
-            color: ${stringMatchingModuleState.stringMatchingPattern.length > maxStringMatchingPatternLength ? errorMessageColor : 'white'};
+            color: ${stringMatchingModuleState.stringMatchingPattern.length >
+            maxStringMatchingPatternLength
+              ? errorMessageColor
+              : 'white'};
           `}
         >
           {stringMatchingModuleState.stringMatchingPattern.length}/{maxStringMatchingPatternLength}
@@ -124,7 +162,10 @@ const StringMatchingPatternComponent = () => {
         .
         <div
           css={css`
-            visibility: ${stringMatchingModuleState.stringMatchingPattern.length > maxStringMatchingPatternLength ? 'visible' : 'hidden'};
+            visibility: ${stringMatchingModuleState.stringMatchingPattern.length >
+            maxStringMatchingPatternLength
+              ? 'visible'
+              : 'hidden'};
             display: flex;
             color: ${errorMessageColor};
             margin-left: 5px;
@@ -137,7 +178,15 @@ const StringMatchingPatternComponent = () => {
               cursor: pointer;
               text-decoration: underline;
             `}
-            onClick={() => dispatch(updateStringMatchingPatternState(stringMatchingModuleState.stringMatchingAnimationPattern.map((i) => i.character).join('')))}
+            onClick={() =>
+              dispatch(
+                updateStringMatchingPatternState(
+                  stringMatchingModuleState.stringMatchingAnimationPattern
+                    .map((i) => i.character)
+                    .join(''),
+                ),
+              )
+            }
           >
             Fix
           </div>
@@ -148,22 +197,50 @@ const StringMatchingPatternComponent = () => {
 };
 
 const StringMatchingInputComponent = () => {
-  const stringMatchingModuleState = useSelector((state: AppState) => state.stringMatchingModuleState);
+  const stringMatchingModuleState = useSelector(
+    (state: AppState) => state.stringMatchingModuleState,
+  );
   const animationState = useSelector((state: AppState) => state.animationState);
   const dispatch = useDispatch();
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (stringMatchingModuleState.stringMatchingInput.length <= maxStringMatchingInputLength) {
-      dispatch(updateStringMatchingAnimationInputState(processStringMatchingInput(stringMatchingModuleState.stringMatchingInput)));
+      dispatch(
+        updateStringMatchingAnimationInputState(
+          processStringMatchingInput(stringMatchingModuleState.stringMatchingInput),
+        ),
+      );
       stringMatchingAlgorithmManager.isStateUpdated = true;
 
-      if (stringMatchingModuleState.stringMatchingPattern.length === 0 || stringMatchingModuleState.stringMatchingInput.length === 0) {
+      if (
+        stringMatchingModuleState.stringMatchingPattern.length === 0 &&
+        stringMatchingModuleState.stringMatchingInput.length === 0
+      ) {
         dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(updateStringMatchingWarningMessageState('At least one textbox is empty, animation is disabled'));
-      } else if (stringMatchingModuleState.stringMatchingInput.length < stringMatchingModuleState.stringMatchingPattern.length) {
+        dispatch(
+          updateStringMatchingWarningMessageState(
+            'Pattern and Input are empty, animation is disabled',
+          ),
+        );
+      } else if (stringMatchingModuleState.stringMatchingPattern.length === 0) {
         dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(updateStringMatchingWarningMessageState('Input is shorter than pattern, animation is disabled'));
+        dispatch(
+          updateStringMatchingWarningMessageState('Pattern is empty, animation is disabled'),
+        );
+      } else if (stringMatchingModuleState.stringMatchingInput.length === 0) {
+        dispatch(updateCanAnimationBeStartedStateAction(false));
+        dispatch(updateStringMatchingWarningMessageState('Input is empty, animation is disabled'));
+      } else if (
+        stringMatchingModuleState.stringMatchingInput.length <
+        stringMatchingModuleState.stringMatchingPattern.length
+      ) {
+        dispatch(updateCanAnimationBeStartedStateAction(false));
+        dispatch(
+          updateStringMatchingWarningMessageState(
+            'Input is shorter than pattern, animation is disabled',
+          ),
+        );
       } else dispatch(updateCanAnimationBeStartedStateAction(true));
     }
   }, [stringMatchingModuleState.stringMatchingInput]);
@@ -217,7 +294,10 @@ const StringMatchingInputComponent = () => {
           css={css`
             color: white;
             margin-left: 3px;
-            color: ${stringMatchingModuleState.stringMatchingInput.length > maxStringMatchingInputLength ? errorMessageColor : 'white'};
+            color: ${stringMatchingModuleState.stringMatchingInput.length >
+            maxStringMatchingInputLength
+              ? errorMessageColor
+              : 'white'};
           `}
         >
           {stringMatchingModuleState.stringMatchingInput.length}/{maxStringMatchingInputLength}
@@ -225,7 +305,10 @@ const StringMatchingInputComponent = () => {
         .
         <div
           css={css`
-            visibility: ${stringMatchingModuleState.stringMatchingInput.length > maxStringMatchingInputLength ? 'visible' : 'hidden'};
+            visibility: ${stringMatchingModuleState.stringMatchingInput.length >
+            maxStringMatchingInputLength
+              ? 'visible'
+              : 'hidden'};
             display: flex;
             color: ${errorMessageColor};
             margin-left: 5px;
@@ -238,7 +321,15 @@ const StringMatchingInputComponent = () => {
               cursor: pointer;
               text-decoration: underline;
             `}
-            onClick={() => dispatch(updateStringMatchingInputState(stringMatchingModuleState.stringMatchingAnimationInput.map((i) => i.character).join('')))}
+            onClick={() =>
+              dispatch(
+                updateStringMatchingInputState(
+                  stringMatchingModuleState.stringMatchingAnimationInput
+                    .map((i) => i.character)
+                    .join(''),
+                ),
+              )
+            }
           >
             Fix
           </div>
@@ -248,7 +339,10 @@ const StringMatchingInputComponent = () => {
   );
 };
 
-const StringMatchingCharacterComponent = ({ character, characterState = StringMatchingCharacterStateEnum.Unselected }: IStringMatchingCharacterProps) => {
+const StringMatchingCharacterComponent = ({
+  character,
+  characterState = StringMatchingCharacterStateEnum.Unselected,
+}: IStringMatchingCharacterProps) => {
   const setFont = () => {
     switch (characterState) {
       case StringMatchingCharacterStateEnum.Current:
@@ -279,7 +373,9 @@ const StringMatchingCharacterComponent = ({ character, characterState = StringMa
 };
 
 const SettingsComponent = () => {
-  const stringMatchingModuleState = useSelector((state: AppState) => state.stringMatchingModuleState);
+  const stringMatchingModuleState = useSelector(
+    (state: AppState) => state.stringMatchingModuleState,
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -341,13 +437,17 @@ const SettingsComponent = () => {
                 width: 200px;
               `}
             >
-              <animationContext.Provider value={{ animationManager: stringMatchingAnimationManager }}>
+              <animationContext.Provider
+                value={{ animationManager: stringMatchingAnimationManager }}
+              >
                 <ActionBar />
               </animationContext.Provider>
               <ResetButton resetFunction={resetState} />
             </div>
 
-            <WarningMessageComponent message={stringMatchingModuleState.stringMatchingWarningMessage} />
+            <WarningMessageComponent
+              message={stringMatchingModuleState.stringMatchingWarningMessage}
+            />
           </div>
         </div>
       </div>
@@ -356,7 +456,9 @@ const SettingsComponent = () => {
 };
 
 const AnimationComponent = () => {
-  const stringMatchingModuleState = useSelector((state: AppState) => state.stringMatchingModuleState);
+  const stringMatchingModuleState = useSelector(
+    (state: AppState) => state.stringMatchingModuleState,
+  );
 
   return (
     <div
@@ -413,7 +515,11 @@ const AnimationComponent = () => {
               Pattern:
             </span>
             {stringMatchingModuleState.stringMatchingAnimationPattern.map((character, index) => (
-              <StringMatchingCharacterComponent key={index} character={character.character} characterState={character.characterState} />
+              <StringMatchingCharacterComponent
+                key={index}
+                character={character.character}
+                characterState={character.characterState}
+              />
             ))}
           </div>
           <div
@@ -433,7 +539,11 @@ const AnimationComponent = () => {
               Input:
             </span>
             {stringMatchingModuleState.stringMatchingAnimationInput.map((character, index) => (
-              <StringMatchingCharacterComponent key={index} character={character.character} characterState={character.characterState} />
+              <StringMatchingCharacterComponent
+                key={index}
+                character={character.character}
+                characterState={character.characterState}
+              />
             ))}
           </div>
         </div>
