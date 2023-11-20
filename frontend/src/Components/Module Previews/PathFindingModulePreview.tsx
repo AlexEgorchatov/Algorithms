@@ -8,6 +8,7 @@ import { AppState } from '../../Store/Store';
 import { useDispatch } from 'react-redux';
 import { PathFindingCellStateEnum } from '../../Resources/Enumerations';
 import { IModulePreviewTitle } from '../../Core/Interfaces/IModuleTitle';
+import { completionColor } from '../../Resources/Colors';
 
 interface Props {
   state: PathFindingCellStateEnum;
@@ -21,10 +22,10 @@ const GridCell = ({ state = PathFindingCellStateEnum.Unselected }: Props) => {
   const setBackground = () => {
     switch (state) {
       case PathFindingCellStateEnum.Unselected:
-        return 'background-color: #ffffff';
+        return 'background-color: white';
 
       case PathFindingCellStateEnum.Checked:
-        return 'background-color: #1100ff';
+        return `background-color: ${completionColor}`;
 
       case PathFindingCellStateEnum.Source:
         return 'background-color: green';
@@ -33,7 +34,7 @@ const GridCell = ({ state = PathFindingCellStateEnum.Unselected }: Props) => {
         return 'background-color: red';
 
       case PathFindingCellStateEnum.Wall:
-        return 'background-color: gray';
+        return 'background-color: #ae7a59';
     }
   };
 
@@ -81,7 +82,11 @@ export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
         gridCopy = [...gridCopy];
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
 
-        if (columnSource + 1 >= columnNumber || pathFindingState.grid[rowSource * 8 + columnSource + 1] === PathFindingCellStateEnum.Wall) break;
+        if (
+          columnSource + 1 >= columnNumber ||
+          pathFindingState.grid[rowSource * 8 + columnSource + 1] === PathFindingCellStateEnum.Wall
+        )
+          break;
         else columnSource++;
       }
 
