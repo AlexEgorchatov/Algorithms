@@ -17,6 +17,7 @@ export const WarningMessageComponent = ({ message }: Props) => {
       css={css`
         display: flex;
         align-items: center;
+        height: 34px;
         color: white;
         font-size: 13px;
         font-weight: bold;
