@@ -67,37 +67,39 @@ export class SortingAlgorithmsManager extends AlgorithmsManagerBase {
     }
 
     if (!isSorted) {
-      let ids: number[] = new Array(barsCopy.length).fill(-1);
+      let sourceIndices: number[] = new Array(barsCopy.length).fill(-1);
       for (let i = 0; i < barsCopy.length; i++) {
         for (let j = 0; j < this.selectedAlgorithm.finalState.length; j++) {
           if (barsCopy[i].barHeight !== this.selectedAlgorithm.finalState[j].barHeight) continue;
-          if (ids[j] !== -1) continue;
+          if (sourceIndices[j] !== -1) continue;
 
-          ids[j] = i;
+          sourceIndices[j] = i;
           break;
         }
       }
 
-      for (let i = 0; i < ids.length; i++) {
-        let finalLeftOffset = document.getElementById(i.toString())?.offsetLeft;
-
-        barsCopy[ids[i]] = {
-          ...barsCopy[ids[i]],
-          leftOffset: finalLeftOffset,
-        };
+      for (let i = 0; i < barsCopy.length; i++) {
+        barsCopy[i] = { ...barsCopy[i], barState: SortingBarStateEnum.Selected };
       }
-
       store.dispatch(updateSortingBarsStateAction(barsCopy));
-      await new Promise((resolve) => setTimeout(resolve, algorithmIterationBaseTime - 50));
+      await new Promise((resolve) => setTimeout(resolve, algorithmIterationBaseTime - 100));
+
+      barsCopy = [...barsCopy];
+      for (let i = 0; i < sourceIndices.length; i++) {
+        this.moveSortingBar(barsCopy, sourceIndices[i], i);
+      }
+      store.dispatch(updateSortingBarsStateAction(barsCopy));
+      await new Promise((resolve) => setTimeout(resolve, algorithmIterationBaseTime + 200));
+
       store.dispatch(
         updateSortingBarsStateAction((barsCopy = [...this.selectedAlgorithm.finalState])),
       );
     }
     await new Promise((resolve) => setTimeout(resolve, algorithmIterationBaseTime - 50));
-    await this.highlightBars(barsCopy);
+    await this.highlightSortingBars(barsCopy);
   }
 
-  private async highlightBars(barsCopy: ISortingBarProps[]): Promise<void> {
+  private async highlightSortingBars(barsCopy: ISortingBarProps[]): Promise<void> {
     let timeout = 300 / barsCopy.length;
     for (let i = 0; i < barsCopy.length; i++) {
       barsCopy = [...barsCopy];
@@ -105,5 +107,18 @@ export class SortingAlgorithmsManager extends AlgorithmsManagerBase {
       store.dispatch(updateSortingBarsStateAction(barsCopy));
       await new Promise((resolve) => setTimeout(resolve, timeout));
     }
+  }
+
+  private moveSortingBar(
+    barsCopy: ISortingBarProps[],
+    sourceIndex: number,
+    destinationIndex: number,
+  ) {
+    let destinationOffset = document.getElementById(destinationIndex.toString())?.offsetLeft;
+
+    barsCopy[sourceIndex] = {
+      ...barsCopy[sourceIndex],
+      leftOffset: destinationOffset,
+    };
   }
 }
