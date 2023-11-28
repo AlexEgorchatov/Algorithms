@@ -12,7 +12,7 @@ import { SortingPage } from './Pages/SortingPage';
 import { StringMatchingPage } from './Pages/StringMatchingPage';
 import { PathFindingPage } from './Pages/PathFindingPage';
 import { NotFoundPage } from './Pages/NotFoundPage';
-import { AboutForm } from './Components/Forms/AboutForm';
+import { AboutModal } from './Components/Modals/AboutModal';
 
 function App() {
   return (
@@ -28,7 +28,7 @@ function App() {
           `}
         >
           <Header data={modules} />
-          <AboutForm />
+          <AboutModal />
           <div
             css={css`
               background-color: ${pageBackground};

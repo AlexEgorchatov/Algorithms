@@ -6,11 +6,9 @@ import { Link } from 'react-router-dom';
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
-import {
-  updateAboutFormVisibleStateAction,
-  updateMenuButtonVisibleStateAction,
-} from '../Store/Home Page/HeaderStateManagement';
+import { updateMenuButtonVisibleStateAction } from '../Store/Home Page/HeaderStateManagement';
 import { minAppWidth } from '../Core/Helper';
+import { updateAboutModalVisibleStateAction } from '../Store/Shared/AboutModalStateManagements';
 
 interface Props {
   data: ModuleData[];
@@ -31,13 +29,14 @@ const HeaderStyle = css`
 
 const HeaderMainComponent = ({ data, isVisible }: Props) => {
   const headerState = useSelector((appState: AppState) => appState.headerState);
+  const aboutModalState = useSelector((appState: AppState) => appState.aboutModalState);
   const dispatch = useDispatch();
 
   return (
     <div
       css={css`
         background-color: ${mainBackground};
-        display: flex;
+        display: ${headerState.menuButtonVisible ? 'block' : 'flex'};
         ${isVisible &&
         `@media (max-width: ${minAppWidth}px) {
           display: none;
@@ -120,7 +119,9 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
       </div>
       <div
         css={HeaderStyle}
-        onClick={() => dispatch(updateAboutFormVisibleStateAction(!headerState.aboutFormVisible))}
+        onClick={() =>
+          dispatch(updateAboutModalVisibleStateAction(!aboutModalState.aboutModalVisible))
+        }
       >
         About
       </div>
@@ -214,9 +215,9 @@ export const Header = ({ data }: Props) => {
       <HeaderMainComponent data={data} isVisible={true} />
       <HeaderMenuButton data={data} />
 
-      <Link css={HeaderStyle} style={{ fontSize: '18px' }} to="*" reloadDocument={true}>
+      {/* <Link css={HeaderStyle} style={{ fontSize: '18px' }} to="*" reloadDocument={true}>
         Sign In
-      </Link>
+      </Link> */}
     </div>
   );
 };
