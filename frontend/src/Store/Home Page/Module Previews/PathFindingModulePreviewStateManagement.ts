@@ -26,7 +26,9 @@ const initialPathFindingModulePreviewState: PathFindingModulePreviewState = {
 
 //#region Actions
 const UPDATE_PATH_FINDING_MODULE_PREVIEW_GRID_STATE = 'UpdatePathFindingModulePreviewGrid';
-export const updatePathFindingModulePreviewGridStateAction = (grid = initialPathFindingModulePreviewState.grid) =>
+export const updatePathFindingModulePreviewGridStateAction = (
+  grid = initialPathFindingModulePreviewState.grid,
+) =>
   ({
     type: UPDATE_PATH_FINDING_MODULE_PREVIEW_GRID_STATE,
     grid: grid,
@@ -35,8 +37,13 @@ export const updatePathFindingModulePreviewGridStateAction = (grid = initialPath
 //#endregion Actions
 
 //#region Reducers
-type PathFindingModulePreviewActions = ReturnType<typeof updatePathFindingModulePreviewGridStateAction>;
-export const pathFindingModulePreviewReducer = (state = initialPathFindingModulePreviewState, action: PathFindingModulePreviewActions) => {
+type PathFindingModulePreviewActions = ReturnType<
+  typeof updatePathFindingModulePreviewGridStateAction
+>;
+export const pathFindingModulePreviewReducer = (
+  state = initialPathFindingModulePreviewState,
+  action: PathFindingModulePreviewActions,
+) => {
   switch (action.type) {
     case UPDATE_PATH_FINDING_MODULE_PREVIEW_GRID_STATE:
       return {

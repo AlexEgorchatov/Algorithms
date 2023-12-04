@@ -19,8 +19,11 @@ const initialStringMatchingModulePreviewState: StringMatchingModulePreviewState 
 //#endregion State
 
 //#region Actions
-const UPDATE_STRING_MATCHING_MODULE_PREVIEW_CHARACTERS_STATE = 'updateStringMatchingModulePreviewCharacters';
-export const updateStringMatchingModulePreviewCharactersState = (characters = initialStringMatchingModulePreviewState.characters) =>
+const UPDATE_STRING_MATCHING_MODULE_PREVIEW_CHARACTERS_STATE =
+  'updateStringMatchingModulePreviewCharacters';
+export const updateStringMatchingModulePreviewCharactersState = (
+  characters = initialStringMatchingModulePreviewState.characters,
+) =>
   ({
     type: UPDATE_STRING_MATCHING_MODULE_PREVIEW_CHARACTERS_STATE,
     characters: characters,
@@ -29,8 +32,13 @@ export const updateStringMatchingModulePreviewCharactersState = (characters = in
 //#endregion Actions
 
 //#region Reducers
-type StringMatchingModulePreviewActions = ReturnType<typeof updateStringMatchingModulePreviewCharactersState>;
-export const stringMatchingModulePreviewReducer = (state = initialStringMatchingModulePreviewState, action: StringMatchingModulePreviewActions) => {
+type StringMatchingModulePreviewActions = ReturnType<
+  typeof updateStringMatchingModulePreviewCharactersState
+>;
+export const stringMatchingModulePreviewReducer = (
+  state = initialStringMatchingModulePreviewState,
+  action: StringMatchingModulePreviewActions,
+) => {
   switch (action.type) {
     case UPDATE_STRING_MATCHING_MODULE_PREVIEW_CHARACTERS_STATE:
       return {

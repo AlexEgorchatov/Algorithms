@@ -10,7 +10,9 @@ const initialSortingModulePreviewState: SortingModulePreviewState = {
 
 //#region Actions
 const UPDATE_SORTING_MODULE_PREVIEW_HEIGHTS_STATE = 'updateSortingModuleHeightsState';
-export const updateSortingModulePreviewHeightsStateAction = (heights = initialSortingModulePreviewState.heights) =>
+export const updateSortingModulePreviewHeightsStateAction = (
+  heights = initialSortingModulePreviewState.heights,
+) =>
   ({
     type: UPDATE_SORTING_MODULE_PREVIEW_HEIGHTS_STATE,
     heights: heights,
@@ -20,7 +22,10 @@ export const updateSortingModulePreviewHeightsStateAction = (heights = initialSo
 
 //#region Reducers
 type SortingModulePreviewActions = ReturnType<typeof updateSortingModulePreviewHeightsStateAction>;
-export const sortingModulePreviewReducer = (state = initialSortingModulePreviewState, action: SortingModulePreviewActions) => {
+export const sortingModulePreviewReducer = (
+  state = initialSortingModulePreviewState,
+  action: SortingModulePreviewActions,
+) => {
   switch (action.type) {
     case UPDATE_SORTING_MODULE_PREVIEW_HEIGHTS_STATE:
       return {

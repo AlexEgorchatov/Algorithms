@@ -20,7 +20,10 @@ export const updateSliderValueStateAction = (sliderValue: number) =>
 
 //#region Reducers
 type SliderComponentActions = ReturnType<typeof updateSliderValueStateAction>;
-export const sliderComponentReducer = (state = initialSliderComponentState, action: SliderComponentActions) => {
+export const sliderComponentReducer = (
+  state = initialSliderComponentState,
+  action: SliderComponentActions,
+) => {
   switch (action.type) {
     case UPDATE_SLIDER_VALUE_STATE:
       return {

@@ -20,14 +20,18 @@ const initialSortingModuleState: SortingModuleState = {
 
 //#region Actions
 const UPDATE_SELECTED_SORTING_ALGORITHM_STATE = 'updateSelectedSortingAlgorithmState';
-export const updateSelectedSortingAlgorithmState = (selectedSortingAlgorithm = initialSortingModuleState.selectedSortingAlgorithm) =>
+export const updateSelectedSortingAlgorithmState = (
+  selectedSortingAlgorithm = initialSortingModuleState.selectedSortingAlgorithm,
+) =>
   ({
     type: UPDATE_SELECTED_SORTING_ALGORITHM_STATE,
     selectedSortingAlgorithm: selectedSortingAlgorithm,
   }) as const;
 
 const UPDATE_SORTING_INPUT_STATE = 'updateSortingInputState';
-export const updateSortingInputStateAction = (sortingInput = initialSortingModuleState.sortingInput) =>
+export const updateSortingInputStateAction = (
+  sortingInput = initialSortingModuleState.sortingInput,
+) =>
   ({
     type: UPDATE_SORTING_INPUT_STATE,
     sortingInput: sortingInput,
@@ -41,7 +45,9 @@ export const updatingIsInputNanState = (isInputNan = initialSortingModuleState.i
   }) as const;
 
 const UPDATE_IS_INPUT_OVER_MAX_STATE = 'updateIsInputOverMaxState';
-export const updateIsInputOverMaxState = (isInputOverMax = initialSortingModuleState.isInputOverMax) =>
+export const updateIsInputOverMaxState = (
+  isInputOverMax = initialSortingModuleState.isInputOverMax,
+) =>
   ({
     type: UPDATE_IS_INPUT_OVER_MAX_STATE,
     isInputOverMax: isInputOverMax,
@@ -63,7 +69,10 @@ type SortingModuleActions =
   | ReturnType<typeof updatingIsInputNanState>
   | ReturnType<typeof updateIsInputOverMaxState>
   | ReturnType<typeof updateSortingBarsStateAction>;
-export const sortingModuleReducer = (state = initialSortingModuleState, action: SortingModuleActions) => {
+export const sortingModuleReducer = (
+  state = initialSortingModuleState,
+  action: SortingModuleActions,
+) => {
   switch (action.type) {
     case UPDATE_SELECTED_SORTING_ALGORITHM_STATE:
       return {
