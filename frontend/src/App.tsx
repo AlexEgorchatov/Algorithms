@@ -16,7 +16,7 @@ import { AboutModal } from './Components/Modals/AboutModal';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Provider store={store}>
         <div
           css={css`
