@@ -458,13 +458,6 @@ const PathFindingCellComponent = ({
   const handleMouseOver = (event: React.MouseEvent<HTMLDivElement>) => {
     if (store.getState().animationState.hasAnimationStarted) return;
 
-    if (
-      pathFindingState.pathFindingSelectedCellAction !== PathFindingCellActionStateEnum.None &&
-      !pathFindingAlgorithmManager.isStateUpdated
-    ) {
-      pathFindingAlgorithmManager.resetToInitialState();
-      pathFindingAlgorithmManager.isStateUpdated = true;
-    }
     if (event.buttons !== 1) return;
 
     if (pathFindingState.pathFindingSelectedCellAction !== PathFindingCellActionStateEnum.None) {
