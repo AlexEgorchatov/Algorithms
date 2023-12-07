@@ -17,6 +17,7 @@ export abstract class AlgorithmBase {
   abstract executeAlgorithm(...args: any[]): Promise<any>;
   abstract finalState: any[];
   abstract setFinalState(): void;
+  abstract readonly title: string;
 }
 
 export abstract class SortingAlgorithmBase extends AlgorithmBase {

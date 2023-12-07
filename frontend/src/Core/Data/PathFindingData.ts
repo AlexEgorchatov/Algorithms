@@ -4,10 +4,8 @@ import { AStarSearch, BreadthFirstSearch } from '../Algorithms/PathFindingAlgori
 export const pathFindingAlgorithmsData: IAlgorithmData[] = [
   {
     algorithm: new BreadthFirstSearch(),
-    title: 'Breadth First Search',
   },
   // {
   //   algorithm: new AStarSearch(),
-  //   title: 'A* Search',
   // },
 ];

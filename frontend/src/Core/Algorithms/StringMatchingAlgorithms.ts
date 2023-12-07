@@ -9,6 +9,8 @@ import { store } from '../../Store/Store';
 import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingCharacterProps';
 
 export class NaivePatternMatching extends StringMatchingAlgorithmBase {
+  title: string = 'Naive';
+
   public async executeAlgorithm(): Promise<number> {
     let stringMatchingModuleState = store.getState().stringMatchingModuleState;
     let dispatch = store.dispatch;
@@ -73,6 +75,8 @@ export class NaivePatternMatching extends StringMatchingAlgorithmBase {
 }
 
 export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase {
+  title: string = 'Knuth-Morris-Pratt';
+
   public async executeAlgorithm(): Promise<number> {
     let stringMatchingModuleState = store.getState().stringMatchingModuleState;
     let dispatch = store.dispatch;

@@ -5,6 +5,8 @@ import { SortingBarStateEnum } from '../../Resources/Enumerations';
 import { store } from '../../Store/Store';
 
 export class BubbleSort extends SortingAlgorithmBase {
+  title: string = 'Bubble Sort';
+
   public async executeAlgorithm(): Promise<void> {
     let length = store.getState().sortingModuleState.sortingBars.length;
     let barsCopy = [...store.getState().sortingModuleState.sortingBars];
@@ -53,6 +55,8 @@ export class BubbleSort extends SortingAlgorithmBase {
 }
 
 export class QuickSort extends SortingAlgorithmBase {
+  title: string = 'Quick Sort';
+
   public async executeAlgorithm(): Promise<void> {
     let length = store.getState().sortingModuleState.sortingBars.length;
 

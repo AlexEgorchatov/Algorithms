@@ -13,11 +13,10 @@ interface AlgorithmListProps {
 }
 
 interface AlgorithmProps {
-  title: string;
   algorithm: AlgorithmBase;
 }
 
-const AlgorithmComponent = ({ title, algorithm }: AlgorithmProps) => {
+const AlgorithmComponent = ({ algorithm }: AlgorithmProps) => {
   const { algorithmManager } = useContext(algorithmContext);
   const animationState = useSelector((state: AppState) => state.animationState);
 
@@ -38,23 +37,21 @@ const AlgorithmComponent = ({ title, algorithm }: AlgorithmProps) => {
     <div
       css={css`
         font-size: 20px;
-        color: ${algorithm.constructor.name === algorithmManager.selectedAlgorithm.constructor.name
-          ? ''
-          : 'white'};
+        color: ${algorithm.title === algorithmManager.selectedAlgorithm.title ? '' : 'white'};
         margin-right: 10px;
         cursor: ${animationState.hasAnimationStarted &&
-        algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name
+        algorithm.title !== algorithmManager.selectedAlgorithm.title
           ? 'default'
           : 'pointer'};
         opacity: ${animationState.hasAnimationStarted &&
-        algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name
+        algorithm.title !== algorithmManager.selectedAlgorithm.title
           ? '0.5'
           : '1'};
         :hover {
           ${!animationState.hasAnimationStarted &&
           `
             color: ${
-              algorithm.constructor.name !== algorithmManager.selectedAlgorithm.constructor.name
+              algorithm.title !== algorithmManager.selectedAlgorithm.title
                 ? `${headerItemHovered}`
                 : ''
             };
@@ -63,7 +60,7 @@ const AlgorithmComponent = ({ title, algorithm }: AlgorithmProps) => {
       `}
       onClick={handleClick}
     >
-      {title}
+      {algorithm.title}
     </div>
   );
 };
@@ -76,7 +73,7 @@ export const AlgorithmsList = ({ data }: AlgorithmListProps) => {
       `}
     >
       {data.map((dataItem, index) => (
-        <AlgorithmComponent key={index} title={dataItem.title} algorithm={dataItem.algorithm} />
+        <AlgorithmComponent key={index} algorithm={dataItem.algorithm} />
       ))}
     </div>
   );

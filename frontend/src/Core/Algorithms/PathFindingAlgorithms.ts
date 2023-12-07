@@ -15,6 +15,8 @@ import {
 } from '../Other/PathFindingAlgorithmsManager';
 
 export class BreadthFirstSearch extends PathFindingAlgorithmBase {
+  title: string = 'Breadth First Search';
+
   public async executeAlgorithm(cellsRefs: React.RefObject<HTMLDivElement>[][]): Promise<number> {
     return new Promise<number>(async (resolve) => {
       let pathFindingModuleState = store.getState().pathFindingModuleState;
@@ -126,6 +128,8 @@ export class BreadthFirstSearch extends PathFindingAlgorithmBase {
 }
 
 export class AStarSearch extends PathFindingAlgorithmBase {
+  title: string = 'A* Search';
+
   public async executeAlgorithm(): Promise<void> {}
   setFinalState(): void {}
 }

@@ -18,7 +18,7 @@ export class SortingAlgorithmsManager extends AlgorithmsManagerBase {
   public constructor(selectedAlgorithm: AlgorithmBase) {
     super();
     this.selectedAlgorithm = selectedAlgorithm;
-    store.dispatch(updateSelectedSortingAlgorithmState(selectedAlgorithm.constructor.name));
+    store.dispatch(updateSelectedSortingAlgorithmState(selectedAlgorithm.title));
   }
 
   public setInitialState(): void {
@@ -30,7 +30,7 @@ export class SortingAlgorithmsManager extends AlgorithmsManagerBase {
   }
 
   public updateStoreSelectedAlgorithmName(): void {
-    store.dispatch(updateSelectedSortingAlgorithmState(this.selectedAlgorithm.constructor.name));
+    store.dispatch(updateSelectedSortingAlgorithmState(this.selectedAlgorithm.title));
   }
 
   public async startAlgorithm(): Promise<void> {

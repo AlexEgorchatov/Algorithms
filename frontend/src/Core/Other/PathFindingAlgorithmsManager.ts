@@ -105,7 +105,7 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
   public constructor(selectedAlgorithm: PathFindingAlgorithmBase) {
     super();
     this.selectedAlgorithm = selectedAlgorithm;
-    store.dispatch(updateSelectedPathFindingAlgorithmState(selectedAlgorithm.constructor.name));
+    store.dispatch(updateSelectedPathFindingAlgorithmState(selectedAlgorithm.title));
   }
 
   public setInitialState(): void {
@@ -124,9 +124,7 @@ export class PathFindingAlgorithmsManager extends AlgorithmsManagerBase {
   }
 
   public updateStoreSelectedAlgorithmName(): void {
-    store.dispatch(
-      updateSelectedPathFindingAlgorithmState(this.selectedAlgorithm.constructor.name),
-    );
+    store.dispatch(updateSelectedPathFindingAlgorithmState(this.selectedAlgorithm.title));
   }
 
   public async startAlgorithm(): Promise<void> {

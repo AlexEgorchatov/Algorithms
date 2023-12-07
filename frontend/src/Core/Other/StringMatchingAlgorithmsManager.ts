@@ -20,7 +20,7 @@ export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase {
   public constructor(selectedAlgorithm: AlgorithmBase) {
     super();
     this.selectedAlgorithm = selectedAlgorithm;
-    store.dispatch(updateSelectedStringMatchingAlgorithmState(selectedAlgorithm.constructor.name));
+    store.dispatch(updateSelectedStringMatchingAlgorithmState(selectedAlgorithm.title));
   }
 
   public setInitialState(): void {
@@ -35,9 +35,7 @@ export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase {
   }
 
   public updateStoreSelectedAlgorithmName(): void {
-    store.dispatch(
-      updateSelectedStringMatchingAlgorithmState(this.selectedAlgorithm.constructor.name),
-    );
+    store.dispatch(updateSelectedStringMatchingAlgorithmState(this.selectedAlgorithm.title));
   }
 
   public async startAlgorithm(): Promise<void> {
