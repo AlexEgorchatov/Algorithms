@@ -159,7 +159,7 @@ export const AboutModal = () => {
                 margin-right: 5px;
                 margin-top: 10px;
               `}
-              src="github-mark-white.png"
+              src={require(`../../Resources/github-mark-white.png`)}
               alt="GitHub icon"
             />
             Check the repository
