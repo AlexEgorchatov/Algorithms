@@ -6,15 +6,7 @@ export interface StringMatchingModulePreviewState {
 }
 
 const initialStringMatchingModulePreviewState: StringMatchingModulePreviewState = {
-  characters: [
-    StringMatchingCharacterStateEnum.Unselected,
-    StringMatchingCharacterStateEnum.Unselected,
-    StringMatchingCharacterStateEnum.Unselected,
-    StringMatchingCharacterStateEnum.Unselected,
-    StringMatchingCharacterStateEnum.Unselected,
-    StringMatchingCharacterStateEnum.Unselected,
-    StringMatchingCharacterStateEnum.Unselected,
-  ],
+  characters: [],
 };
 //#endregion State
 

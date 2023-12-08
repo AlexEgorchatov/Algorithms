@@ -87,7 +87,17 @@ export const StringMatchingModulePreview = ({ title }: IModulePreviewTitle) => {
   const animationCompleteTime: number = 500;
 
   const resetComponentState = () => {
-    dispatch(updateStringMatchingModulePreviewCharactersState());
+    dispatch(
+      updateStringMatchingModulePreviewCharactersState([
+        StringMatchingCharacterStateEnum.Unselected,
+        StringMatchingCharacterStateEnum.Unselected,
+        StringMatchingCharacterStateEnum.Unselected,
+        StringMatchingCharacterStateEnum.Unselected,
+        StringMatchingCharacterStateEnum.Unselected,
+        StringMatchingCharacterStateEnum.Unselected,
+        StringMatchingCharacterStateEnum.Unselected,
+      ]),
+    );
   };
 
   const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {

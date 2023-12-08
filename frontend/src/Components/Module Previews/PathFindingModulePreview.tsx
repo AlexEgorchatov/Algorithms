@@ -41,12 +41,11 @@ const GridCell = ({ state = PathFindingCellStateEnum.Unselected }: Props) => {
   return (
     <div
       css={css`
+        box-sizing: border-box;
         height: 30px;
         width: 30px;
-        border: 1px;
-        border-color: black;
-        border-style: solid;
-        margin: -1px;
+        outline: 0.5px solid black;
+        border: 0.5px solid black;
         ${setBackground()}
       `}
     ></div>
@@ -56,13 +55,25 @@ const GridCell = ({ state = PathFindingCellStateEnum.Unselected }: Props) => {
 export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
   const pathFindingState = useSelector((state: AppState) => state.pathFindingModulePreviewState);
   const dispatch = useDispatch();
-  const columnNumber: number = 8;
   const timeoutID = React.useRef(-1);
   const stepTime: number = 35;
   const animationCompleteTime: number = 500;
 
   const resetComponentState = () => {
-    dispatch(updatePathFindingModulePreviewGridStateAction());
+    let grid: PathFindingCellStateEnum[][] = new Array(7);
+    for (let i = 0; i < 7; i++) {
+      grid[i] = new Array(8);
+      for (let j = 0; j < 8; j++) {
+        grid[i][j] = PathFindingCellStateEnum.Unselected;
+      }
+    }
+
+    grid[5][1] = PathFindingCellStateEnum.Source;
+    grid[0][7] = PathFindingCellStateEnum.Destination;
+    grid[4][4] = PathFindingCellStateEnum.Wall;
+    grid[5][4] = PathFindingCellStateEnum.Wall;
+    grid[6][4] = PathFindingCellStateEnum.Wall;
+    dispatch(updatePathFindingModulePreviewGridStateAction(grid));
   };
 
   const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {
@@ -70,21 +81,21 @@ export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
   };
 
   const handleModuleMouseEnter = async () => {
-    let gridCopy = [...pathFindingState.grid];
+    let gridCopy = pathFindingState.grid.map((row) => [...row]);
     let rowSource: number = 5;
     let columnSource: number = 2;
     let rowDestination: number = 0;
 
     while (rowSource !== rowDestination) {
       while (true) {
-        gridCopy[rowSource * 8 + columnSource] = PathFindingCellStateEnum.Checked;
+        gridCopy[rowSource][columnSource] = PathFindingCellStateEnum.Checked;
         dispatch(updatePathFindingModulePreviewGridStateAction(gridCopy));
-        gridCopy = [...gridCopy];
+        gridCopy = gridCopy.map((row) => [...row]);
         await new Promise((resolve) => awaitCancellation(resolve, stepTime));
 
         if (
-          columnSource + 1 >= columnNumber ||
-          pathFindingState.grid[rowSource * 8 + columnSource + 1] === PathFindingCellStateEnum.Wall
+          columnSource + 1 >= 8 ||
+          pathFindingState.grid[rowSource][columnSource + 1] === PathFindingCellStateEnum.Wall
         )
           break;
         else columnSource++;
@@ -93,7 +104,7 @@ export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
       if (rowSource - 1 === rowDestination) {
         await new Promise((resolve) => awaitCancellation(resolve, animationCompleteTime));
         resetComponentState();
-        gridCopy = [...pathFindingState.grid];
+        gridCopy = pathFindingState.grid.map((row) => [...row]);
         rowSource = 5;
         columnSource = 2;
         await new Promise((resolve) => awaitCancellation(resolve, stepTime * 4));
@@ -109,14 +120,18 @@ export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
   return (
     <div onMouseEnter={handleModuleMouseEnter} onMouseLeave={handleModuleMouseLeave}>
       <ModulePreviewPlaceholder title={title}>
-        <div
-          css={css`
-            display: flex;
-            flex-wrap: wrap;
-          `}
-        >
-          {pathFindingState.grid.map((state: PathFindingCellStateEnum, index) => (
-            <GridCell key={index} state={state} />
+        <div>
+          {pathFindingState.grid.map((row, rowIndex) => (
+            <div
+              css={css`
+                display: flex;
+              `}
+              key={rowIndex}
+            >
+              {row.map((cellState, columnIndex) => (
+                <GridCell key={columnIndex} state={cellState} />
+              ))}
+            </div>
           ))}
         </div>
       </ModulePreviewPlaceholder>

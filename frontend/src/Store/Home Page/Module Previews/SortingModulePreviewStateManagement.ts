@@ -4,7 +4,7 @@ export interface SortingModulePreviewState {
 }
 
 const initialSortingModulePreviewState: SortingModulePreviewState = {
-  heights: [180, 100, 120, 140, 160],
+  heights: [],
 };
 //#endregion State
 

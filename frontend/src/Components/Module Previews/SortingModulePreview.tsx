@@ -32,7 +32,7 @@ export const SortingModulePreview = ({ title }: IModulePreviewTitle) => {
   const animationCompleteTime: number = 500;
 
   const resetComponentState = () => {
-    dispatch(updateSortingModulePreviewHeightsStateAction());
+    dispatch(updateSortingModulePreviewHeightsStateAction([180, 100, 120, 140, 160]));
   };
 
   const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {

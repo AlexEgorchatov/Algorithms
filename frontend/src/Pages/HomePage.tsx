@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { ModuleData, modules } from '../Core/Data/ModuleData';
@@ -6,8 +7,16 @@ import { Link } from 'react-router-dom';
 import { SortingModulePreview } from '../Components/Module Previews/SortingModulePreview';
 import { StringMatchingModulePreview } from '../Components/Module Previews/StringMatchingModulePreview';
 import { PathFindingModulePreview } from '../Components/Module Previews/PathFindingModulePreview';
-import React from 'react';
-import { ModuleEnum } from '../Resources/Enumerations';
+import React, { useEffect } from 'react';
+import {
+  ModuleEnum,
+  PathFindingCellStateEnum,
+  StringMatchingCharacterStateEnum,
+} from '../Resources/Enumerations';
+import { useDispatch } from 'react-redux';
+import { updateSortingModulePreviewHeightsStateAction } from '../Store/Home Page/Module Previews/SortingModulePreviewStateManagement';
+import { updateStringMatchingModulePreviewCharactersState } from '../Store/Home Page/Module Previews/StringMatchingModulePreviewStateManagement';
+import { updatePathFindingModulePreviewGridStateAction } from '../Store/Home Page/Module Previews/PathFindingModulePreviewStateManagement';
 
 interface ModuleProps {
   data: ModuleData;
@@ -64,6 +73,48 @@ const ModuleList = ({ data }: ModuleListProps) => (
 );
 
 export const HomePage = () => {
+  const dispatch = useDispatch();
+
+  const initializeSortingPreview = () => {
+    dispatch(updateSortingModulePreviewHeightsStateAction([180, 100, 120, 140, 160]));
+  };
+  const initializeStringMatchingPreview = () => {
+    dispatch(
+      updateStringMatchingModulePreviewCharactersState([
+        StringMatchingCharacterStateEnum.Unselected,
+        StringMatchingCharacterStateEnum.Unselected,
+        StringMatchingCharacterStateEnum.Unselected,
+        StringMatchingCharacterStateEnum.Unselected,
+        StringMatchingCharacterStateEnum.Unselected,
+        StringMatchingCharacterStateEnum.Unselected,
+        StringMatchingCharacterStateEnum.Unselected,
+      ]),
+    );
+  };
+  const initializePathFindingPreview = () => {
+    let grid: PathFindingCellStateEnum[][] = new Array(7);
+    for (let i = 0; i < 7; i++) {
+      grid[i] = new Array(8);
+      for (let j = 0; j < 8; j++) {
+        grid[i][j] = PathFindingCellStateEnum.Unselected;
+      }
+    }
+
+    grid[5][1] = PathFindingCellStateEnum.Source;
+    grid[0][7] = PathFindingCellStateEnum.Destination;
+    grid[4][4] = PathFindingCellStateEnum.Wall;
+    grid[5][4] = PathFindingCellStateEnum.Wall;
+    grid[6][4] = PathFindingCellStateEnum.Wall;
+
+    dispatch(updatePathFindingModulePreviewGridStateAction(grid));
+  };
+
+  useEffect(() => {
+    initializeSortingPreview();
+    initializeStringMatchingPreview();
+    initializePathFindingPreview();
+  }, []);
+
   return (
     <div
       css={css`
