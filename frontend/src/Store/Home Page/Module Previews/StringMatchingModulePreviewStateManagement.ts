@@ -1,8 +1,8 @@
-import { StringMatchingCharacterStateEnum } from '../../../Resources/Enumerations';
+import { IStringMatchingCharacterProps } from '../../../Core/Interfaces/IStringMatchingCharacterProps';
 
 //#region State
 export interface StringMatchingModulePreviewState {
-  readonly characters: StringMatchingCharacterStateEnum[];
+  readonly characters: IStringMatchingCharacterProps[];
 }
 
 const initialStringMatchingModulePreviewState: StringMatchingModulePreviewState = {

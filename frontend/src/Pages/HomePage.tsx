@@ -17,6 +17,7 @@ import { useDispatch } from 'react-redux';
 import { updateSortingModulePreviewHeightsStateAction } from '../Store/Home Page/Module Previews/SortingModulePreviewStateManagement';
 import { updateStringMatchingModulePreviewCharactersState } from '../Store/Home Page/Module Previews/StringMatchingModulePreviewStateManagement';
 import { updatePathFindingModulePreviewGridStateAction } from '../Store/Home Page/Module Previews/PathFindingModulePreviewStateManagement';
+import { IStringMatchingCharacterProps } from '../Core/Interfaces/IStringMatchingCharacterProps';
 
 interface ModuleProps {
   data: ModuleData;
@@ -79,17 +80,16 @@ export const HomePage = () => {
     dispatch(updateSortingModulePreviewHeightsStateAction([180, 100, 120, 140, 160]));
   };
   const initializeStringMatchingPreview = () => {
-    dispatch(
-      updateStringMatchingModulePreviewCharactersState([
-        StringMatchingCharacterStateEnum.Unselected,
-        StringMatchingCharacterStateEnum.Unselected,
-        StringMatchingCharacterStateEnum.Unselected,
-        StringMatchingCharacterStateEnum.Unselected,
-        StringMatchingCharacterStateEnum.Unselected,
-        StringMatchingCharacterStateEnum.Unselected,
-        StringMatchingCharacterStateEnum.Unselected,
-      ]),
-    );
+    let characters: IStringMatchingCharacterProps[] = [
+      { character: 'b' },
+      { character: 'a' },
+      { character: 'b' },
+      { character: 'b' },
+      { character: 'a' },
+      { character: 'b' },
+      { character: 'b' },
+    ];
+    dispatch(updateStringMatchingModulePreviewCharactersState(characters));
   };
   const initializePathFindingPreview = () => {
     let grid: PathFindingCellStateEnum[][] = new Array(7);
