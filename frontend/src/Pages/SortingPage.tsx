@@ -208,6 +208,9 @@ const GenerateInputComponent = () => {
     let sortingBars: ISortingBarProps[] = [];
     let newInput: string = '';
 
+    if (getMaxBarsNumber(windowState.windowWidth) < parseInt(inputRef.current.value))
+      inputRef.current.value = getMaxBarsNumber(windowState.windowWidth).toString();
+
     for (let i = 0; i < parseInt(inputRef.current.value); i++) {
       let random: number = Math.floor(Math.random() * 100);
       let stringValue = random.toString();
