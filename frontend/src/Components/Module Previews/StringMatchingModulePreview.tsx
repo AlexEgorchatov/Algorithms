@@ -9,6 +9,7 @@ import { StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 import { IStringMatchingCharacterProps } from '../../Core/Interfaces/IStringMatchingCharacterProps';
 import { IModulePreviewTitle } from '../../Core/Interfaces/IModuleTitle';
 import { updateStringMatchingModulePreviewCharactersState } from '../../Store/Home Page/Module Previews/StringMatchingModulePreviewStateManagement';
+import { SearchableCharacter } from './StringMatchingPreviewCharacter';
 
 export const defaultStringMatchingPreviewState: IStringMatchingCharacterProps[] = [
   { character: 'b' },
@@ -19,35 +20,6 @@ export const defaultStringMatchingPreviewState: IStringMatchingCharacterProps[] 
   { character: 'b' },
   { character: 'b' },
 ];
-
-const SearchableCharacter = ({
-  character,
-  characterState: state = StringMatchingCharacterStateEnum.Unselected,
-}: IStringMatchingCharacterProps) => {
-  const setFont = () => {
-    switch (state) {
-      case StringMatchingCharacterStateEnum.Current:
-        return 'color: white; background-color: black';
-
-      case StringMatchingCharacterStateEnum.Found:
-        return 'color: black; background-color: #ffff00';
-
-      case StringMatchingCharacterStateEnum.Unselected:
-      default:
-        return 'color: white; background-color: transparent';
-    }
-  };
-
-  return (
-    <div
-      css={css`
-        ${setFont()}
-      `}
-    >
-      {character}
-    </div>
-  );
-};
 
 export const StringMatchingModulePreview = ({ title }: IModulePreviewTitle) => {
   const stringMatchingState = useSelector(

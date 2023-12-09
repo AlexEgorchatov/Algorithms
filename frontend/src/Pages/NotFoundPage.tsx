@@ -4,35 +4,7 @@ import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
 import { IStringMatchingCharacterProps } from '../Core/Interfaces/IStringMatchingCharacterProps';
-
-const SearchableCharacter = ({
-  character,
-  characterState: state = StringMatchingCharacterStateEnum.Unselected,
-}: IStringMatchingCharacterProps) => {
-  const setFont = () => {
-    switch (state) {
-      case StringMatchingCharacterStateEnum.Current:
-        return 'color: white; background-color: black';
-
-      case StringMatchingCharacterStateEnum.Found:
-        return 'color: black; background-color: #ffff00';
-
-      case StringMatchingCharacterStateEnum.Unselected:
-      default:
-        return 'color: white; background-color: transparent';
-    }
-  };
-
-  return (
-    <div
-      css={css`
-        ${setFont()}
-      `}
-    >
-      <b>{character}</b>
-    </div>
-  );
-};
+import { SearchableCharacter } from '../Components/Module Previews/StringMatchingPreviewCharacter';
 
 export const NotFoundPage = () => {
   const [notFoundUrl, setNotFoundUrl] = useState<IStringMatchingCharacterProps[]>([]);
