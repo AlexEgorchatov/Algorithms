@@ -10,6 +10,19 @@ import { PathFindingCellStateEnum } from '../../Resources/Enumerations';
 import { IModulePreviewTitle } from '../../Core/Interfaces/IModuleTitle';
 import { completionColor } from '../../Resources/Colors';
 
+export const defaultPathFindingPreviewState: PathFindingCellStateEnum[][] = [];
+for (let i = 0; i < 7; i++) {
+  defaultPathFindingPreviewState[i] = new Array(8);
+  for (let j = 0; j < 8; j++) {
+    defaultPathFindingPreviewState[i][j] = PathFindingCellStateEnum.Unselected;
+  }
+}
+defaultPathFindingPreviewState[5][1] = PathFindingCellStateEnum.Source;
+defaultPathFindingPreviewState[0][7] = PathFindingCellStateEnum.Destination;
+defaultPathFindingPreviewState[4][4] = PathFindingCellStateEnum.Wall;
+defaultPathFindingPreviewState[5][4] = PathFindingCellStateEnum.Wall;
+defaultPathFindingPreviewState[6][4] = PathFindingCellStateEnum.Wall;
+
 interface Props {
   state: PathFindingCellStateEnum;
 }
@@ -60,20 +73,7 @@ export const PathFindingModulePreview = ({ title }: IModulePreviewTitle) => {
   const animationCompleteTime: number = 500;
 
   const resetComponentState = () => {
-    let grid: PathFindingCellStateEnum[][] = new Array(7);
-    for (let i = 0; i < 7; i++) {
-      grid[i] = new Array(8);
-      for (let j = 0; j < 8; j++) {
-        grid[i][j] = PathFindingCellStateEnum.Unselected;
-      }
-    }
-
-    grid[5][1] = PathFindingCellStateEnum.Source;
-    grid[0][7] = PathFindingCellStateEnum.Destination;
-    grid[4][4] = PathFindingCellStateEnum.Wall;
-    grid[5][4] = PathFindingCellStateEnum.Wall;
-    grid[6][4] = PathFindingCellStateEnum.Wall;
-    dispatch(updatePathFindingModulePreviewGridStateAction(grid));
+    dispatch(updatePathFindingModulePreviewGridStateAction(defaultPathFindingPreviewState));
   };
 
   const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {

@@ -7,6 +7,8 @@ import { AppState } from '../../Store/Store';
 import { IModulePreviewTitle } from '../../Core/Interfaces/IModuleTitle';
 import { updateSortingModulePreviewHeightsStateAction } from '../../Store/Home Page/Module Previews/SortingModulePreviewStateManagement';
 
+export const defaultSortingPreviewState: number[] = [180, 100, 120, 140, 160];
+
 interface Props {
   height: number;
 }
@@ -32,7 +34,7 @@ export const SortingModulePreview = ({ title }: IModulePreviewTitle) => {
   const animationCompleteTime: number = 500;
 
   const resetComponentState = () => {
-    dispatch(updateSortingModulePreviewHeightsStateAction([180, 100, 120, 140, 160]));
+    dispatch(updateSortingModulePreviewHeightsStateAction(defaultSortingPreviewState));
   };
 
   const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
 import { IStringMatchingCharacterProps } from '../Core/Interfaces/IStringMatchingCharacterProps';
 

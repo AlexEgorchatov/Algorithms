@@ -10,6 +10,16 @@ import { IStringMatchingCharacterProps } from '../../Core/Interfaces/IStringMatc
 import { IModulePreviewTitle } from '../../Core/Interfaces/IModuleTitle';
 import { updateStringMatchingModulePreviewCharactersState } from '../../Store/Home Page/Module Previews/StringMatchingModulePreviewStateManagement';
 
+export const defaultStringMatchingPreviewState: IStringMatchingCharacterProps[] = [
+  { character: 'b' },
+  { character: 'a' },
+  { character: 'b' },
+  { character: 'b' },
+  { character: 'a' },
+  { character: 'b' },
+  { character: 'b' },
+];
+
 const SearchableCharacter = ({
   character,
   characterState: state = StringMatchingCharacterStateEnum.Unselected,
@@ -50,16 +60,7 @@ export const StringMatchingModulePreview = ({ title }: IModulePreviewTitle) => {
   const animationCompleteTime: number = 500;
 
   const resetComponentState = () => {
-    let characters: IStringMatchingCharacterProps[] = [
-      { character: 'b' },
-      { character: 'a' },
-      { character: 'b' },
-      { character: 'b' },
-      { character: 'a' },
-      { character: 'b' },
-      { character: 'b' },
-    ];
-    dispatch(updateStringMatchingModulePreviewCharactersState(characters));
+    dispatch(updateStringMatchingModulePreviewCharactersState(defaultStringMatchingPreviewState));
   };
 
   const awaitCancellation = (resolve: (parameter: unknown) => void, awaitTime: number) => {
