@@ -9,7 +9,7 @@ export const WarningSignComponent = () => {
         position: relative;
         display: block;
         transform: scale(var(--ggs, 1));
-        width: 20px;
+        min-width: 20px;
         height: 20px;
         border: 2px solid;
         border-radius: 40px;

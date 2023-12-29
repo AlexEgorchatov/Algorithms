@@ -72,7 +72,7 @@ export class StringMatchingAlgorithmsManager extends AlgorithmsManagerBase {
     let stringMatchingModuleState = store.getState().stringMatchingModuleState;
     let dispatch = store.dispatch;
     let animationInputCopy = [...stringMatchingModuleState.stringMatchingAnimationInput];
-    let timeout = 300 / (animationInputCopy.length - lastIndex);
+    let timeout = 20;
 
     for (let i = lastIndex; i < animationInputCopy.length; i++) {
       animationInputCopy[i] = {

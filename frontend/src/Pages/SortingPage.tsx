@@ -102,6 +102,7 @@ const SortingInputComponent = () => {
       css={css`
         display: grid;
         width: 100%;
+        min-height: 60px;
       `}
     >
       <input
@@ -133,44 +134,47 @@ const SortingInputComponent = () => {
         disabled={animationState.hasAnimationStarted}
       />
 
-      <div>
+      <div
+        css={css`
+          display: flex;
+          flex-wrap: wrap;
+          font-size: 13px;
+          color: white;
+          font-weight: bold;
+          height: 34px;
+        `}
+      >
+        Ex:
         <div
           css={css`
-            display: flex;
-            color: white;
-            font-size: 13px;
-            min-width: 520px;
-            font-weight: bold;
+            margin-left: 3px;
+            margin-right: 5px;
+            color: ${sortingModuleState.isInputNan ? errorMessageColor : 'white'};
           `}
         >
-          Ex:
-          <div
-            css={css`
-              margin-left: 5px;
-              color: ${sortingModuleState.isInputNan ? errorMessageColor : 'white'};
-            `}
-          >
-            "32 0 9 82"
-          </div>
-          . Maximum recommended number of elements is {getMaxBarsNumber(windowState.windowWidth)}.
-          <div
-            css={css`
-              margin-left: 5px;
-              color: ${sortingModuleState.isInputOverMax ? errorMessageColor : 'white'};
-            `}
-          >
-            Maximum value is 99
-          </div>
-          .
+          "32 0 9 82".
         </div>
         <div
           css={css`
-            visibility: ${sortingModuleState.isInputNan || sortingModuleState.isInputOverMax
-              ? 'visible'
-              : 'hidden'};
-            display: flex;
+            margin-right: 5px;
+          `}
+        >
+          Maximum recommended number of elements is {getMaxBarsNumber(windowState.windowWidth)}.
+        </div>
+        <div
+          css={css`
+            color: ${sortingModuleState.isInputOverMax ? errorMessageColor : 'white'};
+            margin-right: 5px;
+          `}
+        >
+          Maximum value is 99.
+        </div>
+        <div
+          css={css`
+            display: ${sortingModuleState.isInputNan || sortingModuleState.isInputOverMax
+              ? 'flex'
+              : 'none'};
             color: ${errorMessageColor};
-            font-size: 13px;
             font-weight: bold;
           `}
         >
@@ -411,7 +415,7 @@ const SettingsComponent = () => {
               display: flex;
               align-items: flex-end;
               justify-content: space-between;
-              width: 250px;
+              min-width: 250px;
             `}
           >
             <animationContext.Provider value={{ animationManager: sortingAnimationManager }}>

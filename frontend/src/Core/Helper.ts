@@ -4,7 +4,7 @@ import { store } from '../Store/Store';
 import { AlgorithmsManagerBase } from './Abstractions/AlgorithmManagerBase';
 
 export const algorithmIterationBaseTime: number = 400;
-export const minAppWidth: number = 580;
+export const minAppWidth: number = 400;
 export const minAnimationContainerHeight: number = 425;
 
 interface animationProps {

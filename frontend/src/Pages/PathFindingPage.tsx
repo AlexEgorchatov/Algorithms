@@ -618,7 +618,7 @@ const SettingsComponent = () => {
               display: flex;
               align-items: flex-end;
               justify-content: space-between;
-              width: 200px;
+              min-width: 200px;
             `}
           >
             <animationContext.Provider value={{ animationManager: pathFindingAnimationManager }}>

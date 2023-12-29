@@ -107,6 +107,7 @@ const StringMatchingPatternComponent = () => {
       css={css`
         width: 100%;
         display: grid;
+        height: 60px;
       `}
     >
       <input
@@ -142,8 +143,9 @@ const StringMatchingPatternComponent = () => {
           display: flex;
           color: white;
           font-size: 13px;
-          min-width: 520px;
+          height: 34px;
           font-weight: bold;
+          flex-wrap: wrap;
         `}
       >
         Ex: "Pattern 123". Maximum number of elements:
@@ -151,27 +153,25 @@ const StringMatchingPatternComponent = () => {
           css={css`
             color: white;
             margin-left: 3px;
+            margin-right: 5px;
             color: ${stringMatchingModuleState.stringMatchingPattern.length >
             maxStringMatchingPatternLength
               ? errorMessageColor
               : 'white'};
           `}
         >
-          {stringMatchingModuleState.stringMatchingPattern.length}/{maxStringMatchingPatternLength}
+          {stringMatchingModuleState.stringMatchingPattern.length}/{maxStringMatchingPatternLength}.
         </div>
-        .
         <div
           css={css`
-            visibility: ${stringMatchingModuleState.stringMatchingPattern.length >
+            display: ${stringMatchingModuleState.stringMatchingPattern.length >
             maxStringMatchingPatternLength
-              ? 'visible'
-              : 'hidden'};
-            display: flex;
+              ? 'flex'
+              : 'none'};
             color: ${errorMessageColor};
-            margin-left: 5px;
           `}
         >
-          Input has invalid format,
+          Pattern has invalid format,
           <div
             css={css`
               margin-left: 5px;
@@ -248,8 +248,9 @@ const StringMatchingInputComponent = () => {
   return (
     <div
       css={css`
-        width: 100%;
         display: grid;
+        width: 100%;
+        height: 60px;
       `}
     >
       <input
@@ -283,10 +284,11 @@ const StringMatchingInputComponent = () => {
       <div
         css={css`
           display: flex;
-          color: white;
+          flex-wrap: wrap;
           font-size: 13px;
-          min-width: 520px;
+          color: white;
           font-weight: bold;
+          height: 34px;
         `}
       >
         Ex: "Input 123". Maximum number of elements:
@@ -294,24 +296,22 @@ const StringMatchingInputComponent = () => {
           css={css`
             color: white;
             margin-left: 3px;
+            margin-right: 5px;
             color: ${stringMatchingModuleState.stringMatchingInput.length >
             maxStringMatchingInputLength
               ? errorMessageColor
               : 'white'};
           `}
         >
-          {stringMatchingModuleState.stringMatchingInput.length}/{maxStringMatchingInputLength}
+          {stringMatchingModuleState.stringMatchingInput.length}/{maxStringMatchingInputLength}.
         </div>
-        .
         <div
           css={css`
-            visibility: ${stringMatchingModuleState.stringMatchingInput.length >
+            display: ${stringMatchingModuleState.stringMatchingInput.length >
             maxStringMatchingInputLength
-              ? 'visible'
-              : 'hidden'};
-            display: flex;
+              ? 'flex'
+              : 'none'};
             color: ${errorMessageColor};
-            margin-left: 5px;
           `}
         >
           Input has invalid format,
@@ -434,7 +434,7 @@ const SettingsComponent = () => {
                 display: flex;
                 align-items: flex-end;
                 justify-content: space-between;
-                width: 200px;
+                min-width: 200px;
               `}
             >
               <animationContext.Provider
