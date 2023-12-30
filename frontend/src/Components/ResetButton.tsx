@@ -26,8 +26,8 @@ export const ResetButton = ({ resetFunction: refreshFunction }: Props) => {
         position: relative;
         display: flex;
         transform: scale(var(--ggs, 1));
-        width: 22px;
-        height: 22px;
+        min-width: 22px;
+        min-height: 22px;
         border: 2px solid;
         border-radius: 4px;
         color: white;

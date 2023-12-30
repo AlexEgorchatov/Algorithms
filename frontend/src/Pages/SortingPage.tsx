@@ -254,16 +254,17 @@ const GenerateInputComponent = () => {
     <div
       css={css`
         display: flex;
-        align-items: flex-end;
+        align-items: center;
         justify-content: space-between;
-        width: 73px;
+        max-width: 73px;
+        min-width: 73px;
       `}
     >
       <ResetButton resetFunction={generateElements} />
       <input
         css={css`
           width: 40px;
-          height: 16px;
+          height: 14px;
           font-size: 13px;
           font-family:
             -apple-system,

@@ -3,10 +3,9 @@ import { css } from '@emotion/react';
 import { headerItemHovered, mainBackground, mainFontColor } from '../Resources/Colors';
 import { ModuleData } from '../Core/Data/ModuleData';
 import { Link } from 'react-router-dom';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
-import { updateMenuButtonVisibleStateAction } from '../Store/Home Page/HeaderStateManagement';
 import { minAppWidth } from '../Core/Helper';
 import { updateAboutModalVisibleStateAction } from '../Store/Shared/AboutModalStateManagements';
 
@@ -28,7 +27,6 @@ const HeaderStyle = css`
 `;
 
 const HeaderMainComponent = ({ data, isVisible }: Props) => {
-  const headerState = useSelector((appState: AppState) => appState.headerState);
   const aboutModalState = useSelector((appState: AppState) => appState.aboutModalState);
   const dispatch = useDispatch();
 
@@ -36,7 +34,9 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
     <div
       css={css`
         background-color: ${mainBackground};
-        display: ${headerState.menuButtonVisible ? 'block' : 'flex'};
+        display: ${isVisible ? 'flex' : 'block'};
+        justify-content: flex-start;
+        width: ${isVisible ? '' : '109px'};
         ${isVisible &&
         `@media (max-width: ${minAppWidth}px) {
           display: none;
@@ -49,7 +49,6 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
       <div
         css={css`
           position: relative;
-          display: inline-block;
           vertical-align: super;
           margin: ${isVisible ? '0px 10px' : '0px'};
           :hover {
@@ -62,7 +61,7 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
           }
         `}
       >
-        <button
+        <div
           css={css`
             display: ${isVisible ? 'block' : 'contents'};
             background-color: transparent;
@@ -85,13 +84,13 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
           `}
         >
           Modules
-        </button>
+        </div>
         <div
           css={css`
             display: none;
             position: absolute;
             background-color: #f1f1f1;
-            left: ${isVisible ? '0px' : '107px'};
+            left: ${isVisible ? '0px' : '109px'};
             top: ${isVisible ? '' : '0px'};
             z-index: 1;
           `}
@@ -130,18 +129,17 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
 };
 
 const HeaderMenuButton = ({ data }: Props) => {
-  const headerState = useSelector((state: AppState) => state.headerState);
-  const dispatch = useDispatch();
+  const [menuButtonVisible, setMenuButtonVisible] = useState<boolean>(false);
   const ref = useRef<HTMLDivElement>(null);
 
   const handleOutsideMenuButtonClick = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as Node)) {
-      dispatch(updateMenuButtonVisibleStateAction(false));
+      setMenuButtonVisible(false);
     }
     document.removeEventListener('click', handleOutsideMenuButtonClick, true);
   };
   const handleMenuButtonClick = () => {
-    dispatch(updateMenuButtonVisibleStateAction(!headerState.menuButtonVisible));
+    setMenuButtonVisible(!menuButtonVisible);
     document.addEventListener('click', handleOutsideMenuButtonClick, true);
     return () => {
       document.removeEventListener('click', handleOutsideMenuButtonClick, true);
@@ -186,7 +184,7 @@ const HeaderMenuButton = ({ data }: Props) => {
         css={css`
           position: absolute;
           margin-left: -1px;
-          display: ${headerState.menuButtonVisible ? 'block' : 'none'};
+          display: ${menuButtonVisible ? 'block' : 'none'};
         `}
       >
         <HeaderMainComponent data={data} isVisible={false} />

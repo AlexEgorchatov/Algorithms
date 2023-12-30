@@ -4,7 +4,6 @@ import {
   pathFindingModulePreviewReducer,
   PathFindingModulePreviewState,
 } from './Home Page/Module Previews/PathFindingModulePreviewStateManagement';
-import { headerReducer, HeaderState } from './Home Page/HeaderStateManagement';
 import {
   sliderComponentReducer,
   SliderComponentState,
@@ -40,7 +39,6 @@ const rootReducer = combineReducers<AppState>({
   sortingModuleState: sortingModuleReducer,
   stringMatchingModuleState: stringMatchingModuleReducer,
   pathFindingModuleState: pathFindingModuleReducer,
-  headerState: headerReducer,
   aboutModalState: aboutModalReducer,
   sliderComponentState: sliderComponentReducer,
   windowState: windowReducer,
@@ -54,7 +52,6 @@ export interface AppState {
   readonly sortingModuleState: SortingModuleState;
   readonly stringMatchingModuleState: StringMatchingModuleState;
   readonly pathFindingModuleState: PathFindingModuleState;
-  readonly headerState: HeaderState;
   readonly aboutModalState: AboutModalState;
   readonly sliderComponentState: SliderComponentState;
   readonly windowState: WindowState;
