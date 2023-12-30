@@ -7,10 +7,12 @@ import { useDispatch } from 'react-redux';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../../Resources/Colors';
 import { CloseButton } from '../CloseButton';
 import { updateAboutModalVisibleStateAction } from '../../Store/Shared/AboutModalStateManagements';
+import { minAppWidth } from '../../Core/Helper';
 
 const animationDuration = '0.2s';
+const modalMaxHeight: number = 220;
 const sourceTopPosition = '-300px';
-const destinationTopPosition = '-200px';
+const destinationTopPosition = `${-(window.innerHeight / 2) * 0.2}px`;
 
 const openModalMove = keyframes`
   from {
@@ -69,6 +71,7 @@ export const AboutModal = () => {
         left: 0;
         width: 100%;
         height: 100%;
+        min-width: ${minAppWidth}px;
         background: rgba(0, 0, 0, 0.5);
         align-items: center;
         justify-content: center;
@@ -85,9 +88,11 @@ export const AboutModal = () => {
           position: relative;
           background: ${moduleBackground};
           padding: 10px;
+          min-height: 180px;
+          max-height: ${modalMaxHeight}px;
           border-radius: 8px;
           max-width: 500px;
-          width: 100%;
+          width: 90%;
           animation-name: ${aboutModalState.aboutModalVisible ? openModalMove : closeModalMove};
           animation-duration: ${animationDuration};
           top: ${destinationTopPosition};
