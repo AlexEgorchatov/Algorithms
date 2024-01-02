@@ -211,7 +211,10 @@ export class KnuthMorrisPrattPatternMatching extends StringMatchingAlgorithmBase
     let lps: number[] = new Array(pattern.length).fill(0);
 
     while (lpsIndex < pattern.length) {
-      if (pattern[lpsIndex].character === pattern[prefixSuffixLength].character) {
+      if (
+        pattern[lpsIndex].character.toLowerCase() ===
+        pattern[prefixSuffixLength].character.toLowerCase()
+      ) {
         lps[lpsIndex++] = ++prefixSuffixLength;
         continue;
       }
