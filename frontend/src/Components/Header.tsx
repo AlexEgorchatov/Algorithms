@@ -38,7 +38,7 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
         justify-content: flex-start;
         width: ${isVisible ? '' : '109px'};
         ${isVisible &&
-        `@media (max-width: ${minAppWidth}px) {
+        `@media (max-width: ${minAppWidth + 100}px) {
           display: none;
         }`};
       `}
@@ -160,7 +160,7 @@ const HeaderMenuButton = ({ data }: Props) => {
         display: inline-block;
         cursor: pointer;
         z-index: 999;
-        @media (min-width: ${minAppWidth + 1}px) {
+        @media (min-width: ${minAppWidth + 101}px) {
           display: none;
         }
       `}
