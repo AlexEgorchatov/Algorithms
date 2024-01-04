@@ -386,18 +386,10 @@ const SettingsComponent = () => {
         display: block;
       `}
     >
-      <div
-        css={css`
-          height: 20%;
-          min-height: 40px;
-        `}
-      >
-        Sorting
-      </div>
+      <div>Sorting</div>
       <div
         css={css`
           height: 80%;
-          min-height: 118px;
           display: flex;
           flex-direction: column;
           justify-content: space-evenly;
