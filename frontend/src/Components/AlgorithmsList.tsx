@@ -70,6 +70,8 @@ export const AlgorithmsList = ({ data }: AlgorithmListProps) => {
     <div
       css={css`
         display: flex;
+        min-height: 30px;
+        margin-left: 10px;
       `}
     >
       {data.map((dataItem, index) => (

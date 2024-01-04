@@ -207,7 +207,7 @@ export const Header = ({ data }: Props) => {
         padding: 0px 10px;
         background-color: ${mainBackground};
         z-index: 999;
-        min-height: 5%;
+        min-height: 36px;
       `}
     >
       <HeaderMainComponent data={data} isVisible={true} />

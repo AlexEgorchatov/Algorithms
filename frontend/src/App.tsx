@@ -32,7 +32,7 @@ function App() {
           <div
             css={css`
               background-color: ${pageBackground};
-              height: 90%;
+              height: calc(100% - 60px);
               width: 100%;
             `}
           >
@@ -47,6 +47,7 @@ function App() {
           <div
             css={css`
               margin: 0px 10px;
+              height: 23px;
               color: ${mainFontColor};
               text-align: end;
             `}
