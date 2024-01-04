@@ -443,7 +443,7 @@ const AnimationComponent = () => {
           flex-direction: column;
           justify-content: space-around;
           background-color: ${moduleBackground};
-          height: 94%;
+          height: calc(100% - 30px);
           min-height: 500px;
         `}
       >
