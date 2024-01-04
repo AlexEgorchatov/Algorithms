@@ -466,17 +466,9 @@ const AnimationComponent = () => {
         height: 74%;
       `}
     >
-      <div
-        css={css`
-          height: 6%;
-          min-height: 30px;
-          margin-left: 10px;
-        `}
-      >
-        <algorithmContext.Provider value={{ algorithmManager: stringMatchingAlgorithmManager }}>
-          <AlgorithmsList data={stringMatchingAlgorithmsData} />
-        </algorithmContext.Provider>
-      </div>
+      <algorithmContext.Provider value={{ algorithmManager: stringMatchingAlgorithmManager }}>
+        <AlgorithmsList data={stringMatchingAlgorithmsData} />
+      </algorithmContext.Provider>
 
       <div
         css={css`
