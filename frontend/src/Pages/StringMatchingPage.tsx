@@ -391,7 +391,6 @@ const SettingsComponent = () => {
     <div
       css={css`
         margin: 0px 10px;
-        height: 26%;
         min-height: 200px;
         display: block;
       `}

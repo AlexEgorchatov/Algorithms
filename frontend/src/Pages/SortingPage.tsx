@@ -381,7 +381,6 @@ const SettingsComponent = () => {
     <div
       css={css`
         margin: 0px 10px;
-        height: 26%;
         min-height: 200px;
         display: block;
       `}
@@ -430,7 +429,7 @@ const AnimationComponent = () => {
   return (
     <div
       css={css`
-        height: 74%;
+        height: calc(100% - 200px);
       `}
     >
       <algorithmContext.Provider value={{ algorithmManager: sortingAlgorithmManager }}>
@@ -444,22 +443,19 @@ const AnimationComponent = () => {
           justify-content: space-around;
           background-color: ${moduleBackground};
           height: calc(100% - 30px);
-          min-height: 500px;
         `}
       >
         <div
           css={css`
             display: flex;
-            height: 70%;
-            min-height: ${minAnimationContainerHeight}px;
+            height: calc(100% - 150px);
             justify-content: center;
-            align-items: flex-end;
+            overflow-y: auto;
           `}
         >
           <div
             css={css`
               display: flex;
-              align-items: flex-end;
               justify-content: space-between;
               width: ${sortingModuleState.sortingBars.length * sortingBarWidth}px;
             `}
@@ -508,6 +504,8 @@ export const SortingPage = () => {
   return (
     <div
       css={css`
+        display: flex;
+        flex-direction: column;
         color: ${mainFontColor};
         font-size: 30px;
         text-align: left;
