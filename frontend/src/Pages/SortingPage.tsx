@@ -346,7 +346,11 @@ const SortingBarComponent = ({
   return (
     <div
       css={css`
-        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        margin-top: auto;
+        height: 100%;
       `}
       id={barID?.toString()}
       ref={divRef}
@@ -356,8 +360,7 @@ const SortingBarComponent = ({
           display: ${isNaN(barHeight) ? 'none' : ''};
           background-color: white;
           width: 25px;
-          height: ${barHeight * 4}px;
-          position: relative;
+          height: calc((100% - 27px) / 100 * ${barHeight});
           background-color: ${getColor()};
         `}
       ></div>
@@ -442,6 +445,7 @@ const AnimationComponent = () => {
           flex-direction: column;
           justify-content: space-around;
           background-color: ${moduleBackground};
+          min-height: 300px;
           height: calc(100% - 30px);
         `}
       >
@@ -450,7 +454,6 @@ const AnimationComponent = () => {
             display: flex;
             height: calc(100% - 150px);
             justify-content: center;
-            overflow-y: auto;
           `}
         >
           <div
