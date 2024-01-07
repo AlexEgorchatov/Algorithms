@@ -85,6 +85,7 @@ export const NotFoundPage = () => {
         <div
           css={css`
             visibility: ${isSearchCompleted ? 'visible' : 'hidden'};
+            text-align: center;
           `}
         >
           Sorry, the requested page is not found
