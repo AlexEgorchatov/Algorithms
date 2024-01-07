@@ -13,7 +13,7 @@ import {
   updateStringMatchingPatternState,
   updateStringMatchingWarningMessageState,
 } from '../Store/String Matching Module/StringMatchingModuleStateManagement';
-import { algorithmContext, animationContext, minAnimationContainerHeight } from '../Core/Helper';
+import { algorithmContext, animationContext } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
 import { ResetButton } from '../Components/ResetButton';
@@ -24,6 +24,11 @@ import { AlgorithmsList } from '../Components/AlgorithmsList';
 import { IStringMatchingCharacterProps } from '../Core/Interfaces/IStringMatchingCharacterProps';
 import { WarningMessageComponent } from '../Components/WarningMessage';
 import { updateCanAnimationBeStartedStateAction } from '../Store/Shared/AnimationStateManagement';
+import {
+  algorithmsListComponentHeight,
+  animationEmptySpaceHeight,
+  settingsComponentHeight,
+} from '../Resources/Constants';
 
 let stringMatchingAlgorithmManager: StringMatchingAlgorithmsManager =
   new StringMatchingAlgorithmsManager(stringMatchingAlgorithmsData[0].algorithm);
@@ -385,28 +390,27 @@ const SettingsComponent = () => {
   const resetState = () => {
     dispatch(updateStringMatchingPatternState(renderedPattern));
     dispatch(updateStringMatchingInputState(renderedInput));
+    if (
+      stringMatchingModuleState.stringMatchingInput === renderedInput &&
+      stringMatchingAlgorithmManager.initialState.length > 0
+    )
+      dispatch(
+        updateStringMatchingAnimationInputState(stringMatchingAlgorithmManager.initialState),
+      );
   };
 
   return (
     <div
       css={css`
         margin: 0px 10px;
-        min-height: 200px;
+        min-height: ${settingsComponentHeight}px;
         display: block;
       `}
     >
-      <div
-        css={css`
-          height: 20%;
-          min-height: 40px;
-        `}
-      >
-        String Matching
-      </div>
+      String Matching
       <div
         css={css`
           height: 80%;
-          min-height: 118px;
           display: flex;
           flex-direction: column;
           justify-content: space-around;
@@ -417,37 +421,27 @@ const SettingsComponent = () => {
         <div
           css={css`
             display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
+            align-items: center;
+            justify-content: flex-start;
           `}
         >
           <div
             css={css`
               display: flex;
-              align-items: center;
-              justify-content: flex-start;
+              align-items: flex-end;
+              justify-content: space-between;
+              min-width: 200px;
             `}
           >
-            <div
-              css={css`
-                display: flex;
-                align-items: flex-end;
-                justify-content: space-between;
-                min-width: 200px;
-              `}
-            >
-              <animationContext.Provider
-                value={{ animationManager: stringMatchingAnimationManager }}
-              >
-                <ActionBar />
-              </animationContext.Provider>
-              <ResetButton resetFunction={resetState} />
-            </div>
-
-            <WarningMessageComponent
-              message={stringMatchingModuleState.stringMatchingWarningMessage}
-            />
+            <animationContext.Provider value={{ animationManager: stringMatchingAnimationManager }}>
+              <ActionBar />
+            </animationContext.Provider>
+            <ResetButton resetFunction={resetState} />
           </div>
+
+          <WarningMessageComponent
+            message={stringMatchingModuleState.stringMatchingWarningMessage}
+          />
         </div>
       </div>
     </div>
@@ -458,11 +452,12 @@ const AnimationComponent = () => {
   const stringMatchingModuleState = useSelector(
     (state: AppState) => state.stringMatchingModuleState,
   );
+  const patternRef = useRef<HTMLDivElement>(null);
 
   return (
     <div
       css={css`
-        height: 74%;
+        height: calc(100% - ${settingsComponentHeight}px);
       `}
     >
       <algorithmContext.Provider value={{ algorithmManager: stringMatchingAlgorithmManager }}>
@@ -475,16 +470,14 @@ const AnimationComponent = () => {
           flex-direction: column;
           justify-content: space-around;
           background-color: ${moduleBackground};
-          height: 94%;
-          min-height: 500px;
+          height: calc(100% - ${algorithmsListComponentHeight}px);
+          min-height: 300px;
         `}
       >
         <div
           css={css`
-            display: flex;
-            flex-direction: column;
-            height: 70%;
-            min-height: ${minAnimationContainerHeight}px;
+            display: block;
+            height: calc(100% - ${animationEmptySpaceHeight}px);
             padding: 0px 20px;
             color: white;
           `}
@@ -494,14 +487,15 @@ const AnimationComponent = () => {
               display: flex;
               flex-wrap: wrap;
               align-content: flex-start;
-              min-height: 120px;
               font-family: monospace;
+              margin-bottom: 20px;
             `}
+            ref={patternRef}
           >
             <span
               css={css`
                 font-weight: 700;
-                width: 148.5px;
+                width: 150px;
               `}
             >
               Pattern:
@@ -518,8 +512,9 @@ const AnimationComponent = () => {
             css={css`
               display: flex;
               flex-wrap: wrap;
-              max-height: 290px;
+              max-height: calc(100% - ${patternRef.current?.offsetHeight}px - 20px);
               font-family: monospace;
+              overflow-y: auto;
             `}
           >
             <span
@@ -539,17 +534,10 @@ const AnimationComponent = () => {
             ))}
           </div>
         </div>
-        <div
-          css={css`
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-end;
-          `}
-        >
-          <animationContext.Provider value={{ animationManager: stringMatchingAnimationManager }}>
-            <SliderComponent />
-          </animationContext.Provider>
-        </div>
+
+        <animationContext.Provider value={{ animationManager: stringMatchingAnimationManager }}>
+          <SliderComponent />
+        </animationContext.Provider>
       </div>
     </div>
   );

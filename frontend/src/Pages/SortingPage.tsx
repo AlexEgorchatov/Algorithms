@@ -22,13 +22,7 @@ import {
 } from '../Store/Sorting Module/SortingModuleStateManagement';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
-import {
-  algorithmContext,
-  algorithmIterationBaseTime,
-  animationContext,
-  minAnimationContainerHeight,
-  minAppWidth,
-} from '../Core/Helper';
+import { algorithmContext, animationContext } from '../Core/Helper';
 import { ResetButton } from '../Components/ResetButton';
 import { SortingAlgorithmsManager } from '../Core/Other/SortingAlgorithmsManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
@@ -37,6 +31,13 @@ import { AlgorithmsList } from '../Components/AlgorithmsList';
 import { ISortingBarProps } from '../Core/Interfaces/ISortingBarProps';
 import { updateCanAnimationBeStartedStateAction } from '../Store/Shared/AnimationStateManagement';
 import { WarningMessageComponent } from '../Components/WarningMessage';
+import {
+  algorithmIterationBaseTime,
+  algorithmsListComponentHeight,
+  animationEmptySpaceHeight,
+  minAppWidth,
+  settingsComponentHeight,
+} from '../Resources/Constants';
 
 let sortingAlgorithmManager: SortingAlgorithmsManager = new SortingAlgorithmsManager(
   sortingAlgorithmsData[0].algorithm,
@@ -384,11 +385,11 @@ const SettingsComponent = () => {
     <div
       css={css`
         margin: 0px 10px;
-        min-height: 200px;
+        min-height: ${settingsComponentHeight}px;
         display: block;
       `}
     >
-      <div>Sorting</div>
+      Sorting
       <div
         css={css`
           height: 80%;
@@ -432,7 +433,7 @@ const AnimationComponent = () => {
   return (
     <div
       css={css`
-        height: calc(100% - 200px);
+        height: calc(100% - ${settingsComponentHeight}px);
       `}
     >
       <algorithmContext.Provider value={{ algorithmManager: sortingAlgorithmManager }}>
@@ -445,14 +446,14 @@ const AnimationComponent = () => {
           flex-direction: column;
           justify-content: space-around;
           background-color: ${moduleBackground};
+          height: calc(100% - ${algorithmsListComponentHeight}px);
           min-height: 300px;
-          height: calc(100% - 30px);
         `}
       >
         <div
           css={css`
             display: flex;
-            height: calc(100% - 150px);
+            height: calc(100% - ${animationEmptySpaceHeight}px);
             justify-content: center;
           `}
         >
@@ -474,17 +475,10 @@ const AnimationComponent = () => {
             ))}
           </div>
         </div>
-        <div
-          css={css`
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-end;
-          `}
-        >
-          <animationContext.Provider value={{ animationManager: sortingAnimationManager }}>
-            <SliderComponent />
-          </animationContext.Provider>
-        </div>
+
+        <animationContext.Provider value={{ animationManager: sortingAnimationManager }}>
+          <SliderComponent />
+        </animationContext.Provider>
       </div>
     </div>
   );

@@ -2,12 +2,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
-import {
-  algorithmContext,
-  animationContext,
-  minAnimationContainerHeight,
-  minAppWidth,
-} from '../Core/Helper';
+import { algorithmContext, animationContext } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { ResetButton } from '../Components/ResetButton';
 import { pathFindingAlgorithmsData } from '../Core/Data/PathFindingData';
@@ -22,7 +17,10 @@ import { AlgorithmsList } from '../Components/AlgorithmsList';
 import { SliderComponent } from '../Components/Slider';
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
+import {
+  updateWindowHeightStateAction,
+  updateWindowWidthStateAction,
+} from '../Store/Shared/WindowStateManagement';
 import { AppState, store } from '../Store/Store';
 import { IPathFindingCellProps } from '../Core/Interfaces/IPathFindingCellProps';
 import {
@@ -40,6 +38,13 @@ import {
   PathFindingCellStateEnum,
 } from '../Resources/Enumerations';
 import { updateCanAnimationBeStartedStateAction } from '../Store/Shared/AnimationStateManagement';
+import {
+  headerFooterHeight,
+  minAppWidth,
+  settingsComponentHeight,
+  algorithmsListComponentHeight,
+  animationEmptySpaceHeight,
+} from '../Resources/Constants';
 
 interface CellActionItemProps {
   cellActionState: PathFindingCellActionStateEnum;
@@ -52,6 +57,7 @@ let pathFindingAnimationManager: AnimationManager = new AnimationManager(
   pathFindingAlgorithmManager,
 );
 let minAnimationComponentWidth: number = 0;
+let minAnimationComponentHeight: number = 0;
 let internalGrid: IPathFindingCellProps[][] = [];
 let movedCell: React.RefObject<HTMLDivElement>;
 let droppedCell: [number, number];
@@ -520,10 +526,19 @@ const SettingsComponent = () => {
   const pathFindingState = useSelector((state: AppState) => state.pathFindingModuleState);
   const dispatch = useDispatch();
 
-  let arrayLength = minAnimationContainerHeight / cellSize;
-  let rowLength = getCellsInRowCount(windowState.windowWidth);
-
   const resetGrid = () => {
+    minAnimationComponentWidth = windowState.windowWidth;
+    minAnimationComponentHeight = Math.max(
+      windowState.windowHeight -
+        headerFooterHeight -
+        settingsComponentHeight -
+        algorithmsListComponentHeight -
+        animationEmptySpaceHeight,
+      250,
+    );
+    let arrayLength = Math.floor(minAnimationComponentHeight / cellSize);
+    let rowLength = getCellsInRowCount(windowState.windowWidth);
+
     pathFindingAlgorithmManager.cellsRefs = new Array(arrayLength);
     let grid: IPathFindingCellProps[][] = new Array(arrayLength);
     rowLength = getCellsInRowCount(windowState.windowWidth);
@@ -559,7 +574,6 @@ const SettingsComponent = () => {
     for (let i = 3; i < grid.length - 3; i++) {
       grid[i][Math.round(rowLength / 2)].cellState = PathFindingCellStateEnum.Wall;
     }
-    minAnimationComponentWidth = windowState.windowWidth;
     dispatch(updatePathFindingGridState(grid));
     dispatch(updateCanAnimationBeStartedStateAction(true));
     pathFindingAlgorithmManager.isStateUpdated = true;
@@ -580,21 +594,13 @@ const SettingsComponent = () => {
     <div
       css={css`
         margin: 0px 10px;
-        min-height: 200px;
+        min-height: ${settingsComponentHeight}px;
         display: block;
       `}
     >
+      Path Finding
       <div
         css={css`
-          height: 20%;
-          min-height: 40px;
-        `}
-      >
-        Path Finding
-      </div>
-      <div
-        css={css`
-          height: 80%;
           min-height: 118px;
           display: flex;
           flex-direction: column;
@@ -639,7 +645,7 @@ const AnimationComponent = () => {
   return (
     <div
       css={css`
-        height: 74%;
+        height: calc(100% - ${settingsComponentHeight}px);
       `}
     >
       <algorithmContext.Provider value={{ algorithmManager: pathFindingAlgorithmManager }}>
@@ -652,16 +658,15 @@ const AnimationComponent = () => {
           flex-direction: column;
           justify-content: space-around;
           background-color: ${moduleBackground};
-          height: 94%;
-          min-height: 500px;
+          height: calc(100% - ${algorithmsListComponentHeight}px);
           min-width: ${minAnimationComponentWidth}px;
+          min-height: calc(${minAnimationComponentHeight}px + ${animationEmptySpaceHeight}px);
         `}
       >
         <div
           css={css`
             display: flex;
-            height: 70%;
-            min-height: ${minAnimationContainerHeight}px;
+            height: calc(100% - ${animationEmptySpaceHeight}px);
             justify-content: center;
             align-items: flex-end;
           `}
@@ -674,10 +679,10 @@ const AnimationComponent = () => {
                 `}
                 key={rowIndex}
               >
-                {row.map((cellState, columnIndex) => (
+                {row.map((cell, columnIndex) => (
                   <PathFindingCellComponent
                     key={columnIndex}
-                    cellState={cellState.cellState}
+                    cellState={cell.cellState}
                     rowIndex={rowIndex}
                     columnIndex={columnIndex}
                     distance={0}
@@ -687,17 +692,10 @@ const AnimationComponent = () => {
             ))}
           </div>
         </div>
-        <div
-          css={css`
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-end;
-          `}
-        >
-          <animationContext.Provider value={{ animationManager: pathFindingAnimationManager }}>
-            <SliderComponent />
-          </animationContext.Provider>
-        </div>
+
+        <animationContext.Provider value={{ animationManager: pathFindingAnimationManager }}>
+          <SliderComponent />
+        </animationContext.Provider>
       </div>
     </div>
   );
@@ -709,6 +707,7 @@ export const PathFindingPage = () => {
   useEffect(() => {
     const handleWindowResize = () => {
       dispatch(updateWindowWidthStateAction(window.innerWidth));
+      dispatch(updateWindowHeightStateAction(window.innerHeight));
     };
 
     window.addEventListener('resize', handleWindowResize);
