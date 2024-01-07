@@ -5,7 +5,6 @@ import { Provider } from 'react-redux';
 import { mainBackground, mainFontColor, pageBackground } from './Resources/Colors';
 import { Header } from './Components/Header';
 import { modules } from './Core/Data/ModuleData';
-import { minAppWidth } from './Core/Helper';
 import { store } from './Store/Store';
 import { HomePage } from './Pages/HomePage';
 import { SortingPage } from './Pages/SortingPage';
@@ -13,6 +12,7 @@ import { StringMatchingPage } from './Pages/StringMatchingPage';
 import { PathFindingPage } from './Pages/PathFindingPage';
 import { NotFoundPage } from './Pages/NotFoundPage';
 import { AboutModal } from './Components/Modals/AboutModal';
+import { headerFooterHeight, minAppWidth } from './Resources/Constants';
 
 function App() {
   return (
@@ -32,7 +32,7 @@ function App() {
           <div
             css={css`
               background-color: ${pageBackground};
-              height: calc(100% - 62px);
+              height: calc(100% - ${headerFooterHeight}px);
               width: 100%;
             `}
           >

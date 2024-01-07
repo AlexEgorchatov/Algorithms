@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom';
 import { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
-import { minAppWidth } from '../Core/Helper';
 import { updateAboutModalVisibleStateAction } from '../Store/Shared/AboutModalStateManagements';
+import { minAppWidth } from '../Resources/Constants';
 
 interface Props {
   data: ModuleData[];

@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../../Resources/Colors';
 import { CloseButton } from '../CloseButton';
 import { updateAboutModalVisibleStateAction } from '../../Store/Shared/AboutModalStateManagements';
-import { minAppWidth } from '../../Core/Helper';
+import { minAppWidth } from '../../Resources/Constants';
 
 const animationDuration = '0.2s';
 const modalMaxHeight: number = 220;

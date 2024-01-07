@@ -2,10 +2,7 @@ import { createContext } from 'react';
 import { AnimationManager, isAnimationCompleted } from './Other/AnimationManager';
 import { store } from '../Store/Store';
 import { AlgorithmsManagerBase } from './Abstractions/AlgorithmManagerBase';
-
-export const algorithmIterationBaseTime: number = 400;
-export const minAppWidth: number = 400;
-export const minAnimationContainerHeight: number = 425;
+import { algorithmIterationBaseTime } from '../Resources/Constants';
 
 interface animationProps {
   animationManager: AnimationManager;

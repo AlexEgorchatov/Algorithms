@@ -7,6 +7,7 @@ import { AppState } from '../Store/Store';
 import { headerItemHovered } from '../Resources/Colors';
 import { algorithmContext } from '../Core/Helper';
 import { IAlgorithmData } from '../Core/Interfaces/IAlgorithmData';
+import { algorithmsListComponentHeight } from '../Resources/Constants';
 
 interface AlgorithmListProps {
   data: IAlgorithmData[];
@@ -70,7 +71,7 @@ export const AlgorithmsList = ({ data }: AlgorithmListProps) => {
     <div
       css={css`
         display: flex;
-        min-height: 30px;
+        min-height: ${algorithmsListComponentHeight}px;
         margin-left: 10px;
       `}
     >

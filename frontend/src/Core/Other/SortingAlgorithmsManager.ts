@@ -1,3 +1,4 @@
+import { algorithmIterationBaseTime } from '../../Resources/Constants';
 import { SortingBarStateEnum } from '../../Resources/Enumerations';
 import { updateIsAnimationFinalizingStateAction } from '../../Store/Shared/AnimationStateManagement';
 import {
@@ -7,7 +8,6 @@ import {
 import { store } from '../../Store/Store';
 import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
-import { algorithmIterationBaseTime } from '../Helper';
 import { ISortingBarProps } from '../Interfaces/ISortingBarProps';
 
 export class SortingAlgorithmsManager extends AlgorithmsManagerBase {
