@@ -27,7 +27,6 @@ const HeaderStyle = css`
 `;
 
 const HeaderMainComponent = ({ data, isVisible }: Props) => {
-  const aboutModalState = useSelector((appState: AppState) => appState.aboutModalState);
   const dispatch = useDispatch();
 
   return (
@@ -116,12 +115,7 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
           ))}
         </div>
       </div>
-      <div
-        css={HeaderStyle}
-        onClick={() =>
-          dispatch(updateAboutModalVisibleStateAction(!aboutModalState.aboutModalVisible))
-        }
-      >
+      <div css={HeaderStyle} onClick={() => dispatch(updateAboutModalVisibleStateAction(true))}>
         About
       </div>
     </div>
@@ -135,8 +129,8 @@ const HeaderMenuButton = ({ data }: Props) => {
   const handleOutsideMenuButtonClick = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as Node)) {
       setMenuButtonVisible(false);
+      document.removeEventListener('click', handleOutsideMenuButtonClick, true);
     }
-    document.removeEventListener('click', handleOutsideMenuButtonClick, true);
   };
   const handleMenuButtonClick = () => {
     setMenuButtonVisible(!menuButtonVisible);
@@ -158,7 +152,6 @@ const HeaderMenuButton = ({ data }: Props) => {
       css={css`
         position: relative;
         display: inline-block;
-        cursor: pointer;
         z-index: 999;
         @media (min-width: ${minAppWidth + 101}px) {
           display: none;
@@ -168,6 +161,7 @@ const HeaderMenuButton = ({ data }: Props) => {
     >
       <div
         css={css`
+          cursor: pointer;
           :hover {
             & > div {
               background-color: ${headerItemHovered};
