@@ -293,7 +293,7 @@ const CellActions = () => {
       css={css`
         display: flex;
         justify-content: space-between;
-        width: 97px;
+        width: 112px;
       `}
     >
       <CellActionItem cellActionState={PathFindingCellActionStateEnum.Source} />

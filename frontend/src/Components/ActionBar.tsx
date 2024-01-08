@@ -239,7 +239,7 @@ export const ActionBar = () => {
       css={css`
         display: flex;
         justify-content: space-between;
-        width: 72px;
+        width: 82px;
       `}
     >
       {animationState.isAnimationRunning ? <PauseButton /> : <PlayButton />}
