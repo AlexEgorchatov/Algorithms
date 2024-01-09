@@ -2,7 +2,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
-import { algorithmContext, animationContext } from '../Core/Helper';
+import { algorithmContext, animationContext, isTouchDevice } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { ResetButton } from '../Components/ResetButton';
 import { pathFindingAlgorithmsData } from '../Core/Data/PathFindingData';
@@ -64,7 +64,6 @@ let droppedCell: [number, number];
 let source: IPathFindingCellProps;
 let destination: IPathFindingCellProps;
 
-const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 const cellSize: number = 25;
 const getCellsInRowCount = (windowWidth: number): number => {
   return Math.floor((Math.max(windowWidth, minAppWidth) - cellSize) / cellSize);

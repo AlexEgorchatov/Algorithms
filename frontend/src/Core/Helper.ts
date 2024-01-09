@@ -29,6 +29,8 @@ export const pauseForStepIteration = async (): Promise<void> => {
   );
 };
 
+export const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
 /**
  * Checks if animation is continued after pause.
  * @returns If animation was stopped (hasAnimationStarted == false), was skipped (isAnimationCompleted == true) or was clicked to be completed return false.
