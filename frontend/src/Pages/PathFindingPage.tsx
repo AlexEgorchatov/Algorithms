@@ -64,6 +64,7 @@ let droppedCell: [number, number];
 let source: IPathFindingCellProps;
 let destination: IPathFindingCellProps;
 
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 const cellSize: number = 25;
 const getCellsInRowCount = (windowWidth: number): number => {
   return Math.floor((Math.max(windowWidth, minAppWidth) - cellSize) / cellSize);
@@ -368,15 +369,15 @@ const PathFindingCellComponent = ({
   }, [pathFindingAlgorithmManager.cellsRefs]);
 
   const getCursor = (): string => {
-    if (animationState.hasAnimationStarted) return 'cursor';
-    if (pathFindingState.pathFindingSelectedCellAction === cellState) return 'cursor';
+    if (animationState.hasAnimationStarted) return 'default';
+    if (pathFindingState.pathFindingSelectedCellAction === cellState) return 'default';
     if (pathFindingState.pathFindingSelectedCellAction !== PathFindingCellActionStateEnum.None)
       return 'pointer';
     if (pathFindingState.pathFindingSelectedCellDragging !== PathFindingCellDraggingStateEnum.None)
       return 'pointer';
     if (isInteractableCell(cellState as PathFindingCellStateEnum)) return 'pointer';
 
-    return 'cursor';
+    return 'default';
   };
   const getHoverStyle = (): string => {
     let style: string = '';
@@ -508,14 +509,18 @@ const PathFindingCellComponent = ({
         outline: 0.5px solid black;
         border: 0.5px solid black;
         background-color: ${getCellColor(cellState)};
-        cursor: ${getCursor()};
-        :hover {
-          ${getHoverStyle()}
-        }
+        user-select: none;
+        ${!isTouchDevice &&
+        `
+          cursor: ${getCursor()};
+          :hover {
+            ${getHoverStyle()}
+          }
+        `}
       `}
       ref={cellRef}
-      onMouseOver={handleMouseOver}
       onMouseDown={initiateGridStateUpdate}
+      onMouseOver={handleMouseOver}
       onMouseUp={setNewGridState}
     ></div>
   );
