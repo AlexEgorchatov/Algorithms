@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
+import { isTouchDevice } from '../Core/Helper';
 
 interface Props {
   resetFunction: () => void;
@@ -31,17 +32,22 @@ export const ResetButton = ({ resetFunction: refreshFunction }: Props) => {
         border: 2px solid;
         border-radius: 4px;
         color: white;
-        cursor: ${!animationState.hasAnimationStarted ? 'pointer' : 'default'};
         opacity: ${!animationState.hasAnimationStarted ? '1' : '0.5'};
-        :hover {
-          ${!animationState.hasAnimationStarted &&
-          `
-              color: ${headerItemHovered};
-              & > div {
+        ${!isTouchDevice &&
+        `
+          cursor: ${!animationState.hasAnimationStarted ? 'pointer' : 'default'};
+          :hover {
+            ${
+              !animationState.hasAnimationStarted &&
+              `
                 color: ${headerItemHovered};
-              }
-            `}
-        }
+                & > div {
+                  color: ${headerItemHovered};
+                }
+              `
+            }
+          }
+        `}
       `}
       onClick={handleRefreshButtonClick}
     >

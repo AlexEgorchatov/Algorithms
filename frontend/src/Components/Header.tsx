@@ -4,10 +4,10 @@ import { headerItemHovered, mainBackground, mainFontColor } from '../Resources/C
 import { ModuleData } from '../Core/Data/ModuleData';
 import { Link } from 'react-router-dom';
 import { useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppState } from '../Store/Store';
+import { useDispatch } from 'react-redux';
 import { updateAboutModalVisibleStateAction } from '../Store/Shared/AboutModalStateManagements';
 import { minAppWidth } from '../Resources/Constants';
+import { isTouchDevice } from '../Core/Helper';
 
 interface Props {
   data: ModuleData[];
@@ -20,10 +20,13 @@ const HeaderStyle = css`
   color: ${mainFontColor};
   vertical-align: super;
   background-color: transparent;
-  cursor: pointer;
-  :hover {
-    color: ${headerItemHovered};
-  }
+  ${!isTouchDevice &&
+  `
+    cursor: pointer;
+    :hover {
+      color: ${headerItemHovered};
+    }
+  `}
 `;
 
 const HeaderMainComponent = ({ data, isVisible }: Props) => {
@@ -67,7 +70,6 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
             color: ${mainFontColor};
             font-size: 28px;
             border: none;
-            cursor: pointer;
             font-family:
               -apple-system,
               BlinkMacSystemFont,
@@ -80,6 +82,10 @@ const HeaderMainComponent = ({ data, isVisible }: Props) => {
               Droid Sans,
               Helvetica Neue,
               sans-serif;
+            ${!isTouchDevice &&
+            `
+              cursor: pointer;
+            `}
           `}
         >
           Modules
@@ -161,12 +167,15 @@ const HeaderMenuButton = ({ data }: Props) => {
     >
       <div
         css={css`
-          cursor: pointer;
-          :hover {
-            & > div {
-              background-color: ${headerItemHovered};
+          ${!isTouchDevice &&
+          `
+            cursor: pointer;
+            :hover {
+              & > div {
+                background-color: ${headerItemHovered};
+              }
             }
-          }
+          `}
         `}
         onClick={handleMenuButtonClick}
       >

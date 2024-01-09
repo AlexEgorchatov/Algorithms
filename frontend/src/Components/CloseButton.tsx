@@ -1,6 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
+import { isTouchDevice } from '../Core/Helper';
 
 export const CloseButton = () => {
   return (
@@ -14,10 +15,13 @@ export const CloseButton = () => {
         height: 22px;
         border: 2px solid transparent;
         border-radius: 40px;
-        cursor: pointer;
-        :hover {
-          color: ${headerItemHovered};
-        }
+        ${!isTouchDevice &&
+        `
+          cursor: pointer;
+          :hover {
+            color: ${headerItemHovered};
+          }
+        `};
         ::after,
         ::before {
           content: '';

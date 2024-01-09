@@ -13,7 +13,7 @@ import {
   updateStringMatchingPatternState,
   updateStringMatchingWarningMessageState,
 } from '../Store/String Matching Module/StringMatchingModuleStateManagement';
-import { algorithmContext, animationContext } from '../Core/Helper';
+import { algorithmContext, animationContext, isTouchDevice } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
 import { ResetButton } from '../Components/ResetButton';
@@ -180,7 +180,10 @@ const StringMatchingPatternComponent = () => {
           <div
             css={css`
               margin-left: 5px;
-              cursor: pointer;
+              ${!isTouchDevice &&
+              `
+                cursor: pointer;
+              `}
               text-decoration: underline;
             `}
             onClick={() =>
@@ -323,7 +326,10 @@ const StringMatchingInputComponent = () => {
           <div
             css={css`
               margin-left: 5px;
-              cursor: pointer;
+              ${!isTouchDevice &&
+              `
+                cursor: pointer;
+              `}
               text-decoration: underline;
             `}
             onClick={() =>

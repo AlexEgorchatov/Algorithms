@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { AlgorithmBase } from '../Core/Abstractions/AlgorithmBase';
 import { AppState } from '../Store/Store';
 import { headerItemHovered } from '../Resources/Colors';
-import { algorithmContext } from '../Core/Helper';
+import { algorithmContext, isTouchDevice } from '../Core/Helper';
 import { IAlgorithmData } from '../Core/Interfaces/IAlgorithmData';
 import { algorithmsListComponentHeight } from '../Resources/Constants';
 
@@ -40,24 +40,31 @@ const AlgorithmComponent = ({ algorithm }: AlgorithmProps) => {
         font-size: 20px;
         color: ${algorithm.title === algorithmManager.selectedAlgorithm.title ? '' : 'white'};
         margin-right: 10px;
-        cursor: ${animationState.hasAnimationStarted &&
-        algorithm.title !== algorithmManager.selectedAlgorithm.title
-          ? 'default'
-          : 'pointer'};
         opacity: ${animationState.hasAnimationStarted &&
         algorithm.title !== algorithmManager.selectedAlgorithm.title
           ? '0.5'
           : '1'};
-        :hover {
-          ${!animationState.hasAnimationStarted &&
-          `
-            color: ${
-              algorithm.title !== algorithmManager.selectedAlgorithm.title
-                ? `${headerItemHovered}`
-                : ''
-            };
-          `}
-        }
+        ${!isTouchDevice &&
+        `
+          cursor: ${
+            animationState.hasAnimationStarted &&
+            algorithm.title !== algorithmManager.selectedAlgorithm.title
+              ? 'default'
+              : 'pointer'
+          };
+          :hover {
+            ${
+              !animationState.hasAnimationStarted &&
+              `
+                color: ${
+                  algorithm.title !== algorithmManager.selectedAlgorithm.title
+                    ? `${headerItemHovered}`
+                    : ''
+                };
+              `
+            }
+          }
+        `}
       `}
       onClick={handleClick}
     >

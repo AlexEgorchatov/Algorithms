@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { AppState } from '../Store/Store';
 import { updateSliderValueStateAction } from '../Store/Shared/SliderComponentStateManagement';
-import { animationContext } from '../Core/Helper';
+import { animationContext, isTouchDevice } from '../Core/Helper';
 import { updateIsAnimationRunningStateAction } from '../Store/Shared/AnimationStateManagement';
 
 const PlayButton = () => {
@@ -21,19 +21,27 @@ const PlayButton = () => {
         transform: scale(var(--ggs, 1));
         width: 12px;
         height: 16px;
-        cursor: ${animationState.canAnimationBeStarted && !animationState.isAnimationFinalizing
-          ? 'pointer'
-          : 'default'};
         opacity: ${animationState.canAnimationBeStarted && !animationState.isAnimationFinalizing
           ? '1'
           : '0.5'};
-        :hover {
-          ${animationState.canAnimationBeStarted &&
-          !animationState.isAnimationFinalizing &&
-          `
-            color: black;
-          `}
-        }
+        ${!isTouchDevice &&
+        `
+          cursor: ${
+            animationState.canAnimationBeStarted && !animationState.isAnimationFinalizing
+              ? 'pointer'
+              : 'default'
+          };
+
+          :hover {
+            ${
+              animationState.canAnimationBeStarted &&
+              !animationState.isAnimationFinalizing &&
+              `
+              color: black;
+              `
+            }
+          }
+        `}
       `}
       onClick={() => animationManager.startAnimation()}
     >
@@ -75,11 +83,14 @@ const PauseButton = () => {
         border-left: 4px solid;
         border-right: 4px solid;
         color: white;
-        cursor: ${!animationState.isAnimationFinalizing ? 'pointer' : 'default'};
         opacity: ${!animationState.isAnimationFinalizing ? '1' : '0.5'};
-        :hover {
-          ${!animationState.isAnimationFinalizing && 'color: black;'}
-        }
+        ${!isTouchDevice &&
+        `
+          cursor: ${!animationState.isAnimationFinalizing ? 'pointer' : 'default'};
+          :hover {
+            ${!animationState.isAnimationFinalizing && 'color: black;'}
+          }
+        `}
       `}
       onClick={handlePauseButtonClick}
     ></div>
@@ -100,19 +111,27 @@ const StopButton = () => {
         width: 16px;
         height: 16px;
         background: white;
-        cursor: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing
-          ? 'pointer'
-          : 'default'};
         opacity: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing
           ? '1'
           : '0.5'};
-        :hover {
-          ${animationState.hasAnimationStarted &&
-          !animationState.isAnimationFinalizing &&
-          `
-            background: black;
-          `}
-        }
+        ${!isTouchDevice &&
+        `
+          cursor: ${
+            animationState.hasAnimationStarted && !animationState.isAnimationFinalizing
+              ? 'pointer'
+              : 'default'
+          };
+
+          :hover {
+            ${
+              animationState.hasAnimationStarted &&
+              !animationState.isAnimationFinalizing &&
+              `
+              background: black;
+              `
+            }
+          }
+        `}
       `}
       onClick={() => animationManager.stopAnimation()}
     ></div>
@@ -130,21 +149,28 @@ const CompleteButton = () => {
         position: relative;
         display: flex;
         color: white;
-        cursor: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing
-          ? 'pointer'
-          : 'default'};
         opacity: ${animationState.hasAnimationStarted && !animationState.isAnimationFinalizing
           ? '1'
           : '0.5'};
-        :hover {
-          ${animationState.hasAnimationStarted &&
-          !animationState.isAnimationFinalizing &&
-          `
-            & > div {
-              color: black;
+        ${!isTouchDevice &&
+        `
+          cursor: ${
+            animationState.hasAnimationStarted && !animationState.isAnimationFinalizing
+              ? 'pointer'
+              : 'default'
+          };
+          :hover {
+            ${
+              animationState.hasAnimationStarted &&
+              !animationState.isAnimationFinalizing &&
+              `
+                & > div {
+                  color: black;
+                }
+              `
             }
-          `}
-        }
+          }
+        `}
       `}
       onClick={() => animationManager.completeAnimation()}
     >
@@ -204,7 +230,10 @@ const Slider = () => {
           appearance: none;
           -webkit-appearance: none;
           height: 12px;
-          cursor: pointer;
+          ${!isTouchDevice &&
+          `
+            cursor: pointer;
+          `}
           ::-webkit-slider-thumb {
             appearance: none;
             -webkit-appearance: none;
@@ -226,7 +255,10 @@ const Slider = () => {
       />
       <div
         css={css`
-          cursor: default;
+          ${!isTouchDevice &&
+          `
+            cursor: default;
+          `}
           margin-bottom: 1px;
         `}
       >

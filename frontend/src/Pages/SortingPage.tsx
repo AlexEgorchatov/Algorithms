@@ -22,7 +22,7 @@ import {
 } from '../Store/Sorting Module/SortingModuleStateManagement';
 import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
-import { algorithmContext, animationContext } from '../Core/Helper';
+import { algorithmContext, animationContext, isTouchDevice } from '../Core/Helper';
 import { ResetButton } from '../Components/ResetButton';
 import { SortingAlgorithmsManager } from '../Core/Other/SortingAlgorithmsManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
@@ -183,7 +183,10 @@ const SortingInputComponent = () => {
           <div
             css={css`
               margin-left: 5px;
-              cursor: pointer;
+              ${!isTouchDevice &&
+              `
+                cursor: pointer;
+              `}
               text-decoration: underline;
             `}
             onClick={fixInput}

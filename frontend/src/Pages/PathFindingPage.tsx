@@ -259,18 +259,23 @@ const CellActionItem = ({ cellActionState }: CellActionItemProps) => {
         background-color: ${pathFindingState.pathFindingSelectedCellAction === cellActionState
           ? '#71a1f5'
           : 'transparent'};
-        cursor: ${isCellActionItemEnabled() ? 'pointer' : 'default'};
         opacity: ${isCellActionItemEnabled() ? '1' : '0.5'};
-        :hover {
-          ${isCellActionItemEnabled() &&
-          `
-            background-color: ${
-              pathFindingState.pathFindingSelectedCellAction === cellActionState
-                ? '#71a1f5'
-                : headerItemHovered
-            };
-          `}
-        }
+        ${!isTouchDevice &&
+        `
+          cursor: ${isCellActionItemEnabled() ? 'pointer' : 'default'};
+          :hover {
+            ${
+              isCellActionItemEnabled() &&
+              `
+                background-color: ${
+                  pathFindingState.pathFindingSelectedCellAction === cellActionState
+                    ? '#71a1f5'
+                    : headerItemHovered
+                };
+              `
+            }
+          }
+        `}
         ::before {
           content: '';
           box-sizing: border-box;
