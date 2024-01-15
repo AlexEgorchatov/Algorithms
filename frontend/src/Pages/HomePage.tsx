@@ -101,7 +101,7 @@ export const HomePage = () => {
           text-align: center;
         `}
       >
-        Welcome to the Algorithms project!
+        Welcome to the Algorithms!
       </div>
       <ModuleList data={modules} />
     </div>

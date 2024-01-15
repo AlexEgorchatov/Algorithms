@@ -140,9 +140,9 @@ export const AboutModal = () => {
               font-size: 18px;
             `}
           >
-            This is a training project to visualize various algorithms that pursues the goal of
-            studying ReactJS library. It is implemented using TypeScript programming language and
-            Redux state management system.
+            This is a training project to visualize various algorithms. It is implemented using
+            TypeScript programming language and Redux state management system. For feedback:
+            alex.exorchatov@gmail.com
           </div>
           <a
             css={css`

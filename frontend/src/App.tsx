@@ -13,6 +13,7 @@ import { PathFindingPage } from './Pages/PathFindingPage';
 import { NotFoundPage } from './Pages/NotFoundPage';
 import { AboutModal } from './Components/Modals/AboutModal';
 import { headerFooterHeight, minAppWidth } from './Resources/Constants';
+import packageInfo from '../package.json';
 
 function App() {
   return (
@@ -52,7 +53,7 @@ function App() {
               text-align: end;
             `}
           >
-            Made by Alex Egorchatov, 2022
+            v {packageInfo.version}
           </div>
         </div>
       </Provider>
