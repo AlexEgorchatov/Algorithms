@@ -156,7 +156,8 @@ export const AboutModal = () => {
               }
             `}
             href="https://github.com/AlexEgorchatov/Algorithms/tree/master"
-            target="blank"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <img
               css={css`
