@@ -1,8 +1,8 @@
 import { SortingAlgorithmBase } from '../Abstractions/AlgorithmBase';
-import { updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingModuleStateManagement';
+import { updateSortingBarsStateAction } from '../../Redux/Sorting Module/SortingModuleStateManagement';
 import { isAnimationTerminated, pauseForStepIteration } from '../Helper';
 import { SortingBarStateEnum } from '../../Resources/Enumerations';
-import { store } from '../../Store/Store';
+import { store } from '../../Redux/Store';
 
 export class BubbleSort extends SortingAlgorithmBase {
   title: string = 'Bubble Sort';

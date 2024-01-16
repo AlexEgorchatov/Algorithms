@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { mainBackground, mainFontColor, pageBackground } from './Resources/Colors';
 import { Header } from './Components/Header';
 import { modules } from './Core/Data/ModuleData';
-import { store } from './Store/Store';
+import { store } from './Redux/Store';
 import { HomePage } from './Pages/HomePage';
 import { SortingPage } from './Pages/SortingPage';
 import { StringMatchingPage } from './Pages/StringMatchingPage';

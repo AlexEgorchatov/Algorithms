@@ -19,9 +19,9 @@ import {
 import React, { useEffect } from 'react';
 import { ModuleEnum } from '../Resources/Enumerations';
 import { useDispatch } from 'react-redux';
-import { updateSortingModulePreviewHeightsStateAction } from '../Store/Home Page/Module Previews/SortingModulePreviewStateManagement';
-import { updateStringMatchingModulePreviewCharactersState } from '../Store/Home Page/Module Previews/StringMatchingModulePreviewStateManagement';
-import { updatePathFindingModulePreviewGridStateAction } from '../Store/Home Page/Module Previews/PathFindingModulePreviewStateManagement';
+import { updateSortingModulePreviewHeightsStateAction } from '../Redux/Home Page/SortingModulePreviewStateManagement';
+import { updateStringMatchingModulePreviewCharactersState } from '../Redux/Home Page/StringMatchingModulePreviewStateManagement';
+import { updatePathFindingModulePreviewGridStateAction } from '../Redux/Home Page/PathFindingModulePreviewStateManagement';
 
 interface ModuleProps {
   data: ModuleData;

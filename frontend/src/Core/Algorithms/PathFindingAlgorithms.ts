@@ -2,8 +2,8 @@ import { PathFindingCellStateEnum } from '../../Resources/Enumerations';
 import {
   updatePathFindingDestinationState,
   updatePathFindingGridState,
-} from '../../Store/Path Finding Module/PathFindingModuleStateManagement';
-import { store } from '../../Store/Store';
+} from '../../Redux/Path Finding Module/PathFindingModuleStateManagement';
+import { store } from '../../Redux/Store';
 import { PathFindingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { isAnimationTerminated, pauseForStepIteration } from '../Helper';
 import { IPathFindingCellProps } from '../Interfaces/IPathFindingCellProps';

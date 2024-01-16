@@ -1,4 +1,4 @@
-import { PathFindingCellStateEnum } from '../../../Resources/Enumerations';
+import { PathFindingCellStateEnum } from '../../Resources/Enumerations';
 
 //#region State
 export interface PathFindingModulePreviewState {

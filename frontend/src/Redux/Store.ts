@@ -3,7 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import {
   pathFindingModulePreviewReducer,
   PathFindingModulePreviewState,
-} from './Home Page/Module Previews/PathFindingModulePreviewStateManagement';
+} from './Home Page/PathFindingModulePreviewStateManagement';
 import {
   sliderComponentReducer,
   SliderComponentState,
@@ -21,11 +21,11 @@ import { animationReducer, AnimationState } from './Shared/AnimationStateManagem
 import {
   SortingModulePreviewState,
   sortingModulePreviewReducer,
-} from './Home Page/Module Previews/SortingModulePreviewStateManagement';
+} from './Home Page/SortingModulePreviewStateManagement';
 import {
   stringMatchingModulePreviewReducer,
   StringMatchingModulePreviewState,
-} from './Home Page/Module Previews/StringMatchingModulePreviewStateManagement';
+} from './Home Page/StringMatchingModulePreviewStateManagement';
 import {
   pathFindingModuleReducer,
   PathFindingModuleState,

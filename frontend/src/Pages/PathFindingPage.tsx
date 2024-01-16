@@ -20,8 +20,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   updateWindowHeightStateAction,
   updateWindowWidthStateAction,
-} from '../Store/Shared/WindowStateManagement';
-import { AppState, store } from '../Store/Store';
+} from '../Redux/Shared/WindowStateManagement';
+import { AppState, store } from '../Redux/Store';
 import { IPathFindingCellProps } from '../Core/Interfaces/IPathFindingCellProps';
 import {
   updatePathFindingSelectedCellActionState,
@@ -30,14 +30,14 @@ import {
   updatePathFindingDestinationState,
   updatePathFindingSelectedCellDraggingState,
   updatePathFindingWarningMessageState,
-} from '../Store/Path Finding Module/PathFindingModuleStateManagement';
+} from '../Redux/Path Finding Module/PathFindingModuleStateManagement';
 import { WarningMessageComponent } from '../Components/WarningMessage';
 import {
   PathFindingCellActionStateEnum,
   PathFindingCellDraggingStateEnum,
   PathFindingCellStateEnum,
 } from '../Resources/Enumerations';
-import { updateCanAnimationBeStartedStateAction } from '../Store/Shared/AnimationStateManagement';
+import { updateCanAnimationBeStartedStateAction } from '../Redux/Shared/AnimationStateManagement';
 import {
   headerFooterHeight,
   minAppWidth,

@@ -8,9 +8,9 @@ import {
   updatePathFindingDestinationState,
   updatePathFindingGridState,
   updateSelectedPathFindingAlgorithmState,
-} from '../../Store/Path Finding Module/PathFindingModuleStateManagement';
-import { updateIsAnimationFinalizingStateAction } from '../../Store/Shared/AnimationStateManagement';
-import { store } from '../../Store/Store';
+} from '../../Redux/Path Finding Module/PathFindingModuleStateManagement';
+import { updateIsAnimationFinalizingStateAction } from '../../Redux/Shared/AnimationStateManagement';
+import { store } from '../../Redux/Store';
 import { PathFindingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 import { IPathFindingCellProps } from '../Interfaces/IPathFindingCellProps';

@@ -13,14 +13,14 @@ import {
 import { SliderComponent } from '../Components/Slider';
 import { sortingAlgorithmsData } from '../Core/Data/SortingData';
 import { useSelector, useDispatch } from 'react-redux';
-import { AppState } from '../Store/Store';
+import { AppState } from '../Redux/Store';
 import {
   updateSortingBarsStateAction,
   updateSortingInputStateAction,
   updatingIsInputNanState,
   updateIsInputOverMaxState,
-} from '../Store/Sorting Module/SortingModuleStateManagement';
-import { updateWindowWidthStateAction } from '../Store/Shared/WindowStateManagement';
+} from '../Redux/Sorting Module/SortingModuleStateManagement';
+import { updateWindowWidthStateAction } from '../Redux/Shared/WindowStateManagement';
 import { ActionBar } from '../Components/ActionBar';
 import { algorithmContext, animationContext, isTouchDevice } from '../Core/Helper';
 import { ResetButton } from '../Components/ResetButton';
@@ -29,7 +29,7 @@ import { AnimationManager } from '../Core/Other/AnimationManager';
 import { SortingBarStateEnum } from '../Resources/Enumerations';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
 import { ISortingBarProps } from '../Core/Interfaces/ISortingBarProps';
-import { updateCanAnimationBeStartedStateAction } from '../Store/Shared/AnimationStateManagement';
+import { updateCanAnimationBeStartedStateAction } from '../Redux/Shared/AnimationStateManagement';
 import { WarningMessageComponent } from '../Components/WarningMessage';
 import {
   algorithmIterationBaseTime,

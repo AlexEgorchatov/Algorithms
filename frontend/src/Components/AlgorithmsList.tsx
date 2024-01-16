@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { AlgorithmBase } from '../Core/Abstractions/AlgorithmBase';
-import { AppState } from '../Store/Store';
+import { AppState } from '../Redux/Store';
 import { headerItemHovered } from '../Resources/Colors';
 import { algorithmContext, isTouchDevice } from '../Core/Helper';
 import { IAlgorithmData } from '../Core/Interfaces/IAlgorithmData';

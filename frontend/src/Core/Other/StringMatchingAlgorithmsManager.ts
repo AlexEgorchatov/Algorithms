@@ -1,11 +1,11 @@
 import { StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
-import { updateIsAnimationFinalizingStateAction } from '../../Store/Shared/AnimationStateManagement';
-import { store } from '../../Store/Store';
+import { updateIsAnimationFinalizingStateAction } from '../../Redux/Shared/AnimationStateManagement';
+import { store } from '../../Redux/Store';
 import {
   updateSelectedStringMatchingAlgorithmState,
   updateStringMatchingAnimationInputState,
   updateStringMatchingAnimationPatternState,
-} from '../../Store/String Matching Module/StringMatchingModuleStateManagement';
+} from '../../Redux/String Matching Module/StringMatchingModuleStateManagement';
 import { AlgorithmBase, StringMatchingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingCharacterProps';

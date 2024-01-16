@@ -1,8 +1,8 @@
 import {
   updateHasAnimationStartedStateAction,
   updateIsAnimationRunningStateAction,
-} from '../../Store/Shared/AnimationStateManagement';
-import { store } from '../../Store/Store';
+} from '../../Redux/Shared/AnimationStateManagement';
+import { store } from '../../Redux/Store';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 
 export let isAnimationCompleted: boolean = false;

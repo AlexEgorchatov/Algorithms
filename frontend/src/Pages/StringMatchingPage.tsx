@@ -5,14 +5,14 @@ import { useEffect, useRef } from 'react';
 import { errorMessageColor, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { stringMatchingAlgorithmsData } from '../Core/Data/StringMatchingData';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppState } from '../Store/Store';
+import { AppState } from '../Redux/Store';
 import {
   updateStringMatchingAnimationInputState,
   updateStringMatchingAnimationPatternState,
   updateStringMatchingInputState,
   updateStringMatchingPatternState,
   updateStringMatchingWarningMessageState,
-} from '../Store/String Matching Module/StringMatchingModuleStateManagement';
+} from '../Redux/String Matching Module/StringMatchingModuleStateManagement';
 import { algorithmContext, animationContext, isTouchDevice } from '../Core/Helper';
 import { ActionBar } from '../Components/ActionBar';
 import { SliderComponent } from '../Components/Slider';
@@ -23,7 +23,7 @@ import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
 import { AlgorithmsList } from '../Components/AlgorithmsList';
 import { IStringMatchingCharacterProps } from '../Core/Interfaces/IStringMatchingCharacterProps';
 import { WarningMessageComponent } from '../Components/WarningMessage';
-import { updateCanAnimationBeStartedStateAction } from '../Store/Shared/AnimationStateManagement';
+import { updateCanAnimationBeStartedStateAction } from '../Redux/Shared/AnimationStateManagement';
 import {
   algorithmsListComponentHeight,
   animationEmptySpaceHeight,

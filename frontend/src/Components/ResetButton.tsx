@@ -1,6 +1,6 @@
 /**@jsxImportSource @emotion/react */
 import { useSelector } from 'react-redux';
-import { AppState } from '../Store/Store';
+import { AppState } from '../Redux/Store';
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../Resources/Colors';
 import { isTouchDevice } from '../Core/Helper';

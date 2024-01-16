@@ -2,11 +2,11 @@
 /**@jsxImportSource @emotion/react */
 import { css, keyframes } from '@emotion/react';
 import { useSelector } from 'react-redux';
-import { AppState } from '../../Store/Store';
+import { AppState } from '../../Redux/Store';
 import { useDispatch } from 'react-redux';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../../Resources/Colors';
 import { CloseButton } from '../CloseButton';
-import { updateAboutModalVisibleStateAction } from '../../Store/Shared/AboutModalStateManagements';
+import { updateAboutModalVisibleStateAction } from '../../Redux/Shared/AboutModalStateManagements';
 import { minAppWidth } from '../../Resources/Constants';
 
 const animationDuration = '0.2s';

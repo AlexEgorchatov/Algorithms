@@ -3,10 +3,10 @@ import { css } from '@emotion/react';
 import { useContext, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { AppState } from '../Store/Store';
-import { updateSliderValueStateAction } from '../Store/Shared/SliderComponentStateManagement';
+import { AppState } from '../Redux/Store';
+import { updateSliderValueStateAction } from '../Redux/Shared/SliderComponentStateManagement';
 import { animationContext, isTouchDevice } from '../Core/Helper';
-import { updateIsAnimationRunningStateAction } from '../Store/Shared/AnimationStateManagement';
+import { updateIsAnimationRunningStateAction } from '../Redux/Shared/AnimationStateManagement';
 
 const PlayButton = () => {
   const { animationManager } = useContext(animationContext);

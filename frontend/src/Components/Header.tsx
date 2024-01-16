@@ -5,7 +5,7 @@ import { ModuleData } from '../Core/Data/ModuleData';
 import { Link } from 'react-router-dom';
 import { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { updateAboutModalVisibleStateAction } from '../Store/Shared/AboutModalStateManagements';
+import { updateAboutModalVisibleStateAction } from '../Redux/Shared/AboutModalStateManagements';
 import { minAppWidth } from '../Resources/Constants';
 import { isTouchDevice } from '../Core/Helper';
 

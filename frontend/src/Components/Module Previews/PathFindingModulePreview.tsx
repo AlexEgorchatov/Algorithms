@@ -2,9 +2,9 @@
 import { css } from '@emotion/react';
 import React, { useEffect } from 'react';
 import { ModulePreviewPlaceholder } from '../ModulePreviewPlaceHolder';
-import { updatePathFindingModulePreviewGridStateAction } from '../../Store/Home Page/Module Previews/PathFindingModulePreviewStateManagement';
+import { updatePathFindingModulePreviewGridStateAction } from '../../Redux/Home Page/PathFindingModulePreviewStateManagement';
 import { useSelector } from 'react-redux';
-import { AppState } from '../../Store/Store';
+import { AppState } from '../../Redux/Store';
 import { useDispatch } from 'react-redux';
 import { PathFindingCellStateEnum } from '../../Resources/Enumerations';
 import { IModulePreviewTitle } from '../../Core/Interfaces/IModuleTitle';

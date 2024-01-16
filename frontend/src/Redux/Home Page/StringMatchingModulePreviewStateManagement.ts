@@ -1,4 +1,4 @@
-import { IStringMatchingCharacterProps } from '../../../Core/Interfaces/IStringMatchingCharacterProps';
+import { IStringMatchingCharacterProps } from '../../Core/Interfaces/IStringMatchingCharacterProps';
 
 //#region State
 export interface StringMatchingModulePreviewState {

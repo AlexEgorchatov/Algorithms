@@ -1,11 +1,11 @@
 import { algorithmIterationBaseTime } from '../../Resources/Constants';
 import { SortingBarStateEnum } from '../../Resources/Enumerations';
-import { updateIsAnimationFinalizingStateAction } from '../../Store/Shared/AnimationStateManagement';
+import { updateIsAnimationFinalizingStateAction } from '../../Redux/Shared/AnimationStateManagement';
 import {
   updateSelectedSortingAlgorithmState,
   updateSortingBarsStateAction,
-} from '../../Store/Sorting Module/SortingModuleStateManagement';
-import { store } from '../../Store/Store';
+} from '../../Redux/Sorting Module/SortingModuleStateManagement';
+import { store } from '../../Redux/Store';
 import { AlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 import { ISortingBarProps } from '../Interfaces/ISortingBarProps';

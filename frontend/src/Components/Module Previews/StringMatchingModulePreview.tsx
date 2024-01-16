@@ -3,12 +3,12 @@ import { css } from '@emotion/react';
 import React from 'react';
 import { ModulePreviewPlaceholder } from '../ModulePreviewPlaceHolder';
 import { useSelector } from 'react-redux';
-import { AppState } from '../../Store/Store';
+import { AppState } from '../../Redux/Store';
 import { useDispatch } from 'react-redux';
 import { StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 import { IStringMatchingCharacterProps } from '../../Core/Interfaces/IStringMatchingCharacterProps';
 import { IModulePreviewTitle } from '../../Core/Interfaces/IModuleTitle';
-import { updateStringMatchingModulePreviewCharactersState } from '../../Store/Home Page/Module Previews/StringMatchingModulePreviewStateManagement';
+import { updateStringMatchingModulePreviewCharactersState } from '../../Redux/Home Page/StringMatchingModulePreviewStateManagement';
 import { SearchableCharacter } from './StringMatchingPreviewCharacter';
 
 export const defaultStringMatchingPreviewState: IStringMatchingCharacterProps[] = [

@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { WarningSignComponent } from './WarningSign';
 import { warningMessageColor } from '../Resources/Colors';
 import { useSelector } from 'react-redux';
-import { AppState } from '../Store/Store';
+import { AppState } from '../Redux/Store';
 
 interface Props {
   message: string;

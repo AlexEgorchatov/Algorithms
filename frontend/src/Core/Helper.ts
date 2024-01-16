@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 import { AnimationManager, isAnimationCompleted } from './Other/AnimationManager';
-import { store } from '../Store/Store';
+import { store } from '../Redux/Store';
 import { AlgorithmsManagerBase } from './Abstractions/AlgorithmManagerBase';
 import { algorithmIterationBaseTime } from '../Resources/Constants';
 

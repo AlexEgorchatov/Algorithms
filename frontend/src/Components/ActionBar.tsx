@@ -4,9 +4,9 @@ import { headerItemHovered } from '../Resources/Colors';
 import { useContext } from 'react';
 import { animationContext, isTouchDevice } from '../Core/Helper';
 import { useSelector } from 'react-redux';
-import { AppState } from '../Store/Store';
+import { AppState } from '../Redux/Store';
 import { useDispatch } from 'react-redux';
-import { updateIsAnimationRunningStateAction } from '../Store/Shared/AnimationStateManagement';
+import { updateIsAnimationRunningStateAction } from '../Redux/Shared/AnimationStateManagement';
 
 const PlayButton = () => {
   const { animationManager } = useContext(animationContext);

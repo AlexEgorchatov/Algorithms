@@ -2,8 +2,8 @@ import {
   SortingBarStateEnum,
   StringMatchingCharacterStateEnum,
 } from '../../Resources/Enumerations';
-import { updateSortingBarsStateAction } from '../../Store/Sorting Module/SortingModuleStateManagement';
-import { store } from '../../Store/Store';
+import { updateSortingBarsStateAction } from '../../Redux/Sorting Module/SortingModuleStateManagement';
+import { store } from '../../Redux/Store';
 import { IPathFindingCellProps } from '../Interfaces/IPathFindingCellProps';
 import { ISortingBarProps } from '../Interfaces/ISortingBarProps';
 import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingCharacterProps';
