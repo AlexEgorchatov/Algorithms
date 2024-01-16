@@ -1,5 +1,9 @@
 import { AlgorithmBase } from './AlgorithmBase';
 
+/**
+ * @abstract Abstract class to manage the state of the Algorithm.
+ * Accepts the selected algorithm as constructor parameter.
+ */
 export abstract class AlgorithmsManagerBase {
   public abstract selectedAlgorithm: AlgorithmBase;
   public abstract initialState: any[];

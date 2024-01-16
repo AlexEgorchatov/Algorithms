@@ -7,6 +7,10 @@ import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
 
 export let isAnimationCompleted: boolean = false;
 
+/**
+ * @abstract Class to manage the state of the Animation.
+ * Accepts the Algorithm Manager as constructor parameter.
+ */
 export class AnimationManager {
   public readonly algorithmManager: AlgorithmsManagerBase;
 
