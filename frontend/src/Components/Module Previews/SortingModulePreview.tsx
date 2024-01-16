@@ -1,11 +1,11 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
-import { ModulePreviewPlaceholder } from '../ModulePreviewPlaceholder';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppState } from '../../Store/Store';
 import { IModulePreviewTitle } from '../../Core/Interfaces/IModuleTitle';
 import { updateSortingModulePreviewHeightsStateAction } from '../../Store/Home Page/Module Previews/SortingModulePreviewStateManagement';
+import { ModulePreviewPlaceholder } from '../ModulePreviewPlaceHolder';
 
 export const defaultSortingPreviewState: number[] = [180, 100, 120, 140, 160];
 

@@ -53,7 +53,7 @@ function App() {
               text-align: end;
             `}
           >
-            v {packageInfo.version}
+            v{packageInfo.version}
           </div>
         </div>
       </Provider>
