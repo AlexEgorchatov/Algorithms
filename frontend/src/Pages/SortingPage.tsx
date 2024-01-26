@@ -81,13 +81,9 @@ const SortingInputComponent = () => {
       sortingBars.push({ barHeight: currentNumber, barID: ID++ });
     }
 
-    if (isNotDigit) dispatch(updatingIsInputNanState(true));
-    else dispatch(updatingIsInputNanState(false));
-    if (isOverMax) dispatch(updateIsInputOverMaxState(true));
-    else dispatch(updateIsInputOverMaxState(false));
-    if (sortingBars.length !== 0) dispatch(updateCanAnimationBeStartedStateAction(true));
-    else dispatch(updateCanAnimationBeStartedStateAction(false));
-
+    dispatch(updatingIsInputNanState(isNotDigit));
+    dispatch(updateIsInputOverMaxState(isOverMax));
+    dispatch(updateCanAnimationBeStartedStateAction(sortingBars.length !== 0));
     dispatch(updateSortingBarsStateAction(sortingBars));
     sortingAlgorithmManager.isStateUpdated = true;
   };
