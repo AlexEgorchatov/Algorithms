@@ -32,32 +32,25 @@ interface ModuleListProps {
 }
 
 const Module = ({ data }: ModuleProps) => {
-  const GetCurrentModule = () => {
-    switch (data.moduleType) {
-      case ModuleEnum.Sorting:
-        return (
-          <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
-            <SortingModulePreview title={data.title} />
-          </Link>
-        );
-
-      case ModuleEnum.StringMatching:
-        return (
-          <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
-            <StringMatchingModulePreview title={data.title} />
-          </Link>
-        );
-
-      case ModuleEnum.PathFinding:
-        return (
-          <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
-            <PathFindingModulePreview title={data.title} />
-          </Link>
-        );
-    }
+  const modules = {
+    [ModuleEnum.Sorting]: (
+      <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
+        <SortingModulePreview title={data.title} />
+      </Link>
+    ),
+    [ModuleEnum.StringMatching]: (
+      <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
+        <StringMatchingModulePreview title={data.title} />
+      </Link>
+    ),
+    [ModuleEnum.PathFinding]: (
+      <Link to={data.link} style={{ textDecoration: 'none' }} reloadDocument={true}>
+        <PathFindingModulePreview title={data.title} />
+      </Link>
+    ),
   };
 
-  return <React.Fragment>{GetCurrentModule()}</React.Fragment>;
+  return <React.Fragment>{modules[data.moduleType]}</React.Fragment>;
 };
 
 const ModuleList = ({ data }: ModuleListProps) => (

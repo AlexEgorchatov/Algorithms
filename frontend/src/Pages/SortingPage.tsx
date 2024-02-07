@@ -304,6 +304,12 @@ const SortingBarComponent = ({
   let divRef = useRef<HTMLDivElement>(null);
   const sliderState = useSelector((state: AppState) => state.sliderComponentState);
   const animationState = useSelector((state: AppState) => state.animationState);
+  const colors = {
+    [SortingBarStateEnum.Unselected]: 'white',
+    [SortingBarStateEnum.Selected]: checkedColor,
+    [SortingBarStateEnum.Pivot]: pivotColor,
+    [SortingBarStateEnum.Completed]: completionColor,
+  };
 
   useEffect(() => {
     if (divRef.current === null) return;
@@ -324,25 +330,6 @@ const SortingBarComponent = ({
     divRef.current.style.transform = `translateX(0px)`;
   }, [barHeight, animationState.hasAnimationStarted, barState]);
 
-  const getColor = () => {
-    switch (barState) {
-      case SortingBarStateEnum.Unselected:
-        return 'white';
-
-      case SortingBarStateEnum.Selected:
-        return checkedColor;
-
-      case SortingBarStateEnum.Pivot:
-        return pivotColor;
-
-      case SortingBarStateEnum.Completed:
-        return completionColor;
-
-      default:
-        return 'white';
-    }
-  };
-
   return (
     <div
       css={css`
@@ -361,7 +348,7 @@ const SortingBarComponent = ({
           background-color: white;
           width: 25px;
           height: calc((100% - 27px) / 100 * ${barHeight});
-          background-color: ${getColor()};
+          background-color: ${colors[barState] ?? 'white'};
         `}
       ></div>
       <div
@@ -370,7 +357,7 @@ const SortingBarComponent = ({
           justify-content: center;
           color: white;
           font-size: 20px;
-          color: ${getColor()};
+          color: ${colors[barState] ?? 'white'};
         `}
       >
         {barHeight}

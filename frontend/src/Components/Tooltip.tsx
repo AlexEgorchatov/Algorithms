@@ -93,10 +93,18 @@ export const Tooltip = ({ text, direction = 'top' }: Props) => {
         padding: 5px 0;
         position: absolute;
         z-index: 10;
-        top: ${direction === 'left' || direction === 'right' ? '-6px' : direction === 'bottom' ? '150%' : ''};
+        top: ${direction === 'left' || direction === 'right'
+          ? '-6px'
+          : direction === 'bottom'
+          ? '150%'
+          : ''};
         right: ${direction === 'left' ? '120%' : ''};
         bottom: ${direction === 'top' ? '150%' : ''};
-        left: ${direction === 'top' || direction === 'bottom' ? '50%' : direction === 'right' ? '120%' : ''};
+        left: ${direction === 'top' || direction === 'bottom'
+          ? '50%'
+          : direction === 'right'
+          ? '120%'
+          : ''};
         margin-left: ${direction === 'top' || direction === 'bottom' ? '-60px' : ''};
         ::before {
           content: '';
@@ -106,10 +114,18 @@ export const Tooltip = ({ text, direction = 'top' }: Props) => {
           border-right: ${getBorderRight()};
           border-bottom: ${getBorderBottom()};
           border-left: ${getBorderLeft()};
-          top: ${direction === 'top' ? '100%' : direction === 'left' || direction === 'right' ? '50%' : ''};
+          top: ${direction === 'top'
+            ? '100%'
+            : direction === 'left' || direction === 'right'
+            ? '50%'
+            : ''};
           right: ${direction === 'right' ? '100%' : ''};
           bottom: ${direction === 'bottom' ? '100%' : ''};
-          left: ${direction === 'left' ? '100%' : direction === 'top' || direction === 'bottom' ? '50%' : ''};
+          left: ${direction === 'left'
+            ? '100%'
+            : direction === 'top' || direction === 'bottom'
+            ? '50%'
+            : ''};
           margin-left: ${direction === 'top' || direction === 'bottom' ? '-5px' : ''};
           margin-top: ${direction === 'left' || direction === 'right' ? '-5px' : ''};
           border-top-color: ${direction === 'top' ? 'black' : 'transparent'};

@@ -354,28 +354,18 @@ const StringMatchingCharacterComponent = ({
   character,
   characterState = StringMatchingCharacterStateEnum.Unselected,
 }: IStringMatchingCharacterProps) => {
-  const setFont = () => {
-    switch (characterState) {
-      case StringMatchingCharacterStateEnum.Current:
-        return `color: white; background-color: black`;
-
-      case StringMatchingCharacterStateEnum.Found:
-        return 'color: black; background-color: #ffff00';
-
-      case StringMatchingCharacterStateEnum.Checked:
-        return 'color: white; background-color: orange';
-
-      case StringMatchingCharacterStateEnum.Unselected:
-      default:
-        return 'color: white; background-color: transparent';
-    }
+  const styles = {
+    [StringMatchingCharacterStateEnum.Current]: 'color: white; background-color: black',
+    [StringMatchingCharacterStateEnum.Found]: 'color: black; background-color: #ffff00',
+    [StringMatchingCharacterStateEnum.Checked]: 'color: white; background-color: orange',
+    [StringMatchingCharacterStateEnum.Unselected]: 'color: white; background-color: transparent',
   };
 
   return (
     <div
       css={css`
         width: 16.5px;
-        ${setFont()}
+        ${styles[characterState]}
       `}
     >
       {character}
