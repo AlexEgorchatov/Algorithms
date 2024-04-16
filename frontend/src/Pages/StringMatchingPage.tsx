@@ -2,376 +2,41 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useEffect, useRef } from 'react';
-import { errorMessageColor, mainFontColor, moduleBackground } from '../Resources/Colors';
+import { mainFontColor, moduleBackground } from '../Resources/Colors';
 import { stringMatchingAlgorithmsData } from '../Core/Data/StringMatchingData';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../Redux/Store';
 import {
   updateStringMatchingAnimationInputState,
-  updateStringMatchingAnimationPatternState,
   updateStringMatchingInputState,
   updateStringMatchingPatternState,
-  updateStringMatchingWarningMessageState,
 } from '../Redux/String Matching Module/StringMatchingModuleStateManagement';
-import { algorithmContext, animationContext, isTouchDevice } from '../Core/Helpers/GeneralHelper';
+import { algorithmContext, animationContext } from '../Core/Helpers/GeneralHelper';
 import { ActionBar } from '../Components/Shared Components/ActionBar';
 import { SliderComponent } from '../Components/Shared Components/Slider';
 import { ResetButton } from '../Components/Shared Components/ResetButton';
 import { StringMatchingAlgorithmsManager } from '../Core/Other/StringMatchingAlgorithmsManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
-import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
 import { AlgorithmsList } from '../Components/Shared Components/AlgorithmsList';
-import { IStringMatchingCharacterProps } from '../Core/Interfaces/IStringMatchingCharacterProps';
 import { WarningMessageComponent } from '../Components/Shared Components/WarningMessage';
-import { updateCanAnimationBeStartedStateAction } from '../Redux/Shared/AnimationStateManagement';
 import {
   algorithmsListComponentHeight,
   animationEmptySpaceHeight,
+  renderedInput,
+  renderedPattern,
   settingsComponentHeight,
 } from '../Resources/Constants';
+import {
+  StringMatchingInputComponent,
+  StringMatchingPatternComponent,
+} from '../Components/Page Components/String Matching Components/StringMatchingInputHandlers';
+import { StringMatchingCharacterComponent } from '../Components/Page Components/String Matching Components/Character';
 
 let stringMatchingAlgorithmManager: StringMatchingAlgorithmsManager =
   new StringMatchingAlgorithmsManager(stringMatchingAlgorithmsData[0].algorithm);
 let stringMatchingAnimationManager: AnimationManager = new AnimationManager(
   stringMatchingAlgorithmManager,
 );
-
-export const maxStringMatchingInputLength: number = 200;
-export const maxStringMatchingPatternLength: number = 60;
-export const renderedPattern: string = 'was';
-export const renderedInput: string =
-  "Was it a whisper or was it the wind? He wasn't quite sure. He thought he heard a voice but at this moment all he could hear was the wind rustling the leaves of the trees all around him.";
-
-const processStringMatchingInput = (input: string): IStringMatchingCharacterProps[] => {
-  let stringArrayInput = input.split('');
-  let stringMatchingCharacters: IStringMatchingCharacterProps[] = [];
-
-  for (let i = 0; i < stringArrayInput.length; i++) {
-    stringMatchingCharacters.push({ character: stringArrayInput[i] });
-  }
-
-  return stringMatchingCharacters;
-};
-
-const StringMatchingPatternComponent = () => {
-  const stringMatchingModuleState = useSelector(
-    (state: AppState) => state.stringMatchingModuleState,
-  );
-  const animationState = useSelector((state: AppState) => state.animationState);
-  const dispatch = useDispatch();
-  const ref = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (stringMatchingModuleState.stringMatchingPattern.length <= maxStringMatchingPatternLength) {
-      dispatch(
-        updateStringMatchingAnimationPatternState(
-          processStringMatchingInput(stringMatchingModuleState.stringMatchingPattern),
-        ),
-      );
-      dispatch(
-        updateStringMatchingAnimationInputState(
-          processStringMatchingInput(stringMatchingModuleState.stringMatchingInput),
-        ),
-      );
-      stringMatchingAlgorithmManager.isStateUpdated = true;
-
-      if (
-        stringMatchingModuleState.stringMatchingPattern.length === 0 &&
-        stringMatchingModuleState.stringMatchingInput.length === 0
-      ) {
-        dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(
-          updateStringMatchingWarningMessageState(
-            'Pattern and Input are empty, animation is disabled',
-          ),
-        );
-      } else if (stringMatchingModuleState.stringMatchingPattern.length === 0) {
-        dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(
-          updateStringMatchingWarningMessageState('Pattern is empty, animation is disabled'),
-        );
-      } else if (stringMatchingModuleState.stringMatchingInput.length === 0) {
-        dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(updateStringMatchingWarningMessageState('Input is empty, animation is disabled'));
-      } else if (
-        stringMatchingModuleState.stringMatchingInput.length <
-        stringMatchingModuleState.stringMatchingPattern.length
-      ) {
-        dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(
-          updateStringMatchingWarningMessageState(
-            'Input is shorter than pattern, animation is disabled',
-          ),
-        );
-      } else dispatch(updateCanAnimationBeStartedStateAction(true));
-    }
-  }, [stringMatchingModuleState.stringMatchingPattern]);
-
-  return (
-    <div
-      css={css`
-        width: 100%;
-        display: grid;
-        height: 60px;
-      `}
-    >
-      <input
-        css={css`
-          height: 20px;
-          font-family:
-            -apple-system,
-            BlinkMacSystemFont,
-            Segoe UI,
-            Roboto,
-            Oxygen,
-            Ubuntu,
-            Cantarell,
-            Fira Sans,
-            Droid Sans,
-            Helvetica Neue,
-            sans-serif;
-          font-size: 16px;
-          ::placeholder {
-            font-size: 16px;
-            font-style: italic;
-          }
-        `}
-        ref={ref}
-        type="text"
-        placeholder="Type a pattern to search..."
-        value={stringMatchingModuleState.stringMatchingPattern}
-        onChange={() => dispatch(updateStringMatchingPatternState(ref.current?.value))}
-        disabled={animationState.hasAnimationStarted}
-      />
-      <div
-        css={css`
-          display: flex;
-          color: white;
-          font-size: 13px;
-          height: 34px;
-          font-weight: bold;
-          flex-wrap: wrap;
-        `}
-      >
-        Ex: "Pattern 123". Maximum number of elements:
-        <div
-          css={css`
-            color: white;
-            margin-left: 3px;
-            margin-right: 5px;
-            color: ${stringMatchingModuleState.stringMatchingPattern.length >
-            maxStringMatchingPatternLength
-              ? errorMessageColor
-              : 'white'};
-          `}
-        >
-          {stringMatchingModuleState.stringMatchingPattern.length}/{maxStringMatchingPatternLength}.
-        </div>
-        <div
-          css={css`
-            display: ${stringMatchingModuleState.stringMatchingPattern.length >
-            maxStringMatchingPatternLength
-              ? 'flex'
-              : 'none'};
-            color: ${errorMessageColor};
-          `}
-        >
-          Pattern has invalid format,
-          <div
-            css={css`
-              margin-left: 5px;
-              ${!isTouchDevice &&
-              `
-                cursor: pointer;
-              `}
-              text-decoration: underline;
-            `}
-            onClick={() =>
-              dispatch(
-                updateStringMatchingPatternState(
-                  stringMatchingModuleState.stringMatchingAnimationPattern
-                    .map((i) => i.character)
-                    .join(''),
-                ),
-              )
-            }
-          >
-            Fix
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const StringMatchingInputComponent = () => {
-  const stringMatchingModuleState = useSelector(
-    (state: AppState) => state.stringMatchingModuleState,
-  );
-  const animationState = useSelector((state: AppState) => state.animationState);
-  const dispatch = useDispatch();
-  const ref = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (stringMatchingModuleState.stringMatchingInput.length <= maxStringMatchingInputLength) {
-      dispatch(
-        updateStringMatchingAnimationInputState(
-          processStringMatchingInput(stringMatchingModuleState.stringMatchingInput),
-        ),
-      );
-      stringMatchingAlgorithmManager.isStateUpdated = true;
-
-      if (
-        stringMatchingModuleState.stringMatchingPattern.length === 0 &&
-        stringMatchingModuleState.stringMatchingInput.length === 0
-      ) {
-        dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(
-          updateStringMatchingWarningMessageState(
-            'Pattern and Input are empty, animation is disabled',
-          ),
-        );
-      } else if (stringMatchingModuleState.stringMatchingPattern.length === 0) {
-        dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(
-          updateStringMatchingWarningMessageState('Pattern is empty, animation is disabled'),
-        );
-      } else if (stringMatchingModuleState.stringMatchingInput.length === 0) {
-        dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(updateStringMatchingWarningMessageState('Input is empty, animation is disabled'));
-      } else if (
-        stringMatchingModuleState.stringMatchingInput.length <
-        stringMatchingModuleState.stringMatchingPattern.length
-      ) {
-        dispatch(updateCanAnimationBeStartedStateAction(false));
-        dispatch(
-          updateStringMatchingWarningMessageState(
-            'Input is shorter than pattern, animation is disabled',
-          ),
-        );
-      } else dispatch(updateCanAnimationBeStartedStateAction(true));
-    }
-  }, [stringMatchingModuleState.stringMatchingInput]);
-
-  return (
-    <div
-      css={css`
-        display: grid;
-        width: 100%;
-        height: 60px;
-      `}
-    >
-      <input
-        css={css`
-          height: 20px;
-          font-family:
-            -apple-system,
-            BlinkMacSystemFont,
-            Segoe UI,
-            Roboto,
-            Oxygen,
-            Ubuntu,
-            Cantarell,
-            Fira Sans,
-            Droid Sans,
-            Helvetica Neue,
-            sans-serif;
-          font-size: 16px;
-          ::placeholder {
-            font-size: 16px;
-            font-style: italic;
-          }
-        `}
-        ref={ref}
-        type="text"
-        placeholder="Type some text..."
-        value={stringMatchingModuleState.stringMatchingInput}
-        onInput={() => dispatch(updateStringMatchingInputState(ref.current?.value))}
-        disabled={animationState.hasAnimationStarted}
-      />
-      <div
-        css={css`
-          display: flex;
-          flex-wrap: wrap;
-          font-size: 13px;
-          color: white;
-          font-weight: bold;
-          height: 34px;
-        `}
-      >
-        Ex: "Input 123". Maximum number of elements:
-        <div
-          css={css`
-            color: white;
-            margin-left: 3px;
-            margin-right: 5px;
-            color: ${stringMatchingModuleState.stringMatchingInput.length >
-            maxStringMatchingInputLength
-              ? errorMessageColor
-              : 'white'};
-          `}
-        >
-          {stringMatchingModuleState.stringMatchingInput.length}/{maxStringMatchingInputLength}.
-        </div>
-        <div
-          css={css`
-            display: ${stringMatchingModuleState.stringMatchingInput.length >
-            maxStringMatchingInputLength
-              ? 'flex'
-              : 'none'};
-            color: ${errorMessageColor};
-          `}
-        >
-          Input has invalid format,
-          <div
-            css={css`
-              margin-left: 5px;
-              ${!isTouchDevice &&
-              `
-                cursor: pointer;
-              `}
-              text-decoration: underline;
-            `}
-            onClick={() =>
-              dispatch(
-                updateStringMatchingInputState(
-                  stringMatchingModuleState.stringMatchingAnimationInput
-                    .map((i) => i.character)
-                    .join(''),
-                ),
-              )
-            }
-          >
-            Fix
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const StringMatchingCharacterComponent = ({
-  character,
-  characterState = StringMatchingCharacterStateEnum.Unselected,
-}: IStringMatchingCharacterProps) => {
-  const styles = {
-    [StringMatchingCharacterStateEnum.Current]: 'color: white; background-color: black',
-    [StringMatchingCharacterStateEnum.Found]: 'color: black; background-color: #ffff00',
-    [StringMatchingCharacterStateEnum.Checked]: 'color: white; background-color: orange',
-    [StringMatchingCharacterStateEnum.Unselected]: 'color: white; background-color: transparent',
-  };
-
-  return (
-    <div
-      css={css`
-        width: 16.5px;
-        ${styles[characterState]}
-      `}
-    >
-      {character}
-    </div>
-  );
-};
 
 const SettingsComponent = () => {
   const stringMatchingModuleState = useSelector(
@@ -412,8 +77,12 @@ const SettingsComponent = () => {
           justify-content: space-around;
         `}
       >
-        <StringMatchingPatternComponent />
-        <StringMatchingInputComponent />
+        <StringMatchingPatternComponent
+          stringMatchingAlgorithmManager={stringMatchingAlgorithmManager}
+        />
+        <StringMatchingInputComponent
+          stringMatchingAlgorithmManager={stringMatchingAlgorithmManager}
+        />
         <div
           css={css`
             display: flex;

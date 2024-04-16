@@ -23,8 +23,8 @@ import {
 import {
   GenerateInputComponent,
   SortingInputComponent,
-} from '../Components/Page Components/Sorting Page Components/InputHandlers';
-import { SortingBarComponent } from '../Components/Page Components/Sorting Page Components/SortingBar';
+} from '../Components/Page Components/Sorting Components/SortingInputHandlers';
+import { SortingBarComponent } from '../Components/Page Components/Sorting Components/SortingBar';
 
 let sortingAlgorithmManager: SortingAlgorithmsManager = new SortingAlgorithmsManager(
   sortingAlgorithmsData[0].algorithm,

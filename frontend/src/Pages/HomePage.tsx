@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import { updateSortingModulePreviewHeightsStateAction } from '../Redux/Home Page/SortingModulePreviewStateManagement';
 import { updateStringMatchingModulePreviewCharactersState } from '../Redux/Home Page/StringMatchingModulePreviewStateManagement';
 import { updatePathFindingModulePreviewGridStateAction } from '../Redux/Home Page/PathFindingModulePreviewStateManagement';
-import { ModuleList } from '../Components/Page Components/Home Page Components/ModuleList';
+import { ModuleList } from '../Components/Page Components/Home Components/ModuleList';
 
 export const HomePage = () => {
   const dispatch = useDispatch();
