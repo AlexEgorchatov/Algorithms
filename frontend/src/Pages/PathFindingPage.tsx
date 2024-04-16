@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
+import { mainFontColor, moduleBackground } from '../Resources/Colors';
 import { algorithmContext, animationContext, isTouchDevice } from '../Core/Helpers/GeneralHelper';
 import { ActionBar } from '../Components/Shared Components/ActionBar';
 import { ResetButton } from '../Components/Shared Components/ResetButton';
@@ -45,10 +45,8 @@ import {
   algorithmsListComponentHeight,
   animationEmptySpaceHeight,
 } from '../Resources/Constants';
-
-interface CellActionItemProps {
-  cellActionState: PathFindingCellActionStateEnum;
-}
+import { CellActions } from '../Components/Page Components/Path Finding Components/Actions';
+import { CellActionLegends } from '../Components/Page Components/Path Finding Components/Legends';
 
 let pathFindingAlgorithmManager: PathFindingAlgorithmsManager = new PathFindingAlgorithmsManager(
   pathFindingAlgorithmsData[0].algorithm,
@@ -190,171 +188,6 @@ const isInteractableCell = (cellState: PathFindingCellStateEnum): boolean => {
     cellState !== PathFindingCellStateEnum.Unselected &&
     cellState !== PathFindingCellStateEnum.Path &&
     cellState !== PathFindingCellStateEnum.Checked
-  );
-};
-
-const CellActionItemLegend = ({ cellActionState }: CellActionItemProps) => {
-  return (
-    <div
-      css={css`
-        position: relative;
-        display: flex;
-        width: 10px;
-        height: 10px;
-        top: 5px;
-        margin-right: 5px;
-        ::before {
-          content: '';
-          box-sizing: border-box;
-          position: absolute;
-          height: 10px;
-          width: 10px;
-          background-color: ${getCellColor(cellActionState)};
-        }
-      `}
-    ></div>
-  );
-};
-
-const CellActionItem = ({ cellActionState }: CellActionItemProps) => {
-  const animationState = useSelector((state: AppState) => state.animationState);
-  const pathFindingState = useSelector((state: AppState) => state.pathFindingModuleState);
-  const dispatch = useDispatch();
-
-  const isCellActionItemEnabled = (): boolean => {
-    if (animationState.hasAnimationStarted) return false;
-    if (
-      cellActionState !== PathFindingCellActionStateEnum.Source &&
-      cellActionState !== PathFindingCellActionStateEnum.Destination
-    )
-      return true;
-    if (
-      cellActionState === PathFindingCellActionStateEnum.Source &&
-      pathFindingState.pathFindingSource.cellState === PathFindingCellStateEnum.Unselected
-    )
-      return true;
-    if (
-      cellActionState === PathFindingCellActionStateEnum.Destination &&
-      pathFindingState.pathFindingDestination.cellState === PathFindingCellStateEnum.Unselected
-    )
-      return true;
-
-    return false;
-  };
-  const handleClick = () => {
-    if (!isCellActionItemEnabled()) return;
-
-    if (pathFindingState.pathFindingSelectedCellAction === cellActionState)
-      dispatch(updatePathFindingSelectedCellActionState(PathFindingCellActionStateEnum.None));
-    else dispatch(updatePathFindingSelectedCellActionState(cellActionState));
-  };
-
-  return (
-    <div
-      css={css`
-        position: relative;
-        display: flex;
-        width: 22px;
-        height: 22px;
-        background-color: ${pathFindingState.pathFindingSelectedCellAction === cellActionState
-          ? '#71a1f5'
-          : 'transparent'};
-        opacity: ${isCellActionItemEnabled() ? '1' : '0.5'};
-        ${!isTouchDevice &&
-        `
-          cursor: ${isCellActionItemEnabled() ? 'pointer' : 'default'};
-          :hover {
-            ${
-              isCellActionItemEnabled() &&
-              `
-                background-color: ${
-                  pathFindingState.pathFindingSelectedCellAction === cellActionState
-                    ? '#71a1f5'
-                    : headerItemHovered
-                };
-              `
-            }
-          }
-        `}
-        ::before {
-          content: '';
-          box-sizing: border-box;
-          position: absolute;
-          top: 3px;
-          left: 3px;
-          height: 16px;
-          width: 16px;
-          background-color: ${getCellColor(cellActionState)};
-        }
-      `}
-      onClick={handleClick}
-    ></div>
-  );
-};
-
-const CellActions = () => {
-  return (
-    <div
-      css={css`
-        display: flex;
-        justify-content: space-between;
-        width: 112px;
-      `}
-    >
-      <CellActionItem cellActionState={PathFindingCellActionStateEnum.Source} />
-      <CellActionItem cellActionState={PathFindingCellActionStateEnum.Destination} />
-      <CellActionItem cellActionState={PathFindingCellActionStateEnum.Wall} />
-      <CellActionItem cellActionState={PathFindingCellActionStateEnum.Unselected} />
-    </div>
-  );
-};
-
-const CellActionLegends = () => {
-  return (
-    <div>
-      <div
-        css={css`
-          display: flex;
-          color: white;
-          font-size: 13px;
-          font-weight: bold;
-          margin-left: 3px;
-        `}
-      >
-        <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Source} />
-        <div
-          css={css`
-            margin-right: 5px;
-          `}
-        >
-          Source;
-        </div>
-        <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Destination} />
-        <div
-          css={css`
-            margin-right: 5px;
-          `}
-        >
-          Destination;
-        </div>
-        <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Wall} />
-        <div
-          css={css`
-            margin-right: 5px;
-          `}
-        >
-          Wall;
-        </div>
-        <CellActionItemLegend cellActionState={PathFindingCellActionStateEnum.Unselected} />
-        <div
-          css={css`
-            margin-right: 5px;
-          `}
-        >
-          Empty cell
-        </div>
-      </div>
-    </div>
   );
 };
 
