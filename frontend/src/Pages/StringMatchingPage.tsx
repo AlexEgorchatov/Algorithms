@@ -14,15 +14,15 @@ import {
   updateStringMatchingWarningMessageState,
 } from '../Redux/String Matching Module/StringMatchingModuleStateManagement';
 import { algorithmContext, animationContext, isTouchDevice } from '../Core/Helper';
-import { ActionBar } from '../Components/ActionBar';
-import { SliderComponent } from '../Components/Slider';
-import { ResetButton } from '../Components/ResetButton';
+import { ActionBar } from '../Components/Shared Components/ActionBar';
+import { SliderComponent } from '../Components/Shared Components/Slider';
+import { ResetButton } from '../Components/Shared Components/ResetButton';
 import { StringMatchingAlgorithmsManager } from '../Core/Other/StringMatchingAlgorithmsManager';
 import { AnimationManager } from '../Core/Other/AnimationManager';
 import { StringMatchingCharacterStateEnum } from '../Resources/Enumerations';
-import { AlgorithmsList } from '../Components/AlgorithmsList';
+import { AlgorithmsList } from '../Components/Shared Components/AlgorithmsList';
 import { IStringMatchingCharacterProps } from '../Core/Interfaces/IStringMatchingCharacterProps';
-import { WarningMessageComponent } from '../Components/WarningMessage';
+import { WarningMessageComponent } from '../Components/Shared Components/WarningMessage';
 import { updateCanAnimationBeStartedStateAction } from '../Redux/Shared/AnimationStateManagement';
 import {
   algorithmsListComponentHeight,

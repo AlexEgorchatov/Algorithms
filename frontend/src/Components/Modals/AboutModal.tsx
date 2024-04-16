@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../../Redux/Store';
 import { useDispatch } from 'react-redux';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../../Resources/Colors';
-import { CloseButton } from '../CloseButton';
+import { CloseButton } from '../Shared Components/CloseButton';
 import { updateAboutModalVisibleStateAction } from '../../Redux/Shared/AboutModalStateManagements';
 import { minAppWidth } from '../../Resources/Constants';
 

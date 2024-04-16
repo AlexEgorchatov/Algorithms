@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AppState } from '../../Redux/Store';
 import { IModulePreviewTitle } from '../../Core/Interfaces/IModuleTitle';
 import { updateSortingModulePreviewHeightsStateAction } from '../../Redux/Home Page/SortingModulePreviewStateManagement';
-import { ModulePreviewPlaceholder } from '../ModulePreviewPlaceHolder';
+import { ModulePreviewPlaceholder } from '../Shared Components/ModulePreviewPlaceHolder';
 
 export const defaultSortingPreviewState: number[] = [180, 100, 120, 140, 160];
 

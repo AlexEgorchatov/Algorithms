@@ -3,8 +3,8 @@
 import { css } from '@emotion/react';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
 import { algorithmContext, animationContext, isTouchDevice } from '../Core/Helper';
-import { ActionBar } from '../Components/ActionBar';
-import { ResetButton } from '../Components/ResetButton';
+import { ActionBar } from '../Components/Shared Components/ActionBar';
+import { ResetButton } from '../Components/Shared Components/ResetButton';
 import { pathFindingAlgorithmsData } from '../Core/Data/PathFindingData';
 import { AnimationManager } from '../Core/Other/AnimationManager';
 import {
@@ -13,8 +13,8 @@ import {
   resetCellsRefsBackground,
   undefinedCell,
 } from '../Core/Other/PathFindingAlgorithmsManager';
-import { AlgorithmsList } from '../Components/AlgorithmsList';
-import { SliderComponent } from '../Components/Slider';
+import { AlgorithmsList } from '../Components/Shared Components/AlgorithmsList';
+import { SliderComponent } from '../Components/Shared Components/Slider';
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -31,7 +31,7 @@ import {
   updatePathFindingSelectedCellDraggingState,
   updatePathFindingWarningMessageState,
 } from '../Redux/Path Finding Module/PathFindingModuleStateManagement';
-import { WarningMessageComponent } from '../Components/WarningMessage';
+import { WarningMessageComponent } from '../Components/Shared Components/WarningMessage';
 import {
   PathFindingCellActionStateEnum,
   PathFindingCellDraggingStateEnum,

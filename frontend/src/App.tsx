@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { mainBackground, mainFontColor, pageBackground } from './Resources/Colors';
-import { Header } from './Components/Header';
+import { Header } from './Components/Shared Components/Header';
 import { modules } from './Core/Data/ModuleData';
 import { store } from './Redux/Store';
 import { HomePage } from './Pages/HomePage';

@@ -1,7 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect } from 'react';
-import { ModulePreviewPlaceholder } from '../ModulePreviewPlaceHolder';
+import { ModulePreviewPlaceholder } from '../Shared Components/ModulePreviewPlaceHolder';
 import { updatePathFindingModulePreviewGridStateAction } from '../../Redux/Home Page/PathFindingModulePreviewStateManagement';
 import { useSelector } from 'react-redux';
 import { AppState } from '../../Redux/Store';
