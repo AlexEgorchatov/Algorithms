@@ -5,7 +5,7 @@ import {
 } from '../../Redux/Path Finding Module/PathFindingModuleStateManagement';
 import { store } from '../../Redux/Store';
 import { PathFindingAlgorithmBase } from '../Abstractions/AlgorithmBase';
-import { isAnimationTerminated, pauseForStepIteration } from '../Helper';
+import { isAnimationTerminated, pauseForStepIteration } from '../Helpers/GeneralHelper';
 import { IPathFindingCellProps } from '../Interfaces/IPathFindingCellProps';
 import {
   directions,

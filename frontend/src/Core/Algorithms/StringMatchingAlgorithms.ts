@@ -3,7 +3,7 @@ import {
   updateStringMatchingAnimationInputState,
   updateStringMatchingAnimationPatternState,
 } from '../../Redux/String Matching Module/StringMatchingModuleStateManagement';
-import { isAnimationTerminated, pauseForStepIteration } from '../Helper';
+import { isAnimationTerminated, pauseForStepIteration } from '../Helpers/GeneralHelper';
 import { StringMatchingCharacterStateEnum } from '../../Resources/Enumerations';
 import { store } from '../../Redux/Store';
 import { IStringMatchingCharacterProps } from '../Interfaces/IStringMatchingCharacterProps';

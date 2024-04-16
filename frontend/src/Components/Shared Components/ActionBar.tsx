@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../../Resources/Colors';
 import { useContext } from 'react';
-import { animationContext, isTouchDevice } from '../../Core/Helper';
+import { animationContext, isTouchDevice } from '../../Core/Helpers/GeneralHelper';
 import { useSelector } from 'react-redux';
 import { AppState } from '../../Redux/Store';
 import { useDispatch } from 'react-redux';

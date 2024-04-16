@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { AlgorithmBase } from '../../Core/Abstractions/AlgorithmBase';
 import { AppState } from '../../Redux/Store';
 import { headerItemHovered } from '../../Resources/Colors';
-import { algorithmContext, isTouchDevice } from '../../Core/Helper';
+import { algorithmContext, isTouchDevice } from '../../Core/Helpers/GeneralHelper';
 import { IAlgorithmData } from '../../Core/Interfaces/IAlgorithmData';
 import { algorithmsListComponentHeight } from '../../Resources/Constants';
 

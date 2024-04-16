@@ -7,7 +7,7 @@ import { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateAboutModalVisibleStateAction } from '../../Redux/Shared/AboutModalStateManagements';
 import { minAppWidth } from '../../Resources/Constants';
-import { isTouchDevice } from '../../Core/Helper';
+import { isTouchDevice } from '../../Core/Helpers/GeneralHelper';
 
 interface Props {
   data: ModuleData[];

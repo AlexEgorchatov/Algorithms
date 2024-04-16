@@ -1,7 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../../Resources/Colors';
-import { isTouchDevice } from '../../Core/Helper';
+import { isTouchDevice } from '../../Core/Helpers/GeneralHelper';
 
 export const CloseButton = () => {
   return (

@@ -13,7 +13,7 @@ import {
   updateStringMatchingPatternState,
   updateStringMatchingWarningMessageState,
 } from '../Redux/String Matching Module/StringMatchingModuleStateManagement';
-import { algorithmContext, animationContext, isTouchDevice } from '../Core/Helper';
+import { algorithmContext, animationContext, isTouchDevice } from '../Core/Helpers/GeneralHelper';
 import { ActionBar } from '../Components/Shared Components/ActionBar';
 import { SliderComponent } from '../Components/Shared Components/Slider';
 import { ResetButton } from '../Components/Shared Components/ResetButton';

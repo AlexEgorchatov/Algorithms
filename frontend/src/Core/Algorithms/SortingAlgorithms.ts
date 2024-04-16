@@ -1,6 +1,6 @@
 import { SortingAlgorithmBase } from '../Abstractions/AlgorithmBase';
 import { updateSortingBarsStateAction } from '../../Redux/Sorting Module/SortingModuleStateManagement';
-import { isAnimationTerminated, pauseForStepIteration } from '../Helper';
+import { isAnimationTerminated, pauseForStepIteration } from '../Helpers/GeneralHelper';
 import { SortingBarStateEnum } from '../../Resources/Enumerations';
 import { store } from '../../Redux/Store';
 

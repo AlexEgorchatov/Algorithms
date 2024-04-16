@@ -2,7 +2,7 @@
 /**@jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { headerItemHovered, mainFontColor, moduleBackground } from '../Resources/Colors';
-import { algorithmContext, animationContext, isTouchDevice } from '../Core/Helper';
+import { algorithmContext, animationContext, isTouchDevice } from '../Core/Helpers/GeneralHelper';
 import { ActionBar } from '../Components/Shared Components/ActionBar';
 import { ResetButton } from '../Components/Shared Components/ResetButton';
 import { pathFindingAlgorithmsData } from '../Core/Data/PathFindingData';

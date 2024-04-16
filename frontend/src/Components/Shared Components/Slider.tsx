@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { AppState } from '../../Redux/Store';
 import { updateSliderValueStateAction } from '../../Redux/Shared/SliderComponentStateManagement';
-import { animationContext, isTouchDevice } from '../../Core/Helper';
+import { animationContext, isTouchDevice } from '../../Core/Helpers/GeneralHelper';
 import { updateIsAnimationRunningStateAction } from '../../Redux/Shared/AnimationStateManagement';
 
 const PlayButton = () => {

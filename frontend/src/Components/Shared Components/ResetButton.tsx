@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../../Redux/Store';
 import { css } from '@emotion/react';
 import { headerItemHovered } from '../../Resources/Colors';
-import { isTouchDevice } from '../../Core/Helper';
+import { isTouchDevice } from '../../Core/Helpers/GeneralHelper';
 
 interface Props {
   resetFunction: () => void;

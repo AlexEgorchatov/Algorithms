@@ -1,8 +1,8 @@
 import { createContext } from 'react';
-import { AnimationManager, isAnimationCompleted } from './Other/AnimationManager';
-import { store } from '../Redux/Store';
-import { AlgorithmsManagerBase } from './Abstractions/AlgorithmManagerBase';
-import { algorithmIterationBaseTime } from '../Resources/Constants';
+import { AnimationManager, isAnimationCompleted } from '../Other/AnimationManager';
+import { store } from '../../Redux/Store';
+import { AlgorithmsManagerBase } from '../Abstractions/AlgorithmManagerBase';
+import { algorithmIterationBaseTime } from '../../Resources/Constants';
 
 interface animationProps {
   animationManager: AnimationManager;
