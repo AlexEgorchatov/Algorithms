@@ -9,10 +9,9 @@ https://alexegorchatov.github.io/Algorithms/
 
 ## Project Status
 
-The project is in active development. There are many ongoing plans:
-1) Description pane with a detailed explanation of an algorithm's work.
-2) Line-by-line algorithm execution feature to highlight processes described in the Description.
-3) Many more algorithms! (Aho–Corasick, Manacher’s Algorithm, Rabin-Karp, etc.)
+This project has successfully fulfilled its purpose of helping me grasp the concepts of ReactJS and TypeScript web development.  
+It is no longer under active development, and no new features are planned.  
+However, the existing visualizations remain available for reference and learning.
 
 ## Acknowledgments
 
